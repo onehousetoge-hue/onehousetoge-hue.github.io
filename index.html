@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="비영리 단체 한지붕이 준비한 따뜻한 서비스를 한곳에서 만나보세요."
+      content="비영리 단체 한지붕은 어르신의 유휴공간과 청년의 주거 고민을 잇고, 세대와 지역이 함께 살아가는 내일을 만듭니다."
     />
     <meta name="theme-color" content="#f7f2e8" />
-    <title>한지붕 | 따뜻한 서비스를 한곳에</title>
+    <title>한지붕 | 세대와 공간을 잇는 비영리 단체</title>
     <link rel="stylesheet" href="./portal.css" />
   </head>
   <body>
-    <a class="skip-link" href="#services">서비스 선택으로 바로가기</a>
+    <a class="skip-link" href="#about">한지붕 소개로 바로가기</a>
 
     <svg class="icon-sprite" aria-hidden="true">
       <symbol id="icon-leaf" viewBox="0 0 24 24">
@@ -40,6 +40,23 @@
       <symbol id="icon-arrow" viewBox="0 0 24 24">
         <path d="M5 12h14M14 7l5 5-5 5" />
       </symbol>
+      <symbol id="icon-home" viewBox="0 0 24 24">
+        <path d="m3 11 9-7 9 7" />
+        <path d="M5.5 10v10h13V10M9.5 20v-6h5v6" />
+      </symbol>
+      <symbol id="icon-people" viewBox="0 0 24 24">
+        <circle cx="8" cy="8" r="3" />
+        <circle cx="17" cy="9" r="2.5" />
+        <path d="M2.5 20c.4-4 2.3-6 5.5-6s5.1 2 5.5 6M14 15c3.5-.8 6.5 1 7 5" />
+      </symbol>
+      <symbol id="icon-neighborhood" viewBox="0 0 24 24">
+        <path d="M4 20V9l4-3 4 3v11M12 20V6l4-3 4 3v14" />
+        <path d="M7 12h2M7 16h2M15 9h2M15 13h2M15 17h2M2 20h20" />
+      </symbol>
+      <symbol id="icon-report" viewBox="0 0 24 24">
+        <path d="M6 3h9l4 4v14H6Z" />
+        <path d="M15 3v5h4M9 16l2-2 2 1 3-4M9 19h7" />
+      </symbol>
     </svg>
 
     <header class="portal-header">
@@ -64,18 +81,101 @@
       <section class="portal-hero" aria-labelledby="portal-title">
         <div class="container">
           <div class="hero-heading">
-            <p class="eyebrow"><span></span> 한지붕 서비스 안내 <span></span></p>
-            <h1 id="portal-title">한지붕의 따뜻한 서비스를<br />만나보세요</h1>
-            <p>
-              누구나 쉽고 편안하게 이용할 수 있는 서비스를<br class="desktop-break" />
-              하나씩 정성껏 준비하고 있습니다.
+            <p class="eyebrow"><span></span> 세대와 지역을 잇는 비영리 단체 <span></span></p>
+            <h1 id="portal-title">세대와 공간을 잇고,<br />지역의 내일을 함께 만듭니다</h1>
+            <p class="hero-summary">
+              어르신의 유휴공간에는 새로운 가능성을,<br class="desktop-break" />
+              청년과 외국인 유학생에게는 이해하기 쉬운 주거 정보를 전합니다.
             </p>
+            <div class="hero-actions" aria-label="주요 화면 바로가기">
+              <a class="hero-button hero-button-primary" href="#about">
+                한지붕 알아보기
+                <svg aria-hidden="true"><use href="#icon-arrow"></use></svg>
+              </a>
+              <a class="hero-button hero-button-secondary" href="#services">서비스 살펴보기</a>
+            </div>
+            <ul class="hero-proof" aria-label="한지붕 기본 안내">
+              <li><svg aria-hidden="true"><use href="#icon-check"></use></svg>노원구·서울 지역 기반</li>
+              <li><svg aria-hidden="true"><use href="#icon-check"></use></svg>정관 시행 2026년 7월 5일</li>
+              <li><svg aria-hidden="true"><use href="#icon-check"></use></svg>수입과 재산은 공익목적에 사용</li>
+            </ul>
           </div>
+
+          <section class="about-section" id="about" aria-labelledby="about-title">
+            <div class="about-heading">
+              <div class="about-copy">
+                <p class="section-kicker">정관에 담은 한지붕의 약속</p>
+                <h2 id="about-title">어르신의 공간과 청년의 주거 고민을 잇습니다</h2>
+                <p>
+                  한지붕은 노원구와 서울 지역을 기반으로 어르신의 유휴공간 활용을 돕고,
+                  청년과 외국인 유학생에게 주거정보를 전하며, 세대가 서로 이해하고
+                  지역과 함께 살아가는 연결을 만들어 갑니다.
+                </p>
+              </div>
+              <blockquote class="mission-card">
+                <span>한지붕의 설립 목적</span>
+                <p>청년의 주거 부담을 덜고, 고령층의 고립을 완화하는 지역사회를 만듭니다.</p>
+                <footer>한지붕 정관 제3조</footer>
+              </blockquote>
+            </div>
+
+            <div class="about-activities" aria-label="한지붕 주요 공익활동">
+              <article class="activity-card">
+                <span class="activity-icon" aria-hidden="true"><svg><use href="#icon-home"></use></svg></span>
+                <div>
+                  <span class="activity-number">01</span>
+                  <h3>유휴공간 상담과 교육</h3>
+                  <p>어르신의 빈방과 유휴공간을 안전하고 의미 있게 활용할 수 있도록 무료상담과 교육을 진행합니다.</p>
+                </div>
+              </article>
+              <article class="activity-card">
+                <span class="activity-icon" aria-hidden="true"><svg><use href="#icon-people"></use></svg></span>
+                <div>
+                  <span class="activity-number">02</span>
+                  <h3>청년 주거정보 제공</h3>
+                  <p>청년과 외국인 유학생이 한국의 주거문화를 이해하고 필요한 생활정보를 찾도록 돕습니다.</p>
+                </div>
+              </article>
+              <article class="activity-card">
+                <span class="activity-icon" aria-hidden="true"><svg><use href="#icon-neighborhood"></use></svg></span>
+                <div>
+                  <span class="activity-number">03</span>
+                  <h3>세대와 지역 연결</h3>
+                  <p>경로당·복지관·주민센터와 세대공감 프로그램을 만들고 지역상권과 생활정보를 연결합니다.</p>
+                </div>
+              </article>
+              <article class="activity-card">
+                <span class="activity-icon" aria-hidden="true"><svg><use href="#icon-report"></use></svg></span>
+                <div>
+                  <span class="activity-number">04</span>
+                  <h3>조사와 정책 제안</h3>
+                  <p>청년 주거와 고령층 유휴공간을 조사하고 공익 보고서 발간과 정책 제안으로 변화를 만듭니다.</p>
+                </div>
+              </article>
+            </div>
+
+            <div class="operating-principles" aria-labelledby="principles-title">
+              <div class="principles-title">
+                <svg aria-hidden="true"><use href="#icon-shield"></use></svg>
+                <div>
+                  <span>운영 원칙</span>
+                  <strong id="principles-title">공익을 우선하고 투명하게 운영합니다</strong>
+                </div>
+              </div>
+              <ul>
+                <li><svg aria-hidden="true"><use href="#icon-check"></use></svg>수익과 재산의 이익분배 금지</li>
+                <li><svg aria-hidden="true"><use href="#icon-check"></use></svg>단체 명의 계좌와 독립 회계 관리</li>
+                <li><svg aria-hidden="true"><use href="#icon-check"></use></svg>객관적인 지출 증빙자료 보관</li>
+                <li><svg aria-hidden="true"><use href="#icon-check"></use></svg>정치·종교적 중립성과 지역 협력</li>
+              </ul>
+            </div>
+          </section>
 
           <section class="services-section" id="services" aria-labelledby="services-title">
             <div class="section-intro">
+              <p class="section-kicker">한지붕 생활 프로그램</p>
               <h2 id="services-title">원하시는 서비스를 선택해 주세요</h2>
-              <p>현재 두 가지 서비스를 이용하실 수 있습니다.</p>
+              <p>세대의 마음과 일상을 잇는 두 가지 프로그램을 이용하실 수 있습니다.</p>
             </div>
 
             <div class="service-grid">
@@ -190,8 +290,8 @@
 
     <footer class="portal-footer">
       <div class="container footer-inner">
-        <p><strong>한지붕</strong> · 마음을 잇는 따뜻한 서비스</p>
-        <p class="footer-legal">비영리단체 고유번호 120-82-82898 · 대표자 김현수 · 소재지 서울특별시 노원구 동일로 195길 14-5</p>
+        <p><strong>한지붕</strong> · 세대와 공간을 잇는 비영리 단체</p>
+        <p class="footer-legal">비영리단체 고유번호 120-82-82898 · 대표자 김현수 · 소재지 서울특별시 노원구 동일로 195길 14-5 401호</p>
         <p>© 2026 한지붕</p>
       </div>
     </footer>
