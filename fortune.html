@@ -1,0 +1,969 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="비영리 단체 한지붕이 60대 이상 신청자에게 자녀 또는 본인의 사주풀이를 무료로 정리해 카카오톡 알림 메시지로 안내합니다."
+    />
+    <meta name="theme-color" content="#faf4eb" />
+    <title>무료 사주풀이 | 한지붕</title>
+    <link rel="stylesheet" href="./fortune.css" />
+    <script src="./fortune-config.js" defer></script>
+    <script src="./fortune.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">본문으로 바로가기</a>
+
+    <svg class="icon-sprite" aria-hidden="true">
+      <symbol id="fortune-icon-leaf" viewBox="0 0 24 24">
+        <path d="M20 4c-6.5.1-11.2 2.2-13.8 6.2-1.7 2.6-1.4 5.4.7 7.2 2.1 1.8 5 1.6 7.1-.2C17.1 14.7 19 10.3 20 4Z" />
+        <path d="M4 20c2.7-4.2 6.4-7.4 11-9.7" />
+      </symbol>
+      <symbol id="fortune-icon-check" viewBox="0 0 24 24">
+        <path d="m5 12.5 4.2 4.2L19 7" />
+      </symbol>
+      <symbol id="fortune-icon-users" viewBox="0 0 24 24">
+        <path d="M9.5 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM3 21v-2a6.5 6.5 0 0 1 13 0v2" />
+        <path d="M16.5 5.5a3 3 0 0 1 0 5.5M18 14.5a5 5 0 0 1 3 4.5v2" />
+      </symbol>
+      <symbol id="fortune-icon-shield" viewBox="0 0 24 24">
+        <path d="M12 3 20 6v5.4c0 4.7-3.1 8.1-8 9.6-4.9-1.5-8-4.9-8-9.6V6l8-3Z" />
+        <path d="m8.5 12 2.2 2.2 4.8-5" />
+      </symbol>
+      <symbol id="fortune-icon-message" viewBox="0 0 24 24">
+        <path d="M5 5.5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H9l-5 3v-13a2 2 0 0 1 2-2Z" />
+        <path d="M8 10h8M8 13.5h5" />
+      </symbol>
+      <symbol id="fortune-icon-heart" viewBox="0 0 24 24">
+        <path d="M20.8 5.7a5.5 5.5 0 0 0-7.8 0L12 6.8l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 22l8.8-8.5a5.5 5.5 0 0 0 0-7.8Z" />
+      </symbol>
+      <symbol id="fortune-icon-arrow" viewBox="0 0 24 24">
+        <path d="M5 12h14M14 7l5 5-5 5" />
+      </symbol>
+      <symbol id="fortune-icon-calendar" viewBox="0 0 24 24">
+        <rect x="3" y="5" width="18" height="16" rx="2.5" />
+        <path d="M8 2.5v5M16 2.5v5M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01" />
+      </symbol>
+      <symbol id="fortune-icon-briefcase" viewBox="0 0 24 24">
+        <rect x="3" y="7" width="18" height="13" rx="2.5" />
+        <path d="M9 7V4h6v3M3 12h18M10 12v2h4v-2" />
+      </symbol>
+      <symbol id="fortune-icon-compass" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9" />
+        <path d="m15.5 8.5-2 5-5 2 2-5 5-2Z" />
+      </symbol>
+      <symbol id="fortune-icon-phone" viewBox="0 0 24 24">
+        <rect x="6.5" y="2" width="11" height="20" rx="2.5" />
+        <path d="M10 5h4M10.5 18.5h3" />
+      </symbol>
+      <symbol id="fortune-icon-lock" viewBox="0 0 24 24">
+        <rect x="4" y="10" width="16" height="11" rx="2.5" />
+        <path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3" />
+      </symbol>
+      <symbol id="fortune-icon-won" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9" />
+        <path d="m7 8 2.2 8L12 9l2.8 7L17 8M6.5 12h11" />
+      </symbol>
+      <symbol id="fortune-icon-chevron" viewBox="0 0 24 24">
+        <path d="m7 9.5 5 5 5-5" />
+      </symbol>
+    </svg>
+
+    <header class="site-header" data-site-header>
+      <div class="container header-inner">
+        <a class="brand" href="./index.html" aria-label="한지붕 전체 서비스로 돌아가기">
+          <span class="brand-mark" aria-hidden="true">
+            <svg><use href="#fortune-icon-leaf"></use></svg>
+          </span>
+          <span class="brand-copy">
+            <strong>무료 사주풀이</strong>
+            <small>가족을 잇는 따뜻한 이해</small>
+          </span>
+        </a>
+        <nav class="header-nav" aria-label="주요 메뉴">
+          <a class="back-to-services" href="./index.html"><span aria-hidden="true">←</span> 전체 서비스</a>
+          <a href="#preview">결과 미리보기</a>
+          <a href="#faq">자주 묻는 질문</a>
+          <a class="button button-small" href="#apply" data-scroll-to-form>무료로 신청하기</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <p class="nonprofit-pill">
+              <svg aria-hidden="true"><use href="#fortune-icon-shield"></use></svg>
+              한지붕은 <strong>비영리 단체</strong>입니다
+            </p>
+            <p class="eyebrow"><span></span> 가족을 이해하는 따뜻한 참고</p>
+            <h1 id="hero-title">
+              <span>60대 이상이세요?</span>
+              자녀분의 사주팔자를<br />
+              <em>무료로 살펴드립니다</em>
+            </h1>
+            <p class="hero-description">
+              자녀의 타고난 성향과 앞으로의 흐름이 궁금하셨나요?<br class="desktop-break" />
+              간단한 정보를 남겨주시면 전통 사주 해석을 바탕으로<br class="desktop-break" />
+              정리한 내용을 카카오톡 알림 메시지로 보내드립니다.
+            </p>
+            <div class="hero-actions">
+              <a class="button button-primary button-large" href="#apply" data-scroll-to-form>
+                자녀 사주 무료로 신청하기
+                <svg aria-hidden="true"><use href="#fortune-icon-arrow"></use></svg>
+              </a>
+              <p class="reassurance" aria-label="서비스 핵심 안내">
+                <span><svg aria-hidden="true"><use href="#fortune-icon-check"></use></svg>무료 신청</span>
+                <span><svg aria-hidden="true"><use href="#fortune-icon-check"></use></svg>결제 없음</span>
+                <span><svg aria-hidden="true"><use href="#fortune-icon-check"></use></svg>카카오톡 결과 안내</span>
+              </p>
+              <p class="self-note">본인의 사주가 궁금하신 경우에도 신청하실 수 있습니다.</p>
+            </div>
+          </div>
+
+          <div class="hero-visual" role="img" aria-label="부모와 자녀의 따뜻한 대화를 돕는 사주풀이 결과 안내 예시">
+            <div class="conversation-card">
+              <div class="conversation-topline">
+                <span class="conversation-icon"><svg aria-hidden="true"><use href="#fortune-icon-users"></use></svg></span>
+                <span><small>한지붕 가족 대화</small><strong>서로를 이해하는 한마디</strong></span>
+              </div>
+              <div class="conversation-bubble bubble-parent">
+                <span>부모님의 마음</span>
+                <p>자녀가 어떤 마음으로 살아가는지 조금 더 알고 싶어요.</p>
+              </div>
+              <div class="conversation-bubble bubble-answer">
+                <span>부모님께 드리는 한마디</span>
+                <p>답을 정해주기보다 먼저 이야기를 들어주는 것이 따뜻한 시작이 될 수 있습니다.</p>
+              </div>
+              <div class="kakao-delivery">
+                <span class="kakao-mark" aria-hidden="true"><svg><use href="#fortune-icon-message"></use></svg></span>
+                <span><strong>카카오톡 알림 메시지</strong><small>정리된 결과를 휴대폰으로 편하게 확인하세요</small></span>
+              </div>
+            </div>
+            <span class="visual-decoration decoration-one" aria-hidden="true"></span>
+            <span class="visual-decoration decoration-two" aria-hidden="true"></span>
+          </div>
+        </div>
+
+        <div class="container promise-strip" aria-label="서비스 이용 안내">
+          <div><strong>무료</strong><span>신청부터 결과까지 비용 없음</span></div>
+          <div><strong>60대 이상</strong><span>어르신과 가족을 위한 서비스</span></div>
+          <div><strong>카카오톡 안내</strong><span>입력한 번호로 결과 전달</span></div>
+        </div>
+      </section>
+
+      <section class="section empathy-section" aria-labelledby="empathy-title">
+        <div class="container empathy-grid">
+          <div class="section-heading align-left">
+            <p class="eyebrow"><span></span> 자녀를 생각하는 부모님의 마음</p>
+            <h2 id="empathy-title">걱정보다 이해로,<br />대화를 시작해 보세요</h2>
+            <div class="empathy-copy">
+              <p>
+                자녀가 어떤 마음으로 살아가는지,<br />
+                앞으로 어떤 길이 잘 맞을지 궁금하지만<br />
+                직접 물어보기 어려울 때가 있습니다.
+              </p>
+              <p>
+                자녀의 생년월일과 태어난 시간을 바탕으로<br />
+                타고난 성향과 삶의 흐름을 살펴보고,<br />
+                자녀와 따뜻하게 대화할 계기를 만들어 보세요.
+              </p>
+              <p class="empathy-emphasis">
+                본인의 삶과 앞으로의 흐름이 궁금하신 분은<br />
+                신청 단계에서 ‘본인’을 선택하셔도 됩니다.
+              </p>
+            </div>
+          </div>
+
+          <aside class="recommend-card" aria-labelledby="recommend-title">
+            <span class="card-kicker">이런 분께 권해드립니다</span>
+            <h3 id="recommend-title">가족을 조금 더 이해하고 싶은 분</h3>
+            <ul class="check-list">
+              <li><span class="check-circle"><svg aria-hidden="true"><use href="#fortune-icon-check"></use></svg></span>자녀의 성격과 타고난 성향이 궁금하신 분</li>
+              <li><span class="check-circle"><svg aria-hidden="true"><use href="#fortune-icon-check"></use></svg></span>자녀의 직업이나 사업 흐름이 궁금하신 분</li>
+              <li><span class="check-circle"><svg aria-hidden="true"><use href="#fortune-icon-check"></use></svg></span>자녀의 결혼과 인연을 걱정하고 계신 분</li>
+              <li><span class="check-circle"><svg aria-hidden="true"><use href="#fortune-icon-check"></use></svg></span>부모와 자녀가 서로를 더 이해하길 바라시는 분</li>
+              <li><span class="check-circle"><svg aria-hidden="true"><use href="#fortune-icon-check"></use></svg></span>본인의 성향과 흐름을 차분히 살펴보고 싶은 분</li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section reading-section" aria-labelledby="reading-title">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow centered"><span></span> 어떤 내용을 살펴보나요? <span></span></p>
+            <h2 id="reading-title">사주를 바탕으로 알기 쉽게 정리해드립니다</h2>
+            <p>어렵거나 두려운 표현보다, 가족이 편안하게 읽고 대화할 수 있는 내용으로 전해드립니다.</p>
+          </div>
+          <div class="reading-grid">
+            <article class="reading-card">
+              <span class="reading-number">01</span>
+              <span class="reading-icon"><svg aria-hidden="true"><use href="#fortune-icon-heart"></use></svg></span>
+              <h3>타고난 성향</h3>
+              <p>어떤 성격과 기질을 타고났는지 차분하게 살펴봅니다.</p>
+            </article>
+            <article class="reading-card">
+              <span class="reading-number">02</span>
+              <span class="reading-icon"><svg aria-hidden="true"><use href="#fortune-icon-briefcase"></use></svg></span>
+              <h3>일과 재물의 흐름</h3>
+              <p>어떤 방식으로 일할 때 강점을 보이는지 참고할 내용을 정리합니다.</p>
+            </article>
+            <article class="reading-card">
+              <span class="reading-number">03</span>
+              <span class="reading-icon"><svg aria-hidden="true"><use href="#fortune-icon-users"></use></svg></span>
+              <h3>가족과 인연</h3>
+              <p>가족과 주변 사람을 대하는 성향을 따뜻한 관점으로 살펴봅니다.</p>
+            </article>
+            <article class="reading-card">
+              <span class="reading-number">04</span>
+              <span class="reading-icon"><svg aria-hidden="true"><use href="#fortune-icon-compass"></use></svg></span>
+              <h3>앞으로의 흐름</h3>
+              <p>현재의 시기를 어떻게 보내면 좋을지 참고할 내용을 정리합니다.</p>
+            </article>
+            <article class="reading-card reading-card-wide">
+              <span class="reading-number">05</span>
+              <span class="reading-icon"><svg aria-hidden="true"><use href="#fortune-icon-message"></use></svg></span>
+              <div>
+                <h3>따뜻한 한마디</h3>
+                <p>자녀 사주에는 ‘부모님께 드리는 한마디’를, 본인 사주에는 ‘나에게 드리는 한마디’를 함께 전달합니다.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section preview-section" id="preview" aria-labelledby="preview-title">
+        <div class="container preview-grid">
+          <div class="preview-copy">
+            <p class="eyebrow"><span></span> 결과 미리보기</p>
+            <h2 id="preview-title">카카오톡으로<br />이런 결과를 보내드립니다</h2>
+            <p>핵심 내용을 항목별로 나누어 큰 글씨로 편안하게 읽을 수 있도록 정리합니다.</p>
+            <ul class="preview-points">
+              <li><svg aria-hidden="true"><use href="#fortune-icon-check"></use></svg>어려운 용어보다 쉬운 설명</li>
+              <li><svg aria-hidden="true"><use href="#fortune-icon-check"></use></svg>불안을 주지 않는 차분한 표현</li>
+              <li><svg aria-hidden="true"><use href="#fortune-icon-check"></use></svg>가족 대화에 참고할 따뜻한 한마디</li>
+            </ul>
+          </div>
+
+          <div class="phone-stage">
+            <div class="phone" aria-label="카카오톡 사주풀이 예시 결과">
+              <div class="phone-speaker" aria-hidden="true"></div>
+              <div class="phone-status" aria-hidden="true"><span>오후 2:30</span><span>● ● ▰</span></div>
+              <div class="kakao-header">
+                <span class="message-avatar"><svg aria-hidden="true"><use href="#fortune-icon-leaf"></use></svg></span>
+                <span><strong>한지붕</strong><small>카카오톡 알림 메시지</small></span>
+              </div>
+              <div class="preview-label">예시 결과</div>
+              <article class="result-bubble">
+                <p class="result-arrived">자녀분의 사주풀이가 도착했습니다</p>
+                <section>
+                  <h3><span>1</span> 타고난 성향</h3>
+                  <p>자신이 맡은 일을 끝까지 책임지려는 성향이 강한 편입니다. 겉으로는 차분해 보여도 속으로 고민을 오래 품을 수 있습니다.</p>
+                </section>
+                <section>
+                  <h3><span>2</span> 일과 재물</h3>
+                  <p>빠른 결과를 좇기보다는 경험을 꾸준히 쌓아가는 방식이 잘 맞습니다.</p>
+                </section>
+                <section>
+                  <h3><span>3</span> 가족과 관계</h3>
+                  <p>가까운 사람에게 오히려 자신의 마음을 표현하지 못할 수 있습니다. 부담스러운 조언보다 먼저 이야기를 들어주는 것이 좋습니다.</p>
+                </section>
+                <section class="result-message">
+                  <h3><span>4</span> 부모님께 드리는 한마디</h3>
+                  <p>“요즘 힘든 일은 없니?”라고 묻기보다 “언제든 네 편이 되어주고 싶다”고 말해보세요.</p>
+                </section>
+              </article>
+            </div>
+          </div>
+        </div>
+        <div class="container reference-notice">
+          <svg aria-hidden="true"><use href="#fortune-icon-shield"></use></svg>
+          <p>
+            <strong>결과는 참고용 콘텐츠입니다.</strong>
+            <span>사주풀이는 전통적인 해석을 바탕으로 제공되며, 미래의 사건이나 결과를 보장하지 않습니다. 건강·법률·재산·투자 등 중요한 의사결정을 대신하지 않습니다.</span>
+          </p>
+        </div>
+      </section>
+
+      <section class="section nonprofit-section" aria-labelledby="nonprofit-title">
+        <div class="container nonprofit-panel">
+          <div class="nonprofit-intro">
+            <span class="nonprofit-icon"><svg aria-hidden="true"><use href="#fortune-icon-shield"></use></svg></span>
+            <p class="eyebrow light"><span></span> 한지붕 소개</p>
+            <h2 id="nonprofit-title">한지붕은 비영리 단체입니다</h2>
+          </div>
+          <div class="nonprofit-copy">
+            <p>한지붕은 어르신과 가족이 서로의 마음을 이해하고 따뜻하게 대화할 수 있도록 다양한 프로그램을 운영하고 있습니다.</p>
+            <p>이번 무료 사주풀이는 부모님이 자녀를 조금 더 이해하고, 가족 간의 대화를 시작할 수 있도록 마련했습니다. 본인의 사주를 신청하시는 경우에도 동일하게 무료로 결과를 받아보실 수 있습니다.</p>
+            <div class="no-payment-note">
+              <svg aria-hidden="true"><use href="#fortune-icon-won"></use></svg>
+              <p><strong>신청 과정에서 결제나 계좌이체를 요구하지 않습니다.</strong><span>카드 정보, 계좌번호 또는 입금을 요청하지 않습니다.</span></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section steps-section" aria-labelledby="steps-title">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow centered"><span></span> 차례대로 따라오세요 <span></span></p>
+            <h2 id="steps-title">신청은 어렵지 않습니다</h2>
+            <p>한 화면에 필요한 내용만 보여드려 천천히 입력할 수 있습니다.</p>
+          </div>
+          <ol class="steps-list">
+            <li>
+              <span class="step-number">1</span>
+              <div><h3>신청자 정보를 입력합니다</h3><p>성함, 휴대전화 번호, 연령대를 입력합니다.</p></div>
+            </li>
+            <li>
+              <span class="step-number">2</span>
+              <div><h3>누구의 사주인지 선택합니다</h3><p>자녀분의 사주 또는 본인의 사주를 선택합니다.</p></div>
+            </li>
+            <li>
+              <span class="step-number">3</span>
+              <div><h3>생년월일과 태어난 시간을 입력합니다</h3><p>정확한 시간을 모르는 경우에도 신청할 수 있습니다.</p></div>
+            </li>
+            <li>
+              <span class="step-number">4</span>
+              <div><h3>궁금한 내용을 선택합니다</h3><p>전체적인 성향, 일과 재물, 가족과 인연 등에서 선택합니다.</p></div>
+            </li>
+            <li>
+              <span class="step-number">5</span>
+              <div><h3>카카오톡으로 결과를 받습니다</h3><p>입력한 휴대전화 번호의 카카오톡 알림 메시지로 보내드립니다.</p></div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="section safety-section" aria-labelledby="safety-title">
+        <div class="container">
+          <div class="section-heading align-left safety-heading">
+            <div>
+              <p class="eyebrow"><span></span> 안심 안내</p>
+              <h2 id="safety-title">안심하고 신청하세요</h2>
+            </div>
+            <p>무료 신청에 꼭 필요한 정보만 받고, 결과는 입력한 번호의 카카오톡으로만 안내합니다.</p>
+          </div>
+          <div class="safety-grid">
+            <article class="safety-card">
+              <span><svg aria-hidden="true"><use href="#fortune-icon-shield"></use></svg></span>
+              <h3>비영리 목적으로 운영</h3>
+              <p>어르신과 가족의 따뜻한 대화를 돕기 위해 마련했습니다.</p>
+            </article>
+            <article class="safety-card">
+              <span><svg aria-hidden="true"><use href="#fortune-icon-won"></use></svg></span>
+              <h3>별도의 비용 없음</h3>
+              <p>카드 정보, 계좌번호 또는 입금을 요구하지 않습니다.</p>
+            </article>
+            <article class="safety-card">
+              <span><svg aria-hidden="true"><use href="#fortune-icon-lock"></use></svg></span>
+              <h3>꼭 필요한 정보만</h3>
+              <p>주민등록번호, 계좌번호, 상세한 집 주소는 받지 않습니다.</p>
+            </article>
+            <article class="safety-card">
+              <span><svg aria-hidden="true"><use href="#fortune-icon-users"></use></svg></span>
+              <h3>자녀 실명 없이 신청</h3>
+              <p>‘첫째 딸’, ‘둘째 아들’, ‘막내’처럼 가족 호칭만 적어도 됩니다.</p>
+            </article>
+            <article class="safety-card">
+              <span><svg aria-hidden="true"><use href="#fortune-icon-heart"></use></svg></span>
+              <h3>본인 사주도 가능</h3>
+              <p>사주 대상 선택 단계에서 ‘본인’을 선택해 신청할 수 있습니다.</p>
+            </article>
+            <article class="safety-card">
+              <span><svg aria-hidden="true"><use href="#fortune-icon-phone"></use></svg></span>
+              <h3>카카오톡으로만 안내</h3>
+              <p>수신 방법을 따로 고르지 않고 입력한 번호로 결과를 보내드립니다.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section faq-section" id="faq" aria-labelledby="faq-title">
+        <div class="container faq-grid">
+          <div class="section-heading align-left faq-heading">
+            <p class="eyebrow"><span></span> 자주 묻는 질문</p>
+            <h2 id="faq-title">궁금한 점을<br />먼저 확인해 보세요</h2>
+            <p>더 궁금한 내용은 한지붕 문의 안내가 준비된 뒤 도움받으실 수 있습니다.</p>
+          </div>
+          <div class="accordion">
+            <details>
+              <summary><span>정말 무료인가요?</span><svg aria-hidden="true"><use href="#fortune-icon-chevron"></use></svg></summary>
+              <p>네. 한지붕에서 비영리 목적으로 운영하는 무료 신청입니다. 신청 과정에서 카드 정보나 계좌이체를 요구하지 않습니다.</p>
+            </details>
+            <details>
+              <summary><span>제 사주도 신청할 수 있나요?</span><svg aria-hidden="true"><use href="#fortune-icon-chevron"></use></svg></summary>
+              <p>네. 60대 이상이신 경우 신청 단계에서 ‘본인’을 선택해 본인의 사주를 신청할 수 있습니다.</p>
+            </details>
+            <details>
+              <summary><span>결과는 어떻게 받나요?</span><svg aria-hidden="true"><use href="#fortune-icon-chevron"></use></svg></summary>
+              <p>입력한 휴대전화 번호의 카카오톡 알림 메시지로 보내드립니다. 문자나 이메일 수신 방법은 따로 선택하지 않습니다.</p>
+            </details>
+            <details>
+              <summary><span>자녀 이름을 꼭 적어야 하나요?</span><svg aria-hidden="true"><use href="#fortune-icon-chevron"></use></svg></summary>
+              <p>아니요. ‘첫째 딸’, ‘둘째 아들’처럼 가족 호칭만 입력해도 됩니다. 자녀분께 신청 사실을 알리고 동의받은 정보만 입력해 주세요.</p>
+            </details>
+            <details>
+              <summary><span>태어난 시간을 모르는데 신청할 수 있나요?</span><svg aria-hidden="true"><use href="#fortune-icon-chevron"></use></svg></summary>
+              <p>네. ‘태어난 시간을 모릅니다’를 선택해 신청할 수 있습니다. 다만 시간과 관련된 일부 해석은 제한될 수 있습니다.</p>
+            </details>
+            <details>
+              <summary><span>자녀가 여러 명이면 어떻게 하나요?</span><svg aria-hidden="true"><use href="#fortune-icon-chevron"></use></svg></summary>
+              <p>자녀 한 분당 한 번씩 신청해 주세요. 신청 완료 후 ‘다른 자녀도 신청하기’를 누르면 다시 신청할 수 있습니다.</p>
+            </details>
+            <details>
+              <summary><span>광고 수신에 동의하지 않아도 되나요?</span><svg aria-hidden="true"><use href="#fortune-icon-chevron"></use></svg></summary>
+              <p>네. 광고성 정보 수신은 선택 사항입니다. 동의하지 않아도 무료 사주 신청과 결과 안내는 정상적으로 진행됩니다.</p>
+            </details>
+            <details>
+              <summary><span>사주 결과대로 결정해야 하나요?</span><svg aria-hidden="true"><use href="#fortune-icon-chevron"></use></svg></summary>
+              <p>아닙니다. 사주풀이는 참고용 콘텐츠이며 건강·법률·재산·투자 등 중요한 결정을 대신하지 않습니다.</p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <section class="section application-section" id="apply" aria-labelledby="application-title">
+        <div class="container application-container">
+          <div class="section-heading application-heading">
+            <p class="eyebrow centered light"><span></span> 무료 신청 <span></span></p>
+            <h2 id="application-title">자녀 또는 본인의 사주를 신청해 보세요</h2>
+            <p>한 단계씩 천천히 입력하시면 됩니다. 신청 과정에서 결제는 진행되지 않습니다.</p>
+          </div>
+
+          <div class="connection-ribbon" data-connection-ribbon role="status" hidden>
+            <svg aria-hidden="true"><use href="#fortune-icon-shield"></use></svg>
+            <span data-connection-ribbon-text>무료 신청 정보를 안전하게 접수합니다.</span>
+          </div>
+
+          <form id="fortune-form" novalidate>
+            <div class="form-honeypot" aria-hidden="true">
+              <label for="website">웹사이트</label>
+              <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
+            </div>
+
+            <section class="age-gate" data-age-gate aria-labelledby="age-gate-title">
+              <span class="gate-icon"><svg aria-hidden="true"><use href="#fortune-icon-users"></use></svg></span>
+              <p class="gate-kicker">신청 전 확인</p>
+              <h3 id="age-gate-title">60대 이상이신가요?</h3>
+              <p>현재 무료 사주풀이는 60대 이상 신청자를 대상으로 운영하고 있습니다.</p>
+              <fieldset class="field gate-field" data-field="eligibility" aria-describedby="eligibility-error">
+                <legend class="visually-hidden">60대 이상 여부</legend>
+                <div class="choice-grid gate-choice-grid">
+                  <label class="choice-card gate-choice">
+                    <input type="radio" name="eligibility" value="yes" required aria-describedby="eligibility-error" />
+                    <span><strong>네, 60대 이상입니다</strong><small>무료 신청을 계속합니다</small></span>
+                  </label>
+                  <label class="choice-card gate-choice">
+                    <input type="radio" name="eligibility" value="no" required aria-describedby="eligibility-error" />
+                    <span><strong>아니요</strong><small>대상 안내를 확인합니다</small></span>
+                  </label>
+                </div>
+                <p class="field-error" id="eligibility-error" role="alert"></p>
+              </fieldset>
+              <div class="ineligible-notice" data-ineligible-message role="status" tabindex="-1" hidden>
+                <svg aria-hidden="true"><use href="#fortune-icon-shield"></use></svg>
+                <p><strong>현재는 60대 이상 신청자를 대상으로 합니다.</strong><span>대상 범위가 넓어지면 한지붕 서비스 화면에서 안내해 드리겠습니다.</span></p>
+              </div>
+              <button class="button button-primary button-large gate-continue" type="button" data-start-application disabled>
+                무료 신청 시작하기
+                <svg aria-hidden="true"><use href="#fortune-icon-arrow"></use></svg>
+              </button>
+            </section>
+
+            <div class="form-panel" data-form-shell hidden>
+              <ol class="progress" aria-label="신청 진행 단계">
+                <li class="is-current" data-progress-step="1" aria-current="step"><span>1</span><strong>신청자 정보</strong></li>
+                <li data-progress-step="2"><span>2</span><strong>사주 대상</strong></li>
+                <li data-progress-step="3"><span>3</span><strong>궁금한 내용</strong></li>
+                <li data-progress-step="4"><span>4</span><strong>동의 및 신청</strong></li>
+              </ol>
+
+              <div class="form-card">
+                <section class="form-step is-active" data-form-step="1" aria-labelledby="step-one-title">
+                  <div class="step-heading">
+                    <span>1단계</span>
+                    <h3 id="step-one-title">신청하시는 분을 알려주세요</h3>
+                    <p>사주 결과를 받으실 분의 연락처를 정확하게 입력해 주세요.</p>
+                  </div>
+
+                  <div class="field" data-field="applicantName">
+                    <label for="applicant-name">신청하시는 분의 성함 <span class="required">필수</span></label>
+                    <p class="field-help" id="applicant-name-help">사주 결과를 받으실 분의 성함을 입력해 주세요.</p>
+                    <input
+                      id="applicant-name"
+                      name="applicantName"
+                      type="text"
+                      placeholder="예: 김영희"
+                      autocomplete="name"
+                      maxlength="20"
+                      required
+                      aria-describedby="applicant-name-help applicant-name-error"
+                    />
+                    <p class="field-error" id="applicant-name-error" role="alert"></p>
+                  </div>
+
+                  <div class="field" data-field="phone">
+                    <label for="phone">휴대전화 번호 <span class="required">필수</span></label>
+                    <p class="field-help" id="phone-help">사주 결과는 이 번호의 카카오톡 알림 메시지로 보내드립니다.</p>
+                    <input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      inputmode="numeric"
+                      placeholder="010-1234-5678"
+                      autocomplete="tel"
+                      maxlength="13"
+                      required
+                      aria-describedby="phone-help phone-example phone-error"
+                    />
+                    <p class="field-example" id="phone-example">숫자만 입력해도 자동으로 하이픈이 표시됩니다.</p>
+                    <p class="field-error" id="phone-error" role="alert"></p>
+                  </div>
+
+                  <fieldset class="field choice-field" data-field="ageGroup" aria-describedby="age-group-help age-group-error">
+                    <legend>연령대 <span class="required">필수</span></legend>
+                    <p class="field-help" id="age-group-help">신청하시는 분의 연령대를 선택해 주세요.</p>
+                    <div class="choice-grid age-grid">
+                      <label class="choice-card"><input type="radio" name="ageGroup" value="60대" required aria-describedby="age-group-error" /><span>60대</span></label>
+                      <label class="choice-card"><input type="radio" name="ageGroup" value="70대" required aria-describedby="age-group-error" /><span>70대</span></label>
+                      <label class="choice-card"><input type="radio" name="ageGroup" value="80대 이상" required aria-describedby="age-group-error" /><span>80대 이상</span></label>
+                    </div>
+                    <p class="field-error" id="age-group-error" role="alert"></p>
+                  </fieldset>
+
+                  <div class="fixed-channel-note">
+                    <span><svg aria-hidden="true"><use href="#fortune-icon-message"></use></svg></span>
+                    <p><strong>결과는 카카오톡 알림 메시지로 보내드립니다.</strong><small>문자나 이메일 등 다른 수신 방법은 선택하지 않습니다.</small></p>
+                    <em>고정</em>
+                  </div>
+
+                  <div class="form-actions single-action">
+                    <button class="button button-primary button-large" type="button" data-next-step="2">
+                      사주 대상 선택하기
+                      <svg aria-hidden="true"><use href="#fortune-icon-arrow"></use></svg>
+                    </button>
+                  </div>
+                </section>
+
+                <section class="form-step" data-form-step="2" aria-labelledby="step-two-title" hidden>
+                  <div class="step-heading">
+                    <span>2단계</span>
+                    <h3 id="step-two-title">누구의 사주를 신청하시나요?</h3>
+                    <p>자녀분 또는 본인을 선택하면 알맞은 질문을 보여드립니다.</p>
+                  </div>
+
+                  <fieldset class="field choice-field" data-field="subjectType" aria-describedby="subject-type-help subject-type-error">
+                    <legend>사주 대상 <span class="required">필수</span></legend>
+                    <p class="field-help" id="subject-type-help">본인의 사주가 궁금하신 경우 ‘본인’을 선택해 주세요.</p>
+                    <div class="choice-grid subject-grid">
+                      <label class="choice-card subject-card">
+                        <input type="radio" name="subjectType" value="자녀분" checked required aria-describedby="subject-type-error" />
+                        <span class="choice-icon"><svg aria-hidden="true"><use href="#fortune-icon-users"></use></svg></span>
+                        <span><strong>자녀분</strong><small>자녀의 성향과 흐름을 살펴봅니다</small></span>
+                      </label>
+                      <label class="choice-card subject-card">
+                        <input type="radio" name="subjectType" value="본인" required aria-describedby="subject-type-error" />
+                        <span class="choice-icon"><svg aria-hidden="true"><use href="#fortune-icon-heart"></use></svg></span>
+                        <span><strong>본인</strong><small>나의 성향과 흐름을 살펴봅니다</small></span>
+                      </label>
+                    </div>
+                    <p class="field-error" id="subject-type-error" role="alert"></p>
+                  </fieldset>
+
+                  <p class="subject-live" data-subject-live aria-live="polite">
+                    현재 <strong data-subject-word>자녀분</strong>의 정보를 입력합니다.
+                  </p>
+
+                  <div class="subject-dynamic" data-subject-fields>
+                    <div class="field" data-field="subjectLabel" data-subject-label-field data-child-only>
+                      <label for="subject-label"><span data-subject-label-title>자녀분을 어떻게 부르시나요?</span> <span class="required">필수</span></label>
+                      <p class="field-help" id="subject-label-help">실명 대신 가족 호칭을 입력해도 됩니다.</p>
+                      <input
+                        id="subject-label"
+                        name="subjectLabel"
+                        type="text"
+                        placeholder="예: 첫째 딸, 둘째 아들, 막내"
+                        maxlength="30"
+                        required
+                        aria-describedby="subject-label-help subject-label-error"
+                      />
+                      <p class="field-error" id="subject-label-error" role="alert"></p>
+                    </div>
+
+                    <fieldset class="field choice-field" data-field="gender" aria-describedby="gender-error">
+                      <legend><span data-gender-title><span data-subject-word>자녀분</span>의 성별</span> <span class="required">필수</span></legend>
+                      <div class="choice-grid two-column-grid">
+                        <label class="choice-card"><input type="radio" name="gender" value="여성" required aria-describedby="gender-error" /><span>여성</span></label>
+                        <label class="choice-card"><input type="radio" name="gender" value="남성" required aria-describedby="gender-error" /><span>남성</span></label>
+                      </div>
+                      <p class="field-error" id="gender-error" role="alert"></p>
+                    </fieldset>
+
+                    <fieldset class="field birth-field" data-field="birthDate" aria-describedby="birth-date-help birth-date-error">
+                      <legend><span data-birth-title><span data-subject-word>자녀분</span>의 생년월일</span> <span class="required">필수</span></legend>
+                      <p class="field-help" id="birth-date-help">숫자로 년, 월, 일을 각각 입력해 주세요.</p>
+                      <div class="date-grid">
+                        <label><span>년</span><input id="birth-year" name="birthYear" type="text" inputmode="numeric" placeholder="예: 1985" maxlength="4" required aria-describedby="birth-date-error" /></label>
+                        <label><span>월</span><input id="birth-month" name="birthMonth" type="text" inputmode="numeric" placeholder="예: 3" maxlength="2" required aria-describedby="birth-date-error" /></label>
+                        <label><span>일</span><input id="birth-day" name="birthDay" type="text" inputmode="numeric" placeholder="예: 15" maxlength="2" required aria-describedby="birth-date-error" /></label>
+                      </div>
+                      <p class="field-error" id="birth-date-error" role="alert"></p>
+                    </fieldset>
+
+                    <fieldset class="field choice-field" data-field="calendarType" aria-describedby="calendar-type-error">
+                      <legend>양력 또는 음력 <span class="required">필수</span></legend>
+                      <div class="choice-grid two-column-grid">
+                        <label class="choice-card"><input type="radio" name="calendarType" value="양력" required aria-describedby="calendar-type-error" /><span>양력</span></label>
+                        <label class="choice-card"><input type="radio" name="calendarType" value="음력" required aria-describedby="calendar-type-error" /><span>음력</span></label>
+                      </div>
+                      <p class="field-error" id="calendar-type-error" role="alert"></p>
+                    </fieldset>
+
+                    <fieldset class="field choice-field conditional-field" data-field="leapMonth" data-leap-month-field data-lunar-only aria-describedby="leap-month-help leap-month-error" hidden>
+                      <legend>윤달인가요? <span class="required">필수</span></legend>
+                      <p class="field-help" id="leap-month-help">음력 생일인 경우에만 선택해 주세요.</p>
+                      <div class="choice-grid three-column-grid">
+                        <label class="choice-card"><input type="radio" name="leapMonth" value="해당 없음" aria-describedby="leap-month-error" /><span>해당 없음</span></label>
+                        <label class="choice-card"><input type="radio" name="leapMonth" value="윤달" aria-describedby="leap-month-error" /><span>윤달</span></label>
+                        <label class="choice-card"><input type="radio" name="leapMonth" value="잘 모르겠어요" aria-describedby="leap-month-error" /><span>잘 모르겠어요</span></label>
+                      </div>
+                      <p class="field-error" id="leap-month-error" role="alert"></p>
+                    </fieldset>
+
+                    <fieldset class="field choice-field" data-field="timeAccuracy" aria-describedby="time-accuracy-help time-accuracy-error">
+                      <legend>태어난 시간을 얼마나 정확히 알고 계신가요? <span class="required">필수</span></legend>
+                      <p class="field-help" id="time-accuracy-help">모르는 경우에도 신청할 수 있습니다.</p>
+                      <div class="choice-grid time-accuracy-grid">
+                        <label class="choice-card"><input type="radio" name="timeAccuracy" value="정확히 알고 있습니다" required aria-describedby="time-accuracy-error" /><span>정확히 알고 있습니다</span></label>
+                        <label class="choice-card"><input type="radio" name="timeAccuracy" value="대략 알고 있습니다" required aria-describedby="time-accuracy-error" /><span>대략 알고 있습니다</span></label>
+                        <label class="choice-card"><input type="radio" name="timeAccuracy" value="태어난 시간을 모릅니다" required aria-describedby="time-accuracy-error" /><span>태어난 시간을 모릅니다</span></label>
+                      </div>
+                      <p class="field-error" id="time-accuracy-error" role="alert"></p>
+                    </fieldset>
+
+                    <fieldset class="field birth-time-field" data-field="birthTime" data-birth-time-fields data-time-controls aria-describedby="birth-time-help birth-time-error">
+                      <legend>태어난 시간 <span class="required">필수</span></legend>
+                      <p class="field-help" id="birth-time-help">알고 계신 시간을 입력해 주세요.</p>
+                      <div class="birth-time-grid">
+                        <div class="period-choice" role="group" aria-label="오전 또는 오후">
+                          <label><input type="radio" name="birthPeriod" value="오전" aria-describedby="birth-time-error" /><span>오전</span></label>
+                          <label><input type="radio" name="birthPeriod" value="오후" aria-describedby="birth-time-error" /><span>오후</span></label>
+                        </div>
+                        <label><span>시</span><input id="birth-hour" name="birthHour" type="text" inputmode="numeric" placeholder="예: 7" maxlength="2" aria-describedby="birth-time-error" /></label>
+                        <label><span>분</span><input id="birth-minute" name="birthMinute" type="text" inputmode="numeric" placeholder="예: 30" maxlength="2" aria-describedby="birth-time-error" /></label>
+                      </div>
+                      <p class="field-error" id="birth-time-error" role="alert"></p>
+                    </fieldset>
+
+                    <div class="field" data-field="birthRegion">
+                      <label for="birth-region">태어난 지역 <span class="optional-label">선택</span></label>
+                      <p class="field-help" id="birth-region-help">시·군 정도까지만 입력해 주세요. 상세 주소는 받지 않습니다.</p>
+                      <input
+                        id="birth-region"
+                        name="birthRegion"
+                        type="text"
+                        placeholder="예: 서울, 부산, 전라남도 순천"
+                        maxlength="40"
+                        aria-describedby="birth-region-help birth-region-error"
+                      />
+                      <p class="field-error" id="birth-region-error" role="alert"></p>
+                    </div>
+                  </div>
+
+                  <div class="subject-consent-note" data-child-consent-note data-child-only>
+                    <svg aria-hidden="true"><use href="#fortune-icon-shield"></use></svg>
+                    <span>자녀분의 정보를 대신 입력하는 경우 사주 신청 사실을 알려주시고, 동의를 받은 정보만 입력해 주세요.</span>
+                  </div>
+
+                  <div class="form-actions">
+                    <button class="button button-secondary" type="button" data-prev-step="1">이전으로</button>
+                    <button class="button button-primary" type="button" data-next-step="3">
+                      궁금한 내용 선택하기
+                      <svg aria-hidden="true"><use href="#fortune-icon-arrow"></use></svg>
+                    </button>
+                  </div>
+                </section>
+
+                <section class="form-step" data-form-step="3" aria-labelledby="step-three-title" hidden>
+                  <div class="step-heading">
+                    <span>3단계</span>
+                    <h3 id="step-three-title">어떤 내용이 가장 궁금하신가요?</h3>
+                    <p>가장 궁금한 내용을 한 가지 선택해 주세요.</p>
+                  </div>
+
+                  <fieldset class="field choice-field" data-field="interestTopic" aria-describedby="interest-topic-help interest-topic-error">
+                    <legend>궁금한 내용 <span class="required">필수</span></legend>
+                    <p class="field-help" id="interest-topic-help">결과를 정리할 때 선택하신 내용을 중심으로 살펴봅니다.</p>
+                    <div class="topic-grid">
+                      <label class="choice-card topic-card"><input type="radio" name="interestTopic" value="전체적인 사주와 성향" required aria-describedby="interest-topic-error" /><span>전체적인 사주와 성향</span></label>
+                      <label class="choice-card topic-card"><input type="radio" name="interestTopic" value="건강과 생활의 흐름" required aria-describedby="interest-topic-error" /><span>건강과 생활의 흐름 <small>참고용</small></span></label>
+                      <label class="choice-card topic-card"><input type="radio" name="interestTopic" value="재물운" required aria-describedby="interest-topic-error" /><span>재물운</span></label>
+                      <label class="choice-card topic-card"><input type="radio" name="interestTopic" value="직업·사업운" required aria-describedby="interest-topic-error" /><span>직업·사업운</span></label>
+                      <label class="choice-card topic-card"><input type="radio" name="interestTopic" value="연애·결혼운" required aria-describedby="interest-topic-error" /><span>연애·결혼운</span></label>
+                      <label class="choice-card topic-card"><input type="radio" name="interestTopic" value="가족운" required aria-describedby="interest-topic-error" /><span>가족운</span></label>
+                      <label class="choice-card topic-card"><input type="radio" name="interestTopic" value="기타" required aria-describedby="interest-topic-error" /><span>기타</span></label>
+                    </div>
+                    <p class="field-error" id="interest-topic-error" role="alert"></p>
+                  </fieldset>
+
+                  <div class="field" data-field="additionalQuestion">
+                    <label for="additional-question">추가로 궁금한 점 <span class="optional-label">선택</span></label>
+                    <p class="field-help" id="additional-question-help">특히 궁금한 상황이 있다면 편하게 적어 주세요.</p>
+                    <textarea
+                      id="additional-question"
+                      name="additionalQuestion"
+                      rows="6"
+                      maxlength="500"
+                      placeholder="예: 아들이 최근 일을 그만두었는데 앞으로 어떤 일이 잘 맞을지 궁금합니다."
+                      aria-describedby="additional-question-help question-private-note additional-question-error"
+                      data-question-input
+                    ></textarea>
+                    <div class="textarea-meta">
+                      <p id="question-private-note">주민등록번호, 계좌번호, 상세 주소, 건강·진단·치료 정보는 입력하지 마세요.</p>
+                      <span><b data-question-count>0</b>/500자</span>
+                    </div>
+                    <p class="field-error" id="additional-question-error" role="alert"></p>
+                  </div>
+
+                  <div class="decision-notice">
+                    <svg aria-hidden="true"><use href="#fortune-icon-compass"></use></svg>
+                    <p><strong>중요한 결정은 사주 결과만으로 정하지 마세요.</strong><span>결과는 가족 대화와 자기 이해를 돕는 참고용 콘텐츠입니다.</span></p>
+                  </div>
+
+                  <div class="form-actions">
+                    <button class="button button-secondary" type="button" data-prev-step="2">이전으로</button>
+                    <button class="button button-primary" type="button" data-next-step="4">
+                      동의하고 신청하기
+                      <svg aria-hidden="true"><use href="#fortune-icon-arrow"></use></svg>
+                    </button>
+                  </div>
+                </section>
+
+                <section class="form-step" data-form-step="4" aria-labelledby="step-four-title" hidden>
+                  <div class="step-heading">
+                    <span>4단계</span>
+                    <h3 id="step-four-title">입력 내용과 동의를 확인해 주세요</h3>
+                    <p>잘못 입력된 내용이 없는지 한 번만 살펴봐 주세요.</p>
+                  </div>
+
+                  <section class="application-summary" aria-labelledby="summary-title" aria-live="polite" data-form-summary>
+                    <div class="summary-heading">
+                      <span class="summary-icon"><svg aria-hidden="true"><use href="#fortune-icon-message"></use></svg></span>
+                      <div><small>신청 내용</small><h4 id="summary-title" data-summary-lead>입력하신 무료 사주 신청 내용을 확인해 주세요.</h4></div>
+                    </div>
+                    <dl>
+                      <div><dt>사주 대상</dt><dd data-summary-subject>—</dd></div>
+                      <div><dt>생년월일</dt><dd data-summary-birth>—</dd></div>
+                      <div><dt>태어난 시간</dt><dd data-summary-time>—</dd></div>
+                      <div><dt>태어난 지역</dt><dd data-summary-region>입력하지 않음</dd></div>
+                      <div><dt>궁금한 내용</dt><dd data-summary-topic>—</dd></div>
+                      <div><dt>결과 받는 곳</dt><dd><span data-summary-phone>—</span> 카카오톡</dd></div>
+                    </dl>
+                    <button type="button" data-edit-step="1">입력 내용 수정하기</button>
+                  </section>
+
+                  <fieldset class="field agreement-field" data-field="consents" aria-describedby="consents-help consents-error">
+                    <legend>동의 항목 <span class="agreement-count">필수 2개 · 선택 1개</span></legend>
+                    <p class="field-help" id="consents-help">필수 항목 두 개만 동의해도 무료로 신청할 수 있습니다.</p>
+
+                    <div class="agreement-card agreement-card-all">
+                      <label>
+                        <input type="checkbox" name="allConsent" aria-describedby="consents-help consents-error" />
+                        <span><strong>전체 동의 <em>선택 항목 포함</em></strong><small>아래 필수 2개와 선택 1개를 모두 선택합니다.</small></span>
+                      </label>
+                    </div>
+
+                    <div class="agreement-card">
+                      <label>
+                        <input type="checkbox" name="privacyConsent" required aria-describedby="consents-error" />
+                        <span><strong><em class="required-chip">필수</em> 개인정보 수집·이용 및 사주 대상자 정보 제공 확인</strong><small>신청 접수, 결과 작성과 카카오톡 발송에 필요한 정보</small></span>
+                      </label>
+                      <button type="button" data-dialog-open="fortune-privacy-dialog" aria-haspopup="dialog">내용 보기</button>
+                    </div>
+
+                    <div class="agreement-card optional-agreement">
+                      <label>
+                        <input type="checkbox" name="marketingConsent" />
+                        <span><strong><em class="optional-chip">선택</em> 광고성 정보 수신 동의</strong><small>선택하지 않아도 사주 신청과 결과 수신이 가능합니다.</small></span>
+                      </label>
+                      <button type="button" data-dialog-open="fortune-marketing-dialog" aria-haspopup="dialog">내용 보기</button>
+                    </div>
+
+                    <div class="agreement-card">
+                      <label>
+                        <input type="checkbox" name="termsConsent" required aria-describedby="consents-error" />
+                        <span><strong><em class="required-chip">필수</em> 이용약관 동의</strong><small>참고용 콘텐츠 안내와 서비스 이용 조건</small></span>
+                      </label>
+                      <button type="button" data-dialog-open="fortune-terms-dialog" aria-haspopup="dialog">내용 보기</button>
+                    </div>
+                    <p class="field-error" id="consents-error" role="alert"></p>
+                  </fieldset>
+
+                  <div class="final-reminder">
+                    <svg aria-hidden="true"><use href="#fortune-icon-shield"></use></svg>
+                    <p><strong>가운데 광고 안내는 선택 항목입니다.</strong><span>선택하지 않아도 무료 사주 신청과 카카오톡 결과 수신이 가능합니다.</span></p>
+                  </div>
+
+                  <div class="final-application-copy" aria-live="polite">
+                    <p data-final-summary>입력하신 내용을 확인한 뒤 카카오톡 알림 메시지로 결과를 보내드립니다.</p>
+                    <span>신청 과정에서 별도의 결제가 진행되지 않습니다.</span>
+                  </div>
+
+                  <div class="submission-error" data-submission-error role="alert" tabindex="-1" hidden>
+                    <strong>신청 정보를 저장하지 못했습니다.</strong>
+                    <span data-submission-error-text>잠시 후 다시 시도해 주세요.</span>
+                  </div>
+
+                  <p class="submit-state" data-submit-state role="status" aria-live="polite" hidden>
+                    신청 내용을 안전하게 전송하고 있습니다. 잠시만 기다려 주세요.
+                  </p>
+
+                  <div class="form-actions">
+                    <button class="button button-secondary" type="button" data-prev-step="3">이전으로</button>
+                    <button class="button button-primary" type="submit" data-submit-button disabled>
+                      무료 사주 신청 완료하기
+                      <svg aria-hidden="true"><use href="#fortune-icon-arrow"></use></svg>
+                    </button>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </form>
+
+          <section class="success-card" data-success-card hidden aria-labelledby="success-title" tabindex="-1">
+            <span class="success-icon"><svg aria-hidden="true"><use href="#fortune-icon-check"></use></svg></span>
+            <p class="eyebrow centered"><span></span> 신청 완료 <span></span></p>
+            <h2 id="success-title">신청이 완료되었습니다</h2>
+            <p class="success-welcome">
+              <strong><span data-success-name>—</span> 님, 신청해 주셔서 감사합니다.</strong>
+              <span data-success-message>입력해 주신 내용을 확인한 뒤 사주풀이 결과를 카카오톡 알림 메시지로 보내드리겠습니다.</span>
+            </p>
+            <div class="success-summary">
+              <div><span>신청 대상</span><strong data-success-subject>—</strong></div>
+              <div><span>결과 안내</span><strong><span data-success-phone>—</span> 카카오톡</strong></div>
+            </div>
+            <div class="success-notice">
+              <svg aria-hidden="true"><use href="#fortune-icon-shield"></use></svg>
+              <p><strong>결과는 접수된 순서대로 보내드립니다.</strong><span>별도의 결제는 필요하지 않습니다.</span></p>
+            </div>
+            <p class="success-message">서로의 마음을 이해하는 따뜻한 대화의 계기가 되기를 바랍니다.</p>
+            <div class="success-actions">
+              <button class="button button-primary" type="button" data-start-another>다른 자녀도 신청하기</button>
+              <button class="button button-text" type="button" data-restart>처음 화면으로 돌아가기</button>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <a class="brand footer-brand" href="./index.html" aria-label="한지붕 전체 서비스로 돌아가기">
+          <span class="brand-mark" aria-hidden="true"><svg><use href="#fortune-icon-leaf"></use></svg></span>
+          <span class="brand-copy"><strong>한지붕</strong><small>마음을 잇는 따뜻한 서비스</small></span>
+        </a>
+        <div class="footer-copy">
+          <p>가족을 이해하는 작은 시작, 무료 사주풀이.</p>
+          <p>비영리 단체 한지붕이 운영하며, 본 콘텐츠는 중요한 의사결정을 대신하지 않습니다.</p>
+          <p>비영리단체 고유번호 120-82-82898 · 대표자 김현수 · 소재지 서울특별시 노원구 동일로 195길 14-5</p>
+        </div>
+        <div class="footer-links">
+          <button type="button" data-dialog-open="fortune-privacy-dialog">개인정보 안내</button>
+          <button type="button" data-dialog-open="fortune-marketing-dialog">광고 수신 안내</button>
+          <button type="button" data-dialog-open="fortune-terms-dialog">이용약관</button>
+        </div>
+      </div>
+      <div class="container footer-bottom">
+        <span>© 2026 한지붕 무료 사주풀이</span>
+        <span>비영리 서비스</span>
+      </div>
+    </footer>
+
+    <div class="mobile-cta" data-mobile-cta>
+      <a class="button button-primary" href="#apply" data-scroll-to-form>자녀 사주 무료로 신청하기</a>
+    </div>
+
+    <iframe
+      name="hanjibung-fortune-submit"
+      data-sheet-submit-target
+      title="한지붕 무료 사주풀이 신청 결과 처리"
+      hidden
+    ></iframe>
+
+    <div class="toast" role="status" aria-live="polite" data-toast hidden></div>
+
+    <dialog class="info-dialog" id="fortune-privacy-dialog" aria-labelledby="fortune-privacy-title">
+      <div class="dialog-content">
+        <button class="dialog-close" type="button" data-dialog-close aria-label="개인정보 안내 닫기">×</button>
+        <p class="eyebrow"><span></span> 필수 동의 안내</p>
+        <h2 id="fortune-privacy-title">개인정보 수집·이용 및<br />사주 대상자 정보 제공 확인</h2>
+        <p>한지붕은 무료 사주풀이 신청 접수, 사주 내용 작성, 카카오톡 결과 발송과 문의 대응을 위해 신청자와 사주 대상자의 정보를 수집·이용합니다.</p>
+        <h3>수집하는 정보</h3>
+        <ul>
+          <li>신청자 성함, 휴대전화 번호, 연령대</li>
+          <li>사주 대상 구분, 대상자 호칭, 성별</li>
+          <li>생년월일, 양력·음력 여부, 윤달 여부</li>
+          <li>출생시간과 정확도, 출생지역, 궁금한 내용</li>
+        </ul>
+        <h3>이용 목적과 보유</h3>
+        <ul>
+          <li>이용 목적: 신청 관리, 사주풀이 작성, 카카오톡 결과 발송, 문의 대응</li>
+          <li>보유 기간: 실제 운영 정책 확정 후 신청 접수 전에 정확한 기간을 표시합니다. 현재 저장 연결 전 개발 상태입니다.</li>
+        </ul>
+        <div class="dialog-notice">
+          <strong>자녀분의 정보를 입력하는 경우</strong>
+          <p>해당 자녀에게 사주 신청과 정보 입력 사실을 알리고, 동의를 받은 정보만 입력해 주세요.</p>
+        </div>
+        <p>동의를 거부할 수 있으나, 필수 정보 수집에 동의하지 않으면 무료 사주 신청이 어렵습니다.</p>
+        <button class="button button-primary" type="button" data-dialog-close>확인했습니다</button>
+      </div>
+    </dialog>
+
+    <dialog class="info-dialog" id="fortune-marketing-dialog" aria-labelledby="fortune-marketing-title">
+      <div class="dialog-content">
+        <button class="dialog-close" type="button" data-dialog-close aria-label="광고성 정보 수신 안내 닫기">×</button>
+        <p class="eyebrow"><span></span> 선택 동의 안내</p>
+        <h2 id="fortune-marketing-title">광고성 정보 수신 동의</h2>
+        <p>한지붕의 새로운 무료 프로그램, 행사와 캠페인 소식을 카카오톡으로 받아보는 것에 동의합니다.</p>
+        <ul>
+          <li>수신 내용: 한지붕의 프로그램, 행사, 캠페인과 서비스 소식</li>
+          <li>수신 방법: 카카오톡 알림 메시지 또는 관련 메시지</li>
+          <li>본 동의는 언제든 철회할 수 있습니다.</li>
+        </ul>
+        <div class="dialog-notice optional-notice">
+          <strong>선택 사항입니다</strong>
+          <p>동의하지 않아도 무료 사주 신청과 결과 수신에는 제한이 없습니다.</p>
+        </div>
+        <button class="button button-primary" type="button" data-dialog-close>확인했습니다</button>
+      </div>
+    </dialog>
+
+    <dialog class="info-dialog" id="fortune-terms-dialog" aria-labelledby="fortune-terms-title">
+      <div class="dialog-content">
+        <button class="dialog-close" type="button" data-dialog-close aria-label="서비스 이용약관 닫기">×</button>
+        <p class="eyebrow"><span></span> 필수 동의 안내</p>
+        <h2 id="fortune-terms-title">무료 사주풀이 이용약관</h2>
+        <p>본 서비스는 전통 사주 해석을 바탕으로 가족 대화와 자기 이해를 돕기 위해 제공되는 참고용 콘텐츠입니다.</p>
+        <h3>서비스 이용 안내</h3>
+        <ul>
+          <li>사주 결과는 미래의 사건이나 결과를 보장하지 않습니다.</li>
+          <li>의료·법률·재산·투자 등 중요한 의사결정을 대신하지 않습니다.</li>
+          <li>신청자는 자신과 사주 대상자의 정보를 정확하게 입력해야 합니다.</li>
+          <li>자녀 정보를 대신 입력할 경우 해당 자녀에게 신청 사실을 알려야 합니다.</li>
+          <li>접수량이나 운영 사정에 따라 결과 안내가 지연될 수 있습니다.</li>
+          <li>신청 과정과 결과 안내에는 별도의 비용이 없습니다.</li>
+        </ul>
+        <div class="dialog-notice">
+          <strong>중요한 결정에는 전문가의 도움을 받으세요</strong>
+          <p>사주 결과는 참고로만 활용하고, 건강·법률·재산·투자 문제는 관련 전문가와 상의해 주세요.</p>
+        </div>
+        <button class="button button-primary" type="button" data-dialog-close>확인했습니다</button>
+      </div>
+    </dialog>
+  </body>
+</html>
