@@ -170,7 +170,7 @@
             <div class="section-intro">
               <p class="section-kicker">한지붕 생활 프로그램</p>
               <h2 id="services-title">원하시는 서비스를 선택해 주세요</h2>
-              <p>세대의 마음과 일상을 잇는 두 가지 프로그램을 이용하실 수 있습니다.</p>
+              <p>세대의 마음과 일상을 잇는 세 가지 프로그램을 이용하실 수 있습니다.</p>
             </div>
 
             <div class="service-grid">
@@ -244,27 +244,41 @@
                 </div>
               </article>
 
-              <article class="service-card service-card-coming">
-                <div class="service-visual service-visual-placeholder placeholder-green" aria-hidden="true">
-                  <span class="placeholder-ring ring-one"></span>
-                  <span class="placeholder-ring ring-two"></span>
-                  <span class="visual-icon visual-icon-large">
-                    <svg><use href="#icon-sun"></use></svg>
+              <article class="service-card service-card-available service-card-meeting">
+                <div class="service-visual service-visual-photo">
+                  <picture>
+                    <img
+                      src="./assets/meeting-hero.jpg"
+                      alt="카페에서 차를 마시며 편안하게 대화하는 50대 이상 한국인 남녀"
+                      width="1760"
+                      height="887"
+                      loading="lazy"
+                    />
+                  </picture>
+                  <span class="visual-icon" aria-hidden="true">
+                    <svg><use href="#icon-heart"></use></svg>
                   </span>
                 </div>
                 <div class="service-card-body">
                   <div class="service-card-topline">
                     <span class="service-number">서비스 03</span>
-                    <span class="status status-coming">출시 준비 중</span>
+                    <span class="status status-available">
+                      <span aria-hidden="true"></span> 지금 이용 가능
+                    </span>
                   </div>
-                  <h3>새로운 서비스</h3>
+                  <h3>50+ 인연마당</h3>
                   <p class="service-description">
-                    더 따뜻한 일상을 위한 새로운 서비스를 준비하고 있습니다. 조금만 기다려 주세요.
+                    만 50세 이상 솔로인 분들이 카카오 오픈채팅에서 편안하게 대화하고 교류하는 무료 커뮤니티입니다.
                   </p>
-                  <div class="coming-space" aria-hidden="true"></div>
-                  <button class="service-button service-button-disabled" type="button" disabled>
-                    출시 준비 중
-                  </button>
+                  <ul class="service-facts" aria-label="50+ 인연마당 주요 안내">
+                    <li><svg aria-hidden="true"><use href="#icon-check"></use></svg>만 50세 이상</li>
+                    <li><svg aria-hidden="true"><use href="#icon-check"></use></svg>가입비·소개비 없음</li>
+                    <li><svg aria-hidden="true"><use href="#icon-check"></use></svg>운영진 확인 입장</li>
+                  </ul>
+                  <a class="service-button service-button-primary" href="./meeting.html">
+                    50+ 인연마당 알아보기
+                    <svg aria-hidden="true"><use href="#icon-arrow"></use></svg>
+                  </a>
                 </div>
               </article>
             </div>

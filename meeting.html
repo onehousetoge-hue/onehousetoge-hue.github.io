@@ -1,0 +1,703 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="한지붕 50+ 인연마당은 만 50세 이상 현재 솔로인 분들이 카카오 오픈채팅에서 편안하게 대화하고 교류하는 무료 커뮤니티입니다."
+    />
+    <meta name="theme-color" content="#fbf6ed" />
+    <title>한지붕 50+ 인연마당 | 무료 교류 커뮤니티</title>
+    <link rel="stylesheet" href="./fortune.css" />
+    <link rel="stylesheet" href="./meeting.css" />
+    <script src="./meeting-config.js" defer></script>
+    <script src="./meeting.js" defer></script>
+  </head>
+  <body class="meeting-page">
+    <a class="skip-link" href="#main-content">본문으로 바로가기</a>
+
+    <svg class="icon-sprite" aria-hidden="true">
+      <symbol id="meeting-icon-leaf" viewBox="0 0 24 24">
+        <path d="M20 4c-6.5.1-11.2 2.2-13.8 6.2-1.7 2.6-1.4 5.4.7 7.2 2.1 1.8 5 1.6 7.1-.2C17.1 14.7 19 10.3 20 4Z" />
+        <path d="M4 20c2.7-4.2 6.4-7.4 11-9.7" />
+      </symbol>
+      <symbol id="meeting-icon-check" viewBox="0 0 24 24">
+        <path d="m5 12.5 4.2 4.2L19 7" />
+      </symbol>
+      <symbol id="meeting-icon-users" viewBox="0 0 24 24">
+        <path d="M9.5 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM3 21v-2a6.5 6.5 0 0 1 13 0v2" />
+        <path d="M16.5 5.5a3 3 0 0 1 0 5.5M18 14.5a5 5 0 0 1 3 4.5v2" />
+      </symbol>
+      <symbol id="meeting-icon-shield" viewBox="0 0 24 24">
+        <path d="M12 3 20 6v5.4c0 4.7-3.1 8.1-8 9.6-4.9-1.5-8-4.9-8-9.6V6l8-3Z" />
+        <path d="m8.5 12 2.2 2.2 4.8-5" />
+      </symbol>
+      <symbol id="meeting-icon-message" viewBox="0 0 24 24">
+        <path d="M5 5.5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H9l-5 3v-13a2 2 0 0 1 2-2Z" />
+        <path d="M8 10h8M8 13.5h5" />
+      </symbol>
+      <symbol id="meeting-icon-heart" viewBox="0 0 24 24">
+        <path d="M20.8 5.7a5.5 5.5 0 0 0-7.8 0L12 6.8l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 22l8.8-8.5a5.5 5.5 0 0 0 0-7.8Z" />
+      </symbol>
+      <symbol id="meeting-icon-arrow" viewBox="0 0 24 24">
+        <path d="M5 12h14M14 7l5 5-5 5" />
+      </symbol>
+      <symbol id="meeting-icon-lock" viewBox="0 0 24 24">
+        <rect x="4" y="10" width="16" height="11" rx="2.5" />
+        <path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3" />
+      </symbol>
+      <symbol id="meeting-icon-map" viewBox="0 0 24 24">
+        <path d="M12 21s7-5.1 7-12a7 7 0 1 0-14 0c0 6.9 7 12 7 12Z" />
+        <circle cx="12" cy="9" r="2.4" />
+      </symbol>
+      <symbol id="meeting-icon-coffee" viewBox="0 0 24 24">
+        <path d="M4 8h13v5a6 6 0 0 1-6 6H10a6 6 0 0 1-6-6V8Z" />
+        <path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17M7 3.5c0 1.3 1 1.3 1 2.6M11 3.5c0 1.3 1 1.3 1 2.6" />
+      </symbol>
+      <symbol id="meeting-icon-alert" viewBox="0 0 24 24">
+        <path d="M12 3 2.8 20h18.4L12 3Z" />
+        <path d="M12 9v5M12 17.5h.01" />
+      </symbol>
+      <symbol id="meeting-icon-chevron" viewBox="0 0 24 24">
+        <path d="m7 9.5 5 5 5-5" />
+      </symbol>
+    </svg>
+
+    <header class="site-header" data-site-header>
+      <div class="container header-inner">
+        <a class="brand" href="./index.html" aria-label="한지붕 전체 서비스로 돌아가기">
+          <span class="brand-mark" aria-hidden="true">
+            <svg><use href="#meeting-icon-leaf"></use></svg>
+          </span>
+          <span class="brand-copy">
+            <strong>50+ 인연마당</strong>
+            <small>편안한 대화로 시작하는 무료 커뮤니티</small>
+          </span>
+        </a>
+        <nav class="header-nav" aria-label="주요 메뉴">
+          <a class="back-to-services" href="./index.html"><span aria-hidden="true">←</span> 전체 서비스</a>
+          <a href="#how">이용 방법</a>
+          <a href="#safety">안전 약속</a>
+          <a href="#faq">자주 묻는 질문</a>
+          <a class="button button-small" href="#apply" data-scroll-to-form>무료 입장 신청</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <section class="hero meeting-hero" id="top" aria-labelledby="hero-title">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <p class="nonprofit-pill">
+              <svg aria-hidden="true"><use href="#meeting-icon-shield"></use></svg>
+              한지붕은 영리를 목적으로 하지 않는 <strong>비영리 목적 단체</strong>입니다
+            </p>
+            <p class="eyebrow"><span></span> 한지붕 50+ 인연마당</p>
+            <h1 id="hero-title">
+              <span>50대 이상, 지금 솔로이신가요?</span>
+              좋은 사람들과<br />
+              <em>편안한 대화부터 시작해 보세요</em>
+            </h1>
+            <p class="hero-description">
+              나이가 들었다고 새로운 인연을 만날 기회까지 포기할 필요는 없습니다.<br class="desktop-break" />
+              친구로 시작해도 좋고, 함께 차 한잔할 좋은 짝을 만나도 좋습니다.<br class="desktop-break" />
+              운영진의 기본 확인을 마친 분들과 카카오 오픈채팅에서 천천히 인사해 보세요.
+            </p>
+            <div class="hero-actions">
+              <a class="button button-primary button-large" href="#apply" data-scroll-to-form>
+                무료 입장 신청하기
+                <svg aria-hidden="true"><use href="#meeting-icon-arrow"></use></svg>
+              </a>
+              <p class="reassurance" aria-label="서비스 핵심 안내">
+                <span><svg aria-hidden="true"><use href="#meeting-icon-check"></use></svg>가입비 0원</span>
+                <span><svg aria-hidden="true"><use href="#meeting-icon-check"></use></svg>소개비 0원</span>
+                <span><svg aria-hidden="true"><use href="#meeting-icon-check"></use></svg>운영진 확인 후 입장</span>
+              </p>
+              <p class="self-note">
+                개별 결혼 상대를 알선하거나 만남의 성사를 보장하는 서비스가 아닌, 건전한 대화와 교류를 위한 무료 커뮤니티입니다.
+              </p>
+            </div>
+          </div>
+
+          <div class="hero-visual meeting-hero-visual">
+            <figure class="meeting-hero-photo">
+              <img
+                src="./assets/meeting-hero.jpg"
+                alt="카페에서 차를 마시며 편안하게 대화하는 50대 이상 한국인 남녀"
+                width="1760"
+                height="887"
+                fetchpriority="high"
+              />
+              <figcaption>
+                <span><svg aria-hidden="true"><use href="#meeting-icon-users"></use></svg></span>
+                <p><small>아무나 바로 입장하지 않습니다</small><strong>운영진 기본 확인 후 입장</strong></p>
+              </figcaption>
+            </figure>
+            <span class="visual-decoration decoration-one" aria-hidden="true"></span>
+            <span class="visual-decoration decoration-two" aria-hidden="true"></span>
+          </div>
+        </div>
+
+        <div class="container promise-strip" aria-label="서비스 이용 안내">
+          <div><strong>만 50세 이상</strong><span>현재 솔로인 분을 위한 공간</span></div>
+          <div><strong>무료 참여</strong><span>가입비와 소개비 없음</span></div>
+          <div><strong>카카오 오픈채팅</strong><span>별명으로 편안하게 대화</span></div>
+        </div>
+      </section>
+
+      <section class="section empathy-section" aria-labelledby="empathy-title">
+        <div class="container empathy-grid">
+          <div class="section-heading align-left">
+            <p class="eyebrow"><span></span> 새로운 관계를 시작할 용기</p>
+            <h2 id="empathy-title">시니어도 당당하게<br />만나도 됩니다</h2>
+            <div class="empathy-copy">
+              <p>
+                누군가와 이야기를 나누고 싶은 마음,<br />
+                함께 산책하고 싶은 마음,<br />
+                좋은 사람을 만나 설레고 싶은 마음에는 나이 제한이 없습니다.
+              </p>
+              <p>
+                처음부터 연인이 아니어도 괜찮습니다.<br />
+                가벼운 인사로 시작해 취미를 나누는 친구가 되고,<br />
+                서로의 일상을 응원하는 좋은 짝이 될 수도 있습니다.
+              </p>
+              <p class="empathy-emphasis">좋은 관계는 편안한 대화에서 시작됩니다.</p>
+            </div>
+          </div>
+
+          <aside class="recommend-card meeting-recommend" aria-labelledby="recommend-title">
+            <p>이런 분께 권해드립니다</p>
+            <h3 id="recommend-title">새로운 인연을 기다리고 계신가요?</h3>
+            <ul>
+              <li><svg aria-hidden="true"><use href="#meeting-icon-check"></use></svg>만 50세 이상이며 현재 솔로이신 분</li>
+              <li><svg aria-hidden="true"><use href="#meeting-icon-check"></use></svg>새로운 사람을 만날 기회가 적었던 분</li>
+              <li><svg aria-hidden="true"><use href="#meeting-icon-check"></use></svg>부담스러운 소개팅보다 대화부터 시작하고 싶은 분</li>
+              <li><svg aria-hidden="true"><use href="#meeting-icon-check"></use></svg>산책·여행·공연·맛집을 함께할 친구를 찾는 분</li>
+              <li><svg aria-hidden="true"><use href="#meeting-icon-check"></use></svg>같은 지역의 좋은 사람들과 교류하고 싶은 분</li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section community-section" aria-labelledby="community-title">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow centered"><span></span> 커뮤니티 소개 <span></span></p>
+            <h2 id="community-title">한지붕 50+ 인연마당은<br />이런 곳입니다</h2>
+            <p>서두르지 않고 서로를 존중하며, 일상과 취미를 편안하게 나누는 공간입니다.</p>
+          </div>
+          <div class="community-grid">
+            <article class="community-card">
+              <span><svg aria-hidden="true"><use href="#meeting-icon-users"></use></svg></span>
+              <h3>50+ 솔로만 참여</h3>
+              <p>만 50세 이상이며 현재 배우자나 교제 중인 상대가 없는 분을 위한 공간입니다.</p>
+            </article>
+            <article class="community-card">
+              <span><svg aria-hidden="true"><use href="#meeting-icon-message"></use></svg></span>
+              <h3>카카오 오픈채팅</h3>
+              <p>별도의 앱을 설치하지 않고 평소 사용하는 카카오톡에서 참여할 수 있습니다.</p>
+            </article>
+            <article class="community-card">
+              <span><svg aria-hidden="true"><use href="#meeting-icon-lock"></use></svg></span>
+              <h3>채팅방에서는 별명</h3>
+              <p>이름은 운영진 확인에만 사용하며 참여자에게는 공개하지 않습니다.</p>
+            </article>
+            <article class="community-card">
+              <span><svg aria-hidden="true"><use href="#meeting-icon-coffee"></use></svg></span>
+              <h3>대화부터 천천히</h3>
+              <p>연애나 일대일 만남을 강요하지 않고 일상과 취미 이야기부터 시작합니다.</p>
+            </article>
+            <article class="community-card">
+              <span><svg aria-hidden="true"><use href="#meeting-icon-heart"></use></svg></span>
+              <h3>가입비·소개비 없음</h3>
+              <p>채팅방 참여는 무료입니다. 개인적인 만남의 식사비와 교통비는 각자 부담할 수 있습니다.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section verification-section" aria-labelledby="verification-title">
+        <div class="container verification-panel">
+          <div class="verification-copy">
+            <p class="eyebrow"><span></span> 운영진 확인 입장제</p>
+            <h2 id="verification-title">아무나 링크만 눌러<br />들어오는 방이 아닙니다</h2>
+            <p>
+              신청서를 작성하고 운영진의 기본 확인을 마친 분에게만 오픈채팅방 입장 방법을 안내합니다.
+              신청 정보와 이용 자격, 안전수칙 동의를 한 번 더 확인합니다.
+            </p>
+            <div class="verification-badge">
+              <svg aria-hidden="true"><use href="#meeting-icon-shield"></use></svg>
+              <span><strong>운영진의 기본 확인을 마친 분만 입장</strong><small>신청만으로 자동 입장되지 않습니다.</small></span>
+            </div>
+          </div>
+          <div class="verification-list">
+            <ol>
+              <li><span>1</span><p><strong>만 50세 이상 확인</strong><small>신청서에 입력한 만 나이를 확인합니다.</small></p></li>
+              <li><span>2</span><p><strong>현재 솔로 자기확인</strong><small>배우자나 교제 상대가 없음을 신청자가 확인합니다.</small></p></li>
+              <li><span>3</span><p><strong>신청 정보 확인</strong><small>이름·나이·거주 지역이 정상적으로 입력됐는지 확인합니다.</small></p></li>
+              <li><span>4</span><p><strong>이용규칙 동의</strong><small>금전 요구·영업·괴롭힘 금지 규칙에 동의해야 합니다.</small></p></li>
+            </ol>
+            <p class="verification-disclaimer">
+              운영진 확인은 신청 정보와 이용규칙 동의를 확인하는 기본 절차입니다. 공공기관 신원조회, 범죄경력 조회 또는 혼인관계 조회를 진행한다는 의미는 아닙니다.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section steps-section" id="how" aria-labelledby="steps-title">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow centered"><span></span> 이용 방법 <span></span></p>
+            <h2 id="steps-title">신청부터 입장까지<br />어렵지 않습니다</h2>
+            <p>약 1분이면 신청할 수 있습니다. 확인을 마친 분에게만 입장 안내를 드립니다.</p>
+          </div>
+          <ol class="meeting-steps">
+            <li><span>1</span><h3>무료 입장을 신청합니다</h3><p>이름과 만 나이, 시·군·구까지의 거주 지역을 입력합니다.</p></li>
+            <li><span>2</span><h3>카카오로 확인합니다</h3><p>신청 완료 후 운영진과 간단한 1:1 카카오 확인을 진행합니다.</p></li>
+            <li><span>3</span><h3>초대 안내를 받습니다</h3><p>확인이 끝나면 운영진이 오픈채팅방 입장 방법과 별명을 알려드립니다.</p></li>
+            <li><span>4</span><h3>편안하게 인사합니다</h3><p>안내받은 별명으로 입장한 뒤 가벼운 자기소개부터 시작합니다.</p></li>
+          </ol>
+          <div class="section-action">
+            <a class="button button-primary button-large" href="#apply" data-scroll-to-form>
+              무료 입장 신청하기
+              <svg aria-hidden="true"><use href="#meeting-icon-arrow"></use></svg>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section topics-section" aria-labelledby="topics-title">
+        <div class="container topics-layout">
+          <div class="section-heading align-left">
+            <p class="eyebrow"><span></span> 편안한 대화 주제</p>
+            <h2 id="topics-title">무엇부터 말해야 할지<br />걱정하지 않아도 됩니다</h2>
+            <p>운영진이 부담 없이 참여할 수 있는 가벼운 대화 주제를 안내합니다.</p>
+          </div>
+          <div class="topic-board">
+            <article><small>오늘의 질문</small><strong>요즘 즐겨 걷는 산책 코스가 있으신가요?</strong></article>
+            <div class="topic-chips" aria-label="채팅방 대화 주제 예시">
+              <span>산책</span><span>등산</span><span>여행</span><span>영화</span><span>음악</span>
+              <span>사진</span><span>요리</span><span>맛집</span><span>반려동물</span><span>동네 이야기</span>
+            </div>
+            <p>
+              낮 시간 카페·공원 산책·전시와 공연 관람 같은 소규모 모임도 참여자들이 자율적으로 제안할 수 있습니다.
+              오프라인 모임 참여를 강요하지 않습니다.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section safety-section" id="safety" aria-labelledby="safety-title">
+        <div class="container">
+          <div class="section-heading align-left safety-heading">
+            <p class="eyebrow"><span></span> 안전한 만남을 위한 약속</p>
+            <h2 id="safety-title">좋은 인연보다 먼저<br />안전을 지킵니다</h2>
+            <p>모든 참여자는 아래 규칙에 동의해야 하며, 위반자는 이용이 제한되거나 퇴장될 수 있습니다.</p>
+          </div>
+          <div class="meeting-safety-grid">
+            <article><span><svg aria-hidden="true"><use href="#meeting-icon-alert"></use></svg></span><h3>금전 요구·영업 금지</h3><p>돈을 빌려달라는 요청, 투자·코인·보험·대출·상품·후원 권유를 금지합니다.</p></article>
+            <article><span><svg aria-hidden="true"><use href="#meeting-icon-message"></use></svg></span><h3>불쾌한 연락 금지</h3><p>성적인 발언, 외모 평가, 모욕·욕설, 거절 후 반복적인 개인 메시지를 금지합니다.</p></article>
+            <article><span><svg aria-hidden="true"><use href="#meeting-icon-lock"></use></svg></span><h3>개인정보 공개 금지</h3><p>집 주소, 계좌번호, 주민등록번호와 신분증 사진을 채팅방에 올리지 않습니다.</p></article>
+            <article><span><svg aria-hidden="true"><use href="#meeting-icon-shield"></use></svg></span><h3>만남 강요 금지</h3><p>상대방이 거절했는데도 계속 연락하거나 만남을 요구해서는 안 됩니다.</p></article>
+            <article><span><svg aria-hidden="true"><use href="#meeting-icon-users"></use></svg></span><h3>신고 확인·퇴장 조치</h3><p>불편한 일을 운영진에게 알릴 수 있으며 규칙 위반자는 퇴장될 수 있습니다.</p></article>
+            <article><span><svg aria-hidden="true"><use href="#meeting-icon-map"></use></svg></span><h3>첫 만남은 공개 장소</h3><p>낮 시간의 공개된 장소를 이용하고 가족이나 지인에게 장소와 시간을 알리세요.</p></article>
+          </div>
+
+          <div class="danger-panel" id="safety-report">
+            <div class="danger-heading">
+              <span><svg aria-hidden="true"><use href="#meeting-icon-alert"></use></svg></span>
+              <div><small>안전 안내</small><h3>이런 요청을 받으면 대화를 중단하세요</h3></div>
+            </div>
+            <ul>
+              <li>돈을 빌려달라거나 투자·코인·보험을 권유하는 경우</li>
+              <li>계좌번호·신분증·상세 주소를 요구하는 경우</li>
+              <li>집이나 차량에서 처음 만나자고 요구하는 경우</li>
+              <li>가족에게 비밀로 해달라고 요구하는 경우</li>
+              <li>지나치게 빠른 결혼이나 동거를 제안하는 경우</li>
+            </ul>
+            <p><strong>채팅방에서는 운영진에게 신고하고 해당 이용자를 차단해 주세요.</strong> 긴급한 위험이나 범죄 피해가 우려될 때는 즉시 112에 도움을 요청하세요.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section nonprofit-section" aria-labelledby="nonprofit-title">
+        <div class="container nonprofit-panel meeting-nonprofit-panel">
+          <div class="nonprofit-intro">
+            <p class="eyebrow"><span></span> 비영리 운영 원칙</p>
+            <h2 id="nonprofit-title">한지붕은 영리를<br />목적으로 하지 않습니다</h2>
+            <p>
+              한지붕은 중장년과 시니어가 건강한 사회적 관계를 넓히고 지역사회 안에서 서로 교류할 수 있도록 돕는 공익활동을 지향합니다.
+            </p>
+          </div>
+          <div class="nonprofit-points meeting-trust-points">
+            <div><svg aria-hidden="true"><use href="#meeting-icon-check"></use></svg><span><strong>가입비 없음</strong><small>채팅방 참여 비용을 받지 않습니다.</small></span></div>
+            <div><svg aria-hidden="true"><use href="#meeting-icon-check"></use></svg><span><strong>소개비 없음</strong><small>개별 만남의 성사 비용을 받지 않습니다.</small></span></div>
+            <div><svg aria-hidden="true"><use href="#meeting-icon-check"></use></svg><span><strong>상품 판매 없음</strong><small>투자·보험·대출·상품 영업을 금지합니다.</small></span></div>
+            <div><svg aria-hidden="true"><use href="#meeting-icon-check"></use></svg><span><strong>운영진 관리</strong><small>기본 확인과 안전수칙에 따라 운영합니다.</small></span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section faq-section" id="faq" aria-labelledby="faq-title">
+        <div class="container faq-grid">
+          <div class="section-heading align-left faq-heading">
+            <p class="eyebrow"><span></span> 자주 묻는 질문</p>
+            <h2 id="faq-title">신청 전에<br />궁금한 점을 확인하세요</h2>
+            <p>한지붕 인연마당은 특정 상대를 소개하거나 만남과 결혼을 보장하는 서비스가 아닙니다.</p>
+          </div>
+          <div class="accordion">
+            <details>
+              <summary><span>채팅방 이용은 정말 무료인가요?</span><svg aria-hidden="true"><use href="#meeting-icon-chevron"></use></svg></summary>
+              <p>네. 가입비와 소개비 없이 무료로 참여할 수 있습니다. 개인적인 오프라인 만남의 식사비와 교통비 등은 각자 부담할 수 있습니다.</p>
+            </details>
+            <details>
+              <summary><span>아무나 들어올 수 있나요?</span><svg aria-hidden="true"><use href="#meeting-icon-chevron"></use></svg></summary>
+              <p>아닙니다. 신청서 작성, 운영진과의 카카오 1:1 기본 확인, 이용규칙 동의를 마친 분에게만 입장 방법을 안내합니다.</p>
+            </details>
+            <details>
+              <summary><span>신원 확인은 어디까지 하나요?</span><svg aria-hidden="true"><use href="#meeting-icon-chevron"></use></svg></summary>
+              <p>신청 정보, 연락 가능 여부, 만 50세 이상·솔로 자기확인과 규칙 동의를 확인합니다. 공공기관 신원조회나 범죄경력·혼인관계 조회를 진행하는 것은 아닙니다.</p>
+            </details>
+            <details>
+              <summary><span>제 이름이 다른 사람에게 공개되나요?</span><svg aria-hidden="true"><use href="#meeting-icon-chevron"></use></svg></summary>
+              <p>아닙니다. 이름은 운영진 확인용이며 채팅방에서는 운영진이 안내한 별명을 사용합니다.</p>
+            </details>
+            <details>
+              <summary><span>정확한 주소를 적어야 하나요?</span><svg aria-hidden="true"><use href="#meeting-icon-chevron"></use></svg></summary>
+              <p>아닙니다. 거주지는 시·군·구까지만 입력하며 동·번지와 같은 상세 주소는 받지 않습니다.</p>
+            </details>
+            <details>
+              <summary><span>반드시 연애 상대를 찾아야 하나요?</span><svg aria-hidden="true"><use href="#meeting-icon-chevron"></use></svg></summary>
+              <p>아닙니다. 편안하게 대화하고 취미를 나눌 친구를 만나는 것부터 시작해도 됩니다.</p>
+            </details>
+            <details>
+              <summary><span>원하지 않는 개인 메시지를 받으면 어떻게 하나요?</span><svg aria-hidden="true"><use href="#meeting-icon-chevron"></use></svg></summary>
+              <p>분명하게 거절한 뒤 해당 이용자를 차단하고 운영진에게 알려 주세요. 반복적인 연락과 만남 강요는 채팅방 규칙 위반입니다.</p>
+            </details>
+            <details>
+              <summary><span>결혼이나 만남이 보장되나요?</span><svg aria-hidden="true"><use href="#meeting-icon-chevron"></use></svg></summary>
+              <p>아닙니다. 한지붕은 참여자들이 건전하게 대화할 수 있는 공간을 운영하며 특정 상대와의 만남이나 관계 성립을 보장하지 않습니다.</p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <section class="bottom-cta meeting-bottom-cta" aria-label="한지붕 인연마당 신청 안내">
+        <div class="container">
+          <p class="eyebrow centered light"><span></span> 편안한 대화의 시작 <span></span></p>
+          <h2>좋은 사람을 만나는 데<br />늦은 나이는 없습니다</h2>
+          <p>서두르지 않고 서로를 존중하며, 가벼운 인사부터 시작해 보세요.</p>
+          <a class="button button-cream button-large" href="#apply" data-scroll-to-form>
+            한지붕 인연마당 무료 신청하기
+            <svg aria-hidden="true"><use href="#meeting-icon-arrow"></use></svg>
+          </a>
+          <small>만 50세 이상 · 현재 솔로 · 운영진 확인 후 입장</small>
+        </div>
+      </section>
+
+      <section class="section application-section" id="apply" aria-labelledby="application-title" data-form-section>
+        <div class="container application-container">
+          <div class="section-heading application-heading">
+            <p class="eyebrow centered light"><span></span> 무료 입장 신청 <span></span></p>
+            <h2 id="application-title">한지붕 50+ 인연마당</h2>
+            <p>한 단계씩 천천히 입력해 주세요. 이름은 채팅방 참여자에게 공개되지 않습니다.</p>
+          </div>
+
+          <form id="meeting-form" novalidate>
+            <div class="form-honeypot" aria-hidden="true">
+              <label for="website">웹사이트</label>
+              <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
+            </div>
+
+            <div class="form-panel" data-form-shell>
+              <ol class="progress meeting-progress" aria-label="신청 진행 단계">
+                <li class="is-current" data-progress-step="1" aria-current="step"><span>1</span><strong>기본 정보</strong></li>
+                <li data-progress-step="2"><span>2</span><strong>확인 및 동의</strong></li>
+              </ol>
+
+              <div class="form-card">
+                <section class="form-step is-active" data-form-step="1" aria-labelledby="step-one-title">
+                  <div class="step-heading">
+                    <span>1단계</span>
+                    <h3 id="step-one-title">신청하시는 분을 알려주세요</h3>
+                    <p>이름, 만 나이와 시·군·구까지만 입력합니다. 상세 주소는 받지 않습니다.</p>
+                  </div>
+
+                  <div class="field" data-field="applicantName">
+                    <label for="applicant-name">성함 <span class="required">필수</span></label>
+                    <p class="field-help" id="applicant-name-help">운영진 확인용이며 채팅방 참여자에게 공개하지 않습니다.</p>
+                    <input
+                      id="applicant-name"
+                      name="applicantName"
+                      type="text"
+                      placeholder="예: 김영희"
+                      autocomplete="name"
+                      maxlength="20"
+                      required
+                      aria-describedby="applicant-name-help applicant-name-error"
+                    />
+                    <p class="field-error" id="applicant-name-error" role="alert"></p>
+                  </div>
+
+                  <div class="field" data-field="age">
+                    <label for="age">현재 만 나이 <span class="required">필수</span></label>
+                    <p class="field-help" id="age-help">현재 한지붕 인연마당은 만 50세 이상을 대상으로 합니다.</p>
+                    <input
+                      id="age"
+                      name="age"
+                      type="number"
+                      inputmode="numeric"
+                      placeholder="예: 62"
+                      min="50"
+                      max="120"
+                      required
+                      aria-describedby="age-help age-error"
+                    />
+                    <p class="field-error" id="age-error" role="alert"></p>
+                  </div>
+
+                  <fieldset class="field region-field" data-field="region" aria-describedby="region-help region-error">
+                    <legend>거주 지역 <span class="required">필수</span></legend>
+                    <p class="field-help" id="region-help">시·도와 시·군·구를 선택해 주세요. 상세 주소는 입력하지 않습니다.</p>
+                    <div class="region-grid">
+                      <label for="province"><span>시·도</span>
+                        <select id="province" name="province" required aria-describedby="region-help region-error">
+                          <option value="">시·도 선택</option>
+                        </select>
+                      </label>
+                      <label for="district"><span>시·군·구</span>
+                        <select id="district" name="district" required disabled aria-describedby="region-help region-error">
+                          <option value="">시·군·구 선택</option>
+                        </select>
+                      </label>
+                    </div>
+                    <p class="field-error" id="region-error" role="alert"></p>
+                  </fieldset>
+
+                  <div class="privacy-minimum-note">
+                    <svg aria-hidden="true"><use href="#meeting-icon-lock"></use></svg>
+                    <p><strong>필요한 정보만 받습니다.</strong><span>주민등록번호, 신분증 사진, 상세 주소와 계좌번호는 입력하지 마세요.</span></p>
+                  </div>
+
+                  <div class="form-actions single-action">
+                    <button class="button button-primary button-large" type="button" data-next-step="2">
+                      신청 내용 확인하기
+                      <svg aria-hidden="true"><use href="#meeting-icon-arrow"></use></svg>
+                    </button>
+                  </div>
+                </section>
+
+                <section class="form-step" data-form-step="2" aria-labelledby="step-two-title" hidden>
+                  <div class="step-heading">
+                    <span>2단계</span>
+                    <h3 id="step-two-title">입력 내용과 필수 동의를 확인해 주세요</h3>
+                    <p>네 가지 필수 항목에 모두 동의해야 신청할 수 있습니다.</p>
+                  </div>
+
+                  <section class="application-summary" aria-labelledby="summary-title" aria-live="polite">
+                    <div class="summary-heading">
+                      <span class="summary-icon"><svg aria-hidden="true"><use href="#meeting-icon-message"></use></svg></span>
+                      <div><small>신청 내용</small><h4 id="summary-title">운영진 기본 확인을 위한 정보입니다</h4></div>
+                    </div>
+                    <dl>
+                      <div><dt>성함</dt><dd data-summary-name>—</dd></div>
+                      <div><dt>만 나이</dt><dd><span data-summary-age>—</span></dd></div>
+                      <div><dt>거주 지역</dt><dd data-summary-region>—</dd></div>
+                      <div><dt>입장 절차</dt><dd>신청 후 카카오 1:1 기본 확인</dd></div>
+                    </dl>
+                    <button type="button" data-prev-step="1">입력 내용 수정하기</button>
+                  </section>
+
+                  <fieldset class="field agreement-field" data-field="agreements" aria-describedby="agreements-help agreements-error">
+                    <legend>신청 전 확인 <span class="agreement-count">필수 4개</span></legend>
+                    <p class="field-help" id="agreements-help">광고 수신 동의는 받지 않습니다. 아래 항목은 모두 서비스 운영에 필요한 확인입니다.</p>
+
+                    <div class="agreement-card agreement-card-all">
+                      <label>
+                        <input type="checkbox" name="allConsent" aria-describedby="agreements-help agreements-error" />
+                        <span><strong>필수 항목 전체 동의</strong><small>아래 네 가지 필수 항목을 모두 선택합니다.</small></span>
+                      </label>
+                    </div>
+
+                    <div class="agreement-card">
+                      <label>
+                        <input type="checkbox" name="ageConsent" required aria-describedby="agreements-error" />
+                        <span><strong><em class="required-chip">필수</em> 저는 현재 만 50세 이상입니다</strong><small>입력한 만 나이가 사실과 다르지 않음을 확인합니다.</small></span>
+                      </label>
+                    </div>
+
+                    <div class="agreement-card">
+                      <label>
+                        <input type="checkbox" name="singleConsent" required aria-describedby="agreements-error" />
+                        <span><strong><em class="required-chip">필수</em> 저는 현재 배우자 또는 교제 상대가 없는 솔로입니다</strong><small>현재 참여 자격에 해당함을 직접 확인합니다.</small></span>
+                      </label>
+                    </div>
+
+                    <div class="agreement-card">
+                      <label>
+                        <input type="checkbox" name="rulesConsent" required aria-describedby="agreements-error" />
+                        <span><strong><em class="required-chip">필수</em> 채팅방 이용규칙과 안전수칙에 동의합니다</strong><small>금전 요구·영업·괴롭힘·만남 강요 금지 규칙</small></span>
+                      </label>
+                      <button type="button" data-dialog-open="meeting-rules-dialog" aria-haspopup="dialog">내용 보기</button>
+                    </div>
+
+                    <div class="agreement-card">
+                      <label>
+                        <input type="checkbox" name="privacyConsent" required aria-describedby="agreements-error" />
+                        <span><strong><em class="required-chip">필수</em> 개인정보 수집·이용에 동의합니다</strong><small>입장 확인과 참여자 관리에 필요한 최소 정보</small></span>
+                      </label>
+                      <button type="button" data-dialog-open="meeting-privacy-dialog" aria-haspopup="dialog">내용 보기</button>
+                    </div>
+                    <p class="field-error" id="agreements-error" role="alert"></p>
+                  </fieldset>
+
+                  <div class="final-reminder meeting-final-reminder">
+                    <svg aria-hidden="true"><use href="#meeting-icon-shield"></use></svg>
+                    <p><strong>신청만으로 자동 입장되지 않습니다.</strong><span>운영진과 카카오 1:1 기본 확인을 마친 분에게 입장 방법을 안내합니다.</span></p>
+                  </div>
+
+                  <div class="submission-error" data-submission-error role="alert" tabindex="-1" hidden>
+                    <strong>신청 정보를 저장하지 못했습니다.</strong>
+                    <span data-submission-error-text>잠시 후 다시 시도해 주세요.</span>
+                  </div>
+
+                  <p class="submit-state" data-submit-state role="status" aria-live="polite" hidden>
+                    신청 내용을 안전하게 접수하고 있습니다. 잠시만 기다려 주세요.
+                  </p>
+
+                  <div class="form-actions">
+                    <button class="button button-secondary" type="button" data-prev-step="1">이전으로</button>
+                    <button class="button button-primary" type="submit" data-submit-button disabled>
+                      무료 입장 신청 완료하기
+                      <svg aria-hidden="true"><use href="#meeting-icon-arrow"></use></svg>
+                    </button>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </form>
+
+          <section class="success-card meeting-success-card" data-success-card hidden aria-labelledby="success-title" tabindex="-1">
+            <span class="success-icon"><svg aria-hidden="true"><use href="#meeting-icon-check"></use></svg></span>
+            <p class="eyebrow centered"><span></span> 신청 접수 완료 <span></span></p>
+            <h2 id="success-title">신청이 접수되었습니다</h2>
+            <p class="success-welcome">
+              <strong><span data-success-name>—</span> 님, 신청해 주셔서 감사합니다.</strong>
+              <span>아래 버튼을 눌러 운영진과 카카오 1:1 기본 확인을 계속해 주세요.</span>
+            </p>
+            <div class="success-summary">
+              <div><span>거주 지역</span><strong data-success-region>—</strong></div>
+              <div><span>다음 단계</span><strong>운영진 카카오 확인</strong></div>
+            </div>
+            <div class="success-notice">
+              <svg aria-hidden="true"><use href="#meeting-icon-message"></use></svg>
+              <p><strong>카카오 확인을 마친 분에게만 입장 방법을 안내합니다.</strong><span>신청 이름·만 나이·시군구를 보내 주세요.</span></p>
+            </div>
+            <div class="success-actions meeting-success-actions">
+              <a class="button kakao-button" href="#" data-kakao-link target="_blank" rel="noopener">
+                카카오로 입장 확인 계속하기
+                <svg aria-hidden="true"><use href="#meeting-icon-arrow"></use></svg>
+              </a>
+              <button class="button button-text" type="button" data-restart>처음 화면으로 돌아가기</button>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <a class="brand footer-brand" href="./index.html" aria-label="한지붕 전체 서비스로 돌아가기">
+          <span class="brand-mark" aria-hidden="true"><svg><use href="#meeting-icon-leaf"></use></svg></span>
+          <span class="brand-copy"><strong>한지붕</strong><small>마음을 잇는 따뜻한 서비스</small></span>
+        </a>
+        <div class="footer-copy">
+          <p>편안한 대화로 시작하는 무료 커뮤니티, 한지붕 50+ 인연마당.</p>
+          <p>특정 상대의 소개나 만남·결혼의 성립을 보장하지 않습니다.</p>
+          <p>비영리단체 고유번호 120-82-82898 · 단체장 김현수 · 소재지 서울특별시 노원구 동일로 195길 14-5 401호</p>
+        </div>
+        <div class="footer-links">
+          <button type="button" data-dialog-open="meeting-privacy-dialog">개인정보 안내</button>
+          <button type="button" data-dialog-open="meeting-rules-dialog">이용규칙·안전수칙</button>
+        </div>
+      </div>
+      <div class="container footer-bottom">
+        <span>© 2026 한지붕 50+ 인연마당</span>
+        <span>비영리 무료 교류 커뮤니티</span>
+      </div>
+    </footer>
+
+    <div class="mobile-cta" data-mobile-cta>
+      <a class="button button-primary" href="#apply" data-scroll-to-form>무료 입장 신청</a>
+    </div>
+
+    <iframe
+      name="hanjibung-meeting-submit"
+      data-sheet-submit-target
+      title="한지붕 50+ 인연마당 신청 결과 처리"
+      hidden
+    ></iframe>
+
+    <div class="toast" role="status" aria-live="polite" data-toast hidden></div>
+
+    <dialog class="info-dialog" id="meeting-privacy-dialog" aria-labelledby="meeting-privacy-title">
+      <div class="dialog-content">
+        <button class="dialog-close" type="button" data-dialog-close aria-label="개인정보 안내 닫기">×</button>
+        <p class="eyebrow"><span></span> 필수 동의 안내</p>
+        <h2 id="meeting-privacy-title">개인정보 수집·이용 안내</h2>
+        <p>한지붕은 50+ 인연마당 신청 접수, 참여 자격 확인, 입장 안내, 참여자 관리와 신고·분쟁 대응을 위해 필요한 최소 정보만 수집합니다.</p>
+        <h3>수집하는 정보</h3>
+        <ul>
+          <li>성함, 만 나이</li>
+          <li>시·도 및 시·군·구</li>
+          <li>만 50세 이상·현재 솔로·이용규칙 동의 여부</li>
+        </ul>
+        <h3>이용 목적과 보유 기간</h3>
+        <ul>
+          <li>이용 목적: 참여 자격 확인, 카카오 입장 확인, 참여자 관리, 신고·분쟁 대응</li>
+          <li>입장하지 않은 신청자: 신청 결과 안내 후 30일 이내 파기</li>
+          <li>입장한 참여자: 참여 기간 동안 보관하며 퇴장 후 30일 이내 파기</li>
+          <li>관계 법령에 따라 보관이 필요한 경우에는 해당 법령에서 정한 기간 동안 보관</li>
+        </ul>
+        <div class="dialog-notice">
+          <strong>상세 주소와 신분증은 받지 않습니다</strong>
+          <p>주민등록번호, 계좌번호, 신분증 사진, 동·번지와 같은 상세 주소를 신청서나 채팅방에 올리지 마세요.</p>
+        </div>
+        <p>동의를 거부할 수 있으나 필수 정보 수집에 동의하지 않으면 입장 신청이 어렵습니다. 열람·정정·삭제 요청은 운영진 카카오 1:1 확인 채널을 통해 접수할 수 있습니다.</p>
+      </div>
+    </dialog>
+
+    <dialog class="info-dialog" id="meeting-rules-dialog" aria-labelledby="meeting-rules-title">
+      <div class="dialog-content">
+        <button class="dialog-close" type="button" data-dialog-close aria-label="이용규칙과 안전수칙 닫기">×</button>
+        <p class="eyebrow"><span></span> 필수 동의 안내</p>
+        <h2 id="meeting-rules-title">이용규칙과 안전수칙</h2>
+        <p>서로를 존중하며 편안하게 교류할 수 있도록 모든 참여자는 아래 규칙을 지켜야 합니다.</p>
+        <h3>참여 자격과 운영</h3>
+        <ul>
+          <li>만 50세 이상이며 현재 배우자 또는 교제 상대가 없는 분만 참여할 수 있습니다.</li>
+          <li>운영진이 안내한 별명과 입장 방법을 사용하며 초대 링크를 다른 사람에게 전달하지 않습니다.</li>
+          <li>운영진 기본 확인은 신원·인품·안전을 보증하는 공공기관 조회가 아닙니다.</li>
+        </ul>
+        <h3>금지 행위</h3>
+        <ul>
+          <li>금전 요구, 투자·코인·보험·대출·상품·후원 권유와 영업</li>
+          <li>성적인 발언, 외모 평가, 모욕·욕설과 반복적인 개인 메시지</li>
+          <li>상세 주소·계좌번호·주민등록번호·신분증 사진 요구 또는 공개</li>
+          <li>거절 후 연락 지속, 일대일 만남·결혼·동거 강요</li>
+        </ul>
+        <h3>안전과 조치</h3>
+        <ul>
+          <li>오프라인 모임 참여는 자율이며 처음에는 낮 시간의 공개된 장소를 이용합니다.</li>
+          <li>규칙 위반 신고가 확인되면 경고, 이용 제한 또는 퇴장 조치될 수 있습니다.</li>
+          <li>긴급한 위험이나 범죄 피해가 우려되는 경우 즉시 112에 신고합니다.</li>
+        </ul>
+        <div class="dialog-notice">
+          <strong>만남이나 결혼을 보장하지 않습니다</strong>
+          <p>한지붕은 건전한 대화 공간을 운영하며 특정 상대를 알선하거나 관계 성립을 보장하지 않습니다.</p>
+        </div>
+      </div>
+    </dialog>
+  </body>
+</html>
