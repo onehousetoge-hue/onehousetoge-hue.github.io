@@ -29,6 +29,8 @@
     const submitState = form.querySelector("[data-submit-state]");
     const submissionError = form.querySelector("[data-submission-error]");
     const submissionErrorText = form.querySelector("[data-submission-error-text]");
+    const connectionRibbon = document.querySelector("[data-connection-ribbon]");
+    const connectionRibbonText = document.querySelector("[data-connection-ribbon-text]");
     const toast = document.querySelector("[data-toast]");
     const formSection = form.closest("[data-form-section]") || form.closest("section") || form;
     const mobileCta = document.querySelector("[data-mobile-cta]");
@@ -43,6 +45,14 @@
     let footerInView = false;
 
     form.noValidate = true;
+
+    if (connectionRibbon) {
+      connectionRibbon.hidden = Boolean(appsScriptEndpoint);
+      if (!appsScriptEndpoint && connectionRibbonText) {
+        connectionRibbonText.textContent =
+          "현재 무료 입장 신청 접수 시스템을 연결 중입니다. 서비스 안내와 신청 항목을 미리 확인하실 수 있습니다.";
+      }
+    }
 
     const districtsByProvince = Object.freeze({
       "서울특별시": Object.freeze([
