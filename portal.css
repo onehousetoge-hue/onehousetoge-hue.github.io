@@ -614,8 +614,81 @@ h3 {
 }
 
 .service-card-fortune .placeholder-gold {
-  background: linear-gradient(145deg, #f4e9e5, #e7d1d2);
+  background:
+    radial-gradient(circle at 50% 52%, rgba(255, 253, 248, 0.82) 0 27%, transparent 28%),
+    linear-gradient(145deg, #f4e9e5, #e7d1d2);
   color: #7b4054;
+}
+
+.fortune-visual::before {
+  position: absolute;
+  width: 145px;
+  height: 145px;
+  border: 1px solid rgba(123, 64, 84, 0.17);
+  border-radius: 31px;
+  content: "";
+  transform: rotate(45deg);
+}
+
+.fortune-visual .ring-one {
+  width: 225px;
+  height: 225px;
+  border-style: dashed;
+  opacity: 0.12;
+}
+
+.fortune-visual .ring-two {
+  width: 170px;
+  height: 170px;
+  opacity: 0.12;
+}
+
+.fortune-chart {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  color: #6d374b;
+  text-align: center;
+}
+
+.fortune-chart > strong {
+  margin-bottom: 7px;
+  font-family: "Batang", "Noto Serif KR", serif;
+  font-size: 30px;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  line-height: 1;
+  text-indent: 0.18em;
+}
+
+.fortune-pillars {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+}
+
+.fortune-pillars b {
+  display: grid;
+  width: 31px;
+  height: 36px;
+  place-items: center;
+  border: 1px solid rgba(123, 64, 84, 0.34);
+  border-radius: 9px;
+  background: rgba(255, 253, 248, 0.88);
+  font-family: "Batang", "Noto Serif KR", serif;
+  font-size: 17px;
+  line-height: 1;
+  box-shadow: 0 5px 12px rgba(91, 48, 64, 0.07);
+}
+
+.fortune-chart small {
+  margin-top: 7px;
+  color: #765665;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
 .service-card-fortune .status-available {
