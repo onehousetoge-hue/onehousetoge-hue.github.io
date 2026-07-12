@@ -1,6 +1,7 @@
 const ACK_TYPE = "HANJIBUNG_MEETING_RESULT";
 const DEFAULT_SPREADSHEET_ID = "1sxDS8D_SzMUfIcFFbJ-KMQciwu1CBW7oiAhoMd-_zJs";
-const DEFAULT_SHEET_NAME = "50플러스_인연마당_신청";
+const DEFAULT_SHEET_ID = 1936939386;
+const DEFAULT_SHEET_NAME = "50대 연인";
 const DEFAULT_CONSENT_VERSION = "2026-07-12-meeting-v1";
 const SERVICE_TYPE = "50plus-meeting";
 
@@ -231,11 +232,13 @@ function invalid_(message) {
 function getSheet_() {
   const properties = PropertiesService.getScriptProperties();
   const spreadsheetId = properties.getProperty("SPREADSHEET_ID") || DEFAULT_SPREADSHEET_ID;
+  const sheetId = Number(properties.getProperty("SHEET_ID") || DEFAULT_SHEET_ID);
   const sheetName = properties.getProperty("SHEET_NAME") || DEFAULT_SHEET_NAME;
 
   const spreadsheet = SpreadsheetApp.openById(spreadsheetId);
-  let sheet = spreadsheet.getSheetByName(sheetName);
-  if (!sheet) sheet = spreadsheet.insertSheet(sheetName);
+  let sheet = Number.isFinite(sheetId) ? spreadsheet.getSheetById(sheetId) : null;
+  if (!sheet) sheet = spreadsheet.getSheetByName(sheetName);
+  if (!sheet) throw new Error("Target meeting sheet was not found");
 
   const currentHeaders = sheet.getRange(1, 1, 1, HEADERS.length).getDisplayValues()[0];
   const isBlank = currentHeaders.every(function (value) { return !value; });
