@@ -3140,6 +3140,43 @@ h3 {
   font-size: 16px;
 }
 
+.reassurance,
+.free-note,
+.hero-visual figcaption,
+.message-bubble p,
+.dialog-content p,
+.dialog-content li {
+  font-size: 18px;
+}
+
+.connection-ribbon.is-warning,
+.demo-ribbon.is-warning {
+  border: 1px solid #d8c096;
+  background: #f7eedc;
+  color: #5e4626;
+  box-shadow: none;
+}
+
+.demo-ribbon.is-warning strong,
+.demo-ribbon.is-warning svg {
+  color: #5e4626;
+  stroke: currentColor;
+}
+
+form.is-preview-locked input,
+form.is-preview-locked select,
+form.is-preview-locked textarea {
+  border-color: #d6d0c6;
+  background: #f2efe9;
+  color: #625f59;
+  cursor: not-allowed;
+}
+
+form.is-preview-locked button:disabled {
+  opacity: 0.72;
+  cursor: not-allowed;
+}
+
 @media (max-width: 560px) {
   .choice-card,
   .time-card {

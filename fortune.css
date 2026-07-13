@@ -2924,7 +2924,8 @@ textarea[aria-invalid="true"] {
   }
 
   .site-header {
-    position: relative;
+    position: sticky;
+    top: 0;
   }
 
   .header-inner {
@@ -3550,6 +3551,34 @@ textarea[aria-invalid="true"] {
 .optional-chip,
 .agreement-count {
   font-size: 16px;
+}
+
+.nonprofit-pill,
+.reassurance,
+.self-note,
+.kakao-delivery small,
+.steps-list p,
+.accordion details p,
+.gate-choice small {
+  font-size: 18px;
+}
+
+.progress li strong {
+  font-size: 16px;
+}
+
+form.is-preview-locked input,
+form.is-preview-locked select,
+form.is-preview-locked textarea {
+  border-color: #d6cbc7;
+  background: #f3efed;
+  color: #625b5f;
+  cursor: not-allowed;
+}
+
+form.is-preview-locked button:disabled {
+  opacity: 0.72;
+  cursor: not-allowed;
 }
 
 @media (max-width: 560px) {

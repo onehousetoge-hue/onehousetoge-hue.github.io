@@ -55,6 +55,27 @@
       }
     }
 
+    function applyPreviewLock() {
+      const locked = !appsScriptEndpoint;
+      form.setAttribute("aria-disabled", String(locked));
+      form.classList.toggle("is-preview-locked", locked);
+      form.dataset.formStatus = locked ? "preview-locked" : "active";
+
+      if (!locked) return;
+
+      document.querySelectorAll("[data-scroll-to-form]").forEach((link) => {
+        const textNode = Array.from(link.childNodes).find(
+          (node) => node.nodeType === Node.TEXT_NODE && node.textContent.trim(),
+        );
+        if (textNode) textNode.textContent = "입장 신청 화면 미리보기 ";
+      });
+
+      form.querySelectorAll("input, select, textarea, button").forEach((control) => {
+        if (control.matches("[data-dialog-open], [data-dialog-close]")) return;
+        control.disabled = true;
+      });
+    }
+
     const districtsByProvince = Object.freeze({
       "서울특별시": Object.freeze([
         "종로구", "중구", "용산구", "성동구", "광진구", "동대문구", "중랑구", "성북구",
@@ -752,6 +773,7 @@
     syncConsentState();
     updateSummary();
     goToStep(1, { focus: false, scroll: false });
+    applyPreviewLock();
 
     if ("IntersectionObserver" in window && mobileCta) {
       const observer = new IntersectionObserver((entries) => {

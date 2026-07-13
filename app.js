@@ -75,6 +75,29 @@
     }
   }
 
+  function applyPreviewLock() {
+    if (!form) return;
+
+    const locked = !isSubmissionConfigured;
+    form.setAttribute("aria-disabled", String(locked));
+    form.classList.toggle("is-preview-locked", locked);
+    form.dataset.formStatus = locked ? "preview-locked" : "active";
+
+    if (!locked) return;
+
+    document.querySelectorAll("[data-scroll-to-form]").forEach((link) => {
+      const textNode = Array.from(link.childNodes).find(
+        (node) => node.nodeType === Node.TEXT_NODE && node.textContent.trim(),
+      );
+      if (textNode) textNode.textContent = "신청 화면 미리보기 ";
+    });
+
+    form.querySelectorAll("input, select, textarea, button").forEach((control) => {
+      if (control.matches("[data-dialog-open], [data-dialog-close]")) return;
+      control.disabled = true;
+    });
+  }
+
   function createRequestId() {
     const bytes = new Uint8Array(16);
     if (window.crypto?.getRandomValues) {
@@ -721,4 +744,5 @@
   syncChoiceStates();
   updateMobileCtaVisibility();
   goToStep(1, { focus: false });
+  applyPreviewLock();
 })();

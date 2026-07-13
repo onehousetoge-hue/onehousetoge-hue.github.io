@@ -248,7 +248,7 @@
 
 .community-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 17px;
 }
 
@@ -1018,10 +1018,11 @@
   }
 
   .meeting-hero-photo figcaption {
-    right: 12px;
-    bottom: 12px;
-    left: 12px;
-    padding: 12px;
+    position: static;
+    margin: 0;
+    padding: 16px;
+    border-radius: 0;
+    box-shadow: none;
   }
 
   .meeting-hero-photo figcaption > span {
@@ -1030,7 +1031,7 @@
   }
 
   .meeting-hero-photo figcaption strong {
-    font-size: 15px;
+    font-size: 18px;
   }
 
   .community-grid,
@@ -1123,6 +1124,16 @@
 .meeting-page .required-chip,
 .meeting-page .agreement-count {
   font-size: 16px;
+}
+
+.meeting-page .self-note,
+.meeting-page .community-card p,
+.meeting-page .meeting-steps p,
+.meeting-page .meeting-safety-grid p,
+.meeting-page .region-grid label > span,
+.meeting-page .privacy-minimum-note span,
+.meeting-page .meeting-hero-photo figcaption small {
+  font-size: 18px;
 }
 
 @media (max-width: 560px) {
