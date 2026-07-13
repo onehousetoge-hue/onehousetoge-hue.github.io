@@ -40,6 +40,7 @@
     let currentStep = 1;
     let isSubmitting = false;
     let pendingSubmission = null;
+    let retryRequestId = null;
     let toastTimer = null;
     let formInView = false;
     let footerInView = false;
@@ -284,6 +285,9 @@
       let nameMessage = "";
       if (!applicantName) nameMessage = "성함을 입력해 주세요. 예: 김영희";
       else if (nameLength < 2 || nameLength > 30) nameMessage = "성함은 2자 이상 30자 이하로 입력해 주세요.";
+      else if (!/^[가-힣A-Za-z][가-힣A-Za-z·' \-]{1,29}$/.test(applicantName)) {
+        nameMessage = "성함은 한글 또는 영문으로 시작하고, 가운데점·작은따옴표·하이픈·공백만 함께 사용할 수 있습니다.";
+      }
       setNamedFieldError("applicantName", nameMessage, "name");
       if (nameMessage) firstInvalid = form.elements.applicantName;
 
@@ -508,7 +512,8 @@
         return;
       }
 
-      const requestId = createRequestId();
+      const requestId = retryRequestId || createRequestId();
+      retryRequestId = requestId;
       const payload = {
         requestId,
         ...application,
@@ -604,6 +609,7 @@
       setSubmitting(false);
 
       if (data.ok === true) {
+        retryRequestId = null;
         hideSubmissionError();
         showSuccess(completed.application);
         return;
@@ -622,6 +628,7 @@
         pendingSubmission = null;
       }
       setSubmitting(false);
+      retryRequestId = null;
       form.reset();
       populateProvinces();
       populateDistricts("", "");

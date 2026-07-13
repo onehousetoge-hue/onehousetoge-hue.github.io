@@ -1383,3 +1383,69 @@ h3 {
   margin-top: -12px;
   font-size: 13px;
 }
+
+/* QA: senior readability, contrast, and keyboard focus */
+:root {
+  --accent: #76501c;
+}
+
+:focus-visible {
+  outline: 4px solid #1f4938;
+  outline-offset: 4px;
+}
+
+.brand-copy small,
+.fortune-chart small,
+.activity-number,
+.principles-title span {
+  font-size: 16px;
+}
+
+.nonprofit-pill,
+.eyebrow,
+.section-kicker,
+.mission-card span,
+.mission-card footer,
+.activity-card p,
+.operating-principles ul,
+.section-intro .section-kicker,
+.section-intro p,
+.service-number,
+.status,
+.service-facts,
+.trust-panel p,
+.footer-inner p,
+.footer-inner strong,
+.portal-footer .footer-legal {
+  font-size: 18px;
+}
+
+.mission-card footer {
+  color: rgba(255, 255, 255, 0.86);
+}
+
+@media (max-width: 680px) {
+  .service-card-topline {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .status {
+    min-height: 38px;
+  }
+
+  .portal-footer .footer-legal {
+    margin-top: 4px;
+    line-height: 1.65;
+  }
+}
+
+.status-preparing {
+  color: #624317;
+  background: #f2e7d2;
+}
+
+.status-preparing span {
+  background: #8a5d20;
+  box-shadow: 0 0 0 5px rgba(138, 93, 32, 0.12);
+}

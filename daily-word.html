@@ -453,6 +453,8 @@
                     placeholder="예: 김영희"
                     autocomplete="name"
                     maxlength="20"
+                    required
+                    aria-required="true"
                     aria-describedby="name-help name-error"
                   />
                   <p class="field-error" id="name-error" role="alert"></p>
@@ -469,6 +471,8 @@
                     placeholder="010-1234-5678"
                     autocomplete="tel"
                     maxlength="13"
+                    required
+                    aria-required="true"
                     aria-describedby="phone-help phone-error"
                   />
                   <p class="field-example">숫자만 입력해도 자동으로 하이픈이 표시됩니다.</p>
@@ -662,7 +666,7 @@
         <div class="footer-copy">
           <p>말씀을 가까이, 마음에는 평안을.</p>
           <p>비영리 단체 한지붕이 운영하며, 실제 카카오톡 알림 메시지 발송은 운영 준비 후 시작됩니다.</p>
-          <p>비영리단체 고유번호 120-82-82898 · 대표자 김현수 · 소재지 서울특별시 노원구 동일로 195길 14-5</p>
+          <p>비영리단체 고유번호 120-82-82898 · 단체장 김현수 · 소재지 서울특별시 노원구 동일로 195길 14-5 401호</p>
         </div>
         <div class="footer-links">
           <button type="button" data-dialog-open="privacy-dialog">개인정보 안내</button>
@@ -671,7 +675,7 @@
       </div>
       <div class="container footer-bottom">
         <span>© 2026 하루한말씀</span>
-        <span>개발용 프로토타입</span>
+        <span>신청 접수 준비 중</span>
       </div>
     </footer>
 
@@ -699,7 +703,7 @@
           <li>수집 항목: 성함, 휴대전화 번호, 연령대, 수신 설정, 신청자 유형</li>
           <li>이용 목적: 말씀 메시지 신청 관리와 발송 준비</li>
           <li>광고성 정보 수신은 선택이며, 미동의해도 말씀 신청 가능</li>
-          <li>수신 중지 또는 동의 철회 요청 시 운영 정책에 따라 파기</li>
+          <li>현재 접수 연결 전에는 입력 정보가 저장되지 않으며, 접수 시작 전 정확한 보유기간과 파기 절차를 안내합니다.</li>
         </ul>
         <button class="button button-primary" type="button" data-dialog-close>확인했습니다</button>
       </div>

@@ -1097,3 +1097,48 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* QA: senior readability and keyboard focus */
+.meeting-page :focus-visible {
+  outline: 4px solid #174d3a;
+  outline-offset: 4px;
+}
+
+.meeting-page .field-help,
+.meeting-page .field-error,
+.meeting-page .progress strong,
+.meeting-page .agreement-card small,
+.meeting-page .final-reminder,
+.meeting-page .connection-ribbon,
+.meeting-page .footer-copy p,
+.meeting-page .footer-links button,
+.meeting-page .footer-bottom,
+.meeting-page .info-dialog p,
+.meeting-page .info-dialog li {
+  font-size: 18px;
+}
+
+.meeting-page .brand-copy small,
+.meeting-page .step-heading > span,
+.meeting-page .required-chip,
+.meeting-page .agreement-count {
+  font-size: 16px;
+}
+
+@media (max-width: 560px) {
+  .meeting-page .nonprofit-pill {
+    justify-content: center;
+    width: fit-content;
+    max-width: 100%;
+    font-size: 18px;
+    text-align: center;
+  }
+
+  .meeting-page .choice-card {
+    font-size: 18px;
+  }
+
+  .meeting-page .button {
+    font-size: 20px;
+  }
+}

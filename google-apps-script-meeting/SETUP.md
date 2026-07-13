@@ -40,6 +40,7 @@ Apps Script 편집기 상단의 함수 목록에서 `setup`을 선택해 한 번
 ```js
 window.HANJIBUNG_MEETING_CONFIG = Object.freeze({
   appsScriptEndpoint: "https://script.google.com/macros/s/배포ID/exec",
+  kakaoChatUrl: "https://pf.kakao.com/_채널ID/chat",
   submitTimeoutMs: 20000,
   consentVersion: "2026-07-12-meeting-v1",
 });
@@ -60,6 +61,7 @@ window.HANJIBUNG_MEETING_CONFIG = Object.freeze({
 - 이름, 만 50~120세 나이, 시·도와 시·군·구를 정상 입력하면 한 행이 추가되는지 확인합니다.
 - `만 50세 이상`, `현재 솔로`, `이용규칙·안전수칙`, `개인정보 수집·이용` 네 항목 중 하나라도 동의하지 않으면 저장되지 않는지 확인합니다.
 - 같은 신청 버튼을 빠르게 두 번 눌러도 같은 `request_id`가 한 행만 저장되는지 확인합니다.
+- 신청 완료 뒤 `카카오로 입장 확인 계속하기`가 실제 운영 채널의 1:1 채팅으로 연결되는지 확인합니다.
 - 새 행의 `처리상태`가 `신청접수`이고 `카카오확인일시`, `입장안내일시`, `파기예정일`은 비어 있는지 확인합니다.
 - `meeting-config.js`와 Apps Script 속성의 `consentVersion` 값이 동일한지 확인합니다.
 - 봇 방지용 `website` 필드가 채워진 요청은 성공처럼 응답하지만 개인정보가 저장되지 않는지 확인합니다.

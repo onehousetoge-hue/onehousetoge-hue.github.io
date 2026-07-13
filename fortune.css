@@ -3524,3 +3524,40 @@ textarea[aria-invalid="true"] {
     animation-iteration-count: 1 !important;
   }
 }
+
+/* QA: senior readability and keyboard focus */
+:focus-visible {
+  outline: 4px solid #6b2947;
+  outline-offset: 4px;
+}
+
+.field-help,
+.field-example,
+.field-error,
+.progress strong,
+.agreement-card small,
+.final-reminder,
+.connection-ribbon,
+.footer-copy p,
+.footer-links button,
+.footer-bottom {
+  font-size: 18px;
+}
+
+.brand-copy small,
+.step-heading > span,
+.required-chip,
+.optional-chip,
+.agreement-count {
+  font-size: 16px;
+}
+
+@media (max-width: 560px) {
+  .choice-card {
+    font-size: 18px;
+  }
+
+  .button {
+    font-size: 20px;
+  }
+}

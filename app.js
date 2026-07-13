@@ -259,10 +259,10 @@
 
   function updateMobileCtaVisibility() {
     if (!mobileCta) return;
-    mobileCta.classList.toggle(
-      "is-hidden",
-      formInView || footerInView || !successCard.hidden,
-    );
+    const hide = formInView || footerInView || !successCard.hidden;
+    mobileCta.classList.toggle("is-hidden", hide);
+    mobileCta.setAttribute("aria-hidden", String(hide));
+    if ("inert" in mobileCta) mobileCta.inert = hide;
   }
 
   function setFieldError(fieldName, message) {

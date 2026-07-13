@@ -1115,7 +1115,10 @@
   function updateMobileCtaVisibility() {
     if (!mobileCta) return;
     const successVisible = Boolean(successCard && !successCard.hidden);
-    mobileCta.classList.toggle("is-hidden", formInView || footerInView || successVisible);
+    const hide = formInView || footerInView || successVisible;
+    mobileCta.classList.toggle("is-hidden", hide);
+    mobileCta.setAttribute("aria-hidden", String(hide));
+    if ("inert" in mobileCta) mobileCta.inert = hide;
   }
 
   startButton?.addEventListener("click", () => {
