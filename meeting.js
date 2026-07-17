@@ -19,6 +19,12 @@
     const consentVersion = normalizeLine(runtimeConfig.consentVersion) || "2026-07-12-meeting-v1";
     const ACK_TYPE = "HANJIBUNG_MEETING_RESULT";
 
+    if (appsScriptEndpoint) {
+      document.querySelectorAll("[data-application-only]").forEach(function revealApplication(element) {
+        element.hidden = false;
+      });
+    }
+
     const provinceSelect = form.elements.province;
     const districtSelect = form.elements.district;
     const successCard = document.querySelector("[data-success-card]");

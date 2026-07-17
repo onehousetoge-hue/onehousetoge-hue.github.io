@@ -1484,3 +1484,189 @@ h3 {
   background: #8a5d20;
   box-shadow: 0 0 0 5px rgba(138, 93, 32, 0.12);
 }
+
+/* Google for Nonprofits readiness: clear navigation and verification */
+.portal-nav {
+  position: sticky;
+  top: 0;
+  z-index: 9;
+  border-bottom: 1px solid rgba(149, 136, 113, 0.22);
+  background: rgba(255, 253, 248, 0.96);
+  backdrop-filter: blur(14px);
+}
+
+.portal-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 58px;
+  gap: 34px;
+}
+
+.portal-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 46px;
+  color: var(--primary-dark);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.portal-nav a:hover {
+  color: #8a5d20;
+}
+
+.verification-section {
+  margin: 28px 0 72px;
+  padding: 58px;
+  border: 1px solid #d8dfd6;
+  border-radius: 34px;
+  background: linear-gradient(145deg, #f3f7f1 0%, #fffdf8 72%);
+  box-shadow: 0 18px 50px rgba(54, 82, 65, 0.08);
+  scroll-margin-top: 82px;
+}
+
+.verification-heading {
+  max-width: 760px;
+  margin-bottom: 30px;
+}
+
+.verification-heading h2 {
+  margin: 8px 0 14px;
+  color: var(--primary-dark);
+  font-size: clamp(31px, 4vw, 44px);
+  line-height: 1.25;
+  letter-spacing: -0.045em;
+}
+
+.verification-heading > p:last-child {
+  margin: 0;
+  color: #40544a;
+  font-size: 19px;
+  line-height: 1.75;
+}
+
+.verification-grid {
+  display: grid;
+  grid-template-columns: 1.45fr 1fr 1fr;
+  gap: 18px;
+}
+
+.verification-card {
+  min-width: 0;
+  padding: 28px;
+  border: 1px solid #dce4db;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.verification-card-featured {
+  display: flex;
+  gap: 18px;
+  border-color: #b9cebf;
+  background: #fff;
+}
+
+.verification-icon {
+  display: grid;
+  width: 54px;
+  height: 54px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 18px;
+  background: var(--primary-dark);
+  color: #fff;
+}
+
+.verification-icon svg {
+  width: 30px;
+  height: 30px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.9;
+}
+
+.verification-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #76501c;
+  font-size: 16px;
+  font-weight: 850;
+}
+
+.verification-card h3 {
+  margin: 0 0 10px;
+  color: var(--primary-dark);
+  font-size: 23px;
+  line-height: 1.35;
+}
+
+.verification-card p,
+.verification-card small {
+  color: #4b5c53;
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+.verification-card p {
+  margin: 0;
+}
+
+.verification-card small {
+  display: block;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+@media (max-width: 1020px) {
+  .verification-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .verification-card-featured {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 680px) {
+  .nonprofit-badge-full {
+    max-width: 190px;
+    line-height: 1.35;
+    text-align: center;
+  }
+
+  .portal-nav-inner {
+    justify-content: flex-start;
+    min-height: 56px;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .portal-nav-inner::-webkit-scrollbar {
+    display: none;
+  }
+
+  .portal-nav a {
+    min-width: max-content;
+    padding: 0 12px;
+    font-size: 16px;
+  }
+
+  .verification-section {
+    margin-bottom: 48px;
+    padding: 30px 20px;
+    border-radius: 26px;
+  }
+
+  .verification-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .verification-card-featured {
+    grid-column: auto;
+    flex-direction: column;
+  }
+}

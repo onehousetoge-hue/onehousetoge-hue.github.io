@@ -12,6 +12,11 @@
     /^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(
       appsScriptEndpoint,
     );
+  if (isSubmissionConfigured) {
+    document.querySelectorAll("[data-application-only]").forEach((element) => {
+      element.hidden = false;
+    });
+  }
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const scrollBehavior = reducedMotion ? "auto" : "smooth";
   const currentYear = new Date().getFullYear();

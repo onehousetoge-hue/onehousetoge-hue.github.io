@@ -9,6 +9,12 @@
   const isSubmissionConfigured =
     /^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(appsScriptEndpoint);
 
+  if (isSubmissionConfigured) {
+    document.querySelectorAll("[data-application-only]").forEach((element) => {
+      element.hidden = false;
+    });
+  }
+
   const messageExamples = {
     morning: {
       label: "오늘의 말씀",
