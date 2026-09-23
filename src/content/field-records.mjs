@@ -7,6 +7,9 @@ export const digitalLearning = Object.freeze({
   location: "서울 노원구",
   publishedAt: "2026-09-23",
   eventDate: null,
+  // Owner confirmed 2026-08-12 specifically for the digital education activity.
+  // Do not reuse this date for the other three related-experience photos.
+  educationEventDate: "2026-08-12",
   photos: [
     {
       file: "digital-learning.jpg",

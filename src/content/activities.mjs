@@ -1,4 +1,20 @@
+import { digitalLearning } from "./field-records.mjs";
+
 export const activities = Object.freeze([
+  {
+    slug: "senior-digital-education",
+    title: "노원구에서 어르신과 함께한 디지털 교육",
+    description: "2026년 8월 12일, 서울 노원구에서 어르신과 청년이 휴대전화 화면을 함께 살펴본 한지붕의 교육 활동입니다.",
+    category: "세대교류 활동",
+    eventDate: digitalLearning.educationEventDate,
+    eventLabel: "2026년 8월 12일",
+    publishedAt: "2026-09-23",
+    publishedLabel: "2026년 9월 23일",
+    updatedAt: "2026-09-23",
+    author: "한지붕 운영팀",
+    href: "/activities/senior-digital-education/",
+    photo: true,
+  },
   {
     slug: "nonprofit-registration",
     title: "한지붕이 비영리단체 고유번호를 발급받았습니다",

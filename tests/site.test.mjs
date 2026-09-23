@@ -10,6 +10,7 @@ const routeFile = (route) => route === "/" ? path.join(root, "index.html") : pat
 
 test("all required public routes exist", async () => {
   for (const route of routes) assert.equal((await stat(routeFile(route))).isFile(), true, route);
+  assert.equal((await stat(routeFile("/activities/senior-digital-education/"))).isFile(), true);
 });
 
 test("homepage states the mission and prioritizes resources", async () => {
@@ -107,5 +108,57 @@ test("all public pages omit the removed brand name in copy and image description
   for (const page of manifest.pages) {
     const file = page.route === "/404.html" ? path.join(root, "404.html") : routeFile(page.route);
     assert.doesNotMatch(await readFile(file, "utf8"), removedBrand, page.route);
+  }
+});
+
+test("digital education records the confirmed event date separately from publication", async () => {
+  const { activities } = await import("../src/content/activities.mjs");
+  const education = activities.find((item) => item.slug === "senior-digital-education");
+  assert.equal(education.eventDate, "2026-08-12");
+  assert.equal(education.publishedAt, "2026-09-23");
+  const html = await readFile(routeFile(education.href), "utf8");
+  assert.match(html, /활동일 <time datetime="2026-08-12">2026년 8월 12일/);
+  assert.match(html, /게시일 <time datetime="2026-09-23">2026년 9월 23일/);
+  assert.match(html, /서울 노원구/);
+  assert.match(html, /공개 동의/);
+  assert.equal((html.match(/<img /g) || []).length, 2);
+  assert.doesNotMatch(html, /housing-presentation|community-booth|명 참여|만족도/);
+  const schema = JSON.parse(html.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);
+  assert.equal(schema.datePublished, "2026-09-23");
+  assert.equal(schema.temporalCoverage, "2026-08-12");
+  for (const route of ["/", "/activities/", "/activities/field-records/"]) {
+    const page = await readFile(routeFile(route), "utf8");
+    assert.ok(page.includes(`href="${education.href}"`));
+    assert.match(page, /2026년 8월 12일/);
+  }
+  assert.ok((await readFile(path.join(root, "sitemap.xml"), "utf8")).includes(education.href));
+});
+
+test("operating guidance states available channels and prior agreement rules", async () => {
+  for (const route of ["/programs/senior-home-consulting/", "/contact/", "/participate/"]) {
+    const html = await readFile(routeFile(route), "utf8");
+    assert.match(html, /전화·이메일 기초상담은 무료/);
+    assert.match(html, /주택 방문상담/);
+    assert.doesNotMatch(html, /방문상담의 제공 여부와 범위는 확정되어 있지|방문 가능 여부/);
+  }
+  for (const route of ["/programs/intergenerational-volunteer/", "/contact/", "/participate/"]) {
+    const html = await readFile(routeFile(route), "utf8");
+    assert.match(html, /합의하지 않은 비용/);
+    assert.match(html, /부담 주체/);
+    assert.doesNotMatch(html, /비용.{0,15}확정되어 있지|비용.{0,15}확정되지 않았|일정 미정|비용 미정/);
+  }
+});
+
+test("tracking remains off until an actual account and meaningful conversion flow are verified", async () => {
+  const html = await readFile(routeFile("/privacy/"), "utf8");
+  assert.match(html, /광고 전환 추적 태그를 사용하지 않습니다/);
+  assert.match(html, /버튼 클릭만으로 실제 통화나 문의 수신 여부를 확인하지 않으며/);
+  const manifest = JSON.parse(await readFile(path.join(root, "build-manifest.json"), "utf8"));
+  for (const page of manifest.pages) {
+    const file = page.route === "/404.html" ? path.join(root, "404.html") : routeFile(page.route);
+    const content = await readFile(file, "utf8");
+    assert.doesNotMatch(content, /googletagmanager\.com|google-analytics\.com|googleadservices\.com|gtag\(|dataLayer/);
+    const scripts = [...content.matchAll(/<script[^>]+src="([^"]+)"/g)].map((match) => match[1]);
+    assert.deepEqual(scripts, ["/assets/site.js"]);
   }
 });
