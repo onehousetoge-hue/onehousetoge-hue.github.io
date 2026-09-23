@@ -3,13 +3,13 @@
 export const digitalLearning = Object.freeze({
   href: "/activities/field-records/",
   title: "시니어와 지역사회, 함께한 현장 기록",
-  description: "한지붕의 시니어 디지털 교육과 같은 구성원이 참여한 지역교류·주거모델 현장 경험을 사진으로 전합니다.",
+  description: "한지붕 구성원들이 함께한 시니어 디지털 교육과 지역교류·주거모델 현장 경험을 사진으로 전합니다.",
   location: "서울 노원구",
   publishedAt: "2026-09-23",
   eventDate: null,
-  // Owner confirmed 2026-08-12 specifically for the digital education activity.
-  // Do not reuse this date for the other three related-experience photos.
-  educationEventDate: "2026-08-12",
+  // The owner's latest clarification supersedes the earlier event-date answer.
+  // No specific date or institution is attributed to an individual photo.
+  educationEventDate: null,
   photos: [
     {
       file: "digital-learning.jpg",

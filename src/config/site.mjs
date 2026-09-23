@@ -14,9 +14,9 @@ export const site = Object.freeze({
   emailHref: "mailto:onehousetoge@gmail.com",
   url: "https://hanjibung.kr",
   nonprofitDescription:
-    "한지붕은 어르신 주택 개선 무료상담, 세대교류 봉사 프로그램, 주거상생 실태조사를 수행하는 비영리단체입니다.",
+    "한지붕은 어르신 유휴공간·빈방 활용 무료상담과 세대교류 교육·봉사를 제공하는 비영리단체입니다. 주거상생 실태조사는 기획·준비 단계입니다.",
   footerDescription:
-    "한지붕은 수익사업을 하지 않는 비영리단체로, 공익 목적의 상담·교육·조사 활동을 수행합니다.",
+    "한지붕은 공익 목적의 무료상담·교육·봉사와 생활자료를 제공합니다. 주거상생 실태조사와 조사 기반 공익 보고서는 기획·준비 단계입니다.",
   updatedAt: "2026-09-23",
 });
 
@@ -34,28 +34,33 @@ export const programs = Object.freeze([
   {
     slug: "senior-home-consulting",
     order: "03",
-    title: "어르신 주택 개선 무료상담",
-    shortTitle: "무료 주택상담",
+    title: "어르신 유휴공간·빈방 활용 무료상담",
+    registeredTitle: "어르신 주택 개선 무료상담",
+    status: "전화·이메일 상담 운영",
+    shortTitle: "빈방 활용 무료상담",
     description:
-      "현재 거주 중인 주택과 남는 공간을 어떻게 안전하게 활용할 수 있을지 궁금한 어르신과 가족을 대상으로 생활환경, 가족 의견, 공간 이용기준과 준비사항을 함께 살펴봅니다.",
+      "한지붕 대표와 운영진이 빈방 활용을 검토할 때의 준비사항, 공간 정리·개선에 관한 일반 정보, 공동생활 기준과 청년 주거 공익정보를 전화·이메일로 안내합니다.",
     href: "/programs/senior-home-consulting/",
   },
   {
     slug: "intergenerational-volunteer",
     order: "01",
     title: "세대교류 봉사 프로그램",
+    status: "기관 요청에 따라 사전 협의",
     shortTitle: "세대교류 봉사",
     description:
-      "청년과 시니어가 서로의 생활방식을 이해할 수 있도록 공동생활 규칙, 갈등 예방, 주거문화와 일상생활을 주제로 교육·봉사 프로그램을 운영합니다.",
+      "시니어 스마트폰·AI 활용 교육, 세대교류, 한국 주거문화·공동생활 안내와 유휴공간 정리·활용 관련 정보 제공·봉사를 기관과 협의해 진행합니다. 상설 정규반은 아닙니다.",
     href: "/programs/intergenerational-volunteer/",
   },
   {
     slug: "housing-research",
     order: "02",
-    title: "주거상생 실태조사",
-    shortTitle: "주거상생 조사",
+    title: "주거상생 실태조사 및 공익자료 발간 준비",
+    registeredTitle: "주거상생 실태조사",
+    status: "기획·준비 단계",
+    shortTitle: "실태조사 준비",
     description:
-      "청년 주거와 고령층 유휴공간에 관한 현장의 의견을 수집하고, 결과를 체크리스트·가이드·보고서 등 공익정보로 정리하여 공개합니다.",
+      "청년 주거와 고령층 유휴공간에 관한 자료 조사와 조사 항목 설계를 준비하고 있습니다. 한지붕 명의의 정식 대규모 실태조사와 조사보고서는 완료되지 않았으며, 현재 공개한 생활 가이드는 자체 교육자료입니다.",
     href: "/programs/housing-research/",
   },
 ]);

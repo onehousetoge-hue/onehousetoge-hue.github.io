@@ -3,11 +3,11 @@ import { digitalLearning } from "./field-records.mjs";
 export const activities = Object.freeze([
   {
     slug: "senior-digital-education",
-    title: "노원구에서 어르신과 함께한 디지털 교육",
-    description: "2026년 8월 12일, 서울 노원구에서 어르신과 청년이 휴대전화 화면을 함께 살펴본 한지붕의 교육 활동입니다.",
-    category: "세대교류 활동",
+    title: "노원구에서 이어온 시니어 디지털·AI 교육 경험",
+    description: "한지붕 구성원들이 노원구에서 참여해 온 스마트폰·디지털 서비스 활용 교육의 내용과 현장 경험을 소개합니다. 교육 기획, 현장 진행과 보조 역할을 맡았습니다.",
+    category: "세대교류 교육 경험",
     eventDate: digitalLearning.educationEventDate,
-    eventLabel: "2026년 8월 12일",
+    eventLabel: null,
     publishedAt: "2026-09-23",
     publishedLabel: "2026년 9월 23일",
     updatedAt: "2026-09-23",

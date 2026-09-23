@@ -18,7 +18,9 @@ async function collect(directory) {
 
 await collect(target);
 const titles = new Map();
-const banned = ["하루 한 말씀", "무료 사주풀이", "50+ 인연마당", "성경", "묵상", "운세", "소개팅", "데이팅", "오픈채팅", "준비 중", "추후 안내", "임시", "샘플", "lorem ipsum", "TODO", "TBD", "example.com", "test@"];
+// A truthful program planning status is not an empty-page placeholder.
+// Specific research-state regression tests guard against inflated service claims.
+const banned = ["하루 한 말씀", "무료 사주풀이", "50+ 인연마당", "성경", "묵상", "운세", "소개팅", "데이팅", "오픈채팅", "추후 안내", "임시", "샘플", "lorem ipsum", "TODO", "TBD", "example.com", "test@"];
 let goodstackCount = 0;
 
 function resolveInternal(href) {

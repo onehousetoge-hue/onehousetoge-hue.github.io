@@ -13,10 +13,11 @@ test("all required public routes exist", async () => {
   assert.equal((await stat(routeFile("/activities/senior-digital-education/"))).isFile(), true);
 });
 
-test("homepage states the mission and prioritizes resources", async () => {
+test("homepage states the actual services and prioritizes free consulting", async () => {
   const html = await readFile(routeFile("/"), "utf8");
-  assert.match(html, /어르신 주택 개선 무료상담, 세대교류 봉사 프로그램, 주거상생 실태조사/);
-  assert.ok(html.indexOf("주거상생 자료 보기") < html.indexOf("어르신 주택 무료상담"));
+  assert.match(html, /어르신 유휴공간·빈방 활용 무료상담과 세대교류 교육·봉사/);
+  assert.match(html, /주거상생 실태조사는 기획·준비 단계/);
+  assert.ok(html.indexOf('href="/programs/senior-home-consulting/">빈방 활용 무료상담') < html.indexOf("주거상생 자료 보기"));
 });
 
 test("mobile menu has accessible state and controls", async () => {
@@ -47,7 +48,8 @@ test("unused thank-you routes are absent from build and all public journeys", as
 test("retention policy reflects the owner's one-year decision", async () => {
   for (const route of ["/contact/", "/privacy/"]) {
     const html = await readFile(routeFile(route), "utf8");
-    assert.match(html, /답변 완료일부터 1년/);
+    assert.match(html, /상담 종료일로부터 최대 1년간/);
+    assert.doesNotMatch(html, /답변 완료일부터 1년/);
     assert.doesNotMatch(html, /운영기준 확인이 필요합니다/);
   }
 });
@@ -111,13 +113,13 @@ test("all public pages omit the removed brand name in copy and image description
   }
 });
 
-test("digital education records the confirmed event date separately from publication", async () => {
+test("education experience retains publication dates but removes the withdrawn event date", async () => {
   const { activities } = await import("../src/content/activities.mjs");
   const education = activities.find((item) => item.slug === "senior-digital-education");
-  assert.equal(education.eventDate, "2026-08-12");
+  assert.equal(education.eventDate, null);
   assert.equal(education.publishedAt, "2026-09-23");
   const html = await readFile(routeFile(education.href), "utf8");
-  assert.match(html, /활동일 <time datetime="2026-08-12">2026년 8월 12일/);
+  assert.doesNotMatch(html, /2026-08-12|8월 12일|datetime="null"/);
   assert.match(html, /게시일 <time datetime="2026-09-23">2026년 9월 23일/);
   assert.match(html, /서울 노원구/);
   assert.match(html, /공개 동의/);
@@ -125,13 +127,38 @@ test("digital education records the confirmed event date separately from publica
   assert.doesNotMatch(html, /housing-presentation|community-booth|명 참여|만족도/);
   const schema = JSON.parse(html.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);
   assert.equal(schema.datePublished, "2026-09-23");
-  assert.equal(schema.temporalCoverage, "2026-08-12");
+  assert.equal(schema.temporalCoverage, undefined);
+  assert.match(html, /공릉종합사회복지관 AI 교육/);
+  assert.match(html, /반복 실습/);
+  assert.match(html, /개별 사진의 촬영일·기관은 특정하지 않았으며/);
   for (const route of ["/", "/activities/", "/activities/field-records/"]) {
     const page = await readFile(routeFile(route), "utf8");
     assert.ok(page.includes(`href="${education.href}"`));
-    assert.match(page, /2026년 8월 12일/);
+    assert.doesNotMatch(page, /2026-08-12|8월 12일|datetime="null"/);
   }
   assert.ok((await readFile(path.join(root, "sitemap.xml"), "utf8")).includes(education.href));
+});
+
+test("research planning is explicit and registered business names remain accurate", async () => {
+  for (const route of ["/", "/programs/", "/programs/housing-research/", "/terms/"]) {
+    assert.match(await readFile(routeFile(route), "utf8"), /기획·준비 단계/);
+  }
+  const research = await readFile(routeFile("/programs/housing-research/"), "utf8");
+  assert.match(research, /현재 준비하는 내용/);
+  assert.match(research, /현재는 기획 단계로 조사 참여를 접수하지 않습니다/);
+  assert.match(research, /등록 고유사업명: 주거상생 실태조사/);
+  assert.doesNotMatch(research, /<h2>제공 내용<\/h2>|<span>비용: 무료<\/span>/);
+  const consulting = await readFile(routeFile("/programs/senior-home-consulting/"), "utf8");
+  assert.match(consulting, /한지붕 대표와 운영진이 직접 응대/);
+  assert.match(consulting, /등록 고유사업명: 어르신 주택 개선 무료상담/);
+  const education = await readFile(routeFile("/programs/intergenerational-volunteer/"), "utf8");
+  for (const term of ["스마트폰·디지털 기초교육", "AI·디지털 서비스 활용 교육", "한국 주거문화", "유휴공간 정리·활용", "상설 정규반은 아닙니다"]) assert.ok(education.includes(term), term);
+});
+
+test("privacy states owner-confirmed Workspace custody and manual deletion responsibility", async () => {
+  const html = await readFile(routeFile("/privacy/"), "utf8");
+  for (const term of ["Google Workspace 기반 상담관리 문서", "대표자와 지정된 운영담당자로 제한", "대표자 또는 지정 개인정보 관리담당자", "정기적으로 보관기간을 확인", "해당 정보만 분리"]) assert.ok(html.includes(term), term);
+  assert.doesNotMatch(html, /자동 삭제|국내에만|대한민국에만/);
 });
 
 test("operating guidance states available channels and prior agreement rules", async () => {
