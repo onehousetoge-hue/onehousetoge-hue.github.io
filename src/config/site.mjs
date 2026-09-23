@@ -10,8 +10,8 @@ export const site = Object.freeze({
   address: "서울특별시 노원구 동일로195길 14-5, 401호",
   phone: "010-4587-9428",
   phoneHref: "tel:+821045879428",
-  email: "hometo.kr@gmail.com",
-  emailHref: "mailto:hometo.kr@gmail.com",
+  email: "onehousetoge@gmail.com",
+  emailHref: "mailto:onehousetoge@gmail.com",
   url: "https://hanjibung.kr",
   nonprofitDescription:
     "한지붕은 어르신 주택 개선 무료상담, 세대교류 봉사 프로그램, 주거상생 실태조사를 수행하는 비영리단체입니다.",
