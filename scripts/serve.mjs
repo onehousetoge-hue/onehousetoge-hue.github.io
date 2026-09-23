@@ -14,7 +14,12 @@ createServer(async (request, response) => {
     let file = path.join(root, relative);
     if (!path.extname(file)) file = path.join(file, "index.html");
     if (!path.resolve(file).startsWith(root + path.sep)) throw new Error("Invalid path");
-    try { await stat(file); } catch { file = path.join(root, "404.html"); response.statusCode = 404; }
+    try {
+      await stat(file);
+      if (!path.extname(relative) && url.pathname !== "/" && !url.pathname.endsWith("/")) {
+        response.writeHead(301, { Location: `${url.pathname}/${url.search}` }); response.end(); return;
+      }
+    } catch { file = path.join(root, "404.html"); response.statusCode = 404; }
     const data = await readFile(file);
     response.setHeader("Content-Type", types[path.extname(file)] || "application/octet-stream");
     response.setHeader("X-Content-Type-Options", "nosniff");

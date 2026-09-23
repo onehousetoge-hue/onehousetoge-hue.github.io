@@ -535,3 +535,25 @@ h3 { margin: 0; font-size: 1.35rem; }
   .worksheet-checklist input { width: 16px; height: 16px; flex-basis: 16px; margin-top: 4px; }
   .source-panel { margin-top: 24px; break-inside: avoid; }
 }
+/* Inquiry inputs keep the existing visual language and generous senior-friendly targets. */
+.inquiry-form { margin-block: 36px; }
+.inquiry-form fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.inquiry-form legend { font-size: 26px; font-weight: 700; margin-bottom: 24px; }
+.form-field { display: grid; gap: 10px; margin-block: 24px; }
+.form-field label { font-size: 20px; font-weight: 700; }
+.form-field label span { font-size: 18px; font-weight: 400; }
+.form-field input, .form-field select, .form-field textarea { width: 100%; box-sizing: border-box; min-height: 60px; border: 1px solid #626d64; border-radius: 10px; background: #fff; color: #22372f; padding: 14px 16px; font: inherit; font-size: 20px; line-height: 1.6; }
+.form-field textarea { resize: vertical; }
+.inquiry-form [aria-invalid="true"] { border: 2px solid #a32224; }
+.form-status { color: #842421; overflow-wrap: anywhere; }
+.form-status:empty { display: none; }
+.consent-summary { padding: 24px; border-radius: 12px; border: 1px solid #a4aea4; margin-block: 28px; }
+.consent-summary h2 { font-size: 24px; }
+.consent-summary p { font-size: 18px; }
+.consent-check { display: flex; gap: 14px; align-items: flex-start; padding-block: 12px; cursor: pointer; font-size: 20px; }
+.consent-check input { width: 26px; height: 26px; flex: 0 0 26px; margin-top: 4px; accent-color: #183f36; }
+.inquiry-form button[type="submit"] { width: 100%; }
+.inquiry-form :disabled { cursor: not-allowed; }
+.inquiry-form fieldset:disabled { opacity: .7; }
+[data-receipt-status] { overflow-wrap: anywhere; }
+@media (max-width: 400px) { .consent-summary { padding: 16px; } }

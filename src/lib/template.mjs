@@ -9,7 +9,7 @@ const escapeHtml = (value = "") =>
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 
-const absolute = (path) => `${site.url}${path === "/" ? "" : path}`;
+const absolute = (path) => new URL(path, `${site.url}/`).href;
 
 export function icon(name, className = "") {
   const paths = {
@@ -98,7 +98,7 @@ export function footer() {
           <p>${site.footerDescription}</p>
         </div>
         <div class="footer-contact"><h2>단체 정보</h2><dl><div><dt>고유번호</dt><dd>${site.registrationNumber}</dd></div><div><dt>대표자</dt><dd>${site.representative}</dd></div><div><dt>소재지</dt><dd>${site.address}</dd></div><div><dt>전화</dt><dd><a href="${site.phoneHref}">${site.phone}</a></dd></div><div><dt>이메일</dt><dd><a href="${site.emailHref}">${site.email}</a></dd></div></dl></div>
-        <div class="footer-links"><h2>안내</h2><a href="/participate/">참여·기관협력</a><a href="/contact/">전화·이메일 문의</a><a href="/privacy/">개인정보 처리방침</a><a href="/terms/">이용안내</a><a href="/transparency/">운영·투명성</a></div>
+        <div class="footer-links"><h2>안내</h2><a href="/consultation/">무료상담 문의</a><a href="/partnership/">기관협력 문의</a><a href="/participate/">참여·기관협력</a><a href="/contact/">전화·이메일 문의</a><a href="/privacy/">개인정보 처리방침</a><a href="/terms/">이용안내</a><a href="/transparency/">운영·투명성</a></div>
       </div>
       <div class="container footer-bottom"><span>© 2026 ${site.name}. All rights reserved.</span><span>${site.legalType}</span></div>
     </footer>`;
@@ -121,7 +121,7 @@ export function layout({ title, description, path, body, breadcrumbs = [], type,
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         itemListElement: [
-          { "@type": "ListItem", position: 1, name: "홈", item: site.url },
+          { "@type": "ListItem", position: 1, name: "홈", item: absolute("/") },
           ...breadcrumbs.map((item, index) => ({
             "@type": "ListItem",
             position: index + 2,
@@ -141,7 +141,8 @@ export const organizationSchema = {
   "@type": "NGO",
   name: site.name,
   alternateName: site.englishName,
-  url: site.url,
+  url: absolute("/"),
+  member: { "@type": "OrganizationRole", roleName: "대표자", member: { "@type": "Person", name: site.representative } },
   foundingDate: site.foundedAt,
   telephone: site.phone,
   email: site.email,

@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const files = [
+  "src/config/inquiries.mjs", "src/config/page-dates.mjs", "src/assets/inquiry.js", "src/lib/inquiry-page.mjs", "integrations/inquiries/Code.gs", "scripts/crawl.mjs",
   "src/config/site.mjs",
   "src/content/resources.mjs",
   "src/content/activities.mjs",

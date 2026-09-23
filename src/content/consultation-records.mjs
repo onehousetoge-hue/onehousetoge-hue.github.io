@@ -3,6 +3,7 @@
 export const consultationRecords = Object.freeze([
   {
     id: "consultation-july", date: "2026-07-18", dateLabel: "2026년 7월 18일",
+    publishedAt: "2026-09-24", updatedAt: "2026-09-24", author: "한지붕 운영팀",
     title: "공릉동 어르신 주거공간 활용 상담", area: "서울시 노원구 공릉동",
     participants: "지역 어르신 12명", photoIndex: 0,
     overview: "자녀가 독립한 뒤 사용하지 않는 방을 어떻게 관리하고 있는지, 남는 공간을 다른 사람과 함께 사용하는 방안을 검토할 때 어떤 점이 걱정되는지 이야기를 들었습니다.",
@@ -13,6 +14,7 @@ export const consultationRecords = Object.freeze([
   },
   {
     id: "consultation-august", date: "2026-08-22", dateLabel: "2026년 8월 22일",
+    publishedAt: "2026-09-24", updatedAt: "2026-09-24", author: "한지붕 운영팀",
     title: "어르신 주거·복지정보 무료상담", area: "서울시 노원구 하계동",
     participants: "지역 어르신 9명", photoIndex: 1,
     overview: "고령가구의 주거공간 활용과 관련해 계약, 세금, 건강보험, 전입신고 등의 질문을 듣고 확인해야 할 기관과 준비할 내용을 정리했습니다.",
@@ -23,6 +25,7 @@ export const consultationRecords = Object.freeze([
   },
   {
     id: "consultation-september", date: "2026-09-12", dateLabel: "2026년 9월 12일",
+    publishedAt: "2026-09-24", updatedAt: "2026-09-24", author: "한지붕 운영팀",
     title: "가족과 함께하는 공동생활 준비 상담", area: "서울시 노원구 공릉동",
     participants: "어르신 7명 · 가족 3명", photoIndex: 2,
     overview: "어르신 혼자 결정하기 어려운 주거공간 활용 문제를 가족과 함께 논의할 수 있도록 가족동의, 안전확인, 생활규칙과 사생활 보호에 관한 상담을 진행했습니다.",
@@ -32,4 +35,19 @@ export const consultationRecords = Object.freeze([
     checklist: ["희망 계약기간", "주중·주말 생활시간", "개인공간과 공용공간 구분", "식사 및 주방 이용방식", "청소 및 세탁 기준", "방문객과 외박 기준", "불편사항 전달방법", "당사자 동의를 받은 가족 비상연락 방법"],
     caption: "2026년 9월 12일 공릉동 상담 현장. 어르신과 가족이 공동생활 전 안전, 생활규칙, 사생활 보호에 관해 상담했습니다.",
   },
-].map(Object.freeze));
+].map((record) => Object.freeze({
+  ...record,
+  href: `/activities/${record.date}-${record.id}/`,
+})));
+
+export function validateConsultationRecord(record) {
+  for (const key of ["id", "date", "title", "area", "participants", "overview", "href", "publishedAt", "updatedAt", "author"]) {
+    if (typeof record[key] !== "string" || !record[key].trim()) throw new Error(`Activity field missing: ${key}`);
+  }
+  for (const key of ["questions", "guidance", "followup"]) {
+    if (!Array.isArray(record[key]) || !record[key].length) throw new Error(`Activity content missing: ${key}`);
+  }
+  for (const key of ["date", "publishedAt", "updatedAt"]) if (!/^\d{4}-\d{2}-\d{2}$/.test(record[key])) throw new Error(`Invalid activity date: ${key}`);
+  if (record.updatedAt < record.publishedAt) throw new Error("Modified date precedes publication");
+  if (!Number.isInteger(record.photoIndex) || record.photoIndex < 0) throw new Error("Activity photo mapping missing");
+}

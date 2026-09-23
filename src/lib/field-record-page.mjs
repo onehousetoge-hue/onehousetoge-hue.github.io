@@ -2,18 +2,36 @@ import { digitalLearning as record } from "../content/field-records.mjs";
 import { consultationPhotos } from "../content/consultation-photos.mjs";
 import { absolute, icon, layout, pageHero } from "./template.mjs";
 import { photoFigure, photoImage } from "./photo.mjs";
-import { consultationRecords } from "../content/consultation-records.mjs";
+import { consultationRecords, validateConsultationRecord } from "../content/consultation-records.mjs";
 import { evidenceFlow } from "./evidence-flow.mjs";
 
 export function fieldRecordFeature() {
   return '<section class="section field-feature-section"><div class="container"><div class="section-header"><div><p class="eyebrow">사진으로 만나는 현장</p><h2>이야기를 듣고,<br>함께 살펴보는 현장</h2></div><p>어르신과 대화를 나누는 상담 현장과 디지털 활용을 안내해 온 경험을 사진으로 소개합니다.</p></div><div class="story-preview-grid"><article class="story-preview"><div class="story-preview-image">' + photoImage(consultationPhotos[1]) + '</div><div class="story-preview-copy"><p class="eyebrow">어르신 상담 현장</p><h3>어르신과 나눈 상담 이야기</h3><p>길을 함께 걸으며 나눈 대화와 상담 부스에서 마주한 순간을 전합니다.</p><a class="text-link" href="' + record.href + '">상담 현장 사진 보기' + icon("arrow") + '</a></div></article><article class="story-preview"><div class="story-preview-image">' + photoImage(record.photos[0]) + '</div><div class="story-preview-copy"><p class="eyebrow">디지털·세대교류</p><h3>일상에 가까운 디지털 활용 안내</h3><p>직접 해보고, 다시 해보는 시간. 구성원들이 참여해 온 교육 경험을 소개합니다.</p><a class="text-link" href="/activities/senior-digital-education/">디지털 교육 경험 보기' + icon("arrow") + '</a></div></article></div><p class="section-action"><a class="text-link" href="/activities/">활동과 기록 모두 보기' + icon("arrow") + '</a></p></div></section>';
 }
 
-function consultationRecordCard(activity) {
+function consultationRecordContent(activity) {
   const photo = { ...consultationPhotos[activity.photoIndex], caption: activity.caption };
   const renderList = (items) => `<ul>${items.map((item) => `<li>${item}</li>`).join("")}</ul>`;
   const photoContext = activity.photoIndex === 2 ? `<aside class="photo-context"><h3>현재 상담은 생활의 준비사항을 안내합니다</h3><p>사진 속 배너 문구는 촬영 당시 현장 안내입니다. 한지붕의 현재 무료상담은 임대수익을 보장하거나 입주를 알선하는 서비스가 아닙니다.</p><a href="/programs/senior-home-consulting/">현재 상담 범위 확인하기</a></aside>` : "";
   return `<section class="field-chapter consultation-record" id="${activity.id}" aria-labelledby="${activity.id}-title">${activity.photoIndex === 0 ? '<span id="consultation-walk"></span>' : activity.photoIndex === 2 ? '<span id="consultation-booth"></span>' : ""}<p class="eyebrow"><time datetime="${activity.date}">${activity.dateLabel}</time> · 상담 현장 기록</p><h2 id="${activity.id}-title">${activity.title}</h2><dl class="record-facts"><div><dt>활동지역</dt><dd>${activity.area}</dd></div><div><dt>참여대상</dt><dd>${activity.participants}</dd></div></dl><div class="consultation-record-body"><div class="prose"><h3>활동내용</h3><p>${activity.overview}</p><h3>현장에서 나온 질문</h3>${renderList(activity.questions)}<h3>한지붕이 제공한 안내</h3>${activity.guidance.map((p) => `<p>${p}</p>`).join("")}<h3>활동 이후 진행한 사항</h3>${renderList(activity.followup)}${activity.checklist ? `<h4>보완한 공동생활 사전질문지 항목</h4>${renderList(activity.checklist)}<p>웹사이트에서 신원서류나 가족 연락처를 수집하지 않습니다. 비상연락 방법은 당사자의 동의를 받아 필요한 범위에서 정하도록 안내합니다.</p>` : ""}</div><div class="consultation-record-photo">${photoContext}${photoFigure(photo)}</div></div></section>`;
+}
+
+function consultationRecordCard(activity) {
+  const photo = { ...consultationPhotos[activity.photoIndex], caption: activity.caption };
+  const context = activity.photoIndex === 2 ? '<aside class="photo-context"><h3>현재 상담은 생활의 준비사항을 안내합니다</h3><p>사진 속 배너는 촬영 당시 안내입니다. 현재 상담은 임대수익을 보장하거나 입주를 알선하는 서비스가 아닙니다.</p></aside>' : '';
+  return `<section class="field-chapter consultation-record" id="${activity.id}">${activity.photoIndex === 0 ? '<span id="consultation-walk"></span>' : activity.photoIndex === 2 ? '<span id="consultation-booth"></span>' : ''}<p class="eyebrow"><time datetime="${activity.date}">${activity.dateLabel}</time> · 상담 현장 기록</p><h2>${activity.title}</h2><dl class="record-facts"><div><dt>활동지역</dt><dd>${activity.area}</dd></div><div><dt>참여대상</dt><dd>${activity.participants}</dd></div></dl><div class="consultation-record-body"><div class="prose"><p>${activity.overview}</p><h3>활동 이후 진행한 사항</h3><p>${activity.followup[0]}</p><a class="button button-secondary" href="${activity.href}">질문·안내·후속 활동 자세히 보기</a></div><div class="consultation-record-photo">${context}${photoFigure(photo)}</div></div></section>`;
+}
+
+export function consultationRecordPage(activity) {
+  validateConsultationRecord(activity);
+  const image = consultationPhotos[activity.photoIndex];
+  if (!image) throw new Error("Activity photo does not exist");
+  const body = pageHero({ eyebrow: "활동과 기록 · 무료상담", title: activity.title, description: activity.overview,
+    meta: `<div class="page-meta"><span>활동일 ${activity.dateLabel}</span><span>게시일 <time datetime="${activity.publishedAt}">${activity.publishedAt.replaceAll('-', '.')}</time></span><span>마지막 수정일 <time datetime="${activity.updatedAt}">${activity.updatedAt.replaceAll('-', '.')}</time></span><span>작성 ${activity.author}</span></div>` }) +
+    `<section class="section"><div class="container">${consultationRecordContent(activity)}<div class="notice"><h2>기록의 공개 범위</h2><p>운영진이 제공한 회차별 기록과 공개 동의를 확인한 사진입니다. 참여자의 이름·상세주소·개별 상담내용은 공개하지 않습니다. 참여인원은 해당 회차의 인원이며 다른 회차와 합산한 실인원이 아닙니다.</p></div><section class="related-section"><h2>상담 후 함께 볼 자료</h2><div class="related-grid"><a href="/resources/consultation-preparation/" class="related-link">무료상담 준비 질문지</a><a href="/resources/family-checklist/" class="related-link">가족과 확인할 사항</a><a href="/resources/shared-living-rules/" class="related-link">생활규칙 작성표</a></div></section><div class="hero-actions"><a class="button" href="/consultation/">무료상담 문의하기</a><a class="button button-secondary" href="/programs/senior-home-consulting/">상담 범위 확인하기</a><a class="text-link" href="/activities/field-records/">상담 현장 기록 모두 보기</a></div>${evidenceFlow()}</div></section>`;
+  return layout({title: activity.title, description: activity.overview, path: activity.href, body, type: "article", publishedAt: activity.publishedAt, updatedAt: activity.updatedAt,
+    breadcrumbs: [{label:"활동과 기록",href:"/activities/"},{label:"상담 현장",href:"/activities/field-records/"},{label:activity.title,href:activity.href}],
+    jsonLd: {"@context":"https://schema.org","@type":"Article",headline:activity.title,description:activity.overview,datePublished:activity.publishedAt,dateModified:activity.updatedAt,author:{"@type":"Organization",name:activity.author},publisher:{"@type":"Organization",name:"한지붕",url:absolute('/')},mainEntityOfPage:absolute(activity.href),image:absolute('/assets/activities/'+image.file)} });
 }
 
 export function fieldRecordPage() {

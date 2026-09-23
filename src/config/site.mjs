@@ -67,7 +67,7 @@ export const programs = Object.freeze([
 
 export const policies = Object.freeze({
   noCommercialBusiness: true,
-  onlineFormEnabled: false,
+  onlineFormEnabled: true,
   analyticsEnabled: false,
   thirdPartyAds: false,
   goodstackVerified: true,

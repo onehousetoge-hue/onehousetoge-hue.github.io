@@ -185,7 +185,7 @@ test("research is in progress without claiming published results", async () => {
 
 test("privacy states owner-confirmed Workspace custody and manual deletion responsibility", async () => {
   const html = await readFile(routeFile("/privacy/"), "utf8");
-  for (const term of ["Google Workspace 기반 상담관리 문서", "대표자와 지정된 운영담당자로 제한", "대표자 또는 지정 개인정보 관리담당자", "정기적으로 보관기간을 확인", "해당 정보만 분리"]) assert.ok(html.includes(term), term);
+  for (const term of ["Google Workspace 기반 서비스", "대표자와 지정된 운영담당자로 제한", "대표자 또는 지정 개인정보 관리담당자", "정기적으로 보관기간을 확인", "해당 정보만 분리"]) assert.ok(html.includes(term), term);
   assert.doesNotMatch(html, /자동 삭제|국내에만|대한민국에만/);
 });
 
@@ -214,7 +214,8 @@ test("tracking remains off until an actual account and meaningful conversion flo
     const content = await readFile(file, "utf8");
     assert.doesNotMatch(content, /googletagmanager\.com|google-analytics\.com|googleadservices\.com|gtag\(|dataLayer/);
     const scripts = [...content.matchAll(/<script[^>]+src="([^"]+)"/g)].map((match) => match[1]);
-    assert.deepEqual(scripts.map((src) => new URL(src, "https://hanjibung.kr").pathname), ["/assets/site.js"]);
+    const expected = /^\/(consultation|partnership)\//.test(page.route) ? ["/assets/site.js", "/assets/inquiry.js"] : ["/assets/site.js"];
+    assert.deepEqual(scripts.map((src) => new URL(src, "https://hanjibung.kr").pathname), expected);
   }
 });
 

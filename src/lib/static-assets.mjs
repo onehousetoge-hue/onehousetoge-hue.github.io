@@ -9,3 +9,4 @@ function assetUrl(file) {
 // Build-time content versions: browsers fetch changed assets after deployment.
 export const stylesheetUrl = assetUrl("site.css");
 export const scriptUrl = assetUrl("site.js");
+export const inquiryScriptUrl = assetUrl("inquiry.js");

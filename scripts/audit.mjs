@@ -19,6 +19,8 @@ async function collect(directory) {
 await collect(target);
 const documents = new Map(await Promise.all(htmlFiles.map(async (file) => [file, await readFile(file, "utf8")])));
 const titles = new Map();
+const descriptions = new Map();
+const manifest = JSON.parse(await readFile(path.join(target, "build-manifest.json"), "utf8"));
 // A truthful program planning status is not an empty-page placeholder.
 // Specific research-state regression tests guard against inflated service claims.
 const banned = ["하루 한 말씀", "무료 사주풀이", "50+ 인연마당", "성경", "묵상", "운세", "소개팅", "데이팅", "오픈채팅", "추후 안내", "임시", "샘플", "lorem ipsum", "TODO", "TBD", "example.com", "test@"];
@@ -62,12 +64,30 @@ for (const file of htmlFiles) {
   const pageIds = [...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
   if (new Set(pageIds).size !== pageIds.length) failures.push(`${relative}: 중복 id가 있습니다.`);
   for (const match of html.matchAll(/<img\b([^>]*)>/g)) if (!/\balt="[^"]*"/.test(match[1])) failures.push(`${relative}: alt 없는 이미지가 있습니다.`);
-  if (/<form\b/.test(html)) failures.push(`${relative}: 실제 백엔드가 없는 form이 있습니다.`);
+  if (/<form\b/.test(html) && !/<form[^>]*data-inquiry="(?:consultation|partnership)"[^>]*data-endpoint="https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec"/.test(html)) failures.push(`${relative}: 검증된 접수 URL 없는 form이 있습니다.`);
+  const route = relative === "index.html" ? "/" : "/" + relative.replaceAll(path.sep, "/").replace(/index\.html$/, "");
+  const indexed = manifest.pages.find(page => page.route === route)?.indexable;
+  if (indexed) {
+    const expected = `https://hanjibung.kr${route}`;
+    if (!html.includes(`<link rel="canonical" href="${expected}">`)) failures.push(`${relative}: canonical 불일치`);
+    if (!html.includes(`<meta property="og:url" content="${expected}">`)) failures.push(`${relative}: og:url 불일치`);
+    if (!html.includes('name="robots" content="index,follow"')) failures.push(`${relative}: 색인 제한`);
+    const description = html.match(/<meta name="description" content="([^"]+)"/)?.[1];
+    if (descriptions.has(description)) failures.push(`${relative}: description 중복 (${descriptions.get(description)})`);
+    descriptions.set(description, relative);
+  }
+  for (const [, src] of html.matchAll(/(?:src|href)="(\/assets\/[^"?]+)(?:\?[^\"]*)?"/g)) {
+    try { await stat(path.join(target, src)); } catch { failures.push(`${relative}: missing asset ${src}`); }
+  }
   if (/name="robots" content="index,follow"/.test(html) && !/<script type="application\/ld\+json">/.test(html)) failures.push(`${relative}: 구조화데이터가 없습니다.`);
 }
 
 if (goodstackCount !== 1) failures.push(`Goodstack 표시는 공개 HTML 전체에 1회여야 하나 ${goodstackCount}회입니다.`);
 const sitemap = await readFile(path.join(target, "sitemap.xml"), "utf8");
+const locations = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]);
+const expectedLocations = manifest.pages.filter(page => page.indexable).map(page => `https://hanjibung.kr${page.route}`);
+if (JSON.stringify([...locations].sort()) !== JSON.stringify(expectedLocations.sort())) failures.push("사이트맵과 색인 허용 경로가 다릅니다.");
+if (new Set(locations).size !== locations.length) failures.push("사이트맵 URL 중복");
 for (const legacy of ["daily-word", "fortune", "/meeting/", "meeting.html", "thanks", "404"]) if (sitemap.includes(legacy)) failures.push(`sitemap.xml에 제외 경로 '${legacy}'가 있습니다.`);
 const robots = await readFile(path.join(target, "robots.txt"), "utf8");
 if (!robots.includes("Sitemap: https://hanjibung.kr/sitemap.xml")) failures.push("robots.txt에 사이트맵이 없습니다.");

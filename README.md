@@ -62,6 +62,9 @@ git push origin main
 - 프로그램 상세내용: `src/data/program-details.mjs`
 - 공익자료: `src/content/resources.mjs`
 - 활동·운영기록: `src/content/activities.mjs`
+- 상담 현장기록: `src/content/consultation-records.mjs` — 작성 기준은 `CONTENT_AUTHORING.md`
+- 페이지별 실제 편집일: `src/config/page-dates.mjs`
+- 온라인 문의 설정: `src/config/inquiries.mjs` — 운영 절차는 `integrations/inquiries/README.md`
 - 공통 페이지 구조: `src/lib/template.mjs`
 - 페이지 생성: `scripts/build.mjs`
 - 디자인: `src/assets/site.css`
@@ -71,11 +74,23 @@ git push origin main
 
 ## 환경변수
 
-현재 사이트는 분석도구와 온라인 문의 API를 사용하지 않으므로 필수 환경변수가 없습니다. `.env.example`에는 향후 기능을 추가할 때 검토할 이름만 주석으로 기록했습니다. 실제 키나 비밀값은 저장소에 커밋하지 않습니다.
+현재 필수 환경변수는 없습니다. 온라인 문의는 `src/config/inquiries.mjs`에 설정한 공개 제출용 Apps Script URL을 사용합니다. 이 URL은 인증 비밀값이 아니며, 문의 목록을 조회하는 API는 제공하지 않습니다. 분석도구는 설치하지 않았습니다. `.env.example`은 향후 기능 검토용입니다. 실제 키나 비밀값은 저장소에 커밋하지 않습니다.
 
 ## 문의 처리방식
 
-현재 호스팅은 정적 GitHub Pages입니다. 서버 측 유효성 검사, 요청 빈도 제한과 저장 성공 확인이 가능한 백엔드가 없으므로 온라인 문의폼을 제공하지 않습니다. 문의는 전화 `010-4587-9428`과 실제 대표 이메일 `onehousetoge@gmail.com`으로 받습니다. 온라인 폼을 추가할 때는 개인정보 처리방침, 보유기간과 접수 성공 로직을 함께 수정해야 합니다.
+웹사이트는 정적 GitHub Pages이고, 무료상담·기관협력 문의 저장은 별도의 Google Apps Script가 담당합니다. 지정한 Google 스프레드시트의 `상담문의`·`기관협력` 탭에만 저장합니다. 서버 검증과 저장 후 접수번호 확인을 통과해야 완료로 표시하며, 확인 실패 시 입력 내용을 유지합니다. 실제 서버 코드는 `integrations/inquiries/Code.gs`입니다.
+
+전화 `010-4587-9428`과 이메일 `onehousetoge@gmail.com` 문의도 유지합니다. 상담 종료 후 최대 1년 보관 원칙에 따라 운영담당자가 종료일·삭제 예정일을 관리해야 합니다. 자동 삭제나 자동 답변 알림 기능은 없습니다. 서버 공개 배포와 웹사이트 프론트엔드 배포는 별도 단계이므로, 코드 변경만으로 운영 사이트에 반영됐다고 판단하지 않습니다.
+
+실제 저장 시험에는 개인정보가 아닌 명확한 시험 데이터를 사용하고 접수번호를 대조합니다. 실패·시간 초과를 성공으로 처리하거나 완료 페이지 방문만 전환으로 집계하지 않습니다.
+
+## 전체 경로 검사
+
+로컬 서버를 실행한 뒤 다음 명령으로 사이트맵, 내부 링크, 앵커, 이미지와 메타데이터를 검사합니다. 보고서는 공개 저장소 밖에 보관하세요.
+
+```powershell
+node scripts/crawl.mjs http://127.0.0.1:4173 ../한지붕-운영검토/local-crawl
+```
 
 ## 라우팅과 구형 URL
 
