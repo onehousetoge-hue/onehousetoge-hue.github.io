@@ -3,9 +3,9 @@ import { digitalLearning } from "./field-records.mjs";
 export const activities = Object.freeze([
   {
     slug: "nowon-grant-execution",
-    title: "노원구청 마을공동체 사업 지원금 60만 원의 사용 계획",
-    description: "운영자가 정정한 2026년 7~11월 집행 계획을 공개합니다. 총 지원금 600,000원 중 집행 예정액 400,000원, 추후 사업비 200,000원입니다.",
-    category: "지원금 사용 계획",
+    title: "노원구청 마을공동체 사업 지원금 60만 원의 계획과 실제 집행",
+    description: "노원구청 마을공동체 사업 지원금 600,000원의 계획과 실제 집행을 구분합니다. 2026년 9월 20일 기준 실제 집행액 191,500원, 지원금 기준 미집행액 408,500원입니다.",
+    category: "지원금 계획·집행 기록",
     eventDate: null,
     publishedAt: "2026-09-24",
     publishedLabel: "2026년 9월 24일",

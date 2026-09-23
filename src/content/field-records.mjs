@@ -2,8 +2,8 @@
 // A publication date is not an event date. Do not infer dates from asset filenames.
 export const digitalLearning = Object.freeze({
   href: "/activities/field-records/",
-  title: "어르신 상담 현장 이야기",
-  description: "어르신과 함께 걸으며 대화를 나누는 상담 현장, 상담 부스와 디지털 활용 장면을 사진으로 소개합니다. 기존 교육·지역교류 현장 기록도 함께 전합니다.",
+  title: "어르신 무료상담 현장 기록",
+  description: "2026년 7월 18일 공릉동, 8월 22일 하계동, 9월 12일 공릉동에서 진행한 무료상담의 질문·안내·후속 활동을 사진과 함께 전합니다.",
   location: "서울 노원구",
   publishedAt: "2026-09-23",
   eventDate: null,

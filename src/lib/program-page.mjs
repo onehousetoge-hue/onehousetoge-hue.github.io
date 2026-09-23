@@ -5,8 +5,10 @@ import { consultationPhotos } from "../content/consultation-photos.mjs";
 import { digitalLearning } from "../content/field-records.mjs";
 import { photoFigure } from "./photo.mjs";
 import { layout, pageHero, icon } from "./template.mjs";
+import { researchPage } from "./research-page.mjs";
 
 export function programPage(program) {
+  if (program.slug === "housing-research") return researchPage(program);
   const detail = programDetails[program.slug];
   const research = program.slug === "housing-research";
   const consultation = program.slug === "senior-home-consulting";

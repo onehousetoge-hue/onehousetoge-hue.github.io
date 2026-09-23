@@ -120,7 +120,7 @@ test("four consented consultation photos are published without original metadata
     assert.ok(html.includes(`alt="${photo.alt}"`), photo.file);
     assert.ok(html.includes(`width="${photo.width}" height="${photo.height}"`), photo.file);
   }
-  assert.doesNotMatch(html, /2026-09-05|2026-09-12|2026-09-13|IMG_6467|\.HEIC|KakaoTalk_/);
+  assert.doesNotMatch(html, /2026-09-05|2026-09-13|IMG_6467|\.HEIC|KakaoTalk_/);
   assert.match(html, /임대수익을 보장하거나 입주를 알선하는 서비스가 아닙니다/);
 });
 
@@ -222,8 +222,15 @@ test("corrected grant plan separates allocations from completed spending", async
   const { funding, fundingTotals } = await import("../src/content/funding.mjs");
   assert.equal(funding.received, 600000);
   assert.equal(funding.source, "마을공동체 사업 지원금");
-  assert.equal(funding.disclosureType, "plan");
-  assert.equal(funding.actualSpent, null);
+  assert.equal(funding.disclosureType, "plan-and-actual");
+  assert.equal(funding.grantProgram, "노원구청 마을공동체 사업");
+  assert.equal(funding.activityName, "노인복지 및 지역 어르신 무료상담");
+  assert.equal(funding.executionAsOf, "2026-09-20");
+  assert.equal(funding.actualExpenses.length, 5);
+  assert.equal(fundingTotals.spent, 191500);
+  assert.equal(fundingTotals.unspent, 408500);
+  assert.equal(fundingTotals.spent + fundingTotals.unspent, funding.received);
+  assert.ok(funding.actualExpenses.every((item) => item.date <= funding.executionAsOf && Number.isSafeInteger(item.amount) && item.evidence));
   assert.equal(funding.plannedExpenses.length, 5);
   assert.ok(funding.plannedExpenses.every((item) => Number.isSafeInteger(item.amount) && item.amount > 0));
   assert.equal(fundingTotals.planned, 400000);
@@ -238,8 +245,11 @@ test("corrected grant plan separates allocations from completed spending", async
     assert.match(html, /노원구청 마을공동체 사업/);
     assert.match(html, /600,000원/);
     assert.match(html, /집행 예정액 400,000원/);
-    assert.match(html, /계획상 잔액 200,000원/);
-    assert.match(html, /실제 지출 완료액이나 현재 계좌 잔액을 뜻하지 않습니다/);
+    assert.match(html, /추후 사업비 200,000원/);
+    assert.match(html, /실제 집행 후 남은 잔액이 아닙니다/);
+    assert.match(html, /실제 집행액 191,500원/);
+    assert.match(html, /미집행액 408,500원/);
+    assert.match(html, /2026년 9월 20일/);
     assert.match(html, /단체 전체의 연간 결산이나 지원기관의 정산 승인 결과를 뜻하지 않습니다/);
     assert.doesNotMatch(html, /잔액 0원|이렇게 사용했습니다|지출 합계 600,000원|지출 세부내역 · 6건|외부 감사 완료|정산 승인 완료/);
   }
@@ -248,8 +258,49 @@ test("corrected grant plan separates allocations from completed spending", async
     assert.ok(detail.includes(item.category));
     assert.ok(detail.includes(item.detail));
   }
+  for (const item of funding.actualExpenses) {
+    assert.ok(detail.includes(item.detail));
+    assert.ok(detail.includes(item.evidence));
+    assert.ok(detail.includes(`datetime="${item.date}"`));
+  }
+  assert.match(detail, /2026년 11월 30일 예정/);
+  assert.doesNotMatch(detail, /2026\.07\.01|2026\.08\.31|7월 1일.*공개|8월 31일.*반영/);
   for (const route of ["/transparency/", "/activities/"]) assert.ok((await readFile(routeFile(route), "utf8")).includes(`href="${funding.href}"`));
   assert.ok((await readFile(path.join(root, "sitemap.xml"), "utf8")).includes(funding.href));
+});
+
+test("dated consultation records use confirmed photo order and keep all photos", async () => {
+  const { consultationRecords } = await import("../src/content/consultation-records.mjs");
+  const { consultationPhotos } = await import("../src/content/consultation-photos.mjs");
+  const html = await readFile(routeFile("/activities/field-records/"), "utf8");
+  assert.deepEqual(consultationRecords.map((item) => item.date), ["2026-07-18", "2026-08-22", "2026-09-12"]);
+  assert.deepEqual(consultationRecords.map((item) => item.photoIndex), [0, 1, 2]);
+  for (const item of consultationRecords) {
+    const section = html.slice(html.indexOf(`id="${item.id}"`)).split('</section>')[0];
+    for (const fact of [item.date, item.title, item.area, item.participants, consultationPhotos[item.photoIndex].file, "활동 이후 진행한 사항"]) assert.ok(section.includes(fact), fact);
+  }
+  assert.equal((html.match(/<img /g) || []).length, 9);
+  assert.match(html, /중복 제거한 전체 실인원으로 합산하지 않습니다/);
+  assert.match(html, /활동 상세 반영일 <time datetime="2026-09-24">/);
+});
+
+test("interim research discloses distinct counts, corrected start and future stages", async () => {
+  const { research, researchTotal } = await import("../src/content/research.mjs");
+  assert.equal(research.start, "2026-07-15");
+  assert.equal(research.asOf, "2026-09-20");
+  assert.deepEqual(research.participants.map((group) => group.count), [24, 8, 12, 4]);
+  assert.equal(researchTotal, 48);
+  const html = await readFile(routeFile("/programs/housing-research/"), "utf8");
+  for (const text of ["2026년 7월 15일", "2026년 9월 20일", "48명", "동일인이 여러 차례", "지역 전체를 대표하는 통계조사가 아니라", "2026년 10월 · 예정", "2026년 11월 · 예정", "직접 인용", "현재 공개된 조사보고서는 없습니다"]) assert.ok(html.includes(text), text);
+  assert.doesNotMatch(html, /2026-07-01|2026년 7월 1일|<form\b/);
+});
+
+test("consultation, research and funding pages link into one public evidence flow", async () => {
+  for (const route of ["/activities/field-records/", "/programs/housing-research/", "/transparency/", "/activities/nowon-grant-execution/"]) {
+    const html = await readFile(routeFile(route), "utf8");
+    assert.match(html, /class="evidence-flow"/);
+    for (const href of ["/activities/field-records/", "/programs/housing-research/#progress", "/transparency/#execution"]) assert.ok(html.includes(`href="${href}"`));
+  }
 });
 
 test("nonprofit wording explains the tax status without claiming incorporation", async () => {
