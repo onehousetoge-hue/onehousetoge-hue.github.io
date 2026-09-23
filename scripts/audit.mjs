@@ -17,6 +17,7 @@ async function collect(directory) {
 }
 
 await collect(target);
+const documents = new Map(await Promise.all(htmlFiles.map(async (file) => [file, await readFile(file, "utf8")])));
 const titles = new Map();
 // A truthful program planning status is not an empty-page placeholder.
 // Specific research-state regression tests guard against inflated service claims.
@@ -48,10 +49,18 @@ for (const file of htmlFiles) {
   for (const term of banned) if (html.toLowerCase().includes(term.toLowerCase())) failures.push(`${relative}: 금지 문자열 '${term}'이 있습니다.`);
   goodstackCount += (html.match(/Goodstack/g) || []).length;
   for (const match of html.matchAll(/<a[^>]+href="([^"]+)"/g)) {
-    const destination = resolveInternal(match[1]);
+    const href = match[1];
+    if (/^(mailto:|tel:|https?:)/.test(href)) continue;
+    const destination = href.startsWith("#") ? file : resolveInternal(href);
     if (!destination) continue;
-    try { if (!(await stat(destination)).isFile()) failures.push(`${relative}: 깨진 링크 ${match[1]}`); } catch { failures.push(`${relative}: 깨진 링크 ${match[1]}`); }
+    try {
+      if (!(await stat(destination)).isFile()) failures.push(`${relative}: 깨진 링크 ${href}`);
+      const fragment = href.split("#")[1];
+      if (fragment && !documents.get(destination)?.includes(`id="${decodeURIComponent(fragment)}"`)) failures.push(`${relative}: 없는 본문 위치 ${href}`);
+    } catch { failures.push(`${relative}: 깨진 링크 ${href}`); }
   }
+  const pageIds = [...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
+  if (new Set(pageIds).size !== pageIds.length) failures.push(`${relative}: 중복 id가 있습니다.`);
   for (const match of html.matchAll(/<img\b([^>]*)>/g)) if (!/\balt="[^"]*"/.test(match[1])) failures.push(`${relative}: alt 없는 이미지가 있습니다.`);
   if (/<form\b/.test(html)) failures.push(`${relative}: 실제 백엔드가 없는 form이 있습니다.`);
   if (/name="robots" content="index,follow"/.test(html) && !/<script type="application\/ld\+json">/.test(html)) failures.push(`${relative}: 구조화데이터가 없습니다.`);

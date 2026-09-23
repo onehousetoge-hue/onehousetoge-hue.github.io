@@ -373,13 +373,95 @@ test("copy controls disclose clipboard use without inventing receipt or tracking
   const html = await readFile(routeFile("/contact/"), "utf8");
   assert.match(html, /data-copy-contact="phone"/);
   assert.match(html, /data-copy-contact="email"/);
-  assert.equal((html.match(/role="status" aria-live="polite" aria-atomic="true"/g) || []).length, 2);
+  assert.equal((html.match(/role="status" aria-live="polite" aria-atomic="true"/g) || []).length, 5);
   const privacy = await readFile(routeFile("/privacy/"), "utf8");
   assert.match(privacy, /기기의 클립보드/);
   assert.match(privacy, /문의가 접수되지는 않습니다/);
   const script = await readFile(path.join(root, "assets/site.js"), "utf8");
   assert.match(script, /복사가 허용되지 않았습니다/);
   assert.doesNotMatch(script, /접수 완료|신청 완료|gtag\(|dataLayer|fetch\(/);
+});
+
+test("inquiry templates are static, optional and never turn mail opening into receipt", async () => {
+  const { inquiryTemplates } = await import("../src/content/inquiry-templates.mjs");
+  const html = await readFile(routeFile("/contact/"), "utf8");
+  assert.equal(inquiryTemplates.length, 3);
+  assert.equal((html.match(/data-copy-template/g) || []).length, 3);
+  assert.doesNotMatch(html, /<(?:form|input|textarea|select)\b/);
+  assert.match(html, /모든 항목을 채울 필요는 없습니다/);
+  assert.match(html, /홈페이지에서 입력하거나 접수하는 폼은 아닙니다/);
+  for (const item of inquiryTemplates) {
+    assert.ok(html.includes(`id="inquiry-text-${item.id}"`));
+    assert.ok(html.includes(`aria-describedby="inquiry-status-${item.id}" hidden`));
+    const link = `mailto:onehousetoge@gmail.com?subject=${encodeURIComponent(item.subject)}`;
+    assert.ok(html.includes(`href="${link}"`));
+    assert.deepEqual([...new URL(link).searchParams.keys()], ["subject"]);
+    assert.ok(html.includes(item.text));
+  }
+  const hero = html.match(/<section class="page-hero">[\s\S]*?<\/section>/)?.[0];
+  assert.match(hero, /href="tel:\+821045879428"/);
+  assert.match(hero, /href="#inquiry-templates"/);
+});
+
+test("long program pages expose working jumps and unambiguous excluded services", async () => {
+  for (const slug of ["senior-home-consulting", "intergenerational-volunteer"]) {
+    const html = await readFile(routeFile(`/programs/${slug}/`), "utf8");
+    for (const id of ["program-contents", "program-how", "program-cost", "program-limits", "program-faq"]) {
+      assert.ok(html.includes(`href="#${id}"`));
+      assert.ok(html.includes(`id="${id}" tabindex="-1"`));
+    }
+    assert.match(html, />제공하지 않는 업무<\/h2><p>다음 업무는 한지붕의 현재 서비스에 포함되지 않습니다/);
+    assert.match(html, /href="\/contact\/#inquiry-templates"/);
+  }
+});
+
+test("copy handlers use only static text and recover from clipboard rejection", async () => {
+  const { runInNewContext } = await import("node:vm");
+  const script = await readFile(path.join(root, "assets/site.js"), "utf8");
+  function harness(writeText) {
+    const target = { textContent: "  빈 문의 문안\n궁금한 점:  " };
+    const status = { textContent: "" };
+    const button = {
+      hidden: true, disabled: false, dataset: { copyTarget: "prompt" },
+      getAttribute: () => "status", hasAttribute: (name) => name === "data-copy-template",
+      attributes: {}, setAttribute(name, value) { this.attributes[name] = value; },
+      addEventListener(type, callback) { if (type === "click") this.click = callback; },
+    };
+    const document = {
+      querySelectorAll: (selector) => selector === "[data-copy-contact], [data-copy-template]" ? [button] : [],
+      querySelector: () => null,
+      getElementById: (id) => id === "prompt" ? target : status,
+      addEventListener() {}, body: { classList: { add() {} } },
+    };
+    runInNewContext(script, {
+      document, navigator: { clipboard: writeText ? { writeText } : undefined },
+      window: { matchMedia: () => ({ addEventListener() {} }), addEventListener() {} },
+    });
+    return { button, status };
+  }
+  const copied = [];
+  let finish;
+  const success = harness((text) => { copied.push(text); return new Promise((resolve) => { finish = resolve; }); });
+  assert.equal(success.button.hidden, false);
+  const pending = success.button.click();
+  assert.equal(success.button.disabled, false);
+  assert.equal(success.button.attributes["aria-busy"], "true");
+  await success.button.click();
+  assert.equal(copied.length, 1, "Repeated activation while pending must not duplicate clipboard writes");
+  finish();
+  await pending;
+  assert.deepEqual(copied, ["빈 문의 문안\n궁금한 점:"]);
+  assert.equal(success.button.disabled, false);
+  assert.equal(success.button.attributes["aria-busy"], "false");
+  assert.match(success.status.textContent, /직접 전송/);
+  const denied = harness(async () => { throw new Error("Permission denied for test"); });
+  await denied.button.click();
+  assert.match(denied.status.textContent, /직접 작성/);
+  assert.equal(denied.button.disabled, false);
+  assert.equal(denied.button.attributes["aria-busy"], "false");
+  const unavailable = harness();
+  assert.equal(unavailable.button.hidden, true);
+  assert.equal(unavailable.button.click, undefined);
 });
 
 test("CSS and JavaScript versions match the built bytes", async () => {

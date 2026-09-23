@@ -25,6 +25,7 @@ const files = [
   "src/lib/field-record-page.mjs",
   "src/lib/digital-education-page.mjs",
   "src/content/contact.mjs",
+  "src/content/inquiry-templates.mjs",
   "src/content/privacy.mjs",
   "src/lib/resource-page.mjs",
   "src/data/program-details.mjs",

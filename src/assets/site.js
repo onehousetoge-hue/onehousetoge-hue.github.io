@@ -1,25 +1,33 @@
 (() => {
   "use strict";
 
-  // Copy only the organization's already-public contact details; no transmission.
-  document.querySelectorAll("[data-copy-contact]").forEach((copyButton) => {
+  // Copy public contact details or static blank prompts, never visitor input.
+  document.querySelectorAll("[data-copy-contact], [data-copy-template]").forEach((copyButton) => {
     if (!navigator.clipboard?.writeText) return;
     const target = document.getElementById(copyButton.dataset.copyTarget);
     const status = document.getElementById(copyButton.getAttribute("aria-describedby"));
     if (!target || !status) return;
     copyButton.hidden = false;
+    let copying = false;
     copyButton.addEventListener("click", async () => {
-      copyButton.disabled = true;
+      if (copying) return;
+      copying = true;
+      copyButton.setAttribute("aria-busy", "true");
       status.textContent = "";
       try {
         await navigator.clipboard.writeText(target.textContent.trim());
-        status.textContent = copyButton.dataset.copyContact === "phone"
-          ? "전화번호를 복사했습니다. 전화 앱에서 직접 전화해 주세요."
-          : "이메일 주소를 복사했습니다. 메일을 작성하고 직접 전송해 주세요.";
+        status.textContent = copyButton.hasAttribute("data-copy-template")
+          ? "빈 문의 문안을 복사했습니다. 메일에 붙여 넣고 내용을 작성한 뒤 직접 전송해 주세요."
+          : copyButton.dataset.copyContact === "phone"
+            ? "전화번호를 복사했습니다. 전화 앱에서 직접 전화해 주세요."
+            : "이메일 주소를 복사했습니다. 메일을 작성하고 직접 전송해 주세요.";
       } catch {
-        status.textContent = "복사가 허용되지 않았습니다. 위 연락처를 길게 눌러 복사하거나 직접 입력해 주세요.";
+        status.textContent = copyButton.hasAttribute("data-copy-template")
+          ? "복사가 허용되지 않았습니다. 위 문안을 참고해 메일에 직접 작성해 주세요."
+          : "복사가 허용되지 않았습니다. 위 연락처를 길게 눌러 복사하거나 직접 입력해 주세요.";
       } finally {
-        copyButton.disabled = false;
+        copying = false;
+        copyButton.setAttribute("aria-busy", "false");
       }
     });
   });
