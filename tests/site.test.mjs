@@ -217,3 +217,43 @@ test("tracking remains off until an actual account and meaningful conversion flo
     assert.deepEqual(scripts, ["/assets/site.js"]);
   }
 });
+
+test("grant disclosure derives totals only from the owner's six expense entries", async () => {
+  const { funding, fundingTotals } = await import("../src/content/funding.mjs");
+  assert.equal(funding.received, 600000);
+  assert.equal(funding.expenses.length, 6);
+  assert.ok(funding.expenses.every((item) => Number.isSafeInteger(item.amount) && item.amount > 0));
+  assert.equal(fundingTotals.spent, 600000);
+  assert.equal(fundingTotals.balance, 0);
+  assert.deepEqual(fundingTotals.byMonth.map((item) => item.amount), [150000, 200000, 250000]);
+  assert.equal(funding.receivedAt, null);
+  assert.equal(funding.agencySettlementApproved, null);
+  for (const route of ["/transparency/", funding.href]) {
+    const html = await readFile(routeFile(route), "utf8");
+    assert.match(html, /노원구청/);
+    assert.match(html, /600,000원/);
+    assert.match(html, /잔액 0원/);
+    assert.match(html, /단체 전체의 연간 결산이나 지원기관의 정산 승인 결과를 뜻하지 않습니다/);
+    assert.doesNotMatch(html, /공개되어 있지 않습니다|집행 중|외부 감사 완료|정산 승인 완료/);
+  }
+  const detail = await readFile(routeFile(funding.href), "utf8");
+  for (const item of funding.expenses) {
+    assert.ok(detail.includes(item.category));
+    assert.ok(detail.includes(item.detail));
+  }
+  for (const route of ["/transparency/", "/activities/"]) assert.ok((await readFile(routeFile(route), "utf8")).includes(`href="${funding.href}"`));
+  assert.ok((await readFile(path.join(root, "sitemap.xml"), "utf8")).includes(funding.href));
+});
+
+test("photo context precedes income-themed photographs without removing them", async () => {
+  const html = await readFile(routeFile("/activities/field-records/"), "utf8");
+  assert.ok(html.indexOf('현재 상담은 생활의 준비사항을 안내합니다') < html.indexOf('src="/assets/activities/consultation-booth.jpg"'));
+  assert.ok(html.indexOf('현장 기록과 현재 서비스 안내를 구분합니다') < html.indexOf('src="/assets/activities/community-booth.jpg"'));
+  assert.equal((html.match(/<img /g) || []).length, 9);
+});
+
+test("brand accessible names include both visible Korean and English names", async () => {
+  const html = await readFile(routeFile("/"), "utf8");
+  const names = [...html.matchAll(/class="brand(?: footer-brand)?" href="\/" aria-label="([^"]+)"/g)].map((match) => match[1]);
+  assert.deepEqual(names, ["한지붕 HANJIBUNG 홈페이지", "한지붕 HANJIBUNG 홈페이지"]);
+});

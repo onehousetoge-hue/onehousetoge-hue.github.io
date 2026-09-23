@@ -24,7 +24,7 @@ export function programPage(program) {
   const extra = consultation
     ? `<h2>상담 후 얻을 수 있는 도움</h2><p>바로 계약하거나 결정을 내리기보다, 가족과 더 이야기할 항목, 확인이 필요한 정보, 참고할 생활자료를 정리하는 데 도움을 받을 수 있습니다.</p><h2>상담 전에 준비할 내용</h2><p>궁금한 점과 현재 고민을 간단히 알려주세요. 처음 문의하실 때 주민등록번호, 상세 주소, 등기·계약 서류, 금융정보를 보내실 필요는 없습니다. 추가 정보가 필요하다면 담당자가 목적과 범위를 설명한 뒤 요청합니다.</p><p><a href="/resources/consultation-preparation/">상담 준비 질문지 보기</a></p>`
     : research
-      ? `<div class="notice"><h2>생활 가이드와 조사 결과는 다릅니다</h2><p>현재 공개한 생활 가이드는 상담과 교육에 참고하는 자체 자료이며, 완료된 실태조사의 결과 보고서가 아닙니다.</p><a href="/resources/">지금 볼 수 있는 생활자료</a></div>`
+      ? `<h2>주거상생을 위해 살피는 질문</h2><dl class="plain-definitions"><div><dt>필요한 주거정보를 찾기 쉬운가요?</dt><dd>청년과 어르신이 생활공간을 알아보거나 활용할 때 어떤 정보를 필요로 하는지 살핍니다.</dd></div><div><dt>유휴공간 활용 전 무엇을 확인해야 할까요?</dt><dd>당사자와 가족의 생각, 개인공간과 공용공간, 공간 정리·개선에 관한 필요를 다룹니다.</dd></div><div><dt>다른 세대와 함께 생활할 때 무엇이 걱정되나요?</dt><dd>생활시간, 방문객, 공동공간과 소통 방식 등 공동생활에서 확인할 사항을 다룹니다.</dd></div></dl><p>위 질문은 조사 주제를 이해하기 위한 설명이며, 확정 설문지나 실제 응답·조사 결과를 제시한 것이 아닙니다.</p><div class="notice"><h2>생활 가이드와 조사 결과는 다릅니다</h2><p>현재 공개한 생활 가이드는 상담과 교육에 참고하는 자체 자료이며, 완료된 실태조사의 결과 보고서가 아닙니다.</p><a href="/resources/">지금 볼 수 있는 생활자료</a></div>`
       : `<h2>기관 문의 시 알려주세요</h2><ul><li>기관명과 담당자의 회신 연락처</li><li>대상과 대략적인 참여 규모</li><li>원하는 주제, 희망 시기와 장소</li><li>이용 가능한 기기·공간 등 진행 여건</li></ul>`;
   const body = `${pageHero({ eyebrow: `공익사업 ${program.order}`, title, description: detail.subtitle, meta })}
     <section class="section"><div class="container"><dl class="program-facts">${summary.map(([label, value]) => `<div><dt>${label}</dt><dd>${value}</dd></div>`).join("")}</dl>${photos}</div>

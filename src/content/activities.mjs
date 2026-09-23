@@ -2,6 +2,19 @@ import { digitalLearning } from "./field-records.mjs";
 
 export const activities = Object.freeze([
   {
+    slug: "nowon-grant-execution",
+    title: "노원구청 공모사업 지원금 60만 원의 사용 내역",
+    description: "운영자가 제공한 2026년 7~9월 집행내역을 공개합니다. 지원금 수입 600,000원, 지출 합계 600,000원, 계산 잔액 0원입니다.",
+    category: "지원금 집행기록",
+    eventDate: null,
+    publishedAt: "2026-09-24",
+    publishedLabel: "2026년 9월 24일",
+    updatedAt: "2026-09-24",
+    author: "한지붕 운영팀",
+    href: "/activities/nowon-grant-execution/",
+    photo: false,
+  },
+  {
     slug: "senior-digital-education",
     title: "노원구에서 이어온 시니어 디지털·AI 교육 경험",
     description: "한지붕 구성원들이 노원구에서 참여해 온 스마트폰·디지털 서비스 활용 교육의 내용과 현장 경험을 소개합니다. 교육 기획, 현장 진행과 보조 역할을 맡았습니다.",
