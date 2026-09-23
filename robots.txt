@@ -1,6 +1,5 @@
 User-agent: *
 Allow: /
-Disallow: /thanks/
 Disallow: /api/
 Disallow: /admin/
 Disallow: /src/

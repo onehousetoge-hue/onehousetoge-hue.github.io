@@ -1,6 +1,7 @@
 import { readdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { resources, officialSources } from "../src/content/resources.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const target = path.resolve(root, process.argv[2] || "dist");
@@ -59,11 +60,22 @@ const sitemap = await readFile(path.join(target, "sitemap.xml"), "utf8");
 for (const legacy of ["daily-word", "fortune", "/meeting/", "meeting.html", "thanks", "404"]) if (sitemap.includes(legacy)) failures.push(`sitemap.xml에 제외 경로 '${legacy}'가 있습니다.`);
 const robots = await readFile(path.join(target, "robots.txt"), "utf8");
 if (!robots.includes("Sitemap: https://hanjibung.kr/sitemap.xml")) failures.push("robots.txt에 사이트맵이 없습니다.");
-for (const resource of ["family-checklist", "shared-living-rules", "consultation-preparation", "private-common-space", "conflict-prevention", "korean-housing-culture"]) {
-  const html = await readFile(path.join(target, "resources", resource, "index.html"), "utf8");
-  const article = html.match(/<article class="prose">([\s\S]*?)<section class="related-section">/)?.[1] || "";
-  const text = article.replace(/<[^>]+>/g, "").replace(/\s+/g, "").trim();
-  if (text.length < 1200) failures.push(`resources/${resource}: 본문이 ${text.length}자로 1,200자 미만입니다.`);
+// Completeness is checked by useful structure, not an invented policy word count.
+for (const resource of resources) {
+  const html = await readFile(path.join(target, "resources", resource.slug, "index.html"), "utf8");
+  if (!resource.outcome || !resource.reviewNote) failures.push(`${resource.slug}: 자료 목적 또는 작성 범위가 없습니다.`);
+  if (!html.includes('aria-label="이 자료의 목차"') || !html.includes("data-print")) failures.push(`${resource.slug}: 목차 또는 인쇄 기능이 없습니다.`);
+  if (!html.includes("data-worksheet") || !html.includes("data-checklist")) failures.push(`${resource.slug}: 작성 도구 또는 확인표가 없습니다.`);
+  if (!html.includes("서버로 전송하거나 자동 저장하지 않습니다")) failures.push(`${resource.slug}: 입력정보 안내가 없습니다.`);
+  for (const section of resource.sections) {
+    if (!section.body || !html.includes(`id="${section.id}"`) || !html.includes(`href="#${section.id}"`)) failures.push(`${resource.slug}: ${section.id} 본문과 목차가 연결되지 않습니다.`);
+  }
+  for (const key of resource.sources) {
+    const source = officialSources[key];
+    if (!source?.checkedAt || !html.includes(source.url.replaceAll("&", "&amp;"))) failures.push(`${resource.slug}: ${key} 공식 출처 또는 확인일이 없습니다.`);
+  }
+  const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
+  if (new Set(ids).size !== ids.length) failures.push(`${resource.slug}: 중복 id가 있습니다.`);
 }
 
 if (failures.length) {

@@ -10,11 +10,17 @@ const oldFiles = ["app.js", "config.js", "daily-word.html", "fortune-config.js",
 const oldTrackedAssets = ["assets/hero-senior-woman.jpg", "assets/hero-senior-woman.webp", "assets/meeting-hero.jpg"];
 const generatedRoutes = ["about", "programs", "resources", "activities", "transparency", "participate", "contact", "privacy", "terms", "thanks", "404"];
 
-for (const item of [...oldFiles, ...oldTrackedAssets, ...generatedRoutes, "google-apps-script-meeting"]) await rm(path.join(root, item), { recursive: true, force: true });
-for (const item of ["index.html", "404.html", "robots.txt", "sitemap.xml", "site.webmanifest", "CNAME", ".nojekyll"]) await rm(path.join(root, item), { force: true });
+async function removeGenerated(relative, recursive = false) {
+  const target = path.resolve(root, relative);
+  if (target === root || !target.startsWith(`${root}${path.sep}`)) throw new Error(`Unsafe generated path: ${relative}`);
+  await rm(target, { recursive, force: true });
+}
+
+for (const item of [...oldFiles, ...oldTrackedAssets, ...generatedRoutes]) await removeGenerated(item, true);
+for (const item of ["index.html", "404.html", "robots.txt", "sitemap.xml", "site.webmanifest", "CNAME", ".nojekyll"]) await removeGenerated(item);
 await mkdir(path.join(root, "assets"), { recursive: true });
-for (const item of ["site.css", "site.js", "favicon.svg", "og-default.png"]) await rm(path.join(root, "assets", item), { force: true });
+for (const item of ["site.css", "site.js", "favicon.svg", "og-default.png"]) await removeGenerated(path.join("assets", item));
 
 await cp(dist, root, { recursive: true, force: true });
-await rm(path.join(root, "build-manifest.json"), { force: true });
+await removeGenerated("build-manifest.json");
 console.log("Copied the verified production build to the GitHub Pages root.");
