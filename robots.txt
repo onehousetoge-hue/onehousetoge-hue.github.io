@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Disallow: /thanks/
+Disallow: /api/
+Disallow: /admin/
+Disallow: /src/
+Disallow: /scripts/
+Disallow: /tests/
+Disallow: /README.md
+Disallow: /AD_GRANTS_READINESS.md
+Disallow: /CONTENT_SOURCES.md
+Disallow: /CONTENT_GAPS.md
+Disallow: /DEPLOYMENT.md
+Disallow: /POST_DEPLOY_CHECKLIST.md
+Sitemap: https://hanjibung.kr/sitemap.xml

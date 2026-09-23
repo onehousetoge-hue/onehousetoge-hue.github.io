@@ -1,0 +1,21 @@
+{
+  "name": "hanjibung-nonprofit-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "비영리단체 한지붕의 주거상생 공익정보 웹사이트",
+  "scripts": {
+    "clean": "node scripts/clean.mjs",
+    "build": "node scripts/build.mjs",
+    "lint": "node scripts/lint.mjs",
+    "typecheck": "node scripts/typecheck.mjs",
+    "test": "node --test tests/site.test.mjs",
+    "audit": "node scripts/audit.mjs dist",
+    "check": "node scripts/check.mjs",
+    "serve": "node scripts/serve.mjs",
+    "publish:root": "node scripts/publish.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
