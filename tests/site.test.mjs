@@ -100,3 +100,12 @@ test("five documented photos remain and the presentation photo is removed", asyn
   for (const route of ["/", "/activities/"]) assert.ok((await readFile(routeFile(route), "utf8")).includes(`href="${record.href}"`));
   assert.ok((await readFile(path.join(root, "sitemap.xml"), "utf8")).includes(record.href));
 });
+
+test("all public pages omit the removed brand name in copy and image descriptions", async () => {
+  const manifest = JSON.parse(await readFile(path.join(root, "build-manifest.json"), "utf8"));
+  const removedBrand = /\uD648\uD22C\uAC8C\uB354|home\s*together/i;
+  for (const page of manifest.pages) {
+    const file = page.route === "/404.html" ? path.join(root, "404.html") : routeFile(page.route);
+    assert.doesNotMatch(await readFile(file, "utf8"), removedBrand, page.route);
+  }
+});
