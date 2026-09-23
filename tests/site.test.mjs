@@ -214,7 +214,7 @@ test("tracking remains off until an actual account and meaningful conversion flo
     const content = await readFile(file, "utf8");
     assert.doesNotMatch(content, /googletagmanager\.com|google-analytics\.com|googleadservices\.com|gtag\(|dataLayer/);
     const scripts = [...content.matchAll(/<script[^>]+src="([^"]+)"/g)].map((match) => match[1]);
-    assert.deepEqual(scripts, ["/assets/site.js"]);
+    assert.deepEqual(scripts.map((src) => new URL(src, "https://hanjibung.kr").pathname), ["/assets/site.js"]);
   }
 });
 
@@ -326,4 +326,68 @@ test("brand accessible names include both visible Korean and English names", asy
   const html = await readFile(routeFile("/"), "utf8");
   const names = [...html.matchAll(/class="brand(?: footer-brand)?" href="\/" aria-label="([^"]+)"/g)].map((match) => match[1]);
   assert.deepEqual(names, ["한지붕 HANJIBUNG 홈페이지", "한지붕 HANJIBUNG 홈페이지"]);
+});
+
+test("responsive WebP delivery preserves JPEG fallbacks and excludes source metadata", async () => {
+  const { consultationPhotos } = await import("../src/content/consultation-photos.mjs");
+  const { digitalLearning } = await import("../src/content/field-records.mjs");
+  const { photoVariants } = await import("../src/lib/photo-variants.mjs");
+  const html = await readFile(routeFile("/activities/field-records/"), "utf8");
+  for (const photo of [...consultationPhotos, ...digitalLearning.photos]) {
+    const original = await readFile(path.join(root, "assets/activities", photo.file));
+    assert.ok(html.includes(`src="/assets/activities/${photo.file}"`));
+    for (const variant of photoVariants(photo)) {
+      const bytes = await readFile(path.join(root, "assets/activities", variant.file));
+      assert.equal(bytes.toString("ascii", 0, 4), "RIFF");
+      assert.equal(bytes.toString("ascii", 8, 12), "WEBP");
+      assert.ok(bytes.length < original.length, variant.file);
+      for (let offset = 12; offset + 8 <= bytes.length;) {
+        const chunk = bytes.toString("ascii", offset, offset + 4);
+        assert.ok(!["EXIF", "XMP "].includes(chunk), `${variant.file}: ${chunk}`);
+        const size = bytes.readUInt32LE(offset + 4);
+        offset += 8 + size + (size % 2);
+      }
+      assert.ok(html.includes(`${variant.file} ${variant.width}w`));
+    }
+  }
+  assert.equal((html.match(/<picture>/g) || []).length, 9);
+  const home = await readFile(routeFile("/"), "utf8");
+  assert.match(home, /consultation-walk-960\.webp 960w/);
+  assert.match(home, /consultation-walk-768\.webp 768w/);
+  assert.match(home, /loading="eager" fetchpriority="high"/);
+});
+
+test("income-themed photo explanations stay attached to all relevant figures", async () => {
+  const html = await readFile(routeFile("/activities/field-records/"), "utf8");
+  for (const name of ["consultation-booth", "field-conversation", "community-booth"]) {
+    const figure = [...html.matchAll(/<figure\b[^>]*>[\s\S]*?<\/figure>/g)].find((match) => match[0].includes(`${name}.jpg`))?.[0];
+    assert.ok(figure, name);
+    assert.match(figure, /class="photo-context-caption"/);
+    assert.match(figure, /현재 서비스와 구분해 주세요/);
+  }
+  const consultation = await readFile(routeFile("/programs/senior-home-consulting/"), "utf8");
+  assert.doesNotMatch(consultation, /consultation-booth|field-conversation|community-booth/);
+});
+
+test("copy controls disclose clipboard use without inventing receipt or tracking", async () => {
+  const html = await readFile(routeFile("/contact/"), "utf8");
+  assert.match(html, /data-copy-contact="phone"/);
+  assert.match(html, /data-copy-contact="email"/);
+  assert.equal((html.match(/role="status" aria-live="polite" aria-atomic="true"/g) || []).length, 2);
+  const privacy = await readFile(routeFile("/privacy/"), "utf8");
+  assert.match(privacy, /기기의 클립보드/);
+  assert.match(privacy, /문의가 접수되지는 않습니다/);
+  const script = await readFile(path.join(root, "assets/site.js"), "utf8");
+  assert.match(script, /복사가 허용되지 않았습니다/);
+  assert.doesNotMatch(script, /접수 완료|신청 완료|gtag\(|dataLayer|fetch\(/);
+});
+
+test("CSS and JavaScript versions match the built bytes", async () => {
+  const { createHash } = await import("node:crypto");
+  const html = await readFile(routeFile("/"), "utf8");
+  for (const name of ["site.css", "site.js"]) {
+    const bytes = await readFile(path.join(root, "assets", name));
+    const version = createHash("sha256").update(bytes).digest("hex").slice(0, 12);
+    assert.ok(html.includes(`/assets/${name}?v=${version}`));
+  }
 });

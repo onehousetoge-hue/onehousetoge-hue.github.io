@@ -1,6 +1,29 @@
 (() => {
   "use strict";
 
+  // Copy only the organization's already-public contact details; no transmission.
+  document.querySelectorAll("[data-copy-contact]").forEach((copyButton) => {
+    if (!navigator.clipboard?.writeText) return;
+    const target = document.getElementById(copyButton.dataset.copyTarget);
+    const status = document.getElementById(copyButton.getAttribute("aria-describedby"));
+    if (!target || !status) return;
+    copyButton.hidden = false;
+    copyButton.addEventListener("click", async () => {
+      copyButton.disabled = true;
+      status.textContent = "";
+      try {
+        await navigator.clipboard.writeText(target.textContent.trim());
+        status.textContent = copyButton.dataset.copyContact === "phone"
+          ? "전화번호를 복사했습니다. 전화 앱에서 직접 전화해 주세요."
+          : "이메일 주소를 복사했습니다. 메일을 작성하고 직접 전송해 주세요.";
+      } catch {
+        status.textContent = "복사가 허용되지 않았습니다. 위 연락처를 길게 눌러 복사하거나 직접 입력해 주세요.";
+      } finally {
+        copyButton.disabled = false;
+      }
+    });
+  });
+
   const button = document.querySelector("[data-menu-button]");
   const navigation = document.querySelector("[data-navigation]");
   let lastFocused = null;

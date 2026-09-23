@@ -39,12 +39,21 @@ npm run audit
 ```powershell
 npm run check
 npm run publish:root
-git add --all
+git status --short
+git add -u
 git commit -m "Rebuild HanJibung nonprofit website"
 git push origin main
 ```
 
 `publish:root`는 검증된 `dist/` 결과를 GitHub Pages가 사용하는 저장소 루트로 복사하고, 구형 공개 페이지와 관련 자산을 제거합니다. 자세한 내용은 `DEPLOYMENT.md`를 확인하세요.
+
+새 파일은 공개해도 되는 소스·생성물인지 검토한 뒤 `git add -- 경로`로 개별 추가합니다. 상담 명부·영수증 원본·운영관리표는 이 공개 저장소에 넣지 않습니다.
+
+## 사진 전송 최적화
+
+사진 JPEG 원본은 유지하고 WebP 640px·960px·원본 너비 파생본을 함께 제공합니다. 홈 대표 사진에는 중간 해상도 768px도 제공합니다. 브라우저는 화면에 맞는 파일을 선택하고 미지원 환경은 기존 JPEG를 사용합니다. 사진 자르기·내용 변경은 하지 않습니다. CSS·JavaScript URL에는 빌드 시 콘텐츠 해시를 붙여 배포 후 오래된 파일 캐시와의 혼용을 줄입니다.
+
+파생본은 저장소에 포함되어 일반 빌드는 외부 이미지 라이브러리 없이 가능합니다. 재생성이 필요할 때만 설치된 `sharp` 모듈을 사용합니다. 별도 런타임의 모듈은 `SHARP_MODULE`에 경로를 지정한 후 `npm run assets:optimize`를 실행합니다. 스크립트가 원본 해시 보존과 메타데이터 제거를 검사합니다. 새 사진을 추가하면 공개 동의·개인정보 검토 후 파생본과 함께 추가하세요.
 
 ## 콘텐츠 수정 위치
 

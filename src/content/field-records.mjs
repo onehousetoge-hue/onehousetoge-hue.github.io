@@ -31,11 +31,13 @@ export const digitalLearning = Object.freeze({
       file: "field-conversation.jpg", width: 1200, height: 1600,
       alt: "야외 지역행사 부스에서 자료를 펼치고 주민과 대화하는 운영진",
       caption: "지역행사 부스에서 자료를 펼치고 주민과 이야기를 나누는 모습입니다.",
+      context: "사진의 수익 안내와 기관 로고는 당시 현장 기록입니다. 현재 한지붕의 지급·수익 보장이나 해당 기관의 공식 추천을 의미하지 않습니다.",
     },
     {
       file: "community-booth.jpg", width: 1200, height: 1600,
       alt: "지역행사 안내 부스에 앉아 주민을 맞이하는 운영진",
       caption: "구성원들이 별도 프로젝트로 참여한 지역행사 부스입니다. 현수막의 수익 안내는 한지붕의 지급·수익 보장이 아닙니다.",
+      context: "현재 한지붕은 빈방 활용 전 확인할 생활정보를 무료로 안내합니다. 사진 속 금액을 지급하거나 임대수익을 보장하는 사업으로 신청을 받지 않습니다.",
     },
     {
       file: "housing-conversation.jpg", width: 1200, height: 1600,

@@ -13,6 +13,7 @@ import { resourcePage } from "../src/lib/resource-page.mjs";
 import { getResource, resources } from "../src/content/resources.mjs";
 import { policies, programs, site } from "../src/config/site.mjs";
 import { consultationPhotos } from "../src/content/consultation-photos.mjs";
+import { photoVariants } from "../src/lib/photo-variants.mjs";
 import { aboutBody } from "../src/content/about.mjs";
 import { landingPage } from "../src/lib/landing-page.mjs";
 import { programPage } from "../src/lib/program-page.mjs";
@@ -123,6 +124,7 @@ await mkdir(path.join(out, "assets", "activities"), { recursive: true });
 for (const photo of [...digitalLearning.photos, ...consultationPhotos]) {
   await cp(path.join(root, "src", "assets", "activities", photo.file), path.join(out, "assets", "activities", photo.file));
   if (photo.responsive) await cp(path.join(root, "src", "assets", "activities", photo.responsive.file), path.join(out, "assets", "activities", photo.responsive.file));
+  for (const variant of photoVariants(photo)) await cp(path.join(root, "src", "assets", "activities", variant.file), path.join(out, "assets", "activities", variant.file));
 }
 
 const ogSource = path.join(root, "src", "assets", "og-default.png");

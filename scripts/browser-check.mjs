@@ -20,13 +20,18 @@ function evaluate(code) {
   const data = browser("eval", code);
   return data.result;
 }
+function openPage(route) {
+  browser("open", `${base}${route}`);
+  browser("wait", "--load", "networkidle");
+  browser("wait", "h1");
+}
 const manifest = JSON.parse(await readFile("dist/build-manifest.json", "utf8"));
 const routes = manifest.pages.filter((page) => page.indexable).map((page) => page.route);
 const results = [];
 for (const width of [320, 390, 1440]) {
   browser("set", "viewport", String(width), "900");
   for (const route of routes) {
-    browser("open", `${base}${route}`);
+    openPage(route);
     const dimensions = evaluate("({width:innerWidth,scrollWidth:document.documentElement.scrollWidth,bodyFont:getComputedStyle(document.body).fontSize,h1:document.querySelector('h1')?.innerText,errors:document.querySelector('.vite-error-overlay, [data-nextjs-dialog]')!==null})");
     assert.ok(dimensions?.h1, `Missing content ${route}`);
     assert.ok(dimensions.scrollWidth <= width, `Horizontal overflow ${width} ${route}: ${JSON.stringify(dimensions)}`);
@@ -47,7 +52,7 @@ for (const width of [320, 390, 1440]) {
   }
 }
 browser("set", "viewport", "390", "844");
-browser("open", `${base}/resources/conflict-prevention/`);
+openPage("/resources/conflict-prevention/");
 browser("snapshot", "-i");
 browser("fill", "#conflict-fact", "검증용 메모: 생활시간을 함께 확인하기");
 // Check the exact keyboard interaction, including unchanged adjacent checkboxes.
@@ -78,14 +83,27 @@ assert.equal(evaluate("document.activeElement===document.querySelector('[data-na
 browser("press", "Escape");
 assert.equal(evaluate("document.activeElement.hasAttribute('data-menu-button')"), true);
 assert.equal(evaluate("document.querySelector('main').inert"), false);
-browser("open", `${base}/programs/senior-home-consulting/`);
+openPage("/programs/senior-home-consulting/");
 browser("snapshot", "-i");
 browser("focus", ".faq summary");
 browser("press", "Enter");
 assert.equal(evaluate("document.querySelector('.faq details').open"), true);
-browser("open", `${base}/contact/`);
+openPage("/contact/");
 const contacts = evaluate("[...document.querySelectorAll('.contact-card a')].map(a=>a.getAttribute('href'))");
 assert.deepEqual(contacts, ["tel:+821045879428", "mailto:onehousetoge@gmail.com"]);
+browser("snapshot", "-i");
+evaluate("window.__copied=[];Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async value=>{window.__copied.push(value);}}});true");
+browser("focus", "[data-copy-contact=email]");
+browser("press", "Enter");
+assert.deepEqual(evaluate("window.__copied"), ["onehousetoge@gmail.com"]);
+assert.match(evaluate("document.querySelector('#copy-email-status').textContent"), /직접 전송/);
+browser("click", "[data-copy-contact=phone]");
+assert.deepEqual(evaluate("window.__copied"), ["onehousetoge@gmail.com", "010-4587-9428"]);
+evaluate("navigator.clipboard.writeText=async()=>{throw new Error('denied for test')};true");
+browser("click", "[data-copy-contact=email]");
+assert.match(evaluate("document.querySelector('#copy-email-status').textContent"), /복사가 허용되지 않았습니다/);
+assert.equal(evaluate("document.querySelector('[data-copy-contact=email]').disabled"), false);
+assert.equal(evaluate("localStorage.length + sessionStorage.length"), 0);
 const statuses = [];
 for (const route of ["/", "/contact/", "/thanks/consultation/", "/thanks/partnership/", "/daily-word.html", "/fortune.html", "/meeting.html", "/does-not-exist/"]) {
   const response = await fetch(`${base}${route}`);
@@ -97,5 +115,5 @@ for (const route of ["/", "/contact/", "/thanks/consultation/", "/thanks/partner
 }
 const errors = browser("errors");
 assert.deepEqual(errors.errors, [], "Browser errors detected");
-await writeFile(path.join(output, "results.json"), JSON.stringify({ checkedAt: new Date().toISOString(), base, results, statuses, contacts, errors, functionality: "memo, checklist, print callback + mirrors, details, menu focus trap, Escape, FAQ keyboard", limitations: "전화 발신·이메일 전송을 실행하지 않음. 인쇄 대화상자 호출은 대체함; 실제 종이 출력은 확인하지 않음." }, null, 2));
+await writeFile(path.join(output, "results.json"), JSON.stringify({ checkedAt: new Date().toISOString(), base, results, statuses, contacts, errors, functionality: "memo, checklist, print callback + mirrors, details, menu focus trap, Escape, FAQ keyboard, copy success/denied + keyboard", limitations: "전화 발신·이메일 전송을 실행하지 않음. 인쇄 대화상자와 클립보드 쓰기 호출은 대체함; 실제 종이 출력·OS 클립보드 기록은 확인하지 않음." }, null, 2));
 console.log(`Browser QA passed: ${results.length} viewport checks; ${routes.length} axe checks; interactions and status codes.`);

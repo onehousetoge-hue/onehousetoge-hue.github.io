@@ -8,12 +8,18 @@ const files = [
   "src/content/resources.mjs",
   "src/content/activities.mjs",
   "src/content/funding.mjs",
+  "src/content/consultation-records.mjs",
+  "src/content/research.mjs",
   "src/content/transparency.mjs",
   "src/lib/funding-page.mjs",
   "src/content/field-records.mjs",
   "src/content/consultation-photos.mjs",
   "src/content/about.mjs",
   "src/lib/photo.mjs",
+  "src/lib/photo-variants.mjs",
+  "src/lib/static-assets.mjs",
+  "src/lib/evidence-flow.mjs",
+  "src/lib/research-page.mjs",
   "src/lib/landing-page.mjs",
   "src/lib/program-page.mjs",
   "src/lib/field-record-page.mjs",
@@ -27,6 +33,7 @@ const files = [
   "scripts/build.mjs",
   "scripts/publish.mjs",
   "scripts/check.mjs",
+  "scripts/optimize-photos.mjs",
 ];
 
 const failures = [];

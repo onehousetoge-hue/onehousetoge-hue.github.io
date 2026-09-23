@@ -17,6 +17,14 @@
 
 /* Content-plan implementation: documentary photos and a clear consultation path. */
 .documentary-photo { margin: 0; min-width: 0; }
+picture { display: block; min-width: 0; }
+.story-preview-image picture { display: flex; justify-content: center; width: 100%; }
+.photo-context-caption { display: block; margin-top: 14px; padding: 16px; border-left: 3px solid var(--green); background: var(--green-soft); color: var(--ink); }
+.photo-context-caption strong { display: block; color: var(--green); margin-bottom: 6px; }
+.copy-contact { margin-top: 18px; min-height: 56px; font-size: 20px; }
+.copy-contact[hidden] { display: none; }
+.copy-status { font-size: 18px; color: var(--green); }
+.copy-status:empty { display: none; }
 .documentary-photo img { display: block; width: 100%; height: auto; }
 .documentary-photo figcaption { padding-top: 12px; color: var(--muted); font-size: 18px; line-height: 1.65; }
 .consultation-hero .hero-grid { grid-template-columns: minmax(0, 1.3fr) minmax(0, .8fr); gap: 56px; }
@@ -63,6 +71,9 @@
   .question-grid { gap: 22px; }
 }
 @media (max-width: 580px) {
+  .consultation-hero.hero { padding-top: 36px; }
+  .consultation-hero .hero-copy > p:not(.eyebrow) { margin-top: 20px; font-size: 20px; }
+  .consultation-hero .hero-actions { margin-top: 24px; }
   .story-preview-grid, .program-facts { grid-template-columns: 1fr; }
   .program-facts { gap: 8px; }
   .program-photo-story { padding: 22px; gap: 28px; }

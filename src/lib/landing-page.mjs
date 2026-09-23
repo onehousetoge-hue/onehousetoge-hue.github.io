@@ -9,10 +9,10 @@ export function landingPage(programCards) {
   const guides = ["family-checklist", "consultation-preparation", "shared-living-rules"].map(getResource);
   return `<section class="hero consultation-hero"><div class="container hero-grid">
     <div class="hero-copy"><p class="eyebrow nonprofit-badge">${icon("home")}한지붕은 세법상 비영리법인입니다</p><h1>비어 있는 방의 가능성,<br>함께 살아갈 준비부터 살핍니다.</h1>
-      <p>빈방을 어떻게 활용하면 좋을지, 함께 생활하려면 무엇을 준비해야 할지 궁금하신가요?</p><p>한지붕 대표와 운영진이 어르신과 가족의 이야기를 듣고, 공간 활용과 공동생활에 필요한 기본 정보를 무료로 안내합니다.</p>
+      <p>빈방 활용을 고민하는 어르신과 가족에게,<br>한지붕 대표와 운영진이 준비사항과 공동생활 기준을 무료로 안내합니다.</p>
       <div class="hero-actions"><a class="button" href="/programs/senior-home-consulting/">빈방 활용 무료상담 안내${icon("arrow")}</a><a class="button button-secondary" href="/resources/consultation-preparation/">상담 전 준비자료 보기</a></div>
       <p class="hero-service-note">현재 전화·이메일로 상담합니다.<br>초기 상담에는 비용이 없습니다.</p>
-    </div><div class="hero-documentary">${photoFigure(consultationPhotos[0], { eager: true })}</div>
+    </div><div class="hero-documentary">${photoFigure(consultationPhotos[0], { eager: true, sizes: "(max-width: 512px) calc(100vw - 32px), (max-width: 880px) 480px, 440px" })}</div>
   </div></section>
   <section class="section section-muted"><div class="container"><div class="section-header"><div><p class="eyebrow">이런 고민부터 이야기해 주세요</p><h2>빈방 활용,<br>무엇부터 생각하면 좋을까요?</h2></div><p>바로 결정하지 않아도 괜찮습니다. 당사자와 가족의 생각을 먼저 듣고, 필요한 질문을 함께 정리합니다.</p></div>
     <div class="question-grid"><article><span class="question-number">01</span><h3>비어 있는 방이 있는데,<br>무엇부터 확인해야 할까요?</h3><p>가족과 먼저 이야기할 사항과 활용을 검토할 때 필요한 준비사항을 정리합니다.</p><a class="text-link" href="/resources/family-checklist/">가족과 나눌 질문${icon("arrow")}</a></article><article><span class="question-number">02</span><h3>다른 세대와 함께 살려면<br>무엇을 약속해야 할까요?</h3><p>개인공간과 공용공간, 생활시간과 방문객 등 공동생활 기준을 살펴봅니다.</p><a class="text-link" href="/resources/shared-living-rules/">생활규칙 작성표${icon("arrow")}</a></article><article><span class="question-number">03</span><h3>집을 정리하거나 개선할<br>부분이 궁금해요.</h3><p>공간 정리·개선에 관한 일반 정보와 추가로 확인할 질문을 안내합니다.</p><a class="text-link" href="/resources/private-common-space/">공간 구분 살펴보기${icon("arrow")}</a></article></div>

@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "dist");
 const port = Number(process.env.PORT || 4173);
-const types = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".xml": "application/xml; charset=utf-8", ".txt": "text/plain; charset=utf-8", ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg", ".webmanifest": "application/manifest+json" };
+const types = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".xml": "application/xml; charset=utf-8", ".txt": "text/plain; charset=utf-8", ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg", ".webp": "image/webp", ".webmanifest": "application/manifest+json" };
 
 createServer(async (request, response) => {
   try {
@@ -13,7 +13,7 @@ createServer(async (request, response) => {
     let relative = decodeURIComponent(url.pathname).replace(/^\/+/, "");
     let file = path.join(root, relative);
     if (!path.extname(file)) file = path.join(file, "index.html");
-    if (!path.resolve(file).startsWith(root)) throw new Error("Invalid path");
+    if (!path.resolve(file).startsWith(root + path.sep)) throw new Error("Invalid path");
     try { await stat(file); } catch { file = path.join(root, "404.html"); response.statusCode = 404; }
     const data = await readFile(file);
     response.setHeader("Content-Type", types[path.extname(file)] || "application/octet-stream");
