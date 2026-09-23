@@ -54,7 +54,7 @@ export function pageHead({ title, description, path, type = "website", robots = 
     <meta property="og:image" content="${site.url}/assets/og-default.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="비영리단체 한지붕 - 남는 공간을 살피고 세대가 함께 살아갈 기준을 만듭니다">
+    <meta property="og:image:alt" content="한지붕 - 남는 공간을 살피고 세대가 함께 살아갈 기준을 만듭니다">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${escapeHtml(fullTitle)}">
     <meta name="twitter:description" content="${escapeHtml(description)}">
@@ -99,7 +99,7 @@ export function footer() {
         <div class="footer-contact"><h2>단체 정보</h2><dl><div><dt>고유번호</dt><dd>${site.registrationNumber}</dd></div><div><dt>대표자</dt><dd>${site.representative}</dd></div><div><dt>소재지</dt><dd>${site.address}</dd></div><div><dt>전화</dt><dd><a href="${site.phoneHref}">${site.phone}</a></dd></div><div><dt>이메일</dt><dd><a href="${site.emailHref}">${site.email}</a></dd></div></dl></div>
         <div class="footer-links"><h2>안내</h2><a href="/participate/">참여·기관협력</a><a href="/contact/">전화·이메일 문의</a><a href="/privacy/">개인정보 처리방침</a><a href="/terms/">이용안내</a><a href="/transparency/">운영·투명성</a></div>
       </div>
-      <div class="container footer-bottom"><span>© 2026 ${site.name}. All rights reserved.</span><span>수익사업을 하지 않는 비영리단체</span></div>
+      <div class="container footer-bottom"><span>© 2026 ${site.name}. All rights reserved.</span><span>${site.legalType}</span></div>
     </footer>`;
 }
 

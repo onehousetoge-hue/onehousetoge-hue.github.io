@@ -3,9 +3,9 @@ import { digitalLearning } from "./field-records.mjs";
 export const activities = Object.freeze([
   {
     slug: "nowon-grant-execution",
-    title: "노원구청 공모사업 지원금 60만 원의 사용 내역",
-    description: "운영자가 제공한 2026년 7~9월 집행내역을 공개합니다. 지원금 수입 600,000원, 지출 합계 600,000원, 계산 잔액 0원입니다.",
-    category: "지원금 집행기록",
+    title: "노원구청 마을공동체 사업 지원금 60만 원의 사용 계획",
+    description: "운영자가 정정한 2026년 7~11월 집행 계획을 공개합니다. 총 지원금 600,000원 중 집행 예정액 400,000원, 추후 사업비 200,000원입니다.",
+    category: "지원금 사용 계획",
     eventDate: null,
     publishedAt: "2026-09-24",
     publishedLabel: "2026년 9월 24일",
@@ -30,7 +30,7 @@ export const activities = Object.freeze([
   },
   {
     slug: "nonprofit-registration",
-    title: "한지붕이 비영리단체 고유번호를 발급받았습니다",
+    title: "한지붕의 법인으로 보는 단체 승인과 고유번호 발급",
     description:
       "한지붕의 비영리 목적, 고유번호와 세 가지 고유사업을 확인할 수 있는 운영기록입니다.",
     category: "운영기록",

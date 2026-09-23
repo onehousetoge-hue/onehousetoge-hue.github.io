@@ -50,7 +50,11 @@ browser("set", "viewport", "390", "844");
 browser("open", `${base}/resources/conflict-prevention/`);
 browser("snapshot", "-i");
 browser("fill", "#conflict-fact", "검증용 메모: 생활시간을 함께 확인하기");
-browser("check", "#conflict-check-0");
+// Check the exact keyboard interaction, including unchanged adjacent checkboxes.
+assert.deepEqual(evaluate("[...document.querySelectorAll('[data-local-check]')].map(input=>input.checked)"), [false, false, false, false]);
+browser("focus", "#conflict-check-0");
+browser("press", "Space");
+assert.deepEqual(evaluate("[...document.querySelectorAll('[data-local-check]')].map(input=>input.checked)"), [true, false, false, false]);
 assert.equal(evaluate("document.querySelector('[data-check-progress]').textContent"), "1 / 4개 확인");
 assert.equal(evaluate("document.querySelector('[data-print-answer]').textContent"), "검증용 메모: 생활시간을 함께 확인하기");
 assert.equal(evaluate("localStorage.length + sessionStorage.length"), 0);

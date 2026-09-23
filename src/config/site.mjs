@@ -1,7 +1,8 @@
 export const site = Object.freeze({
   name: "한지붕",
   englishName: "HANJIBUNG",
-  type: "비영리단체",
+  type: "세법상 비영리법인",
+  legalType: "비영리법인(국세기본법상 법인으로 보는 단체)",
   registrationNumber: "120-82-82898",
   representative: "김현수",
   foundedAt: "2026-07-05",
@@ -14,7 +15,7 @@ export const site = Object.freeze({
   emailHref: "mailto:onehousetoge@gmail.com",
   url: "https://hanjibung.kr",
   nonprofitDescription:
-    "한지붕은 어르신 유휴공간·빈방 활용 무료상담과 세대교류 교육·봉사를 제공하는 비영리단체입니다. 주거상생 실태조사는 현재 진행 중입니다.",
+    "한지붕은 어르신 유휴공간·빈방 활용 무료상담과 세대교류 교육·봉사를 제공하는 세법상 비영리법인입니다. 주거상생 실태조사는 현재 진행 중입니다.",
   footerDescription:
     "한지붕은 공익 목적의 무료상담·교육·봉사와 생활자료를 제공합니다. 주거상생 실태조사는 진행 중이며, 조사 결과와 공익 보고서는 검토를 거쳐 공개할 예정입니다.",
   updatedAt: "2026-09-24",

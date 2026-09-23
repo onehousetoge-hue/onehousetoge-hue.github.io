@@ -218,31 +218,50 @@ test("tracking remains off until an actual account and meaningful conversion flo
   }
 });
 
-test("grant disclosure derives totals only from the owner's six expense entries", async () => {
+test("corrected grant plan separates allocations from completed spending", async () => {
   const { funding, fundingTotals } = await import("../src/content/funding.mjs");
   assert.equal(funding.received, 600000);
-  assert.equal(funding.expenses.length, 6);
-  assert.ok(funding.expenses.every((item) => Number.isSafeInteger(item.amount) && item.amount > 0));
-  assert.equal(fundingTotals.spent, 600000);
-  assert.equal(fundingTotals.balance, 0);
-  assert.deepEqual(fundingTotals.byMonth.map((item) => item.amount), [150000, 200000, 250000]);
+  assert.equal(funding.source, "마을공동체 사업 지원금");
+  assert.equal(funding.disclosureType, "plan");
+  assert.equal(funding.actualSpent, null);
+  assert.equal(funding.plannedExpenses.length, 5);
+  assert.ok(funding.plannedExpenses.every((item) => Number.isSafeInteger(item.amount) && item.amount > 0));
+  assert.equal(fundingTotals.planned, 400000);
+  assert.equal(fundingTotals.unallocated, 200000);
+  assert.equal(fundingTotals.planned + fundingTotals.unallocated, funding.received);
+  assert.deepEqual(fundingTotals.byMonth.map((item) => item.month), [7, 8, 9, 10, 11]);
+  assert.deepEqual(fundingTotals.byMonth.map((item) => item.amount), [70000, 90000, 80000, 80000, 80000]);
   assert.equal(funding.receivedAt, null);
   assert.equal(funding.agencySettlementApproved, null);
   for (const route of ["/transparency/", funding.href]) {
     const html = await readFile(routeFile(route), "utf8");
-    assert.match(html, /노원구청/);
+    assert.match(html, /노원구청 마을공동체 사업/);
     assert.match(html, /600,000원/);
-    assert.match(html, /잔액 0원/);
+    assert.match(html, /집행 예정액 400,000원/);
+    assert.match(html, /계획상 잔액 200,000원/);
+    assert.match(html, /실제 지출 완료액이나 현재 계좌 잔액을 뜻하지 않습니다/);
     assert.match(html, /단체 전체의 연간 결산이나 지원기관의 정산 승인 결과를 뜻하지 않습니다/);
-    assert.doesNotMatch(html, /공개되어 있지 않습니다|집행 중|외부 감사 완료|정산 승인 완료/);
+    assert.doesNotMatch(html, /잔액 0원|이렇게 사용했습니다|지출 합계 600,000원|지출 세부내역 · 6건|외부 감사 완료|정산 승인 완료/);
   }
   const detail = await readFile(routeFile(funding.href), "utf8");
-  for (const item of funding.expenses) {
+  for (const item of funding.plannedExpenses) {
     assert.ok(detail.includes(item.category));
     assert.ok(detail.includes(item.detail));
   }
   for (const route of ["/transparency/", "/activities/"]) assert.ok((await readFile(routeFile(route), "utf8")).includes(`href="${funding.href}"`));
   assert.ok((await readFile(path.join(root, "sitemap.xml"), "utf8")).includes(funding.href));
+});
+
+test("nonprofit wording explains the tax status without claiming incorporation", async () => {
+  for (const route of ["/", "/about/", "/transparency/", "/activities/nonprofit-registration/"]) {
+    const html = await readFile(routeFile(route), "utf8");
+    assert.match(html, /비영리법인/);
+    assert.match(html, /국세기본법상 법인으로 보는 단체/);
+    assert.doesNotMatch(html, /민법상 법인 설립허가·등기 완료|한지붕은 비영리단체입니다/);
+  }
+  const registration = await readFile(routeFile("/activities/nonprofit-registration/"), "utf8");
+  assert.match(registration, /법인세법 제2조/);
+  assert.match(registration, /민법상 법인 설립허가·등기와는 구분됩니다/);
 });
 
 test("photo context precedes income-themed photographs without removing them", async () => {
