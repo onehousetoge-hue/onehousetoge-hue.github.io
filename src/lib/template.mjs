@@ -31,7 +31,7 @@ export function icon(name, className = "") {
 
 export function pageHead({ title, description, path, type = "website", robots = "index,follow", publishedAt, updatedAt, jsonLd = [] }) {
   const canonical = absolute(path);
-  const fullTitle = title === site.name ? `${site.name} | 세대와 공간을 잇는 비영리단체` : `${title} | ${site.name}`;
+  const fullTitle = title === site.name ? `${site.name} | 어르신 빈방 활용 무료상담과 세대교류` : `${title} | ${site.name}`;
   const schemas = Array.isArray(jsonLd) ? jsonLd : [jsonLd];
   return `
     <meta charset="UTF-8">
@@ -82,7 +82,7 @@ export function header(currentPath = "/") {
         </button>
         <nav class="primary-navigation" id="primary-navigation" aria-label="주요 메뉴" data-navigation>
           <div class="nav-links">${links}</div>
-          <a class="button button-small" href="/programs/senior-home-consulting/">무료상담 알아보기</a>
+          <a class="button button-small" href="/programs/senior-home-consulting/">무료상담 안내</a>
         </nav>
       </div>
     </header>`;
@@ -97,7 +97,7 @@ export function footer() {
           <p>${site.footerDescription}</p>
         </div>
         <div class="footer-contact"><h2>단체 정보</h2><dl><div><dt>고유번호</dt><dd>${site.registrationNumber}</dd></div><div><dt>대표자</dt><dd>${site.representative}</dd></div><div><dt>소재지</dt><dd>${site.address}</dd></div><div><dt>전화</dt><dd><a href="${site.phoneHref}">${site.phone}</a></dd></div><div><dt>이메일</dt><dd><a href="${site.emailHref}">${site.email}</a></dd></div></dl></div>
-        <div class="footer-links"><h2>안내</h2><a href="/privacy/">개인정보 처리방침</a><a href="/terms/">이용안내</a><a href="/transparency/">운영·투명성</a><a href="/contact/">문의</a></div>
+        <div class="footer-links"><h2>안내</h2><a href="/participate/">참여·기관협력</a><a href="/contact/">전화·이메일 문의</a><a href="/privacy/">개인정보 처리방침</a><a href="/terms/">이용안내</a><a href="/transparency/">운영·투명성</a></div>
       </div>
       <div class="container footer-bottom"><span>© 2026 ${site.name}. All rights reserved.</span><span>수익사업을 하지 않는 비영리단체</span></div>
     </footer>`;

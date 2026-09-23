@@ -16,8 +16,12 @@ test("all required public routes exist", async () => {
 test("homepage states the actual services and prioritizes free consulting", async () => {
   const html = await readFile(routeFile("/"), "utf8");
   assert.match(html, /어르신 유휴공간·빈방 활용 무료상담과 세대교류 교육·봉사/);
-  assert.match(html, /주거상생 실태조사는 기획·준비 단계/);
-  assert.ok(html.indexOf('href="/programs/senior-home-consulting/">빈방 활용 무료상담') < html.indexOf("주거상생 자료 보기"));
+  assert.match(html, /주거상생 실태조사는 현재 진행 중/);
+  const hero = html.match(/<section class="hero consultation-hero">([\s\S]*?)<\/section>/)?.[1];
+  assert.ok(hero);
+  assert.match(hero, /비어 있는 방의 가능성/);
+  assert.ok(hero.indexOf('href="/programs/senior-home-consulting/"') < hero.indexOf('href="/resources/consultation-preparation/"'));
+  assert.match(hero, /consultation-walk\.jpg/);
 });
 
 test("mobile menu has accessible state and controls", async () => {
@@ -104,6 +108,22 @@ test("five documented photos remain and the presentation photo is removed", asyn
   assert.ok((await readFile(path.join(root, "sitemap.xml"), "utf8")).includes(record.href));
 });
 
+test("four consented consultation photos are published without original metadata or invented event dates", async () => {
+  const { consultationPhotos } = await import("../src/content/consultation-photos.mjs");
+  assert.equal(consultationPhotos.length, 4);
+  const html = await readFile(routeFile("/activities/field-records/"), "utf8");
+  assert.equal((html.match(/<img /g) || []).length, 9);
+  for (const photo of consultationPhotos) {
+    const bytes = await readFile(path.join(root, "assets/activities", photo.file));
+    assert.ok(bytes.length < 600000, photo.file);
+    assert.equal(bytes.includes(Buffer.from("Exif\0\0")), false, photo.file);
+    assert.ok(html.includes(`alt="${photo.alt}"`), photo.file);
+    assert.ok(html.includes(`width="${photo.width}" height="${photo.height}"`), photo.file);
+  }
+  assert.doesNotMatch(html, /2026-09-05|2026-09-12|2026-09-13|IMG_6467|\.HEIC|KakaoTalk_/);
+  assert.match(html, /임대수익을 보장하거나 입주를 알선하는 서비스가 아닙니다/);
+});
+
 test("all public pages omit the removed brand name in copy and image descriptions", async () => {
   const manifest = JSON.parse(await readFile(path.join(root, "build-manifest.json"), "utf8"));
   const removedBrand = /\uD648\uD22C\uAC8C\uB354|home\s*together/i;
@@ -123,7 +143,7 @@ test("education experience retains publication dates but removes the withdrawn e
   assert.match(html, /게시일 <time datetime="2026-09-23">2026년 9월 23일/);
   assert.match(html, /서울 노원구/);
   assert.match(html, /공개 동의/);
-  assert.equal((html.match(/<img /g) || []).length, 2);
+  assert.equal((html.match(/<img /g) || []).length, 3);
   assert.doesNotMatch(html, /housing-presentation|community-booth|명 참여|만족도/);
   const schema = JSON.parse(html.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);
   assert.equal(schema.datePublished, "2026-09-23");
@@ -139,13 +159,21 @@ test("education experience retains publication dates but removes the withdrawn e
   assert.ok((await readFile(path.join(root, "sitemap.xml"), "utf8")).includes(education.href));
 });
 
-test("research planning is explicit and registered business names remain accurate", async () => {
-  for (const route of ["/", "/programs/", "/programs/housing-research/", "/terms/"]) {
-    assert.match(await readFile(routeFile(route), "utf8"), /기획·준비 단계/);
+test("research is in progress without claiming published results", async () => {
+  const manifest = JSON.parse(await readFile(path.join(root, "build-manifest.json"), "utf8"));
+  for (const page of manifest.pages) {
+    const file = page.route === "/404.html" ? path.join(root, "404.html") : routeFile(page.route);
+    const html = await readFile(file, "utf8");
+    assert.doesNotMatch(html, /기획·준비 단계|실태조사는 기획 단계|기획 단계의 실태조사|앞으로 준비하는 조사|실태조사 및 공익자료 발간 준비|조사 준비 내용 보기|조사 참여 접수 전/, page.route);
+  }
+  for (const route of ["/", "/programs/", "/programs/housing-research/", "/participate/", "/terms/"]) {
+    assert.match(await readFile(routeFile(route), "utf8"), /진행 중/, route);
   }
   const research = await readFile(routeFile("/programs/housing-research/"), "utf8");
-  assert.match(research, /현재 준비하는 내용/);
-  assert.match(research, /현재는 기획 단계로 조사 참여를 접수하지 않습니다/);
+  assert.match(research, /진행 현황과 결과 공개/);
+  assert.match(research, /이 웹사이트에서는 조사 응답을 접수하지 않습니다/);
+  assert.match(research, /현재 공개된 조사보고서는 없습니다/);
+  assert.doesNotMatch(research, /<form\b|설문 응답하기|실태조사 완료|조사보고서 발간 완료/);
   assert.match(research, /등록 고유사업명: 주거상생 실태조사/);
   assert.doesNotMatch(research, /<h2>제공 내용<\/h2>|<span>비용: 무료<\/span>/);
   const consulting = await readFile(routeFile("/programs/senior-home-consulting/"), "utf8");

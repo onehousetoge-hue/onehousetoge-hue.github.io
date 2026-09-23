@@ -14,9 +14,9 @@ export const site = Object.freeze({
   emailHref: "mailto:onehousetoge@gmail.com",
   url: "https://hanjibung.kr",
   nonprofitDescription:
-    "한지붕은 어르신 유휴공간·빈방 활용 무료상담과 세대교류 교육·봉사를 제공하는 비영리단체입니다. 주거상생 실태조사는 기획·준비 단계입니다.",
+    "한지붕은 어르신 유휴공간·빈방 활용 무료상담과 세대교류 교육·봉사를 제공하는 비영리단체입니다. 주거상생 실태조사는 현재 진행 중입니다.",
   footerDescription:
-    "한지붕은 공익 목적의 무료상담·교육·봉사와 생활자료를 제공합니다. 주거상생 실태조사와 조사 기반 공익 보고서는 기획·준비 단계입니다.",
+    "한지붕은 공익 목적의 무료상담·교육·봉사와 생활자료를 제공합니다. 주거상생 실태조사는 진행 중이며, 조사 결과와 공익 보고서는 검토를 거쳐 공개할 예정입니다.",
   updatedAt: "2026-09-23",
 });
 
@@ -25,15 +25,13 @@ export const navigation = Object.freeze([
   ["공익사업", "/programs/"],
   ["활동과 기록", "/activities/"],
   ["주거상생 자료", "/resources/"],
-  ["참여하기", "/participate/"],
   ["운영·투명성", "/transparency/"],
-  ["문의", "/contact/"],
 ]);
 
 export const programs = Object.freeze([
   {
     slug: "senior-home-consulting",
-    order: "03",
+    order: "01",
     title: "어르신 유휴공간·빈방 활용 무료상담",
     registeredTitle: "어르신 주택 개선 무료상담",
     status: "전화·이메일 상담 운영",
@@ -44,8 +42,9 @@ export const programs = Object.freeze([
   },
   {
     slug: "intergenerational-volunteer",
-    order: "01",
-    title: "세대교류 봉사 프로그램",
+    order: "02",
+    title: "세대교류 교육·봉사",
+    registeredTitle: "세대교류 봉사 프로그램",
     status: "기관 요청에 따라 사전 협의",
     shortTitle: "세대교류 봉사",
     description:
@@ -54,13 +53,13 @@ export const programs = Object.freeze([
   },
   {
     slug: "housing-research",
-    order: "02",
-    title: "주거상생 실태조사 및 공익자료 발간 준비",
+    order: "03",
+    title: "주거상생 실태조사",
     registeredTitle: "주거상생 실태조사",
-    status: "기획·준비 단계",
-    shortTitle: "실태조사 준비",
+    status: "진행 중",
+    shortTitle: "주거상생 실태조사",
     description:
-      "청년 주거와 고령층 유휴공간에 관한 자료 조사와 조사 항목 설계를 준비하고 있습니다. 한지붕 명의의 정식 대규모 실태조사와 조사보고서는 완료되지 않았으며, 현재 공개한 생활 가이드는 자체 교육자료입니다.",
+      "청년 주거와 고령층 유휴공간에 관한 실태조사를 진행하고 있습니다. 조사 결과와 공익 보고서는 검토를 거쳐 공개할 예정이며, 현재 공개한 생활 가이드는 자체 교육자료입니다.",
     href: "/programs/housing-research/",
   },
 ]);

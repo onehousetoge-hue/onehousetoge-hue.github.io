@@ -3,8 +3,8 @@ import { icon, pageHero } from "../lib/template.mjs";
 
 export const contactBody = `${pageHero({
   eyebrow: "전화·이메일 문의",
-  title: "궁금한 내용부터<br>편하게 이야기해 주세요.",
-  description: "가족과 확인할 사항, 개인공간과 공용공간, 공동생활 규칙을 함께 정리합니다. 상담과 프로그램 참여는 전화 또는 이메일로 문의해 주세요.",
+  title: "한지붕에 문의하세요",
+  description: "빈방 활용 상담이나 교육·봉사 협력이 궁금하시면 전화 또는 이메일로 연락해 주세요. 한지붕 대표와 운영진이 내용을 확인하고 안내합니다.",
 })}
 <section class="section"><div class="container">
   <div class="contact-cards">

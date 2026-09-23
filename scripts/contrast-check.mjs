@@ -12,6 +12,7 @@ const samples = [
   ["설명 / 아이보리", token("muted"), token("bg"), 4.5],
   ["제목·링크 / 아이보리", token("green"), token("bg"), 4.5],
   ["버튼 글자 / 초록", "#ffffff", token("green"), 4.5],
+  ["하단 문의 보조 버튼·링크 / 남색", "#ffffff", token("navy"), 4.5],
   ["메모 안내 / 흰색", "#46574f", "#ffffff", 4.5],
   ["메모 테두리 / 흰색", "#647b6e", "#ffffff", 3],
   ["체크리스트 글자 / 연초록", token("ink"), token("green-soft"), 4.5],

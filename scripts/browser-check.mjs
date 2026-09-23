@@ -6,10 +6,11 @@ import assert from "node:assert/strict";
 const bin = process.env.AGENT_BROWSER_BIN;
 if (!bin) throw new Error("AGENT_BROWSER_BIN is required");
 const base = process.env.QA_BASE_URL || "http://127.0.0.1:4178";
+const session = process.env.QA_BROWSER_SESSION || "hanjibung-qa";
 const output = path.resolve(process.env.QA_OUTPUT || "../.qa-runtime/browser-report");
 await mkdir(output, { recursive: true });
 function browser(...args) {
-  const result = spawnSync(bin, ["--session", "hanjibung-qa", "--json", ...args], { encoding: "utf8", timeout: 40000, windowsHide: true });
+  const result = spawnSync(bin, ["--session", session, "--json", ...args], { encoding: "utf8", timeout: 40000, windowsHide: true });
   if (result.status !== 0) throw new Error(result.stderr || result.stdout || "Browser command failed");
   const json = JSON.parse(result.stdout);
   if (!json.success) throw new Error(JSON.stringify(json.error));
@@ -37,7 +38,7 @@ for (const width of [320, 390, 1440]) {
       item.accessibility = audit;
       assert.equal(audit.violations.length, 0, `Axe violations ${route}: ${JSON.stringify(audit.violations)}`);
     }
-    if (["/", "/contact/", "/resources/family-checklist/", "/resources/private-common-space/"].includes(route)) {
+    if (["/", "/programs/senior-home-consulting/", "/activities/field-records/", "/contact/", "/resources/family-checklist/", "/resources/private-common-space/"].includes(route)) {
       const name = route === "/" ? "home" : route.split("/").filter(Boolean).at(-1);
       browser("screenshot", path.join(output, `${name}-${width}.png`));
     }

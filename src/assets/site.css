@@ -15,6 +15,63 @@
   --shadow: 0 16px 40px rgba(24, 63, 54, 0.08);
 }
 
+/* Content-plan implementation: documentary photos and a clear consultation path. */
+.documentary-photo { margin: 0; min-width: 0; }
+.documentary-photo img { display: block; width: 100%; height: auto; }
+.documentary-photo figcaption { padding-top: 12px; color: var(--muted); font-size: 18px; line-height: 1.65; }
+.consultation-hero .hero-grid { grid-template-columns: minmax(0, 1.3fr) minmax(0, .8fr); gap: 56px; }
+.consultation-hero h1 { font-size: clamp(36px, 3.5vw, 54px); line-height: 1.35; }
+.nonprofit-badge { display: inline-flex; align-items: center; gap: 9px; border-bottom: 1px solid var(--green); padding-bottom: 10px; }
+.hero-documentary { max-width: 440px; justify-self: end; }
+.hero-documentary img { border-radius: 8px 56px 8px 8px; }
+.hero-service-note { font-size: 18px; border-left: 3px solid var(--green); padding-left: 16px; }
+.question-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 30px; }
+.question-grid article { padding: 30px 0 8px; border-top: 2px solid var(--green); }
+.question-number { color: var(--green); font-size: 18px; font-weight: 800; }
+.question-grid h3 { font-size: 25px; line-height: 1.5; margin: 20px 0; }
+.story-preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+.story-preview { background: var(--bg); min-width: 0; }
+.story-preview-image { padding: 24px 24px 0; background: #dfdfd1; display: flex; justify-content: center; }
+.story-preview-image img { max-width: 100%; width: auto; height: 390px; object-fit: contain; display: block; }
+.story-preview-copy { padding: 28px; }
+.story-preview h3 { font-size: 28px; }
+.section-action { margin: 36px 0 0; }
+.steps.consultation-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.scope-note { border-top: 1px solid #769b8c; padding-top: 24px; margin-top: 36px; }
+.organization-intro { display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: 56px; }
+.contact-readable { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; }
+.contact-readable a { overflow-wrap: anywhere; }
+.final-cta .button-secondary { color: #ffffff; background: transparent; border-color: #ffffff; }
+.final-cta .button-secondary:hover { color: var(--navy); background: #ffffff; }
+.final-cta .text-link { color: #ffffff; }
+.program-facts { margin: 0 0 64px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
+.program-facts > div { padding: 22px 0; border-top: 2px solid var(--green); }
+.program-facts dt { color: var(--green); font-weight: 800; }
+.program-facts dd { margin: 12px 0 0; }
+.program-photo-story { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .8fr); gap: 56px; align-items: center; padding: 40px; margin-bottom: 64px; background: var(--green-soft); }
+.program-photo-story .documentary-photo { max-width: 410px; justify-self: center; }
+.registration-note { color: var(--muted); font-size: 18px; }
+.resource-card-outcome { border-top: 1px solid var(--line); padding-top: 18px; }
+.resource-card-outcome strong { display: block; font-size: 18px; margin-bottom: 8px; color: var(--green); }
+.field-photo-single + .field-photo-pair { margin-top: 36px; }
+@media (max-width: 880px) {
+  .consultation-hero .hero-grid, .question-grid, .organization-intro, .program-photo-story { grid-template-columns: 1fr; }
+  .hero-documentary { width: 100%; max-width: 480px; justify-self: center; }
+  .program-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .story-preview-image img { height: 300px; }
+  .steps.consultation-steps { grid-template-columns: 1fr; }
+  .question-grid { gap: 22px; }
+}
+@media (max-width: 580px) {
+  .story-preview-grid, .program-facts { grid-template-columns: 1fr; }
+  .program-facts { gap: 8px; }
+  .program-photo-story { padding: 22px; gap: 28px; }
+  .story-preview-image img { height: auto; max-height: 410px; }
+  .story-preview-copy { padding: 22px; }
+  .consultation-hero h1 { font-size: 36px; }
+  .consultation-hero .hero-actions .button { width: 100%; }
+}
+
 /* Preserve each documentary photo's whole frame and original context. */
 .field-feature-section { background: #ede8db; }
 .field-feature { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 60px; align-items: center; }
