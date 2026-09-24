@@ -10,3 +10,4 @@ function assetUrl(file) {
 export const stylesheetUrl = assetUrl("site.css");
 export const scriptUrl = assetUrl("site.js");
 export const inquiryScriptUrl = assetUrl("inquiry.js");
+export const livingLabScriptUrl = assetUrl("living-lab.mjs");

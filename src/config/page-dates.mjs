@@ -8,6 +8,6 @@ export const pageDates = Object.freeze({
   "/resources/": "2026-09-25", "/activities/": "2026-09-24",
   "/activities/field-records/": "2026-09-24", "/transparency/": "2026-09-25",
   "/participate/": "2026-09-24", "/contact/": "2026-09-24",
-  "/privacy/": "2026-09-24", "/terms/": "2026-09-24",
+  "/privacy/": "2026-09-25", "/terms/": "2026-09-24",
   "/consultation/": "2026-09-25", "/partnership/": "2026-09-25",
 });

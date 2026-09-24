@@ -397,7 +397,9 @@ test("tracking remains off until an actual account and meaningful conversion flo
     const content = await readFile(file, "utf8");
     assert.doesNotMatch(content, /googletagmanager\.com|google-analytics\.com|googleadservices\.com|gtag\(|dataLayer/);
     const scripts = [...content.matchAll(/<script[^>]+src="([^"]+)"/g)].map((match) => match[1]);
-    const expected = /^\/(consultation|partnership)\//.test(page.route) ? ["/assets/site.js", "/assets/inquiry.js"] : ["/assets/site.js"];
+    const expected = ["/assets/site.js"];
+    if (/^\/(consultation|partnership)\//.test(page.route)) expected.push("/assets/inquiry.js");
+    if (/^\/resources\/(preparation-room|conversation-practice|living-cost-planner|community-session-kit)\/$/.test(page.route)) expected.push("/assets/living-lab.mjs");
     assert.deepEqual(scripts.map((src) => new URL(src, "https://hanjibung.kr").pathname), expected);
   }
 });

@@ -19,7 +19,7 @@ async function removeGenerated(relative, recursive = false) {
 for (const item of [...oldFiles, ...oldTrackedAssets, ...generatedRoutes]) await removeGenerated(item, true);
 for (const item of ["index.html", "404.html", "robots.txt", "sitemap.xml", "site.webmanifest", "CNAME", ".nojekyll"]) await removeGenerated(item);
 await mkdir(path.join(root, "assets"), { recursive: true });
-for (const item of ["site.css", "site.js", "inquiry.js", "favicon.svg", "og-default.png"]) await removeGenerated(path.join("assets", item));
+for (const item of ["site.css", "site.js", "inquiry.js", "living-lab.mjs", "favicon.svg", "og-default.png"]) await removeGenerated(path.join("assets", item));
 
 await cp(dist, root, { recursive: true, force: true });
 await removeGenerated("build-manifest.json");
