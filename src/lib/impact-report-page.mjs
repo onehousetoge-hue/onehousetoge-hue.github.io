@@ -3,7 +3,7 @@ import { impactSection, consultationImpact, activityTimeline } from "./impact.mj
 import { resources } from "../content/resources.mjs";
 
 export const annualGoals = Object.freeze([
-  { label: "무료상담", current: 34, target: 100, unit: "건", description: "주거와 유휴공간 문제로 고민하는 주민이 부담 없이 정보를 얻도록 상담을 확대합니다." },
+  { label: "무료상담", current: 40, target: 100, unit: "건", description: "주거와 유휴공간 문제로 고민하는 주민이 부담 없이 정보를 얻도록 상담을 확대합니다." },
   { label: "실태조사", current: 127, target: 300, unit: "명", description: "청년과 어르신 양쪽의 목소리를 듣고 지역의 의견을 지속적으로 수집합니다." },
   { label: "무료자료", current: 6, target: 10, unit: "종", description: "반복되는 질문을 누구나 활용할 수 있는 공익자료로 만듭니다." },
   { label: "지역기관 방문·협력", current: 9, target: 20, unit: "곳", description: "경로당·복지관·학교·주민기관 등 지역 커뮤니티와의 접점을 확대합니다." },
@@ -17,10 +17,29 @@ export const localActivities = Object.freeze([
 ]);
 
 export function impactReportPage(activity) {
-  const body = pageHero({ eyebrow: "2026 활동현황 · 9월 24일 기준", title: "현장에서 듣고,<br>다음 활동으로 이어갑니다.", description: activity.description })
+  const body = pageHero({ eyebrow: "2026 활동현황 · 항목별 집계일 안내", title: "현장에서 듣고,<br>다음 활동으로 이어갑니다.", description: activity.description })
   + impactSection()
   + `<section class="section"><div class="container content-layout"><article class="prose">
-  <nav class="field-toc" aria-label="활동현황 목차"><a href="#people">만나는 사람들</a><a href="#places">지역별 활동</a><a href="#questions">현장의 고민</a><a href="#outputs">자료로 이어지는 기록</a><a href="#goals">2026 목표</a></nav>
+  <nav class="field-toc" aria-label="활동현황 목차"><a href="#consultation-results">상담·자료 운영 실적</a><a href="#people">만나는 사람들</a><a href="#places">지역별 활동</a><a href="#questions">현장의 고민</a><a href="#outputs">자료로 이어지는 기록</a><a href="#goals">2026 목표</a></nav>
+  <section id="consultation-results" aria-labelledby="consultation-results-title">
+  <h2 id="consultation-results-title">상담이 실제 도움으로 이어지도록</h2>
+  <p>한지붕은 어르신과 가족이 유휴공간 활용을 충분히 이해하고, 자신의 생활에 맞는 선택을 준비하도록 돕고자 합니다.</p>
+  <h3>상담·자료 운영 실적</h3>
+  <p>집계 기간: 2026년 7월 5일(창립일)~2026년 9월 25일 · 출처: 한지붕 운영진 제공 집계</p>
+  <dl class="plain-definitions">
+  <div><dt>무료 기초상담 · 40건</dt><dd>동일 문의의 반복 연락을 제외한 접수·상담 기록</dd></div>
+  <div><dt>후속 정보 안내 · 25건</dt><dd>자료 전달이나 추가 질문 안내 완료 기록</dd></div>
+  <div><dt>상담 이용자 의견 수렴 · 30명</dt><dd>자발적 설문 응답, 중복 제외</dd></div>
+  <div><dt>생활·주거자료 보완 · 3종</dt><dd>수정한 내용과 공개일 기록</dd></div>
+  </dl>
+  <p>자료 보완 3종은 기존 자료를 개선한 실적이며, 무료 공개자료 6종에 더해 9종으로 계산하지 않습니다. 의견 수렴 30명은 아래 비율 통계의 문항별 응답자 수를 뜻하지 않습니다.</p>
+  <h3>상담 후 남는 도움</h3>
+  <h4>가족과 이야기할 질문</h4><p>어르신 본인의 희망과 가족의 걱정을 구분하고, 함께 의논할 항목을 정리합니다.</p>
+  <h4>공동생활 전 확인할 기준</h4><p>개인공간, 주방·욕실, 방문객, 청소와 생활시간에 관한 질문을 살펴봅니다.</p>
+  <h4>추가로 확인할 기관과 정보</h4><p>계약·세금 등 전문적인 판단이 필요한 문제는 관련 기관에 확인하도록 안내합니다.</p>
+  <h3>활동을 점검하는 방법</h3><p>상담 건수만 늘리기보다 안내가 이해하기 쉬웠는지, 필요한 정보를 얻었는지 의견을 듣겠습니다. 결과를 공개할 때에는 집계 기간과 응답자 수를 함께 표시하고, 목표와 실제 실적을 구분하겠습니다.</p>
+  <div class="hero-actions"><a class="button" href="/programs/senior-home-consulting/">무료상담 안내 보기</a><a class="button button-secondary" href="/resources/">생활자료 보기</a><a class="button button-secondary" href="/activities/">실제 활동기록 보기</a></div>
+  </section>
   <h2 id="people">한지붕은 누구를 만나고 있나요?</h2><dl class="research-counts"><div><dt>60세 이상 지역 주민</dt><dd>58명</dd></div><div><dt>청년·대학생</dt><dd>28명</dd></div><div><dt>직접 방문한 지역 가정</dt><dd>18가구</dd></div><div><dt>방문·협력 지역기관</dt><dd>9곳</dd></div></dl><p>상담·프로그램 참여자 86명의 구성입니다. 사람·가구·기관은 다른 집계 단위이므로 합산하지 않습니다.</p><p>어르신에게는 유휴공간과 공동생활, 가족의 의견과 생활환경에 관한 이야기를 들었습니다. 청년에게는 주거비 부담과 계약기간, 통학, 안전과 개인공간에 관한 의견을 들었습니다.</p><p>한지붕은 온라인 설문만으로 지역 문제를 판단하지 않습니다. 직접 사람을 만나 생활환경과 주거 고민을 듣고 그 의견을 다음 활동에 반영합니다.</p>
   <h2 id="places">지역으로 직접 찾아갑니다</h2><p>한지붕은 노원구를 중심으로 주민을 만나고 있습니다.</p><dl class="plain-definitions">${localActivities.map(([area, count, description]) => `<div><dt>${area} · ${count}회</dt><dd>${description}</dd></div>`).join("")}</dl><p>지역별 활동 합계는 12회입니다. 현장조사·인터뷰 9회는 별도 활동 구분이며 이 수치에 더해 전체 횟수로 표시하지 않습니다.</p><h3>노원구에서 시작합니다</h3><p>지역의 문제는 지역 안에서 직접 사람을 만날 때 더 구체적으로 보입니다. 한 지역에서 상담과 조사를 축적하고, 그 경험과 자료를 다른 지역에서도 활용할 수 있도록 정리하고 있습니다.</p>
   <h2>상담 이후에 들은 응답</h2><p>단순히 몇 명을 만났는지만 기록하지 않습니다. 어떤 정보가 도움이 됐는지, 이후 무엇을 해보고 싶은지도 듣습니다.</p><dl class="research-counts"><div><dt>필요한 정보를 얻었다고 응답</dt><dd>91%</dd></div><div><dt>가족과 빈방 활용을 이야기해보겠다고 응답</dt><dd>64%</dd></div><div><dt>추가 상담을 희망</dt><dd>38%</dd></div><div><dt>공동생활 전 생활규칙 합의가 필요하다고 응답</dt><dd>82%</dd></div></dl><p>출처: 한지붕 내부 응답 집계. 문항별 응답자 수와 조사기간은 이 페이지에 공개되어 있지 않습니다. 각 비율은 별도 문항의 응답으로 서로 합산하지 않으며, 실태조사 전체 127명의 응답 비율로 해석하지 않습니다. 대화·추가상담 의향은 실제 실행 완료와 구분합니다.</p>
@@ -31,7 +50,7 @@ export function impactReportPage(activity) {
   <h3>무료로 공개하고 있는 자료</h3><div class="related-grid">${resources.map(resource => `<a class="related-link" href="${resource.href}"><strong>${escapeHtml(resource.title)}</strong><span class="resource-meta">${escapeHtml(resource.readTime)}</span><span>${escapeHtml(resource.description)}</span></a>`).join("")}</div><p>한 사람에게서 들은 질문이 비슷한 고민을 하는 다른 사람에게도 도움이 되도록 자료를 만듭니다. 빈방 체크리스트는 준비할 질문을 찾는 도구이며 공간의 안전성·입주 적합성을 판정하지 않습니다.</p>
   <h2>2026 노원구 주거상생 실태조사</h2><p>2026년 9월 시작한 조사에는 현재 127명이 참여했습니다. 주요 조사문항은 18개, 현장조사 및 인터뷰는 9회입니다. 어르신의 유휴공간 여부와 공유 의향, 우려사항을 묻고 청년에게는 주거비·희망 거주기간·주거 선택 기준을 듣고 있습니다.</p><p>조사 내용을 향후 보고서와 생활자료 보완에 반영합니다. 현재 결과는 지역 전체를 대표하는 통계가 아닙니다.</p><a class="text-link" href="/programs/housing-research/">조사방법과 진행상황 보기</a>
   <h2>이번 달 한지붕은 이렇게 활동했습니다</h2><h3>2026년 9월 활동보고 · 9월 24일까지</h3><dl class="research-counts"><div><dt>현장활동</dt><dd>4회</dd></div><div><dt>신규 상담 참여</dt><dd>23명</dd></div><div><dt>새로운 생활자료 제작</dt><dd>2종</dd></div><div><dt>지역기관 방문</dt><dd>3곳</dd></div><div><dt>후속 정보안내</dt><dd>12건</dd></div></dl><p>출처: 한지붕 운영진 월간 중간 집계. 위 수치는 누적 실적에 포함되므로 누적 수치에 다시 더하지 않습니다. 한 달 전체의 확정 결산은 아닙니다.</p><p>월별 활동을 기록하고 공개해 계획한 사업이 어떻게 진행되는지 확인할 수 있도록 하겠습니다.</p><h2 id="goals">2026년 우리가 만들고 싶은 변화</h2><p>아래 수치는 연간 목표이며 달성한 실적과 구분합니다. 진행률은 현재 실적 ÷ 목표로 계산하고 정수로 반올림했습니다.</p><div class="annual-goals">${annualGoals.map(goal => { const percent=Math.round(goal.current/goal.target*100); return `<section><h3>${goal.label} ${goal.target}${goal.unit}</h3><p>현재 ${goal.current}${goal.unit} · ${percent}% 진행</p><progress value="${goal.current}" max="${goal.target}" aria-label="${goal.label} 목표 대비 ${percent}%"></progress><p>${goal.description}</p></section>`; }).join("")}</div>
-  <h2>한눈에 보는 2026 한지붕</h2><p>무료상담 34건 · 직접 방문 18가구 · 현장활동 12회 · 상담·프로그램 참여자 86명 · 실태조사 127명 · 지역기관 방문·협력 9곳 · 후속 정보안내 21건 · 무료자료 6종</p><p>출처: 한지붕 운영진 제공 집계 · 기준일 2026년 9월 24일. 실명·연락처·상세주소와 응답 원자료는 공개하지 않습니다.</p>
+  <h2>한눈에 보는 2026 한지붕</h2><p>무료상담 40건 · 직접 방문 18가구 · 현장활동 12회 · 상담·프로그램 참여자 86명 · 실태조사 127명 · 지역기관 방문·협력 9곳 · 후속 정보안내 25건 · 무료자료 6종</p><p>출처: 한지붕 운영진 제공 집계 · 상담·후속 안내는 2026년 7월 5일~9월 25일, 나머지 항목은 9월 24일 기준. 실명·연락처·상세주소와 응답 원자료는 공개하지 않습니다.</p>
   </article><aside class="side-nav"><h2>활동과 참여</h2><a href="/activities/">활동 기록</a><a href="/consultation/">무료상담 문의</a><a href="/partnership/">기관협력 문의</a><a href="/transparency/">운영·공개</a></aside></div></section>`
   + activityTimeline();
   return layout({ title: activity.title, description: activity.description, path: activity.href, body, updatedAt: activity.updatedAt, breadcrumbs: [{label:"활동과 기록",href:"/activities/"},{label:"2026 활동현황",href:activity.href}] });

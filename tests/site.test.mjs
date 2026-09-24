@@ -75,6 +75,20 @@ test("editorial redesign keeps direct inquiry actions and a shared visual system
   assert.match(records, /href="\/partnership\/">기관·경로당 상담 요청하기/);
 });
 
+test("homesharing articles explain preparation without offering registration or matching", async () => {
+  const index = await readFile(routeFile("/resources/"), "utf8");
+  for (const slug of ["prepare-unused-room", "homesharing-basics"]) {
+    const route = `/resources/${slug}/`;
+    assert.ok(index.includes(route));
+    const html = await readFile(routeFile(route), "utf8");
+    assert.ok(html.includes("입주자 연결·계약대행은 제공하지 않습니다."));
+    assert.ok(html.includes('href="/consultation/"'));
+    assert.ok(html.includes('href="/resources/"'));
+    assert.ok(!html.includes('type="file"'));
+    assert.ok(!html.includes("예상 월세를 안내해"));
+  }
+});
+
 test("contact page uses real contact links, not implementation details or a fake form", async () => {
   const contact = await readFile(routeFile("/contact/"), "utf8");
   assert.doesNotMatch(contact, /<form\b/);
@@ -345,9 +359,9 @@ test("dated consultation records use confirmed photo order and keep all photos",
 
 test("operator-confirmed impact is published with a reference date and distinct counting scopes", async () => {
   const home = await readFile(routeFile("/"), "utf8");
-  for (const text of ["34건", "12회", "86명", "9곳", "127명", "6종", "2026년 9월 24일 기준", "중복을 제외", "서로 더해"]) assert.ok(home.includes(text), text);
+  for (const text of ["40건", "12회", "86명", "9곳", "127명", "6종", "9월 24일 기준", "중복을 제외", "서로 더해"]) assert.ok(home.includes(text), text);
   const consulting = await readFile(routeFile("/programs/senior-home-consulting/"), "utf8");
-  for (const text of ["18가구", "21건", "공간 확인", "후속상담", "과거 활동 실적"]) assert.ok(consulting.includes(text), text);
+  for (const text of ["18가구", "25건", "공간 확인", "후속상담", "과거 활동 실적"]) assert.ok(consulting.includes(text), text);
   const exchange = await readFile(routeFile("/programs/intergenerational-volunteer/"), "utf8");
   for (const text of ["7회", "3회", "2회", "86명"]) assert.ok(exchange.includes(text), text);
   const youth = await readFile(routeFile("/resources/consultation-preparation/"), "utf8");
@@ -357,10 +371,11 @@ test("operator-confirmed impact is published with a reference date and distinct 
 test("detailed impact report separates goals, internal responses and monthly totals", async () => {
   const { annualGoals, localActivities } = await import("../src/lib/impact-report-page.mjs");
   assert.equal(localActivities.reduce((sum, item) => sum + item[1], 0), 12);
-  assert.deepEqual(annualGoals.map(goal => Math.round(goal.current / goal.target * 100)), [34, 42, 60, 45, 60]);
+  assert.deepEqual(annualGoals.map(goal => Math.round(goal.current / goal.target * 100)), [40, 42, 60, 45, 60]);
   const html = await readFile(routeFile("/activities/2026-impact/"), "utf8");
   for (const text of ["58명", "28명", "42개", "428회", "91%", "64%", "38%", "82%", "내부 응답 집계", "익명 공개 동의", "9월 24일까지", "측정 기간·도구·중복 제거", "연간 목표"]) assert.ok(html.includes(text), text);
   assert.ok(!html.includes("41명"));
+  for (const text of ["상담·자료 운영 실적", "2026년 7월 5일(창립일)~2026년 9월 25일", "무료 기초상담 · 40건", "후속 정보 안내 · 25건", "상담 이용자 의견 수렴 · 30명", "생활·주거자료 보완 · 3종", "자료 보완 3종은 기존 자료를 개선한 실적"]) assert.ok(html.includes(text), text);
   assert.ok(!html.includes("최대 2회"));
 });
 

@@ -1,4 +1,5 @@
 import { impactSection, activityTimeline } from "../src/lib/impact.mjs";
+import { homesharingArticles, homesharingCards, homesharingPage } from "../src/lib/homesharing-articles.mjs";
 import { impactReportPage } from "../src/lib/impact-report-page.mjs";
 import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -81,10 +82,11 @@ for (const kind of ["consultation", "partnership"]) {
   await emit(`/${kind}/complete/`, inquiryCompletePage(kind), { indexable: false });
 }
 
-const resourcesBody = `${pageHero({ eyebrow: "주거상생 자료", title: "가족과 이야기할 때,<br>함께 생활할 때 꺼내 보세요.", description: "가족회의 질문지부터 생활규칙 작성표까지, 각자의 고민에 맞춰 읽고 직접 적어볼 수 있는 생활자료 6종입니다. 메모는 자동 저장되거나 전송되지 않습니다.", meta: updatedMeta("/resources/") })}<section class="section"><div class="container">${guideFinder()}<h2>생활자료 전체 보기</h2><div class="resource-grid">${resourceCards(resources, 3)}</div></div></section>`;
+const resourcesBody = `${pageHero({ eyebrow: "주거상생 자료", title: "가족과 이야기할 때,<br>함께 생활할 때 꺼내 보세요.", description: "가족회의 질문지부터 생활규칙 작성표까지, 각자의 고민에 맞춰 읽고 직접 적어볼 수 있는 생활자료 6종입니다. 메모는 자동 저장되거나 전송되지 않습니다.", meta: updatedMeta("/resources/") })}<section class="section"><div class="container">${homesharingCards()}${guideFinder()}<h2>생활자료 전체 보기</h2><div class="resource-grid">${resourceCards(resources, 3)}</div></div></section>`;
 await emit("/resources/", layout({ title: "주거상생 자료", description: "어르신 주택과 세대공존을 준비하는 가족·청년·기관을 위한 주거상생 공익자료입니다.", path: "/resources/", body: resourcesBody, breadcrumbs: [{ label: "주거상생 자료", href: "/resources/" }] }));
 
 for (const resource of resources) await emit(resource.href, resourcePage(resource), { updatedAt: resource.updatedAt });
+for (const article of homesharingArticles) await emit(article.href, homesharingPage(article), { updatedAt: article.updatedAt });
 
 const activitiesBody = `${pageHero({ eyebrow: "활동과 기록", title: "함께한 현장과<br>한지붕의 소식을 전합니다.", description: "어르신 상담 사진과 시니어 디지털·AI 교육 경험, 단체의 창립·등록 운영기록을 전합니다.", meta: updatedMeta("/activities/") })}${impactSection()}${fieldRecordFeature()}<section class="section"><div class="container"><div class="section-header"><div><p class="eyebrow">활동과 운영기록</p><h2>교육 경험과 운영기록으로 만나는<br>한지붕의 발걸음</h2></div><p>구성원의 교육 경험과 단체 운영기록을 구분하여 소개합니다. 게시일은 실제 교육일을 뜻하지 않습니다.</p></div><div class="record-list">${activities.map((activity) => `<article class="record-item"><time datetime="${activity.eventDate || activity.publishedAt}">${activity.eventDate ? "활동일 " : "게시일 "}${activity.eventLabel || activity.publishedLabel}</time><div><span class="resource-meta">${activity.category}</span><h3>${activity.title}</h3><p>${activity.description}</p></div>${cardLink(activity.href, "기록 확인")}</article>`).join("")}</div></div></section>`;
 await emit("/activities/", layout({ title: "활동과 기록", description: "어르신 상담 현장과 디지털 교육 경험, 한지붕의 창립·등록 기록을 소개합니다.", path: "/activities/", body: activitiesBody + activityTimeline(), breadcrumbs: [{ label: "활동과 기록", href: "/activities/" }] }));
