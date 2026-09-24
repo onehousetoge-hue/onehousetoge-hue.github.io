@@ -17,10 +17,10 @@ test("homepage states the actual services and prioritizes free consulting", asyn
   const html = await readFile(routeFile("/"), "utf8");
   assert.match(html, /어르신 유휴공간·빈방 활용 무료상담과 세대교류 교육·봉사/);
   assert.match(html, /주거상생 실태조사는 현재 진행 중/);
-  const hero = html.match(/<section class="hero consultation-hero">([\s\S]*?)<\/section>/)?.[1];
+  const hero = html.match(/<section class="editorial-hero">([\s\S]*?)<\/section>/)?.[1];
   assert.ok(hero);
-  assert.match(hero, /비어 있는 방의 가능성/);
-  assert.ok(hero.indexOf('href="/programs/senior-home-consulting/"') < hero.indexOf('href="/resources/consultation-preparation/"'));
+  assert.match(hero, /집과 생활의 고민/);
+  assert.ok(hero.indexOf('href="/consultation/"') < hero.indexOf('href="/resources/consultation-preparation/"'));
   assert.match(hero, /consultation-walk\.jpg/);
 });
 
@@ -30,6 +30,20 @@ test("mobile menu has accessible state and controls", async () => {
   assert.match(html, /aria-controls="primary-navigation"/);
   const js = await readFile(path.join(root, "assets", "site.js"), "utf8");
   assert.match(js, /event\.key === "Escape"/);
+});
+
+test("editorial redesign keeps direct inquiry actions and a shared visual system", async () => {
+  const home = await readFile(routeFile("/"), "utf8");
+  for (const name of ["editorial-cover", "editorial-questions", "editorial-process", "editorial-stories", "editorial-guides", "editorial-transparency"]) assert.ok(home.includes(name));
+  for (const route of routes) {
+    const html = await readFile(routeFile(route), "utf8");
+    const header = html.match(/<header[\s\S]*?<\/header>/)?.[0];
+    assert.match(header, /href="\/consultation\/">무료상담 문의/);
+    assert.match(html, /theme-color" content="#8f2929"/);
+  }
+  const records = await readFile(routeFile("/activities/field-records/"), "utf8");
+  assert.match(records, /href="\/consultation\/">무료상담 신청 문의/);
+  assert.match(records, /href="\/partnership\/">기관·경로당 상담 요청하기/);
 });
 
 test("contact page uses real contact links, not implementation details or a fake form", async () => {

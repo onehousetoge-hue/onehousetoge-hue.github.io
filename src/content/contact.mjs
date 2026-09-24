@@ -3,9 +3,9 @@ import { icon, pageHero } from "../lib/template.mjs";
 import { inquiryTemplateSection } from "./inquiry-templates.mjs";
 
 export const contactBody = `${pageHero({
-  eyebrow: "전화·이메일 문의",
+  eyebrow: "상담·기관협력 문의",
   title: "한지붕에 문의하세요",
-  description: "빈방 활용 상담이나 교육·봉사 협력이 궁금하시면 전화 또는 이메일로 연락해 주세요. 한지붕 대표와 운영진이 내용을 확인하고 안내합니다.",
+  description: "빈방 활용이 궁금한 어르신과 가족은 무료상담으로, 교육·봉사를 함께할 기관은 기관협력으로 문의해 주세요. 홈페이지에 내용을 남기거나 전화·이메일로 연락하실 수 있습니다.",
   meta: `<div class="hero-actions"><a class="button" href="${site.phoneHref}">${icon("phone")}전화 ${site.phone}</a><a class="button button-secondary" href="${site.emailHref}">${icon("mail")}이메일 작성하기</a></div><p class="field-hint">메일 앱에서 내용을 작성한 뒤 직접 전송해 주세요.</p><a class="text-link" href="#inquiry-templates">문의 문안 예시 보기${icon("arrow")}</a>`,
 })}
 <section class="section"><div class="container">

@@ -40,7 +40,7 @@ export function pageHead({ title, description, path, type = "website", robots = 
     <meta name="description" content="${escapeHtml(description)}">
     <meta name="robots" content="${robots}">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-    <meta name="theme-color" content="#183f36">
+    <meta name="theme-color" content="#8f2929">
     <title>${escapeHtml(fullTitle)}</title>
     <link rel="canonical" href="${canonical}">
     <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
@@ -75,7 +75,6 @@ export function header(currentPath = "/") {
     <header class="site-header" data-header>
       <div class="container header-inner">
         <a class="brand" href="/" aria-label="한지붕 HANJIBUNG 홈페이지">
-          <span class="brand-mark" aria-hidden="true">${icon("home")}</span>
           <span><strong>${site.name}</strong> <small>${site.englishName}</small></span>
         </a>
         <button class="menu-button" type="button" aria-expanded="false" aria-controls="primary-navigation" data-menu-button>
@@ -83,7 +82,7 @@ export function header(currentPath = "/") {
         </button>
         <nav class="primary-navigation" id="primary-navigation" aria-label="주요 메뉴" data-navigation>
           <div class="nav-links">${links}</div>
-          <a class="button button-small" href="/programs/senior-home-consulting/">무료상담 안내</a>
+          <a class="button button-small" href="/consultation/">무료상담 문의</a>
         </nav>
       </div>
     </header>`;

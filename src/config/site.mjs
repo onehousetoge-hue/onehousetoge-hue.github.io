@@ -22,11 +22,11 @@ export const site = Object.freeze({
 });
 
 export const navigation = Object.freeze([
-  ["한지붕 소개", "/about/"],
-  ["공익사업", "/programs/"],
-  ["활동과 기록", "/activities/"],
-  ["주거상생 자료", "/resources/"],
-  ["운영·투명성", "/transparency/"],
+  ["소개", "/about/"],
+  ["하는 일", "/programs/"],
+  ["현장 이야기", "/activities/"],
+  ["생활자료", "/resources/"],
+  ["운영·공개", "/transparency/"],
 ]);
 
 export const programs = Object.freeze([
@@ -35,7 +35,7 @@ export const programs = Object.freeze([
     order: "01",
     title: "어르신 유휴공간·빈방 활용 무료상담",
     registeredTitle: "어르신 주택 개선 무료상담",
-    status: "전화·이메일 상담 운영",
+    status: "온라인 문의 접수 · 전화·이메일 상담",
     shortTitle: "빈방 활용 무료상담",
     description:
       "한지붕 대표와 운영진이 빈방 활용을 검토할 때의 준비사항, 공간 정리·개선에 관한 일반 정보, 공동생활 기준과 청년 주거 공익정보를 전화·이메일로 안내합니다.",

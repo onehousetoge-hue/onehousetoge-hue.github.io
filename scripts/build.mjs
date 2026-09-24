@@ -122,7 +122,7 @@ const sitemapEntries = generated.filter((page) => page.indexable && page.route !
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapEntries.map((page) => `  <url><loc>${absolute(page.route)}</loc><lastmod>${page.updatedAt}</lastmod></url>`).join("\n")}\n</urlset>\n`;
 await writeFile(path.join(out, "sitemap.xml"), sitemap, "utf8");
 await writeFile(path.join(out, "robots.txt"), `User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /admin/\nDisallow: /src/\nDisallow: /scripts/\nDisallow: /tests/\nDisallow: /README.md\nDisallow: /AD_GRANTS_READINESS.md\nDisallow: /CONTENT_SOURCES.md\nDisallow: /CONTENT_GAPS.md\nDisallow: /DEPLOYMENT.md\nDisallow: /POST_DEPLOY_CHECKLIST.md\nSitemap: ${site.url}/sitemap.xml\n`, "utf8");
-await writeFile(path.join(out, "site.webmanifest"), JSON.stringify({ name: "세법상 비영리법인 한지붕", short_name: site.name, start_url: "/", display: "standalone", background_color: "#f7f4ec", theme_color: "#183f36", icons: [{ src: "/assets/favicon.svg", sizes: "any", type: "image/svg+xml" }] }, null, 2), "utf8");
+await writeFile(path.join(out, "site.webmanifest"), JSON.stringify({ name: "세법상 비영리법인 한지붕", short_name: site.name, start_url: "/", display: "standalone", background_color: "#faf9f5", theme_color: "#8f2929", icons: [{ src: "/assets/favicon.svg", sizes: "any", type: "image/svg+xml" }] }, null, 2), "utf8");
 await writeFile(path.join(out, "CNAME"), "hanjibung.kr\n", "utf8");
 await writeFile(path.join(out, ".nojekyll"), "", "utf8");
 await mkdir(path.join(out, "assets"), { recursive: true });

@@ -3,8 +3,8 @@
   "short_name": "한지붕",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f7f4ec",
-  "theme_color": "#183f36",
+  "background_color": "#faf9f5",
+  "theme_color": "#8f2929",
   "icons": [
     {
       "src": "/assets/favicon.svg",
