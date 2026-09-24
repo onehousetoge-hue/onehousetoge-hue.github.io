@@ -2,13 +2,12 @@
 // not consultation attendances or a representative population sample.
 export const research = Object.freeze({
   title: "노원구 고령가구 유휴공간 및 세대공존 실태조사",
-  start: "2026-07-15", end: "2026-11-30", asOf: "2026-09-20", publishedAt: "2026-09-24",
+  start: "2026-09", end: "2026-11-30", asOf: "2026-09-24", publishedAt: "2026-09-24",
   area: "서울시 노원구 공릉동·하계동 일대",
   methods: "대면상담, 간단한 설문, 개별 인터뷰, 기관 의견청취",
   stage: "1차 의견수집 및 질문 분류",
   participants: Object.freeze([
-    { label: "지역 어르신", count: 24 }, { label: "어르신 가족", count: 8 },
-    { label: "청년", count: 12 }, { label: "지역기관 관계자", count: 4 },
+    { label: "전체 조사 참여자 · 중복 제외", count: 127 },
   ].map(Object.freeze)),
   topics: Object.freeze([
     { title: "사용하지 않는 공간의 현황", questions: ["자녀 독립 이후 남은 방이 있는지", "현재 공간을 어떻게 사용하고 있는지", "공간을 계속 비워두는 이유", "공간 활용을 검토한 경험"] },
@@ -24,8 +23,8 @@ export const research = Object.freeze({
     { title: "불편사항을 전달할 연락창구", summary: "당사자끼리 해결하기 어려운 갈등이 생겼을 때 상황을 듣고 조율할 별도 연락창구가 필요하다는 의견이 있었습니다." },
   ]),
   timeline: Object.freeze([
-    { period: "2026년 7월 15일부터", title: "조사 설계", status: "진행 기록", items: ["조사목적과 주요 질문 설정", "상담기록 작성방식 검토", "개인정보를 제외한 기록항목 정리"] },
-    { period: "2026년 8~9월", title: "현장 의견수집", status: "진행 중", items: ["어르신 무료상담과 가족·청년 의견청취", "지역기관 관계자 인터뷰", "반복 질문과 우려사항 분류"] },
+    { period: "2026년 9월", title: "조사 설계", status: "진행 기록", items: ["조사목적과 주요 질문 설정", "상담기록 작성방식 검토", "개인정보를 제외한 기록항목 정리"] },
+    { period: "2026년 9월", title: "현장 의견수집", status: "진행 중", items: ["어르신 무료상담과 가족·청년 의견청취", "지역기관 관계자 인터뷰", "반복 질문과 우려사항 분류"] },
     { period: "2026년 10월", title: "자료 정리 및 분석", status: "예정", items: ["의견의 주제별 분류", "어르신·가족·청년 의견 비교", "상담자료와 생활규칙 개선사항 도출"] },
     { period: "2026년 11월", title: "조사결과 요약", status: "예정", items: ["주요 조사내용과 조사방법·한계 공개", "무료상담 자료와 향후 프로그램에 반영"] },
   ]),

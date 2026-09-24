@@ -813,5 +813,12 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -.055em; }
 }
 
 .community-activity-photo { margin: 2rem 0; }
+.impact-section { background: #f1eee8; }
+.impact-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; margin-block: 2rem; }
+.impact-grid > div { display: flex; flex-direction: column-reverse; gap: .7rem; padding-block: 1.4rem; border-top: 1px solid var(--line); }
+.impact-grid dd { margin: 0; color: #8f2929; font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 800; line-height: 1.2; }
+.impact-grid dt { font-size: 1.25rem; line-height: 1.6; }
+.impact-basis { max-width: 80ch; font-size: 1.125rem; line-height: 1.8; }
+@media (max-width: 650px) { .impact-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; } }
 .community-activity-photo img { display: block; width: 100%; max-width: 680px; height: auto; margin-inline: auto; }
 .community-activity-photo figcaption { margin-top: 1rem; font-size: 1.125rem; line-height: 1.7; }

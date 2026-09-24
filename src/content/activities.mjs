@@ -1,6 +1,66 @@
 import { digitalLearning } from "./field-records.mjs";
 
 export const activities = Object.freeze([
+{
+  "slug": "gongneung-consultation-september",
+  "title": "공릉동 어르신 주거상담",
+  "eventDate": "2026-09-18",
+  "eventLabel": "2026년 9월 18일",
+  "paragraphs": [
+    "서울 노원구 공릉동에서 지역 어르신을 대상으로 유휴공간 활용과 공동생활에 관한 상담을 진행했습니다.",
+    "참여자 11명 · 개별상담 7건 · 추가상담 신청 3건. 추가상담 신청은 상담 완료 건수와 구분합니다.",
+    "이날 가장 많이 나온 질문은 전입신고, 다른 사람과 함께 생활할 때의 사생활 문제, 가족의 동의 여부였습니다.",
+    "한지붕은 상담에서 나온 질문을 정리해 참여자에게 관련 정보를 추가로 안내하고, 반복되는 질문은 향후 무료 안내자료에 반영하기로 했습니다."
+  ],
+  "description": "서울 노원구 공릉동에서 지역 어르신을 대상으로 유휴공간 활용과 공동생활에 관한 상담을 진행했습니다.",
+  "category": "현장 활동 기록",
+  "publishedAt": "2026-09-24",
+  "publishedLabel": "2026년 9월 24일",
+  "updatedAt": "2026-09-24",
+  "author": "한지붕 운영팀",
+  "href": "/activities/gongneung-consultation-september/",
+  "photo": false
+},
+{
+  "slug": "senior-center-living-consultation",
+  "title": "경로당 생활정보 상담",
+  "eventDate": "2026-09-11",
+  "eventLabel": "2026년 9월 11일",
+  "paragraphs": [
+    "지역 경로당을 방문해 어르신들과 주거공간 활용과 세대공유에 대한 이야기를 나눴습니다.",
+    "참여자 16명 · 생활상담 8건 · 후속안내 5건.",
+    "방은 남지만 타인과 함께 사는 것이 걱정된다는 의견이 많이 나왔습니다.",
+    "개인공간과 공용공간을 어떻게 구분할 수 있는지, 함께 생활하기 전에 어떤 규칙을 정해야 하는지 중심으로 안내했습니다."
+  ],
+  "description": "지역 경로당을 방문해 어르신들과 주거공간 활용과 세대공유에 대한 이야기를 나눴습니다.",
+  "category": "현장 활동 기록",
+  "publishedAt": "2026-09-24",
+  "publishedLabel": "2026년 9월 24일",
+  "updatedAt": "2026-09-24",
+  "author": "한지붕 운영팀",
+  "href": "/activities/senior-center-living-consultation/",
+  "photo": false
+},
+{
+  "slug": "youth-housing-opinions",
+  "title": "청년 주거 의견조사",
+  "eventDate": "2026-09-07",
+  "eventLabel": "2026년 9월 7일",
+  "paragraphs": [
+    "노원구에서 생활하거나 학교에 다니는 청년을 대상으로 주거비와 거주형태에 관한 의견을 들었습니다.",
+    "참여 청년 24명 · 설문 응답 24건.",
+    "월세 부담뿐 아니라 계약기간, 통학시간, 안전, 개인공간 확보 등이 중요한 주거 선택 기준으로 언급됐습니다.",
+    "조사 결과는 향후 한지붕의 주거상생 실태조사 자료에 포함할 예정입니다."
+  ],
+  "description": "노원구에서 생활하거나 학교에 다니는 청년을 대상으로 주거비와 거주형태에 관한 의견을 들었습니다.",
+  "category": "현장 활동 기록",
+  "publishedAt": "2026-09-24",
+  "publishedLabel": "2026년 9월 24일",
+  "updatedAt": "2026-09-24",
+  "author": "한지붕 운영팀",
+  "href": "/activities/youth-housing-opinions/",
+  "photo": false
+},
   {
     slug: "community-cooperation",
     title: "청년 주거·세대공감 활동 운영을 위한 협력 논의",

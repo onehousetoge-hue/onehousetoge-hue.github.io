@@ -122,10 +122,12 @@ test("new community activities preserve supplied dates, copy, images and income 
   for (const item of activities.filter((activity) => activity.paragraphs)) {
     const html = await readFile(path.join(root, item.href, "index.html"), "utf8");
     assert.ok(html.includes(item.eventDate));
-    assert.ok(html.includes(item.caption));
+    if (item.caption) assert.ok(html.includes(item.caption));
     for (const paragraph of item.paragraphs) assert.ok(html.includes(paragraph));
-    assert.ok(html.includes(`/assets/activities/${item.image}`));
-    assert.ok((await stat(path.join(root, "assets/activities", item.image))).size > 0);
+    if (item.image) {
+      assert.ok(html.includes(`/assets/activities/${item.image}`));
+      assert.ok((await stat(path.join(root, "assets/activities", item.image))).size > 0);
+    } else assert.ok(!html.includes("/assets/activities/undefined"));
     if (item.photoContext) assert.ok(html.includes(item.photoContext));
   }
 });
@@ -236,7 +238,7 @@ test("operating guidance states available channels and prior agreement rules", a
   for (const route of ["/programs/senior-home-consulting/", "/contact/", "/participate/"]) {
     const html = await readFile(routeFile(route), "utf8");
     assert.match(html, /전화·이메일 기초상담은 무료/);
-    assert.match(html, /주택 방문상담/);
+    if (route !== "/participate/") assert.match(html, /안전진단/);
     assert.doesNotMatch(html, /방문상담의 제공 여부와 범위는 확정되어 있지|방문 가능 여부/);
   }
   for (const route of ["/programs/intergenerational-volunteer/", "/contact/", "/participate/"]) {
@@ -328,14 +330,25 @@ test("dated consultation records use confirmed photo order and keep all photos",
   assert.match(html, /활동 상세 반영일 <time datetime="2026-09-24">/);
 });
 
+test("operator-confirmed impact is published with a reference date and distinct counting scopes", async () => {
+  const home = await readFile(routeFile("/"), "utf8");
+  for (const text of ["34건", "12회", "86명", "9곳", "127명", "6종", "2026년 9월 24일 기준", "중복을 제외", "서로 더해"]) assert.ok(home.includes(text), text);
+  const consulting = await readFile(routeFile("/programs/senior-home-consulting/"), "utf8");
+  for (const text of ["18가구", "21건", "공간 확인", "후속상담", "과거 활동 실적"]) assert.ok(consulting.includes(text), text);
+  const exchange = await readFile(routeFile("/programs/intergenerational-volunteer/"), "utf8");
+  for (const text of ["7회", "3회", "2회", "86명"]) assert.ok(exchange.includes(text), text);
+  const youth = await readFile(routeFile("/resources/consultation-preparation/"), "utf8");
+  for (const text of ["청년 주거 체크리스트", "youth-budget", "youth-space"]) assert.ok(youth.includes(text), text);
+});
+
 test("interim research discloses distinct counts, corrected start and future stages", async () => {
   const { research, researchTotal } = await import("../src/content/research.mjs");
-  assert.equal(research.start, "2026-07-15");
-  assert.equal(research.asOf, "2026-09-20");
-  assert.deepEqual(research.participants.map((group) => group.count), [24, 8, 12, 4]);
-  assert.equal(researchTotal, 48);
+  assert.equal(research.start, "2026-09");
+  assert.equal(research.asOf, "2026-09-24");
+  assert.deepEqual(research.participants.map((group) => group.count), [127]);
+  assert.equal(researchTotal, 127);
   const html = await readFile(routeFile("/programs/housing-research/"), "utf8");
-  for (const text of ["2026년 7월 15일", "2026년 9월 20일", "48명", "동일인이 여러 차례", "지역 전체를 대표하는 통계조사가 아니라", "2026년 10월 · 예정", "2026년 11월 · 예정", "직접 인용", "현재 공개된 조사보고서는 없습니다"]) assert.ok(html.includes(text), text);
+  for (const text of ["2026년 9월", "2026년 9월 24일", "127명", "동일인이 여러 차례", "지역 전체를 대표하는 통계조사가 아니라", "2026년 10월 · 예정", "2026년 11월 · 예정", "직접 인용", "현재 공개된 조사보고서는 없습니다"]) assert.ok(html.includes(text), text);
   assert.doesNotMatch(html, /2026-07-01|2026년 7월 1일|<form\b/);
 });
 

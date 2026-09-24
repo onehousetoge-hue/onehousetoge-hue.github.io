@@ -1,3 +1,4 @@
+import { impactSection, activityTimeline } from "../src/lib/impact.mjs";
 import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -84,8 +85,8 @@ await emit("/resources/", layout({ title: "주거상생 자료", description: "�
 
 for (const resource of resources) await emit(resource.href, resourcePage(resource), { updatedAt: resource.updatedAt });
 
-const activitiesBody = `${pageHero({ eyebrow: "활동과 기록", title: "함께한 현장과<br>한지붕의 소식을 전합니다.", description: "어르신 상담 사진과 시니어 디지털·AI 교육 경험, 단체의 창립·등록 운영기록을 전합니다.", meta: updatedMeta("/activities/") })}${fieldRecordFeature()}<section class="section"><div class="container"><div class="section-header"><div><p class="eyebrow">활동과 운영기록</p><h2>교육 경험과 운영기록으로 만나는<br>한지붕의 발걸음</h2></div><p>구성원의 교육 경험과 단체 운영기록을 구분하여 소개합니다. 게시일은 실제 교육일을 뜻하지 않습니다.</p></div><div class="record-list">${activities.map((activity) => `<article class="record-item"><time datetime="${activity.eventDate || activity.publishedAt}">${activity.eventDate ? "활동일 " : "게시일 "}${activity.eventLabel || activity.publishedLabel}</time><div><span class="resource-meta">${activity.category}</span><h3>${activity.title}</h3><p>${activity.description}</p></div>${cardLink(activity.href, "기록 확인")}</article>`).join("")}</div></div></section>`;
-await emit("/activities/", layout({ title: "활동과 기록", description: "어르신 상담 현장과 디지털 교육 경험, 한지붕의 창립·등록 기록을 소개합니다.", path: "/activities/", body: activitiesBody, breadcrumbs: [{ label: "활동과 기록", href: "/activities/" }] }));
+const activitiesBody = `${pageHero({ eyebrow: "활동과 기록", title: "함께한 현장과<br>한지붕의 소식을 전합니다.", description: "어르신 상담 사진과 시니어 디지털·AI 교육 경험, 단체의 창립·등록 운영기록을 전합니다.", meta: updatedMeta("/activities/") })}${impactSection()}${fieldRecordFeature()}<section class="section"><div class="container"><div class="section-header"><div><p class="eyebrow">활동과 운영기록</p><h2>교육 경험과 운영기록으로 만나는<br>한지붕의 발걸음</h2></div><p>구성원의 교육 경험과 단체 운영기록을 구분하여 소개합니다. 게시일은 실제 교육일을 뜻하지 않습니다.</p></div><div class="record-list">${activities.map((activity) => `<article class="record-item"><time datetime="${activity.eventDate || activity.publishedAt}">${activity.eventDate ? "활동일 " : "게시일 "}${activity.eventLabel || activity.publishedLabel}</time><div><span class="resource-meta">${activity.category}</span><h3>${activity.title}</h3><p>${activity.description}</p></div>${cardLink(activity.href, "기록 확인")}</article>`).join("")}</div></div></section>`;
+await emit("/activities/", layout({ title: "활동과 기록", description: "어르신 상담 현장과 디지털 교육 경험, 한지붕의 창립·등록 기록을 소개합니다.", path: "/activities/", body: activitiesBody + activityTimeline(), breadcrumbs: [{ label: "활동과 기록", href: "/activities/" }] }));
 await emit(digitalLearning.href, fieldRecordPage());
 for (const record of consultationRecords) await emit(record.href, consultationRecordPage(record), { updatedAt: record.updatedAt });
 
