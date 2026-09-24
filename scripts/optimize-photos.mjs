@@ -5,6 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { consultationPhotos } from "../src/content/consultation-photos.mjs";
 import { digitalLearning } from "../src/content/field-records.mjs";
+import { activities } from "../src/content/activities.mjs";
 import { photoVariants } from "../src/lib/photo-variants.mjs";
 
 const require = createRequire(import.meta.url);
@@ -12,7 +13,7 @@ const sharp = require(process.env.SHARP_MODULE || "sharp");
 const directory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../src/assets/activities");
 const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const results = [];
-for (const photo of [...consultationPhotos, ...digitalLearning.photos]) {
+for (const photo of [...consultationPhotos, ...digitalLearning.photos, ...activities.filter(x => x.image).map(x => ({...x, file: x.image}))]) {
   const sourcePath = path.join(directory, photo.file);
   const source = await readFile(sourcePath);
   const originalHash = hash(source);

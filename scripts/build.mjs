@@ -139,6 +139,7 @@ await cp(path.join(root, "src", "assets", "favicon.svg"), path.join(out, "assets
 await mkdir(path.join(out, "assets", "activities"), { recursive: true });
 for (const activity of activities.filter((item) => item.image)) {
   await cp(path.join(root, "src", "assets", "activities", activity.image), path.join(out, "assets", "activities", activity.image));
+  for (const variant of photoVariants({...activity, file: activity.image})) await cp(path.join(root, "src", "assets", "activities", variant.file), path.join(out, "assets", "activities", variant.file));
 }
 for (const photo of [...digitalLearning.photos, ...consultationPhotos]) {
   await cp(path.join(root, "src", "assets", "activities", photo.file), path.join(out, "assets", "activities", photo.file));

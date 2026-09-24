@@ -60,7 +60,10 @@ test("mobile menu has accessible state and controls", async () => {
 
 test("editorial redesign keeps direct inquiry actions and a shared visual system", async () => {
   const home = await readFile(routeFile("/"), "utf8");
-  for (const name of ["editorial-cover", "editorial-questions", "editorial-process", "editorial-stories", "editorial-guides", "editorial-transparency"]) assert.ok(home.includes(name));
+  for (const name of ["editorial-cover", "editorial-process", "editorial-stories", "editorial-guides", "editorial-transparency"]) assert.ok(home.includes(name));
+  const stories = home.match(/class="editorial-story-list">([\s\S]*?)<\/section>/)?.[1];
+  assert.ok(stories.includes("/activities/gongneung-consultation-september/"));
+  assert.ok(stories.indexOf("2026-09-18") < stories.indexOf("2026-09-12"));
   for (const route of routes) {
     const html = await readFile(routeFile(route), "utf8");
     const header = html.match(/<header[\s\S]*?<\/header>/)?.[0];

@@ -45,9 +45,9 @@ const items = [
     ],
   },
   {
-    slug: "consultation-preparation", category: "상담 준비", title: "청년 주거 체크리스트",
+    slug: "consultation-preparation", category: "청년 주거정보", title: "청년 주거 체크리스트",
     description: "집을 알아볼 때 비용·생활환경·통학시간·개인공간을 비교하고 무료상담에 필요한 질문을 준비합니다.",
-    outcome: "민감서류 없이도 상담 목적을 설명하고, 상담 뒤 스스로 확인할 목록을 남깁니다.", readTime: "읽기 약 5분 · 예상 시간",
+    outcome: "주거비·통학시간·개인공간을 비교하고, 계약 전에 따로 확인할 질문을 정리합니다.", readTime: "읽기 약 5분 · 예상 시간",
     related: ["family-checklist", "private-common-space"], program: "senior-home-consulting", sources: ["legal", "housing"],
     sections: [
       section("youth-housing", "집을 알아보기 전, 비용 외에 무엇을 볼까요?", `<p>청년의 주거 선택에는 월세뿐 아니라 통학·출근 시간, 거주기간, 생활환경과 개인공간도 중요합니다. 아래 항목을 서로 비교하고 모르는 부분은 질문으로 남겨보세요. 계약을 체결하거나 비용을 지급하기 전에는 계약 조건과 권리관계를 전문기관에 따로 확인해야 합니다.</p>${field("youth-budget", "주거비에 포함되는 항목", "월세 외 관리비·공과금·인터넷 등 포함 여부를 질문으로 적습니다. 금융정보는 적지 마세요.")}${field("youth-route", "통학·출근과 생활환경", "이동시간, 늦은 귀가 때의 동선, 주변 생활시설 등 직접 확인할 사항")}${field("youth-space", "개인공간과 거주기간", "개인방의 출입 기준, 수납, 소음, 원하는 기간과 중도 종료 때 확인할 조건")}${checklist("youth-review", ["비용에 포함되는 항목을 구분했습니다.", "생활 동선과 시간을 확인했습니다.", "개인공간과 공용공간의 기준을 질문으로 남겼습니다.", "계약 조건은 별도로 확인하기로 했습니다."])}`),
