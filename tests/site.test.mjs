@@ -341,6 +341,16 @@ test("operator-confirmed impact is published with a reference date and distinct 
   for (const text of ["청년 주거 체크리스트", "youth-budget", "youth-space"]) assert.ok(youth.includes(text), text);
 });
 
+test("detailed impact report separates goals, internal responses and monthly totals", async () => {
+  const { annualGoals, localActivities } = await import("../src/lib/impact-report-page.mjs");
+  assert.equal(localActivities.reduce((sum, item) => sum + item[1], 0), 12);
+  assert.deepEqual(annualGoals.map(goal => Math.round(goal.current / goal.target * 100)), [34, 42, 60, 45, 60]);
+  const html = await readFile(routeFile("/activities/2026-impact/"), "utf8");
+  for (const text of ["58명", "28명", "42개", "428회", "91%", "64%", "38%", "82%", "내부 응답 집계", "익명 공개 동의", "9월 24일까지", "측정 기간·도구·중복 제거", "연간 목표"]) assert.ok(html.includes(text), text);
+  assert.ok(!html.includes("41명"));
+  assert.ok(!html.includes("최대 2회"));
+});
+
 test("interim research discloses distinct counts, corrected start and future stages", async () => {
   const { research, researchTotal } = await import("../src/content/research.mjs");
   assert.equal(research.start, "2026-09");

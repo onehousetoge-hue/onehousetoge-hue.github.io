@@ -1,4 +1,5 @@
 import { impactSection, activityTimeline } from "../src/lib/impact.mjs";
+import { impactReportPage } from "../src/lib/impact-report-page.mjs";
 import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -91,6 +92,7 @@ await emit(digitalLearning.href, fieldRecordPage());
 for (const record of consultationRecords) await emit(record.href, consultationRecordPage(record), { updatedAt: record.updatedAt });
 
 function activityPage(activity) {
+  if (activity.slug === "2026-impact") return impactReportPage(activity);
   if (activity.paragraphs) return communityActivityPage(activity);
   if (activity.slug === "nowon-grant-execution") return fundingPage(activity);
   if (activity.slug === "senior-digital-education") return digitalEducationPage(activity);

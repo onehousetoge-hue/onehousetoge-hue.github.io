@@ -2,6 +2,12 @@ import { digitalLearning } from "./field-records.mjs";
 
 export const activities = Object.freeze([
 {
+  slug: "2026-impact", title: "2026 한지붕 활동현황과 연간 목표",
+  description: "청년의 주거 부담과 어르신의 유휴공간 문제를 함께 바라보고, 지역 현장에서 상담·조사·세대교류 활동을 이어갑니다. 만나는 사람들, 지역별 활동과 공개자료, 연간 목표를 소개합니다.",
+  category: "활동현황", publishedAt: "2026-09-24", publishedLabel: "2026년 9월 24일", updatedAt: "2026-09-24",
+  author: "한지붕 운영팀", href: "/activities/2026-impact/", photo: false,
+},
+{
   "slug": "gongneung-consultation-september",
   "title": "공릉동 어르신 주거상담",
   "eventDate": "2026-09-18",
