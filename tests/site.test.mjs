@@ -117,6 +117,19 @@ test("custom 404 is noindex", async () => {
   assert.match(html, /주거상생 공익사업 중심으로 개편되었습니다/);
 });
 
+test("new community activities preserve supplied dates, copy, images and income disclaimer", async () => {
+  const { activities } = await import("../src/content/activities.mjs");
+  for (const item of activities.filter((activity) => activity.paragraphs)) {
+    const html = await readFile(path.join(root, item.href, "index.html"), "utf8");
+    assert.ok(html.includes(item.eventDate));
+    assert.ok(html.includes(item.caption));
+    for (const paragraph of item.paragraphs) assert.ok(html.includes(paragraph));
+    assert.ok(html.includes(`/assets/activities/${item.image}`));
+    assert.ok((await stat(path.join(root, "assets/activities", item.image))).size > 0);
+    if (item.photoContext) assert.ok(html.includes(item.photoContext));
+  }
+});
+
 test("five documented photos remain and the presentation photo is removed", async () => {
   const { digitalLearning: record } = await import("../src/content/field-records.mjs");
   assert.equal(record.eventDate, null);

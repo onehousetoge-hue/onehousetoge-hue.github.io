@@ -2,6 +2,7 @@ import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { activities } from "../src/content/activities.mjs";
+import { communityActivityPage } from "../src/lib/community-activity-page.mjs";
 import { pageDates } from "../src/config/page-dates.mjs";
 import { inquiryPage, inquiryCompletePage } from "../src/lib/inquiry-page.mjs";
 import { digitalLearning } from "../src/content/field-records.mjs";
@@ -89,6 +90,7 @@ await emit(digitalLearning.href, fieldRecordPage());
 for (const record of consultationRecords) await emit(record.href, consultationRecordPage(record), { updatedAt: record.updatedAt });
 
 function activityPage(activity) {
+  if (activity.paragraphs) return communityActivityPage(activity);
   if (activity.slug === "nowon-grant-execution") return fundingPage(activity);
   if (activity.slug === "senior-digital-education") return digitalEducationPage(activity);
   const founding = activity.slug === "founding-meeting";
@@ -132,6 +134,9 @@ await cp(path.join(root, "src", "assets", "site.js"), path.join(out, "assets", "
 await cp(path.join(root, "src", "assets", "inquiry.js"), path.join(out, "assets", "inquiry.js"));
 await cp(path.join(root, "src", "assets", "favicon.svg"), path.join(out, "assets", "favicon.svg"));
 await mkdir(path.join(out, "assets", "activities"), { recursive: true });
+for (const activity of activities.filter((item) => item.image)) {
+  await cp(path.join(root, "src", "assets", "activities", activity.image), path.join(out, "assets", "activities", activity.image));
+}
 for (const photo of [...digitalLearning.photos, ...consultationPhotos]) {
   await cp(path.join(root, "src", "assets", "activities", photo.file), path.join(out, "assets", "activities", photo.file));
   if (photo.responsive) await cp(path.join(root, "src", "assets", "activities", photo.responsive.file), path.join(out, "assets", "activities", photo.responsive.file));

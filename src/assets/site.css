@@ -811,3 +811,7 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -.055em; }
   .cover-actions, .cover-footnote { display: none; }
   .editorial-hero h1 { font-size: 32pt; }
 }
+
+.community-activity-photo { margin: 2rem 0; }
+.community-activity-photo img { display: block; width: 100%; max-width: 680px; height: auto; margin-inline: auto; }
+.community-activity-photo figcaption { margin-top: 1rem; font-size: 1.125rem; line-height: 1.7; }
