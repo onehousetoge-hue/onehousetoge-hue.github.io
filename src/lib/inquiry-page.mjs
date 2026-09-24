@@ -3,25 +3,29 @@ import { inquiries } from '../config/inquiries.mjs';
 import { escapeHtml, layout, pageHero } from './template.mjs';
 import { inquiryScriptUrl } from './static-assets.mjs';
 
+const fieldError = (name) => `<p class="field-error" id="error-${name}" data-field-error="${name}" hidden></p>`;
+
 export function inquiryPage(kind) {
   const partner = kind === 'partnership';
   const title = partner ? '기관협력 문의' : '무료상담 문의';
   const route = partner ? '/partnership/' : '/consultation/';
   const enabled = Boolean(inquiries.endpoint);
   const body = pageHero({eyebrow: partner ? '함께하는 공익활동' : '어르신·가족 무료상담', title, description: partner ? '교육·봉사와 주거상생 조사 협력을 제안해 주세요. 내용과 일정·비용·역할은 운영진과 협의한 뒤 정합니다.' : '빈방 활용과 공동생활 준비에 대해 궁금한 점을 남겨 주세요. 한지붕 대표와 운영진이 확인하고 선택한 연락방법으로 안내합니다.'}) +
-  `<section class="section inquiry-section"><div class="container narrow"><div class="notice"><p>이름·회신 연락처와 질문만 남겨 주세요. 주민등록번호·상세주소·금융정보·다른 사람의 개인정보는 적지 마세요.</p><p>${partner ? '문의만으로 일정이나 협력이 확정되지는 않습니다.' : '기초상담은 무료입니다. 집수리·입주 알선·계약대행·법률·세무 자문은 제공하지 않습니다.'}</p></div>
+  `<section class="section inquiry-section"><div class="container narrow"><nav class="inquiry-channels" aria-label="문의 방법 선택"><p>편한 방법으로 문의하세요</p><div><a class="button" href="#inquiry-form">온라인 작성</a><a class="button button-secondary" href="${site.phoneHref}">전화 문의</a><a class="button button-secondary" href="${site.emailHref}">이메일 작성</a></div></nav><div class="notice"><p>이름·회신 연락처와 질문만 남겨 주세요. 주민등록번호·상세주소·금융정보·다른 사람의 개인정보는 적지 마세요.</p><p>${partner ? '문의만으로 일정이나 협력이 확정되지는 않습니다.' : '기초상담은 무료입니다. 집수리·입주 알선·계약대행·법률·세무 자문은 제공하지 않습니다.'}</p></div>
   <details class="inquiry-writing-help"><summary>어떤 내용을 적으면 좋을까요?</summary><p>${partner ? '기관명, 참여 대상, 희망 주제와 시기를 적어 주세요. 확정하지 않은 부분은 협의 희망으로 남겨도 됩니다.' : '현재 고민 한 가지와 상담에서 확인하고 싶은 질문을 적어 주세요. 가족이나 다른 사람의 사적인 정보는 넣지 않아도 됩니다.'}</p><p>${partner ? '작성 예시: 어르신 대상 스마트폰 교육을 제안하고 싶습니다. 참여 규모와 가능한 일정을 함께 협의하고 싶습니다.' : '작성 예시: 자녀 독립 후 남은 방이 있습니다. 가족과 어떤 점부터 이야기하면 좋을지 궁금합니다.'}</p><p>위 문장은 작성 방법을 보여주는 예시이며 실제 접수 내용이 아닙니다.</p></details>
   ${enabled ? '' : '<p class="notice" role="status">온라인 문의는 아직 접수를 시작하지 않았습니다. 지금은 아래 전화·이메일로 문의해 주세요.</p>'}
-  <form class="inquiry-form" data-inquiry="${kind}" data-endpoint="${escapeHtml(inquiries.endpoint)}" data-consent-version="${inquiries.consentVersion}" method="post" action="${route}" novalidate>
+  <form id="inquiry-form" class="inquiry-form" tabindex="-1" data-inquiry="${kind}" data-endpoint="${escapeHtml(inquiries.endpoint)}" data-consent-version="${inquiries.consentVersion}" method="post" action="${route}" novalidate>
+    <div class="form-error-summary" data-form-errors role="alert" tabindex="-1" hidden></div>
     <fieldset disabled><legend>${partner ? '기관과 담당자 정보' : '문의하시는 분 정보'}</legend>
-    ${partner ? '<div class="form-field"><label for="organization">기관명 <span>(필수)</span></label><input id="organization" name="organization" autocomplete="organization" maxlength="100" required></div>' : ''}
-    <div class="form-field"><label for="inquiry-name">${partner ? '담당자 이름' : '이름'} <span>(필수)</span></label><input id="inquiry-name" name="name" autocomplete="name" maxlength="60" required></div>
+    <p class="field-hint">아래 항목은 모두 필수입니다. 연락처는 전화번호 또는 이메일 하나만 입력합니다.</p>
+    ${partner ? `<div class="form-field"><label for="organization">기관명 <span>(필수)</span></label><input id="organization" name="organization" autocomplete="organization" maxlength="100" aria-describedby="error-organization" required>${fieldError('organization')}</div>` : ''}
+    <div class="form-field"><label for="inquiry-name">${partner ? '담당자 이름' : '이름'} <span>(필수)</span></label><input id="inquiry-name" name="name" autocomplete="name" maxlength="60" aria-describedby="error-name" required>${fieldError('name')}</div>
     <div class="form-field"><label for="contact-method">연락받을 방법 <span>(필수)</span></label><select id="contact-method" name="contactMethod"><option value="phone">전화</option><option value="email">이메일</option></select></div>
-    <div class="form-field"><label for="inquiry-contact" data-contact-label>연락받을 전화번호 (필수)</label><input id="inquiry-contact" name="contact" type="tel" inputmode="tel" autocomplete="tel" maxlength="120" required aria-describedby="contact-help"><p id="contact-help" class="field-hint">전화번호 또는 이메일 중 선택한 연락처 하나만 입력해 주세요.</p></div>
-    <div class="form-field"><label for="inquiry-topic">${partner ? '희망 프로그램' : '문의 유형'} <span>(필수)</span></label><select id="inquiry-topic" name="topic" required><option value="">선택해 주세요</option>${inquiries.topics[kind].map(x=>`<option>${escapeHtml(x)}</option>`).join('')}</select></div>
-    <div class="form-field"><label for="inquiry-message">간단한 문의 내용 <span>(필수, 5~1,000자)</span></label><textarea id="inquiry-message" name="message" rows="5" minlength="5" maxlength="1000" required aria-describedby="message-help"></textarea><p id="message-help" class="field-hint">현재 궁금한 점을 적어 주세요. 민감정보나 첨부서류는 받지 않습니다.</p></div>
+    <div class="form-field"><label for="inquiry-contact" data-contact-label>연락받을 전화번호 (필수)</label><input id="inquiry-contact" name="contact" type="tel" inputmode="tel" autocomplete="tel" maxlength="120" required aria-describedby="contact-help error-contact"><p id="contact-help" class="field-hint">예: 010-1234-5678. 전화번호 또는 이메일 중 선택한 연락처 하나만 입력해 주세요.</p>${fieldError('contact')}</div>
+    <div class="form-field"><label for="inquiry-topic">${partner ? '희망 프로그램' : '문의 유형'} <span>(필수)</span></label><select id="inquiry-topic" name="topic" required aria-describedby="error-topic"><option value="">선택해 주세요</option>${inquiries.topics[kind].map(x=>`<option>${escapeHtml(x)}</option>`).join('')}</select>${fieldError('topic')}</div>
+    <div class="form-field"><label for="inquiry-message">간단한 문의 내용 <span>(필수, 5~1,000자)</span></label><textarea id="inquiry-message" name="message" rows="5" minlength="5" maxlength="1000" required aria-describedby="message-help error-message"></textarea><div class="message-guidance"><p id="message-help" class="field-hint">현재 궁금한 점을 적어 주세요. 민감정보나 첨부서류는 받지 않습니다.</p><span class="field-hint" data-message-count>0 / 1,000자</span></div>${fieldError('message')}</div>
     <div hidden aria-hidden="true"><label>자동입력 방지<input name="website" tabindex="-1" autocomplete="off"></label></div>
-    <div class="consent-summary"><h2>개인정보 수집·이용 안내</h2><p>수집항목: ${partner ? '기관명, 담당자 이름' : '이름'}, 전화번호 또는 이메일, 문의유형, 문의내용과 동의·접수 기록. 목적: 문의 확인과 상담·협력 답변. 보유기간: 상담 종료일로부터 최대 1년간 보관 후 삭제.</p><p>동의를 거부할 수 있으며, 거부하면 온라인 문의를 접수할 수 없습니다. <a href="/privacy/">개인정보 처리방침 전체 보기</a></p><label class="consent-check"><input name="consent" type="checkbox" required><span>[필수] 개인정보 수집·이용에 동의합니다.</span></label></div>
+    <div class="consent-summary"><h2>개인정보 수집·이용 안내</h2><p>수집항목: ${partner ? '기관명, 담당자 이름' : '이름'}, 전화번호 또는 이메일, 문의유형, 문의내용과 동의·접수 기록. 목적: 문의 확인과 상담·협력 답변. 보유기간: 상담 종료일로부터 최대 1년간 보관 후 삭제.</p><p>동의를 거부할 수 있으며, 거부하면 온라인 문의를 접수할 수 없습니다. <a href="/privacy/">개인정보 처리방침 전체 보기</a></p><label class="consent-check"><input id="inquiry-consent" name="consent" type="checkbox" required aria-describedby="error-consent"><span>[필수] 개인정보 수집·이용에 동의합니다.</span></label>${fieldError('consent')}</div>
     <p class="form-status" role="alert" tabindex="-1" data-form-status></p>
     <button type="submit" class="button" ${enabled ? '' : 'disabled'}>${title} 보내기</button>
     <p class="field-hint">저장이 확인되면 접수번호를 안내합니다. 접수는 상담·참여 확정이나 답변 완료를 뜻하지 않습니다.</p></fieldset>

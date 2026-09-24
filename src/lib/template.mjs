@@ -30,9 +30,9 @@ export function icon(name, className = "") {
   return `<svg class="icon ${className}" aria-hidden="true" viewBox="0 0 24 24">${paths[name] || paths.arrow}</svg>`;
 }
 
-export function pageHead({ title, description, path, type = "website", robots = "index,follow", publishedAt, updatedAt, jsonLd = [] }) {
+export function pageHead({ title, documentTitle, description, path, type = "website", robots = "index,follow", publishedAt, updatedAt, jsonLd = [] }) {
   const canonical = absolute(path);
-  const fullTitle = title === site.name ? `${site.name} | 어르신 빈방 활용 무료상담과 세대교류` : `${title} | ${site.name}`;
+  const fullTitle = documentTitle || (title === site.name ? `${site.name} | 어르신 빈방 활용 무료상담과 세대교류` : `${title} | ${site.name}`);
   const schemas = Array.isArray(jsonLd) ? jsonLd : [jsonLd];
   return `
     <meta charset="UTF-8">
@@ -77,12 +77,14 @@ export function header(currentPath = "/") {
         <a class="brand" href="/" aria-label="한지붕 HANJIBUNG 홈페이지">
           <span><strong>${site.name}</strong> <small>${site.englishName}</small></span>
         </a>
+        <a class="header-quick-action" href="/consultation/">상담 문의</a>
         <button class="menu-button" type="button" aria-expanded="false" aria-controls="primary-navigation" data-menu-button>
-          <span class="menu-open-icon">${icon("menu")}</span><span class="menu-close-icon">${icon("close")}</span><span class="visually-hidden">전체 메뉴 열기</span>
+          <span class="menu-open-icon">${icon("menu")}</span><span class="menu-close-icon">${icon("close")}</span><span class="menu-label" aria-hidden="true" data-menu-label>메뉴</span><span class="visually-hidden">전체 메뉴 열기</span>
         </button>
         <nav class="primary-navigation" id="primary-navigation" aria-label="주요 메뉴" data-navigation>
           <div class="nav-links">${links}</div>
           <a class="button button-small" href="/consultation/">무료상담 문의</a>
+          <div class="mobile-contact-links"><a href="/partnership/">기관협력 문의</a><a href="/contact/">전화·이메일 안내</a></div>
         </nav>
       </div>
     </header>`;
@@ -99,7 +101,7 @@ export function footer() {
         <div class="footer-contact"><h2>단체 정보</h2><dl><div><dt>고유번호</dt><dd>${site.registrationNumber}</dd></div><div><dt>대표자</dt><dd>${site.representative}</dd></div><div><dt>소재지</dt><dd>${site.address}</dd></div><div><dt>전화</dt><dd><a href="${site.phoneHref}">${site.phone}</a></dd></div><div><dt>이메일</dt><dd><a href="${site.emailHref}">${site.email}</a></dd></div></dl></div>
         <div class="footer-links"><h2>안내</h2><a href="/consultation/">무료상담 문의</a><a href="/partnership/">기관협력 문의</a><a href="/participate/">참여·기관협력</a><a href="/contact/">전화·이메일 문의</a><a href="/privacy/">개인정보 처리방침</a><a href="/terms/">이용안내</a><a href="/transparency/">운영·투명성</a></div>
       </div>
-      <div class="container footer-bottom"><span>© 2026 ${site.name}. All rights reserved.</span><span>${site.legalType}</span></div>
+      <div class="container footer-bottom"><span>© 2026 ${site.name}. All rights reserved.</span><span>${site.legalType}</span><a class="back-to-top" href="#page-top">맨 위로 돌아가기</a></div>
     </footer>`;
 }
 
@@ -114,7 +116,7 @@ export function pageHero({ eyebrow, title, description, meta = "" }) {
   return `<section class="page-hero"><div class="container narrow"><p class="eyebrow">${escapeHtml(eyebrow)}</p><h1>${title}</h1><p class="page-lead">${escapeHtml(description)}</p>${meta}</div></section>`;
 }
 
-export function layout({ title, description, path, body, breadcrumbs = [], type, robots, publishedAt, updatedAt, jsonLd = [], bodyClass = "" }) {
+export function layout({ title, documentTitle, description, path, body, breadcrumbs = [], type, robots, publishedAt, updatedAt, jsonLd = [], bodyClass = "" }) {
   const breadcrumbSchema = breadcrumbs.length
     ? {
         "@context": "https://schema.org",
@@ -132,7 +134,7 @@ export function layout({ title, description, path, body, breadcrumbs = [], type,
     : null;
   const schemas = [...(Array.isArray(jsonLd) ? jsonLd : [jsonLd])].filter(Boolean);
   if (breadcrumbSchema) schemas.push(breadcrumbSchema);
-  return `<!doctype html><html lang="ko"><head>${pageHead({ title, description, path, type, robots, publishedAt, updatedAt, jsonLd: schemas })}</head><body class="${bodyClass}">${header(path)}${breadcrumb(breadcrumbs)}<main id="main-content">${body}</main>${footer()}</body></html>`;
+  return `<!doctype html><html lang="ko"><head>${pageHead({ title, documentTitle, description, path, type, robots, publishedAt, updatedAt, jsonLd: schemas })}</head><body id="page-top" class="${bodyClass}">${header(path)}${breadcrumb(breadcrumbs)}<main id="main-content">${body}</main>${footer()}</body></html>`;
 }
 
 export const organizationSchema = {

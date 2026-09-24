@@ -1,10 +1,11 @@
+import { pageDates } from "../config/page-dates.mjs";
 import { site } from "../config/site.mjs";
 import { pageHero } from "../lib/template.mjs";
 import { fundingSummary } from "../lib/funding-page.mjs";
 import { evidenceFlow } from "../lib/evidence-flow.mjs";
 
-export const transparencyBody = `${pageHero({ eyebrow: "운영·투명성", title: "지원금 사용 계획과<br>집행 현황을 공개합니다.", description: "노원구청 마을공동체 사업 지원금의 수령액·사용 계획·실제 집행내역, 단체 등록정보와 운영·회계 원칙을 확인할 수 있습니다.", meta: '<div class="page-meta"><span>마지막 수정일 2026.09.24</span></div>' })}
-<section class="section"><div class="container content-layout"><article class="prose">${fundingSummary()}
+export const transparencyBody = `${pageHero({ eyebrow: "운영·투명성", title: "지원금 사용 계획과<br>집행 현황을 공개합니다.", description: "노원구청 마을공동체 사업 지원금의 수령액·사용 계획·실제 집행내역, 단체 등록정보와 운영·회계 원칙을 확인할 수 있습니다.", meta: `<div class="page-meta"><span>마지막 수정일 ${pageDates["/transparency/"].replaceAll("-", ".")}</span></div>` })}
+<section class="section"><div class="container"><nav class="section-jumps" aria-label="운영정보 바로 찾기"><p>궁금한 운영정보부터 확인하세요</p><div><a href="#execution">실제 집행 현황</a><a href="#budget-plan">사업비 사용 계획</a><a href="#organization">단체 등록정보</a><a href="#accounting">운영·회계 원칙</a></div></nav></div><div class="container content-layout"><article class="prose">${fundingSummary()}
 <h2 id="organization">단체 등록정보</h2><dl class="definition-list"><div><dt>단체명</dt><dd>${site.name} (${site.englishName})</dd></div><div><dt>단체 유형</dt><dd>${site.legalType} · 현재 수익사업 없음</dd></div><div><dt>고유번호</dt><dd>${site.registrationNumber}</dd></div><div><dt>대표자</dt><dd>${site.representative}</dd></div><div><dt>결성일</dt><dd>${site.foundedAtLabel}</dd></div><div><dt>소재지</dt><dd>${site.address}</dd></div><div><dt>전화</dt><dd><a href="${site.phoneHref}">${site.phone}</a></dd></div><div><dt>이메일</dt><dd><a href="${site.emailHref}">${site.email}</a></dd></div></dl>
 <h2>고유사업</h2><ol><li>세대교류 봉사 프로그램</li><li>주거상생 실태조사</li><li>어르신 주택 개선 무료상담</li></ol>
 <h2>의사결정과 운영</h2><p>총회에서 단체의 주요 사항을 결정하고, 대표와 운영회의가 목적사업과 일상 운영을 살핍니다. 회계·감사 절차를 두어 지출 증빙과 자금의 사용 목적을 확인합니다.</p>

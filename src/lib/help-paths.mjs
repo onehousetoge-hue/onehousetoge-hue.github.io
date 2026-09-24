@@ -22,7 +22,7 @@ export function youthGuides() {
 }
 
 export function guideFinder() {
-  return `${youthGuides()}<section id="find-guide" class="guide-finder jump-target" aria-labelledby="guide-finder-title"><p class="eyebrow">상황별 자료 길잡이</p><h2 id="guide-finder-title">어떤 질문이 가장 가까운가요?</h2><p>질문을 누르면 먼저 할 일과 연결 자료가 펼쳐집니다. 선택 내용은 저장하거나 전송하지 않습니다.</p><div class="faq">${paths.map(([question, slug, advice]) => { const guide = getResource(slug); return `<details><summary>${question}</summary><div class="guide-answer"><p>${advice}</p><p><strong>이 자료로 남길 수 있는 것</strong><br>${guide.outcome}</p><a class="text-link" href="${guide.href}">${guide.title} 읽기</a></div></details>`; }).join("")}</div><p>함께 정리하고 싶다면 <a href="/consultation/">무료상담 문의</a>를 이용하세요. 자료는 누구나 바로 읽을 수 있습니다.</p></section>`;
+  return `<section id="find-guide" class="guide-finder jump-target" aria-labelledby="guide-finder-title"><p class="eyebrow">상황별 자료 길잡이</p><h2 id="guide-finder-title">어떤 질문이 가장 가까운가요?</h2><p>질문을 누르면 먼저 할 일과 연결 자료가 펼쳐집니다. 선택 내용은 저장하거나 전송하지 않습니다.</p><div class="faq">${paths.map(([question, slug, advice]) => { const guide = getResource(slug); return `<details><summary>${question}</summary><div class="guide-answer"><p>${advice}</p><p><strong>이 자료로 남길 수 있는 것</strong><br>${guide.outcome}</p><a class="text-link" href="${guide.href}">${guide.title} 읽기</a></div></details>`; }).join("")}</div><p>함께 정리하고 싶다면 <a href="/consultation/">무료상담 문의</a>를 이용하세요. 자료는 누구나 바로 읽을 수 있습니다.</p></section>`;
 }
 
 export function consultationExample() {

@@ -1,4 +1,24 @@
 const receiptKey = (kind) => `hanjibung-receipt-${kind}`;
+
+// Pure validation also runs in local tests; no contact data is persisted here.
+export function validateInquiryInput(values, kind) {
+  const errors = {};
+  const name = String(values.name || '').trim();
+  const organization = String(values.organization || '').trim();
+  const contact = String(values.contact || '').trim();
+  const message = String(values.message || '').trim();
+  if (kind === 'partnership' && (!organization || organization.length > 100)) errors.organization = '기관명을 1~100자로 입력해 주세요.';
+  if (!name || name.length > 60) errors.name = '이름을 1~60자로 입력해 주세요.';
+  if (values.contactMethod === 'email') {
+    if (contact.length > 120 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact)) errors.contact = '회신받을 이메일 전체 주소를 입력해 주세요. 예: name@example.org';
+  } else if (values.contactMethod !== 'phone' || !/^0\d{8,10}$/.test(contact.replace(/[ -]/g,''))) {
+    errors.contact = '전화번호를 다시 확인해 주세요. 예: 010-1234-5678';
+  }
+  if (!values.topic) errors.topic = '문의 유형 또는 희망 프로그램을 선택해 주세요.';
+  if (message.length < 5 || message.length > 1000) errors.message = '궁금한 내용을 5~1,000자로 입력해 주세요. 공백만 입력할 수 없습니다.';
+  if (values.consent !== true) errors.consent = '개인정보 수집·이용 안내를 확인한 뒤 동의에 체크해 주세요.';
+  return errors;
+}
 async function send(endpoint, payload) {
   if (!/^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(endpoint)) throw new Error('UNAVAILABLE');
   const response = await fetch(endpoint, {method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload),redirect:'follow',credentials:'omit',referrerPolicy:'no-referrer',signal:AbortSignal.timeout(55000)});
@@ -14,26 +34,69 @@ function showReceipt(target, receipt) {
   const time = document.createElement('p'); time.textContent = `접수시각: ${receipt.receivedAt} (한국시간)`;
   target.append(heading, number, time); target.focus();
 }
-const form = document.querySelector('[data-inquiry]');
+const form = typeof document === 'undefined' ? null : document.querySelector('[data-inquiry]');
 if (form) {
   const endpoint = form.dataset.endpoint, kind = form.dataset.inquiry;
   const status = form.querySelector('[data-form-status]'), button = form.querySelector('[type="submit"]');
   const fieldset = form.querySelector('fieldset');
+  const errorSummary = form.querySelector('[data-form-errors]');
   if (endpoint) fieldset.disabled = false;
   let requestId = crypto.randomUUID(), busy = false, submitted = false;
   const method = form.elements.contactMethod, contact = form.elements.contact;
+  const drafts = {phone:'',email:''};
+  let activeMethod = method.value;
+  function values() {
+    return {...Object.fromEntries(new FormData(form)), consent:form.elements.consent.checked};
+  }
+  function clearFieldError(name) {
+    form.elements[name]?.removeAttribute('aria-invalid');
+    const error = form.querySelector(`[data-field-error="${name}"]`);
+    if (error) { error.hidden = true; error.textContent = ''; }
+    errorSummary.querySelector(`[data-error-field="${name}"]`)?.parentElement.remove();
+    if (!errorSummary.querySelector('a')) errorSummary.hidden = true;
+  }
+  errorSummary.addEventListener('click', event => {
+    const link = event.target.closest('[data-error-field]');
+    if (!link) return;
+    event.preventDefault();
+    const invalid = form.elements[link.dataset.errorField];
+    invalid.focus(); invalid.scrollIntoView({block:'center',behavior:'instant'});
+  });
   method.addEventListener('change', () => {
+    drafts[activeMethod] = contact.value;
     const email = method.value === 'email'; contact.type = email ? 'email' : 'tel'; contact.inputMode = email ? 'email' : 'tel'; contact.autocomplete = email ? 'email' : 'tel';
     form.querySelector('[data-contact-label]').textContent = email ? '연락받을 이메일 (필수)' : '연락받을 전화번호 (필수)';
-    contact.value = ''; contact.removeAttribute('aria-invalid');
+    form.querySelector('#contact-help').textContent = email ? '회신받을 이메일 전체 주소를 입력해 주세요. 전화번호는 입력하지 않아도 됩니다.' : '예: 010-1234-5678. 전화번호 또는 이메일 중 선택한 연락처 하나만 입력해 주세요.';
+    activeMethod = method.value;
+    contact.value = drafts[activeMethod] || ''; clearFieldError('contact');
   });
-  form.addEventListener('input', () => { if (!busy) requestId = crypto.randomUUID(); });
+  form.addEventListener('input', (event) => {
+    if (!busy) requestId = crypto.randomUUID();
+    form.querySelector('[data-message-count]').textContent = `${form.elements.message.value.length.toLocaleString('ko-KR')} / 1,000자`;
+    const name = event.target.name;
+    if (name && event.target.hasAttribute('aria-invalid') && !validateInquiryInput(values(),kind)[name]) clearFieldError(name);
+  });
   form.addEventListener('submit', async event => {
     event.preventDefault(); if (busy || submitted || !endpoint) return;
     form.querySelectorAll('[aria-invalid]').forEach(el=>el.removeAttribute('aria-invalid'));
-    let invalid = [...form.elements].find(el => el.willValidate && !el.validity.valid);
-    if (!invalid && method.value === 'phone' && !/^0\d{8,10}$/.test(contact.value.replace(/[ -]/g,''))) invalid = contact;
-    if (invalid) { invalid.setAttribute('aria-invalid','true'); status.textContent = invalid === contact ? '회신 연락처를 확인해 주세요. 전화번호는 010-1234-5678처럼, 이메일은 전체 주소를 입력해 주세요.' : '필수 항목과 문의 내용 길이를 확인하고 개인정보 동의에 체크해 주세요.'; invalid.focus(); invalid.scrollIntoView({block:'center',behavior:'instant'}); return; }
+    const errors = validateInquiryInput(values(),kind);
+    errorSummary.replaceChildren(); errorSummary.hidden = true;
+    form.querySelectorAll('[data-field-error]').forEach(error => { error.hidden = true; error.textContent = ''; });
+    status.textContent = '';
+    if (Object.keys(errors).length) {
+      const heading = document.createElement('h2'); heading.textContent = '아래 항목을 확인해 주세요';
+      const hint = document.createElement('p'); hint.textContent = '항목을 누르면 입력할 곳으로 이동합니다. 적은 내용은 그대로 남아 있습니다.';
+      const list = document.createElement('ul');
+      for (const [name,message] of Object.entries(errors)) {
+        const invalid = form.elements[name]; invalid.setAttribute('aria-invalid','true');
+        const inline = form.querySelector(`[data-field-error="${name}"]`); inline.textContent = message; inline.hidden = false;
+        const item = document.createElement('li'), link = document.createElement('a');
+        link.href = `#${invalid.id}`; link.dataset.errorField = name; link.textContent = message;
+        item.append(link); list.append(item);
+      }
+      errorSummary.append(heading,hint,list); errorSummary.hidden = false;
+      errorSummary.focus(); errorSummary.scrollIntoView({block:'start',behavior:'instant'}); return;
+    }
     const fields = new FormData(form);
     const payload = Object.fromEntries(fields); Object.assign(payload,{action:'submit',kind,requestId,consent:form.elements.consent.checked,consentVersion:form.dataset.consentVersion});
     busy = true; button.disabled = true; fieldset.disabled = true; form.setAttribute('aria-busy','true'); status.textContent = '문의 내용을 저장하고 있습니다. 잠시만 기다려 주세요.';
@@ -49,7 +112,7 @@ if (form) {
     } finally { busy = false; form.removeAttribute('aria-busy'); button.disabled = submitted; fieldset.disabled = submitted; }
   });
 }
-const complete = document.querySelector('[data-inquiry-complete]');
+const complete = typeof document === 'undefined' ? null : document.querySelector('[data-inquiry-complete]');
 if (complete) {
   const kind = complete.dataset.inquiryComplete, status = complete.querySelector('[data-receipt-status]');
   let receipt;

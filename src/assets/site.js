@@ -40,12 +40,14 @@
     if (!button || !navigation) return;
     button.setAttribute("aria-expanded", String(open));
     button.querySelector(".visually-hidden").textContent = open ? "전체 메뉴 닫기" : "전체 메뉴 열기";
+    const menuLabel = button.querySelector("[data-menu-label]");
+    if (menuLabel) menuLabel.textContent = open ? "닫기" : "메뉴";
     document.body.classList.toggle("menu-open", open);
     document.querySelectorAll("main, footer, .breadcrumb").forEach((element) => { element.inert = open; });
     if (open) {
       lastFocused = document.activeElement;
       navigation.querySelector("a")?.focus();
-    } else if (lastFocused === button || navigation.contains(lastFocused)) {
+    } else if ((lastFocused === button || navigation.contains(lastFocused)) && button.getClientRects().length) {
       button.focus();
     }
   }
@@ -72,6 +74,16 @@
     if (event.matches) setMenu(false);
   });
 
+  // Keep reading-position jumps usable under the sticky header, including with a keyboard.
+  document.querySelectorAll('a[href^="#"]').forEach((link) => {
+    link.addEventListener("click", () => {
+      const target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+      if (!target) return;
+      if (!target.hasAttribute("tabindex")) target.setAttribute("tabindex", "-1");
+      target.focus({ preventScroll: true });
+    });
+  });
+
   document.querySelectorAll("[data-print]").forEach((printButton) => {
     printButton.addEventListener("click", () => window.print());
   });
@@ -91,6 +103,21 @@
       group.querySelector("[data-check-progress]").textContent = `${checked} / ${total}개 확인`;
     });
   });
+  const clearSection = document.querySelector("[data-clear-section]");
+  if (clearSection && (worksheets.length || document.querySelector("[data-checklist]"))) {
+    clearSection.hidden = false;
+    clearSection.querySelector("[data-clear-worksheet]").addEventListener("click", () => {
+      worksheets.forEach((input) => { input.value = ""; });
+      document.querySelectorAll("[data-checklist]").forEach((group) => {
+        group.querySelectorAll("input[type=checkbox]").forEach((input) => { input.checked = false; });
+        group.querySelector("[data-check-progress]").textContent = `0 / ${group.querySelectorAll("input[type=checkbox]").length}개 확인`;
+      });
+      updatePrintAnswers();
+      document.querySelector("[data-clear-status]").textContent = "이 화면에 작성한 메모와 체크를 모두 지웠습니다.";
+      clearSection.open = false;
+      clearSection.querySelector("summary").focus();
+    });
+  }
   let closedDetails = [];
   window.addEventListener("beforeprint", () => {
     updatePrintAnswers();

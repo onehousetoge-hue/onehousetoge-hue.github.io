@@ -3,9 +3,31 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 import { inquiries } from '../src/config/inquiries.mjs';
+import { validateInquiryInput } from '../src/assets/inquiry.js';
 import { consultationRecords, validateConsultationRecord } from '../src/content/consultation-records.mjs';
 const code = await readFile(new URL('../integrations/inquiries/Code.gs',import.meta.url),'utf8');
 const valid = {action:'submit',kind:'consultation',requestId:'11111111-2222-4333-8444-555555555555',name:'접수 시험',contactMethod:'email',contact:'qa@hanjibung.invalid',organization:'',topic:'기타 상담',message:'연결 검증용 비개인 시험 내용입니다.',consent:true,consentVersion:'2026-09-24',website:''};
+test('client validation gives actionable errors without sending an inquiry',()=>{
+  assert.deepEqual(validateInquiryInput(valid,'consultation'),{});
+  assert.deepEqual(validateInquiryInput({...valid,contactMethod:'phone',contact:'010-1234-5678'},'consultation'),{});
+  const empty=validateInquiryInput({},'consultation');
+  assert.deepEqual(Object.keys(empty),['name','contact','topic','message','consent']);
+  assert.match(empty.contact,/010-1234-5678/);
+  assert.match(validateInquiryInput({...valid,contact:'invalid'},'consultation').contact,/이메일 전체 주소/);
+  assert.ok(validateInquiryInput({...valid,name:'   ',message:'     '},'consultation').name);
+  assert.ok(validateInquiryInput({...valid,name:'   ',message:'     '},'consultation').message);
+  assert.ok(validateInquiryInput(valid,'partnership').organization);
+  assert.deepEqual(validateInquiryInput({...valid,organization:'시험 기관'},'partnership'),{});
+});
+test('inquiry errors have a keyboard summary and adjacent field descriptions',async()=>{
+  for(const kind of ['consultation','partnership']) {
+    const html=await readFile(new URL(`../dist/${kind}/index.html`,import.meta.url),'utf8');
+    assert.match(html,/data-form-errors role="alert" tabindex="-1" hidden/);
+    assert.ok(html.indexOf('class="inquiry-channels"')<html.indexOf('id="inquiry-form"'));
+    for(const name of ['name','contact','topic','message','consent']) assert.ok(html.includes(`id="error-${name}"`));
+    assert.match(html,/data-message-count/);
+  }
+});
 function server({failWrite=false}={}) {
   const rows=[['접수번호']]; let flush=0; const props={};
   const sheet={getLastRow:()=>rows.length,getRange:(row,col,height,width)=>{

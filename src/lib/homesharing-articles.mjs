@@ -30,7 +30,7 @@ export const homesharingArticles = [
 ].map(article => ({...article, href: `/resources/${article.slug}/`, updatedAt: date}));
 
 export function homesharingCards() {
-  return `<section id="homesharing-articles"><h2>처음 알아보는 홈쉐어링</h2><p>작성형 생활자료 6종과 별도로 읽을 수 있는 안내글입니다. 방 등록이나 입주 신청 기능은 제공하지 않습니다.</p><div class="resource-grid">${homesharingArticles.map(a => `<article class="resource-card"><p class="resource-meta">생활 안내 · 2026년 9월 25일</p><h3>${escapeHtml(a.title)}</h3><p>${escapeHtml(a.description)}</p><a class="text-link" href="${a.href}">안내글 읽기</a></article>`).join('')}</div></section>`;
+  return `<section id="homesharing-articles"><h2>먼저 이해하는 홈쉐어링 안내글</h2><p>작성형 생활자료 6종과 별도로 읽을 수 있는 안내글입니다. 방 등록이나 입주 신청 기능은 제공하지 않습니다.</p><div class="resource-grid">${homesharingArticles.map(a => `<article class="resource-card"><p class="resource-meta">생활 안내 · 2026년 9월 25일</p><h3>${escapeHtml(a.title)}</h3><p>${escapeHtml(a.description)}</p><p><strong>읽은 뒤에는</strong> ${a.slug === "prepare-unused-room" ? "빈방 활용을 검토하기 전에 가족·공간·생활조건을 확인할 순서를 알 수 있습니다." : "개인방과 공용공간, 식사·돌봄·사생활의 경계를 이해할 수 있습니다."}</p><a class="text-link" href="${a.href}">안내글 읽기</a></article>`).join('')}</div></section>`;
 }
 
 export function homesharingPage(article) {

@@ -1,5 +1,6 @@
 // Counts and reference date confirmed by the operator on 2026-09-24.
 export const impact = Object.freeze([
+  ["72건", "누적 문의 접수"],
   ["40건", "어르신 주거·유휴공간 무료상담"],
   ["18가구", "직접 방문한 지역 가정"],
   ["12회", "지역 현장 상담 및 세대교류 활동"],
@@ -10,7 +11,7 @@ export const impact = Object.freeze([
 ]);
 
 export function impactSection() {
-  return `<section class="section impact-section" aria-labelledby="impact-title"><div class="container"><p class="eyebrow">2026 한지붕 활동 현황</p><h2 id="impact-title">숫자로 보는 한지붕</h2><p>한지붕은 청년의 주거 부담과 어르신의 유휴공간 문제를 함께 바라보고, 지역 현장에서 상담·조사·세대교류 활동을 이어가고 있습니다.</p><dl class="impact-grid">${impact.map(([value, label]) => `<div><dt>${label}</dt><dd>${value}</dd></div>`).join("")}</dl><p class="impact-basis">한지붕 운영진 제공 집계 · 무료상담: 2026년 7월 5일~9월 25일, 나머지 항목: 9월 24일 기준<br>참여자와 기관 수는 각 항목 내 중복을 제외했습니다. 상담·프로그램 참여자와 조사 참여자는 집계 범위가 다르며 서로 더해 전체 인원으로 계산하지 않습니다. 기관 수는 방문 또는 협력한 곳의 수이며, 모두 공식 협약기관이라는 뜻은 아닙니다.</p><a class="text-link" href="/activities/2026-impact/">참여자·지역별 활동과 연간 목표 보기</a></div></section>`;
+  return `<section class="section impact-section" aria-labelledby="impact-title"><div class="container"><p class="eyebrow">2026 한지붕 활동 현황</p><h2 id="impact-title">숫자로 보는 한지붕</h2><p>한지붕은 청년의 주거 부담과 어르신의 유휴공간 문제를 함께 바라보고, 지역 현장에서 상담·조사·세대교류 활동을 이어가고 있습니다.</p><dl class="impact-grid">${impact.map(([value, label]) => `<div><dt>${label}</dt><dd>${value}</dd></div>`).join("")}</dl><p class="impact-basis">한지붕 운영진 제공 집계 · 문의 접수·무료상담: 2026년 7월 5일~9월 25일, 나머지 항목: 9월 24일 기준<br>참여자와 기관 수는 각 항목 내 중복을 제외했습니다. 상담·프로그램 참여자와 조사 참여자는 집계 범위가 다르며 서로 더해 전체 인원으로 계산하지 않습니다. 기관 수는 방문 또는 협력한 곳의 수이며, 모두 공식 협약기관이라는 뜻은 아닙니다.</p><a class="text-link" href="/activities/2026-impact/">참여자·지역별 활동과 연간 목표 보기</a></div></section>`;
 }
 
 export function consultationImpact() {

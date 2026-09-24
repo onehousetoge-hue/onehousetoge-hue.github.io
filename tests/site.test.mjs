@@ -8,6 +8,35 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "d
 const routes = ["/", "/about/", "/programs/", "/programs/senior-home-consulting/", "/programs/intergenerational-volunteer/", "/programs/housing-research/", "/resources/", "/resources/family-checklist/", "/resources/shared-living-rules/", "/resources/consultation-preparation/", "/resources/private-common-space/", "/resources/conflict-prevention/", "/resources/korean-housing-culture/", "/activities/", "/activities/founding-meeting/", "/activities/nonprofit-registration/", "/transparency/", "/participate/", "/contact/", "/privacy/", "/terms/"];
 const routeFile = (route) => route === "/" ? path.join(root, "index.html") : path.join(root, route.replace(/^\//, ""), "index.html");
 
+test("mobile navigation preserves direct inquiries and long-page return links", async () => {
+  for (const route of routes) {
+    const html = await readFile(routeFile(route), "utf8");
+    assert.match(html, /class="header-quick-action" href="\/consultation\/"/);
+    assert.match(html, /data-menu-label>메뉴/);
+    assert.match(html, /class="back-to-top" href="#page-top"/);
+    assert.match(html, /<body id="page-top"/);
+  }
+});
+
+test("directory and worksheet journeys bring choices and reading tools within reach", async () => {
+  const resources = await readFile(routeFile("/resources/"), "utf8");
+  assert.ok(resources.indexOf('id="find-guide"') < resources.indexOf('id="homesharing-articles"'));
+  assert.ok(resources.indexOf('id="find-guide"') < resources.indexOf('id="worksheets"'));
+  for (const slug of ["family-checklist", "shared-living-rules", "consultation-preparation", "private-common-space", "conflict-prevention", "korean-housing-culture"]) {
+    const html = await readFile(routeFile(`/resources/${slug}/`), "utf8");
+    assert.equal((html.match(/type="button" data-print/g) || []).length, 2);
+    assert.match(html, /id="resource-contents"/);
+    assert.match(html, /data-clear-section hidden/);
+    assert.match(html, /data-clear-worksheet/);
+    assert.match(html, /지운 내용은 되돌릴 수 없으니/);
+  }
+  const activities = await readFile(routeFile("/activities/"), "utf8");
+  assert.match(activities, /href="#activity-records"/);
+  assert.match(activities, /id="activity-records"/);
+  const transparency = await readFile(routeFile("/transparency/"), "utf8");
+  assert.ok(transparency.indexOf('aria-label="운영정보 바로 찾기"') < transparency.indexOf('<article class="prose">'));
+});
+
 test("benchmark journeys provide distinct entry paths, six native guide choices and a clearly fictional example", async () => {
   const home = await readFile(routeFile("/"), "utf8");
   assert.match(home, /어르신과 청년에게 필요한 도움/);
@@ -44,7 +73,7 @@ test("homepage states the actual services and prioritizes free consulting", asyn
 
 test("mission, audiences and organizational purpose connect to real pages", async () => {
   const about = await readFile(routeFile("/about/"), "utf8");
-  for (const term of ["한지붕은 왜 시작했나요", "설립 목적", "대표자와 의사결정 구조", "정관과 목적사업", "청년·외국인 유학생", "지역기관 · 협력 대상"]) assert.ok(about.includes(term), term);
+  for (const term of ["빈방은 남고", "설립 목적", "대표자와 의사결정 구조", "정관과 목적사업", "청년·외국인 유학생", "지역기관 · 협력 대상"]) assert.ok(about.includes(term), term);
   const resources = await readFile(routeFile("/resources/"), "utf8");
   assert.ok(resources.includes('id="youth-housing"'));
   assert.ok(resources.includes("자료는 한국어로 제공"));
@@ -56,6 +85,74 @@ test("mobile menu has accessible state and controls", async () => {
   assert.match(html, /aria-controls="primary-navigation"/);
   const js = await readFile(path.join(root, "assets", "site.js"), "utf8");
   assert.match(js, /event\.key === "Escape"/);
+});
+
+test("about tells a thirteen-section problem-to-mission story with truthful scope", async () => {
+  const html = await readFile(routeFile("/about/"), "utf8");
+  const body = html.match(/<main id="main-content">([\s\S]*?)<\/main>/)[1];
+  assert.equal((body.match(/<section\b/g) || []).length, 13);
+  assert.equal((body.match(/<h1\b/g) || []).length, 1);
+  const headings = ["about-title", "senior-problem-title", "youth-problem-title", "perspective-title", "mission-title", "work-title", "first-title", "audience-title", "records-title", "governance-title", "charter-title", "principles-title", "final-title"];
+  let previous = -1;
+  for (const id of headings) {
+    const index = body.indexOf(`id="${id}"`);
+    assert.ok(index > previous, `narrative section: ${id}`);
+    assert.ok(body.includes(`aria-labelledby="${id}"`));
+    previous = index;
+  }
+  for (const id of ["why", "programs", "governance"]) {
+    assert.ok(body.includes(`href="#${id}"`));
+    assert.ok(body.includes(`id="${id}"`));
+  }
+  assert.equal((body.match(/class="about-work-card"/g) || []).length, 4);
+  assert.match(body, /현재 한지붕은 입주자를 연결하거나 계약을 대행하지 않습니다/);
+  assert.match(body, /전화·이메일 기초상담/);
+  assert.match(body, /정관 원문은 현재 웹사이트에 공개하지 않습니다/);
+  assert.doesNotMatch(body, /정부 인증|안전을 보장|수익을 보장|\.pdf["']/);
+});
+
+test("about uses existing dated records and documentary photos without invented facts", async () => {
+  const { consultationRecords } = await import("../src/content/consultation-records.mjs");
+  const { consultationPhotos } = await import("../src/content/consultation-photos.mjs");
+  const html = await readFile(routeFile("/about/"), "utf8");
+  const cards = html.match(/class="about-record-grid">([\s\S]*?)<p class="section-action">/)[1];
+  assert.equal((cards.match(/class="about-record-card"/g) || []).length, 3);
+  let previous = -1;
+  for (const record of [...consultationRecords].sort((a,b) => b.date.localeCompare(a.date)).slice(0,3)) {
+    assert.ok(cards.includes(`href="${record.href}"`));
+    assert.ok(cards.includes(record.title));
+    assert.ok(cards.includes(record.area));
+    assert.ok(cards.includes(record.overview));
+    const dateIndex = cards.indexOf(`datetime="${record.date}"`);
+    assert.ok(dateIndex > previous);
+    previous = dateIndex;
+    const photo = consultationPhotos[record.photoIndex];
+    assert.ok(cards.includes(photo.file));
+    if (photo.context) assert.ok(cards.includes(photo.context));
+  }
+  for (const img of cards.matchAll(/<img\b[^>]*>/g)) {
+    assert.match(img[0], /alt="[^"]+"/);
+    assert.match(img[0], /loading="lazy"/);
+    assert.match(img[0], /width="\d+"/);
+    assert.match(img[0], /height="\d+"/);
+  }
+});
+
+test("about metadata has the requested title, canonical and sourced organization identity", async () => {
+  const { aboutTitle, aboutDescription } = await import("../src/content/about.mjs");
+  const html = await readFile(routeFile("/about/"), "utf8");
+  assert.ok(html.includes(`<title>${aboutTitle}</title>`));
+  assert.ok(html.includes(`<meta name="description" content="${aboutDescription}">`));
+  assert.ok(html.includes('<link rel="canonical" href="https://hanjibung.kr/about/">'));
+  assert.ok(html.includes('<meta property="article:modified_time" content="2026-09-25">'));
+  const schemas = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(m => JSON.parse(m[1]));
+  const organization = schemas.find(schema => schema["@type"] === "NGO");
+  assert.equal(organization.name, "한지붕");
+  assert.equal(organization.foundingDate, "2026-07-05");
+  assert.equal(organization.email, "onehousetoge@gmail.com");
+  assert.match(organization.description, /비영리단체/);
+  const sitemap = await readFile(path.join(root, "sitemap.xml"), "utf8");
+  assert.match(sitemap, /<loc>https:\/\/hanjibung.kr\/about\/<\/loc><lastmod>2026-09-25<\/lastmod>/);
 });
 
 test("editorial redesign keeps direct inquiry actions and a shared visual system", async () => {
@@ -96,6 +193,20 @@ test("contact page uses real contact links, not implementation details or a fake
   assert.match(contact, /href="tel:\+821045879428"/);
   assert.match(contact, /href="mailto:onehousetoge@gmail.com"/);
   assert.match(contact, /직접 전송해 주세요/);
+});
+
+test("review improvements separate inquiries, dates and worksheet navigation", async () => {
+  const home = await readFile(routeFile("/"), "utf8");
+  assert.ok(home.includes("72건"));
+  const report = await readFile(routeFile("/activities/2026-impact/"), "utf8");
+  assert.ok(report.includes("누적 문의 접수 · 72건"));
+  assert.ok(report.includes("무료 기초상담 · 40건"));
+  assert.ok(report.includes("차이인 32건이 모두 상담 대기라는 뜻은 아닙니다."));
+  const consulting = await readFile(routeFile("/programs/senior-home-consulting/"), "utf8");
+  assert.ok(consulting.includes("마지막 수정일 2026.09.25"));
+  assert.ok(consulting.includes('href="/resources/consultation-preparation/#prepare"'));
+  const resourcesIndex = await readFile(routeFile("/resources/"), "utf8");
+  for (const target of ["homesharing-articles", "worksheets", "find-guide", "youth-housing"]) assert.ok(resourcesIndex.includes(`href="#${target}"`));
 });
 
 test("unused thank-you routes are absent from build and all public journeys", async () => {
@@ -373,7 +484,9 @@ test("detailed impact report separates goals, internal responses and monthly tot
   assert.equal(localActivities.reduce((sum, item) => sum + item[1], 0), 12);
   assert.deepEqual(annualGoals.map(goal => Math.round(goal.current / goal.target * 100)), [40, 42, 60, 45, 60]);
   const html = await readFile(routeFile("/activities/2026-impact/"), "utf8");
-  for (const text of ["58명", "28명", "42개", "428회", "91%", "64%", "38%", "82%", "내부 응답 집계", "익명 공개 동의", "9월 24일까지", "측정 기간·도구·중복 제거", "연간 목표"]) assert.ok(html.includes(text), text);
+  for (const text of ["58명", "28명", "42개", "익명 공개 동의", "9월 24일까지", "연간 목표"]) assert.ok(html.includes(text), text);
+  for (const removed of ["428회", "91%", "64%", "38%", "82%", "<dd>32%</dd>", "<dd>26%</dd>"]) assert.ok(!html.includes(removed), removed);
+  assert.ok(html.includes("어떤 기록을 어떻게 집계했나요?"));
   assert.ok(!html.includes("41명"));
   for (const text of ["상담·자료 운영 실적", "2026년 7월 5일(창립일)~2026년 9월 25일", "무료 기초상담 · 40건", "후속 정보 안내 · 25건", "상담 이용자 의견 수렴 · 30명", "생활·주거자료 보완 · 3종", "자료 보완 3종은 기존 자료를 개선한 실적"]) assert.ok(html.includes(text), text);
   assert.ok(!html.includes("최대 2회"));
@@ -401,9 +514,9 @@ test("consultation, research and funding pages link into one public evidence flo
 test("nonprofit wording explains the tax status without claiming incorporation", async () => {
   for (const route of ["/", "/about/", "/transparency/", "/activities/nonprofit-registration/"]) {
     const html = await readFile(routeFile(route), "utf8");
-    assert.match(html, /비영리법인/);
+    assert.match(html, /비영리단체/);
     assert.match(html, /국세기본법상 법인으로 보는 단체/);
-    assert.doesNotMatch(html, /민법상 법인 설립허가·등기 완료|한지붕은 비영리단체입니다/);
+    assert.doesNotMatch(html, /민법상 법인 설립허가·등기 완료|비영리법인/);
   }
   const registration = await readFile(routeFile("/activities/nonprofit-registration/"), "utf8");
   assert.match(registration, /법인세법 제2조/);
