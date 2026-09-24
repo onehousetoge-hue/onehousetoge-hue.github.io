@@ -6,6 +6,7 @@ import { digitalLearning } from "../content/field-records.mjs";
 import { photoFigure } from "./photo.mjs";
 import { layout, pageHero, icon } from "./template.mjs";
 import { researchPage } from "./research-page.mjs";
+import { consultationExample } from "./help-paths.mjs";
 
 export function programPage(program) {
   if (program.slug === "housing-research") return researchPage(program);
@@ -14,7 +15,7 @@ export function programPage(program) {
   const consultation = program.slug === "senior-home-consulting";
   const related = detail.resources.map(getResource);
   const summary = consultation
-    ? [["대상", "빈방·유휴공간 활용과 공동생활을 고민하는 어르신 및 가족"], ["응대", "한지붕 대표 및 운영진"], ["비용", "초기 전화·이메일 상담 무료"], ["방법", "전화 또는 이메일 문의"]]
+    ? [["대상", "빈방·유휴공간 활용과 공동생활을 고민하는 어르신 및 가족"], ["응대", "한지붕 대표 및 운영진"], ["비용", "초기 전화·이메일 상담 무료"], ["방법", "홈페이지 문의 접수 또는 전화·이메일"]]
     : research
       ? [["현재 상태", "실태조사 진행 중"], ["조사 주제", "청년 주거와 고령층 유휴공간"], ["결과 공개", "검토를 거쳐 공개 예정"], ["참여·협력", "전화·이메일 문의"]]
       : [["대상", "기관·복지관·지역단체와 교육·봉사 참여에 관심 있는 분"], ["운영", "기관 요청에 따라 사전 협의"], ["프로그램", "디지털·AI 활용, 세대교류, 주거문화 안내"], ["비용", "개인 봉사 가입비 없음·기관 프로그램 사전 합의"]];
@@ -33,7 +34,7 @@ export function programPage(program) {
     <section class="section"><div class="container">${shortcuts}<dl class="program-facts">${summary.map(([label, value]) => `<div><dt>${label}</dt><dd>${value}</dd></div>`).join("")}</dl>${photos}</div>
     <div class="container content-layout"><article class="prose"><p class="registration-note">등록 고유사업명: ${program.registeredTitle || program.title}</p><h2>${consultation ? "빈방 활용, 준비부터 함께" : "이 사업이 필요한 이유"}</h2><p class="lead">${detail.problem}</p>
     <div class="program-overview"><section class="info-block"><h2>${research ? "조사 관련 대상" : "이런 분께 도움이 됩니다"}</h2><ul>${detail.targets.map((item) => `<li>${item}</li>`).join("")}</ul></section><section class="info-block"><h2 class="jump-target" id="program-contents" tabindex="-1">${consultation ? "상담에서 함께 살펴볼 내용" : research ? "조사 내용" : "협의할 수 있는 프로그램"}</h2><ul>${detail.provides.map((item) => `<li>${item}</li>`).join("")}</ul></section></div>
-    ${extra}<h2 class="jump-target" id="program-how" tabindex="-1">${research ? "진행 현황과 결과 공개" : "이용방법"}</h2><ol>${detail.steps.map(([heading, copy]) => `<li><strong>${heading}</strong><br>${copy}</li>`).join("")}</ol><h2 class="jump-target" id="program-cost" tabindex="-1">${research ? "현재 이용 안내" : "비용과 진행 안내"}</h2><p>${detail.cost}</p><h2 class="jump-target" id="program-limits" tabindex="-1">제공하지 않는 업무</h2><p>다음 업무는 한지붕의 현재 서비스에 포함되지 않습니다.</p><ul>${detail.limits.map((item) => `<li>${item}</li>`).join("")}</ul><h2>개인정보 안내</h2><p>${detail.privacy}</p>
+    ${extra}${consultation ? consultationExample() : ""}<h2 class="jump-target" id="program-how" tabindex="-1">${research ? "진행 현황과 결과 공개" : "이용방법"}</h2><ol>${detail.steps.map(([heading, copy]) => `<li><strong>${heading}</strong><br>${copy}</li>`).join("")}</ol><h2 class="jump-target" id="program-cost" tabindex="-1">${research ? "현재 이용 안내" : "비용과 진행 안내"}</h2><p>${detail.cost}</p><h2 class="jump-target" id="program-limits" tabindex="-1">제공하지 않는 업무</h2><p>다음 업무는 한지붕의 현재 서비스에 포함되지 않습니다.</p><ul>${detail.limits.map((item) => `<li>${item}</li>`).join("")}</ul><h2>개인정보 안내</h2><p>${detail.privacy}</p>
     <h2 class="jump-target" id="program-faq" tabindex="-1">자주 묻는 질문</h2><div class="faq">${detail.faqs.map(([question, answer]) => `<details><summary>${question}</summary><p>${answer}</p></details>`).join("")}</div>
     <section class="related-section"><h2>함께 읽는 생활자료</h2><div class="related-grid">${related.map((resource) => `<a class="related-link" href="${resource.href}"><span class="resource-meta">${resource.category}</span>${resource.title}</a>`).join("")}</div></section>
     </article><aside class="side-nav"><h2>${consultation ? "무료상담 문의" : research ? "조사 협력 문의" : "기관협력 문의"}</h2><a href="${site.phoneHref}">${site.phone}</a><a href="${site.emailHref}">${site.email}</a><a href="/contact/">문의 방법 보기</a><a href="/participate/#partnership">참여·기관협력 안내</a><a href="/programs/">공익사업 전체 보기</a></aside></div>

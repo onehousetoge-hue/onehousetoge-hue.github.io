@@ -10,6 +10,7 @@ export function inquiryPage(kind) {
   const enabled = Boolean(inquiries.endpoint);
   const body = pageHero({eyebrow: partner ? '함께하는 공익활동' : '어르신·가족 무료상담', title, description: partner ? '교육·봉사와 주거상생 조사 협력을 제안해 주세요. 내용과 일정·비용·역할은 운영진과 협의한 뒤 정합니다.' : '빈방 활용과 공동생활 준비에 대해 궁금한 점을 남겨 주세요. 한지붕 대표와 운영진이 확인하고 선택한 연락방법으로 안내합니다.'}) +
   `<section class="section"><div class="container narrow"><div class="notice"><h2>필요한 내용만 간단히 알려 주세요</h2><p>초기 상담에는 주민등록번호, 상세주소, 계약서, 금융정보 등 민감정보를 보내실 필요가 없습니다. 다른 사람의 연락처나 건강정보도 적지 마세요.</p><p>${partner ? '문의만으로 일정이나 협력이 확정되지는 않습니다.' : '기초상담은 무료입니다. 주택 방문·집수리·입주 알선·계약대행·법률·세무 자문은 제공하지 않습니다.'}</p></div>
+  <details class="inquiry-writing-help"><summary>어떤 내용을 적으면 좋을까요?</summary><p>${partner ? '기관명, 참여 대상, 희망 주제와 시기를 적어 주세요. 확정하지 않은 부분은 협의 희망으로 남겨도 됩니다.' : '현재 고민 한 가지와 상담에서 확인하고 싶은 질문을 적어 주세요. 가족이나 다른 사람의 사적인 정보는 넣지 않아도 됩니다.'}</p><p>${partner ? '작성 예시: 어르신 대상 스마트폰 교육을 제안하고 싶습니다. 참여 규모와 가능한 일정을 함께 협의하고 싶습니다.' : '작성 예시: 자녀 독립 후 남은 방이 있습니다. 가족과 어떤 점부터 이야기하면 좋을지 궁금합니다.'}</p><p>위 문장은 작성 방법을 보여주는 예시이며 실제 접수 내용이 아닙니다.</p></details>
   ${enabled ? '' : '<p class="notice" role="status">온라인 문의는 아직 접수를 시작하지 않았습니다. 지금은 아래 전화·이메일로 문의해 주세요.</p>'}
   <form class="inquiry-form" data-inquiry="${kind}" data-endpoint="${escapeHtml(inquiries.endpoint)}" data-consent-version="${inquiries.consentVersion}" method="post" action="${route}" novalidate>
     <fieldset disabled><legend>${partner ? '기관과 담당자 정보' : '문의하시는 분 정보'}</legend>

@@ -8,6 +8,22 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "d
 const routes = ["/", "/about/", "/programs/", "/programs/senior-home-consulting/", "/programs/intergenerational-volunteer/", "/programs/housing-research/", "/resources/", "/resources/family-checklist/", "/resources/shared-living-rules/", "/resources/consultation-preparation/", "/resources/private-common-space/", "/resources/conflict-prevention/", "/resources/korean-housing-culture/", "/activities/", "/activities/founding-meeting/", "/activities/nonprofit-registration/", "/transparency/", "/participate/", "/contact/", "/privacy/", "/terms/"];
 const routeFile = (route) => route === "/" ? path.join(root, "index.html") : path.join(root, route.replace(/^\//, ""), "index.html");
 
+test("benchmark journeys provide distinct entry paths, six native guide choices and a clearly fictional example", async () => {
+  const home = await readFile(routeFile("/"), "utf8");
+  assert.match(home, /지금 필요한 도움부터 찾으세요/);
+  assert.match(home, /상황에 맞는 생활자료 찾기/);
+  const resources = await readFile(routeFile("/resources/"), "utf8");
+  const finder = resources.match(/<section id="find-guide"[\s\S]*?<\/section>/)?.[0];
+  assert.ok(finder);
+  assert.equal((finder.match(/<details>/g) || []).length, 6);
+  assert.match(finder, /선택 내용은 저장하거나 전송하지 않습니다/);
+  for (const slug of ["family-checklist", "shared-living-rules", "consultation-preparation", "private-common-space", "conflict-prevention", "korean-housing-culture"]) assert.ok(finder.includes(`/resources/${slug}/`));
+  const program = await readFile(routeFile("/programs/senior-home-consulting/"), "utf8");
+  assert.match(program, /이해를 돕기 위한 가상 예시/);
+  assert.match(program, /실제 참여자의 발언, 상담 결과나 성과를 재현한 내용이 아닙니다/);
+  assert.match(program, /홈페이지 문의 접수 또는 전화·이메일/);
+});
+
 test("all required public routes exist", async () => {
   for (const route of routes) assert.equal((await stat(routeFile(route))).isFile(), true, route);
   assert.equal((await stat(routeFile("/activities/senior-digital-education/"))).isFile(), true);

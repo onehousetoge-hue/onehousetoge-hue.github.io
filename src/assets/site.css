@@ -137,6 +137,13 @@ picture { display: block; min-width: 0; }
   .field-toc a { width: 100%; }
   .field-record-note { padding: 22px; }
 }
+.help-paths { border-block: 1px solid var(--line); }
+.help-paths > .container > p:not(.eyebrow) { max-width: 800px; }
+.guide-finder { max-width: 980px; margin-bottom: 72px; }
+.guide-answer { padding: 0 24px 24px; }
+.guide-answer .text-link { display: inline-block; padding-block: 12px; }
+.consultation-example { border-block: 1px solid var(--line); margin-block: 40px; padding-block: 28px; }
+.consultation-example blockquote { border-left: 4px solid var(--accent); margin: 24px 0; padding: 16px 22px; background: var(--green-soft); }
 @media print {
   .field-feature, .field-chapter-heading { display: block; }
   .field-toc { display: none; }

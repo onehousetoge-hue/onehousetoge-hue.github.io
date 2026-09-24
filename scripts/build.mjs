@@ -19,6 +19,7 @@ import { consultationPhotos } from "../src/content/consultation-photos.mjs";
 import { photoVariants } from "../src/lib/photo-variants.mjs";
 import { aboutBody } from "../src/content/about.mjs";
 import { landingPage } from "../src/lib/landing-page.mjs";
+import { guideFinder } from "../src/lib/help-paths.mjs";
 import { programPage } from "../src/lib/program-page.mjs";
 import { absolute, escapeHtml, icon, layout, organizationSchema, pageHero } from "../src/lib/template.mjs";
 
@@ -77,7 +78,7 @@ for (const kind of ["consultation", "partnership"]) {
   await emit(`/${kind}/complete/`, inquiryCompletePage(kind), { indexable: false });
 }
 
-const resourcesBody = `${pageHero({ eyebrow: "주거상생 자료", title: "가족과 이야기할 때,<br>함께 생활할 때 꺼내 보세요.", description: "가족회의 질문지부터 생활규칙 작성표까지, 각자의 고민에 맞춰 읽고 직접 적어볼 수 있는 생활자료 6종입니다. 메모는 자동 저장되거나 전송되지 않습니다.", meta: updatedMeta("/resources/") })}<section class="section"><div class="container"><div class="resource-grid">${resourceCards(resources, 2)}</div></div></section>`;
+const resourcesBody = `${pageHero({ eyebrow: "주거상생 자료", title: "가족과 이야기할 때,<br>함께 생활할 때 꺼내 보세요.", description: "가족회의 질문지부터 생활규칙 작성표까지, 각자의 고민에 맞춰 읽고 직접 적어볼 수 있는 생활자료 6종입니다. 메모는 자동 저장되거나 전송되지 않습니다.", meta: updatedMeta("/resources/") })}<section class="section"><div class="container">${guideFinder()}<h2>생활자료 전체 보기</h2><div class="resource-grid">${resourceCards(resources, 3)}</div></div></section>`;
 await emit("/resources/", layout({ title: "주거상생 자료", description: "어르신 주택과 세대공존을 준비하는 가족·청년·기관을 위한 주거상생 공익자료입니다.", path: "/resources/", body: resourcesBody, breadcrumbs: [{ label: "주거상생 자료", href: "/resources/" }] }));
 
 for (const resource of resources) await emit(resource.href, resourcePage(resource), { updatedAt: resource.updatedAt });

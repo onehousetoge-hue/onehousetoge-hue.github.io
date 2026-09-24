@@ -4,6 +4,7 @@ import { consultationRecords } from "../content/consultation-records.mjs";
 import { getResource } from "../content/resources.mjs";
 import { icon } from "./template.mjs";
 import { photoImage } from "./photo.mjs";
+import { helpPaths } from "./help-paths.mjs";
 
 export function landingPage(programCards) {
   const guides = ["family-checklist", "shared-living-rules", "consultation-preparation"].map(getResource);
@@ -13,7 +14,7 @@ export function landingPage(programCards) {
     <div class="editorial-cover"><figure class="editorial-cover-photo">${photoImage(consultationPhotos[0], { eager: true, sizes: "(max-width: 760px) calc(100vw - 40px), (max-width: 1440px) 64vw, 870px" })}<figcaption>지역을 걷고, 이야기를 듣습니다. <span>한지붕의 현장 상담 모습</span></figcaption></figure>
       <div class="editorial-cover-copy"><p class="editorial-note">어르신의 오늘,<br>가족의 내일을 함께 생각합니다.</p><p class="cover-intro">빈방 활용과 공동생활을 고민하는 어르신과 가족에게 필요한 준비사항을 무료로 안내합니다.</p><div class="cover-actions"><a class="button" href="/consultation/">무료상담 문의하기${icon("arrow")}</a><a class="button button-secondary" href="/resources/consultation-preparation/">상담 전 준비자료 보기</a></div><p class="cover-footnote">온라인·전화·이메일로<br>궁금한 점부터 나눠주세요.</p></div>
     </div>
-  </div></section>
+  </div></section>${helpPaths()}
   <section class="section editorial-questions"><div class="container"><div class="editorial-kicker"><p>혼자가 아닌, 함께.</p><span class="editorial-rule" aria-hidden="true"></span><p>지금의 고민이, 더 나은 내일로 이어지도록.</p></div><div class="editorial-section-heading"><h2>이런 고민을<br class="mobile-only"> 함께 정리합니다.</h2><p>바로 결정하지 않아도 괜찮습니다. 생활에 필요한 정보를 차분히 안내합니다.</p></div><div class="editorial-question-list">
     <article><span class="editorial-number">01</span><h3>빈방 활용,<br>어디서부터 생각할까요?</h3><p>지금 공간을 어떻게 쓰고 있는지, 가족과 먼저 나눌 질문을 정리합니다.</p><a href="/resources/family-checklist/" aria-label="빈방 활용 전 가족과 나눌 질문 보기">${icon("arrow")}</a></article>
     <article><span class="editorial-number">02</span><h3>함께 살기 전,<br>무엇을 약속할까요?</h3><p>개인공간과 공용공간, 생활시간과 방문객 등 공동생활 기준을 살펴봅니다.</p><a href="/resources/shared-living-rules/" aria-label="함께 쓰는 생활규칙 작성표 보기">${icon("arrow")}</a></article>
