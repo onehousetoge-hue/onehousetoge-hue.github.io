@@ -11,9 +11,9 @@ export function landingPage(programCards) {
   const guides = ["family-checklist", "shared-living-rules", "consultation-preparation"].map(getResource);
   return `<section class="editorial-hero"><div class="container">
     <div class="editorial-kicker"><p>사람이 있는,<br>지속 가능한 이웃의 삶을 위해</p><span class="editorial-rule" aria-hidden="true"></span><p>오늘도, 더 나은 생활을 함께 생각합니다.</p></div>
-    <h1>집과 생활의 고민,<br>함께 정리해요.</h1>
+    <h1>어르신의 남는 공간과<br>청년의 주거 고민을 잇습니다</h1>
     <div class="editorial-cover"><figure class="editorial-cover-photo">${photoImage(consultationPhotos[0], { eager: true, sizes: "(max-width: 760px) calc(100vw - 40px), (max-width: 1440px) 64vw, 870px" })}<figcaption>지역을 걷고, 이야기를 듣습니다. <span>한지붕의 현장 상담 모습</span></figcaption></figure>
-      <div class="editorial-cover-copy"><p class="editorial-note">어르신의 오늘,<br>가족의 내일을 함께 생각합니다.</p><p class="cover-intro">빈방 활용과 공동생활을 고민하는 어르신과 가족에게 필요한 준비사항을 무료로 안내합니다.</p><div class="cover-actions"><a class="button" href="/consultation/">무료상담 문의하기${icon("arrow")}</a><a class="button button-secondary" href="/resources/consultation-preparation/">상담 전 준비자료 보기</a></div><p class="cover-footnote">온라인·전화·이메일로<br>궁금한 점부터 나눠주세요.</p></div>
+      <div class="editorial-cover-copy"><p class="editorial-note">서울 노원구에서 시작하는<br>주거상생 공익활동</p><p class="cover-intro">한지붕은 서울 노원구를 중심으로 어르신 유휴공간 활용 무료상담, 청년·외국인 유학생 주거문화 안내, 세대공감 프로그램과 주거상생 실태조사를 운영하는 비영리단체입니다.</p><div class="cover-actions"><a class="button" href="/consultation/">어르신 무료상담${icon("arrow")}</a><a class="button button-secondary" href="/resources/#youth-housing">청년 주거정보 보기</a><a class="button button-secondary" href="/activities/">한지붕 활동기록</a></div><p class="cover-footnote">상담과 공익정보를 제공합니다.<br>입주 알선·계약대행은 하지 않습니다.</p></div>
     </div>
   </div></section>${helpPaths()}${impactSection()}
   <section class="section editorial-questions"><div class="container"><div class="editorial-kicker"><p>혼자가 아닌, 함께.</p><span class="editorial-rule" aria-hidden="true"></span><p>지금의 고민이, 더 나은 내일로 이어지도록.</p></div><div class="editorial-section-heading"><h2>이런 고민을<br class="mobile-only"> 함께 정리합니다.</h2><p>바로 결정하지 않아도 괜찮습니다. 생활에 필요한 정보를 차분히 안내합니다.</p></div><div class="editorial-question-list">

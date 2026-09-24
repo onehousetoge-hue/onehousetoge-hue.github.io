@@ -605,7 +605,7 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -.055em; }
 .editorial-kicker p:first-child { color: var(--accent); letter-spacing: .04em; }
 .editorial-kicker p:last-child { color: var(--muted); }
 .editorial-rule { flex: 1; height: 1px; background: #8d8a83; }
-.editorial-hero h1 { font-size: clamp(66px, 10.6vw, 152px); line-height: 1.12; letter-spacing: -.065em; font-weight: 900; margin: 40px 0 54px; }
+.editorial-hero h1 { font-size: clamp(48px, 7vw, 100px); line-height: 1.2; letter-spacing: -.055em; font-weight: 900; margin: 40px 0 54px; word-break: keep-all; overflow-wrap: break-word; }
 .editorial-cover { display: grid; grid-template-columns: 1.95fr 1fr; gap: 56px; }
 .editorial-cover-photo { margin: 0; min-width: 0; }
 .editorial-cover-photo img { width: 100%; height: auto; aspect-ratio: 1.2; object-fit: cover; object-position: center 29%; }
@@ -814,7 +814,7 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -.055em; }
 
 .community-activity-photo { margin: 2rem 0; }
 .impact-section { background: #f1eee8; }
-.annual-goals { display: grid; gap: 1.5rem; }
+ .annual-goals { display: grid; gap: 1.5rem; }
 .annual-goals section { padding-bottom: 1.5rem; border-bottom: 1px solid var(--line); }
 .annual-goals progress { display: block; width: 100%; height: 1.2rem; accent-color: #8f2929; }
 .impact-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; margin-block: 2rem; }

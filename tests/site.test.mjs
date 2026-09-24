@@ -10,7 +10,7 @@ const routeFile = (route) => route === "/" ? path.join(root, "index.html") : pat
 
 test("benchmark journeys provide distinct entry paths, six native guide choices and a clearly fictional example", async () => {
   const home = await readFile(routeFile("/"), "utf8");
-  assert.match(home, /지금 필요한 도움부터 찾으세요/);
+  assert.match(home, /어르신과 청년에게 필요한 도움/);
   assert.match(home, /상황에 맞는 생활자료 찾기/);
   const resources = await readFile(routeFile("/resources/"), "utf8");
   const finder = resources.match(/<section id="find-guide"[\s\S]*?<\/section>/)?.[0];
@@ -35,9 +35,19 @@ test("homepage states the actual services and prioritizes free consulting", asyn
   assert.match(html, /주거상생 실태조사는 현재 진행 중/);
   const hero = html.match(/<section class="editorial-hero">([\s\S]*?)<\/section>/)?.[1];
   assert.ok(hero);
-  assert.match(hero, /집과 생활의 고민/);
-  assert.ok(hero.indexOf('href="/consultation/"') < hero.indexOf('href="/resources/consultation-preparation/"'));
+  assert.match(hero, /어르신의 남는 공간과/);
+  assert.match(hero, /청년의 주거 고민을 잇습니다/);
+  assert.ok(hero.indexOf('href="/consultation/"') < hero.indexOf('href="/resources/#youth-housing"'));
+  for (const term of ["어르신 무료상담", "청년 주거정보 보기", "한지붕 활동기록", "청년·외국인 유학생 주거문화 안내"]) assert.ok(hero.includes(term));
   assert.match(hero, /consultation-walk\.jpg/);
+});
+
+test("mission, audiences and organizational purpose connect to real pages", async () => {
+  const about = await readFile(routeFile("/about/"), "utf8");
+  for (const term of ["한지붕은 왜 시작했나요", "설립 목적", "대표자와 의사결정 구조", "정관과 목적사업", "청년·외국인 유학생", "지역기관 · 협력 대상"]) assert.ok(about.includes(term), term);
+  const resources = await readFile(routeFile("/resources/"), "utf8");
+  assert.ok(resources.includes('id="youth-housing"'));
+  assert.ok(resources.includes("자료는 한국어로 제공"));
 });
 
 test("mobile menu has accessible state and controls", async () => {
