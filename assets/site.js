@@ -70,7 +70,7 @@
     if (button?.getAttribute("aria-expanded") !== "true") return;
     if (!navigation?.contains(event.target) && !button.contains(event.target)) setMenu(false);
   });
-  window.matchMedia("(min-width: 1121px)").addEventListener("change", (event) => {
+  window.matchMedia("(min-width: 1281px)").addEventListener("change", (event) => {
     if (event.matches) setMenu(false);
   });
 

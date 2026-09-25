@@ -8,7 +8,7 @@ await stat(path.join(dist, "index.html"));
 
 const oldFiles = ["app.js", "config.js", "daily-word.html", "fortune-config.js", "fortune.css", "fortune.html", "fortune.js", "meeting-config.js", "meeting.css", "meeting.html", "meeting.js", "portal.css", "styles.css"];
 const oldTrackedAssets = ["assets/hero-senior-woman.jpg", "assets/hero-senior-woman.webp", "assets/meeting-hero.jpg"];
-const generatedRoutes = ["about", "programs", "resources", "activities", "transparency", "participate", "contact", "consultation", "partnership", "privacy", "terms", "thanks", "404"];
+const generatedRoutes = ["about", "programs", "resources", "guide", "research", "stories", "activities", "transparency", "participate", "contact", "consultation", "partnership", "privacy", "terms", "thanks", "404"];
 
 async function removeGenerated(relative, recursive = false) {
   const target = path.resolve(root, relative);

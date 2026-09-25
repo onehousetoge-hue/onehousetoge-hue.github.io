@@ -10,7 +10,7 @@
     "assets:optimize": "node scripts/optimize-photos.mjs",
     "lint": "node scripts/lint.mjs",
     "typecheck": "node scripts/typecheck.mjs",
-    "test": "node --test tests/site.test.mjs tests/inquiries.test.mjs tests/living-lab.test.mjs",
+    "test": "node --test tests/site.test.mjs tests/inquiries.test.mjs tests/living-lab.test.mjs tests/editorial-guides.test.mjs",
     "crawl": "node scripts/crawl.mjs",
     "audit": "node scripts/audit.mjs dist",
     "check": "node scripts/check.mjs",

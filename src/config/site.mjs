@@ -22,11 +22,12 @@ export const site = Object.freeze({
 });
 
 export const navigation = Object.freeze([
-  ["소개", "/about/"],
-  ["하는 일", "/programs/"],
-  ["현장 이야기", "/activities/"],
-  ["생활자료", "/resources/"],
-  ["운영·공개", "/transparency/"],
+  ["한지붕 소개", "/about/"],
+  ["우리가 하는 일", "/programs/"],
+  ["주거정보", "/resources/"],
+  ["조사·연구", "/research/housing-coexistence/"],
+  ["활동기록", "/activities/"],
+  ["참여하기", "/participate/"],
 ]);
 
 export const programs = Object.freeze([

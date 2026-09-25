@@ -25,6 +25,8 @@ import { aboutBody, aboutTitle, aboutDescription } from "../src/content/about.mj
 import { landingPage } from "../src/lib/landing-page.mjs";
 import { guideFinder, youthGuides } from "../src/lib/help-paths.mjs";
 import { livingLabFeature, livingLabPage, livingLabPages } from "../src/lib/living-lab.mjs";
+import { editorialGuides } from "../src/content/editorial-guides.mjs";
+import { editorialGuideCards, editorialGuidePage } from "../src/lib/editorial-guide-page.mjs";
 import { programPage } from "../src/lib/program-page.mjs";
 import { absolute, escapeHtml, icon, layout, organizationSchema, pageHero } from "../src/lib/template.mjs";
 
@@ -83,12 +85,13 @@ for (const kind of ["consultation", "partnership"]) {
   await emit(`/${kind}/complete/`, inquiryCompletePage(kind), { indexable: false });
 }
 
-const resourcesBody = `${pageHero({ eyebrow: "주거상생 자료", title: "가족과 이야기할 때,<br>함께 생활할 때 꺼내 보세요.", description: "공동생활 준비실에서 질문을 고르고 대화를 연습해 보세요. 먼저 읽는 안내글 2편과 직접 작성하는 생활자료 6종도 무료로 이용할 수 있습니다.", meta: updatedMeta("/resources/") })}<section class="section"><div class="container"><nav class="section-jumps resource-navigation" aria-label="자료 유형 선택"><a href="#living-lab-title">공동생활 준비실 · 도구 4가지</a><a href="#find-guide">내 상황에 맞는 자료 찾기</a><a href="#homesharing-articles">먼저 이해하기 · 안내글 2편</a><a href="#worksheets">직접 작성하기 · 자료 6종</a><a href="#youth-housing">청년·유학생 안내</a></nav>${livingLabFeature({ compact: true })}${guideFinder()}${homesharingCards()}<h2 id="worksheets">직접 작성하는 생활자료 6종</h2><p>화면에서 메모하거나 체크하고, 필요한 내용은 인쇄할 수 있습니다. 회원가입이나 상담 신청 없이 이용하세요.</p><div class="resource-grid">${resourceCards(resources, 3)}</div>${youthGuides()}</div></section>`;
+const resourcesBody = `${pageHero({ eyebrow: "주거정보와 생활자료", title: "가족과 이야기할 때,<br>함께 생활할 때 꺼내 보세요.", description: "새 주거정보 글 5편에서 공간·생활·세대교류를 읽고, 공동생활 준비실에서 질문을 정리해 보세요. 기존 안내글 2편과 작성형 생활자료 6종도 무료로 이용할 수 있습니다.", meta: updatedMeta("/resources/") })}<section class="section"><div class="container"><nav class="section-jumps resource-navigation" aria-label="자료 유형 선택"><a href="#housing-reading">새 주거정보 · 글 5편</a><a href="#living-lab-title">공동생활 준비실 · 도구 4가지</a><a href="#find-guide">내 상황에 맞는 자료 찾기</a><a href="#homesharing-articles">먼저 이해하기 · 안내글 2편</a><a href="#worksheets">직접 작성하기 · 자료 6종</a><a href="#youth-housing">청년·유학생 안내</a></nav>${editorialGuideCards()}${livingLabFeature({ compact: true })}${guideFinder()}${homesharingCards()}<h2 id="worksheets">직접 작성하는 생활자료 6종</h2><p>화면에서 메모하거나 체크하고, 필요한 내용은 인쇄할 수 있습니다. 회원가입이나 상담 신청 없이 이용하세요.</p><div class="resource-grid">${resourceCards(resources, 3)}</div>${youthGuides()}</div></section>`;
 await emit("/resources/", layout({ title: "주거상생 자료", description: "어르신 주택과 세대공존을 준비하는 가족·청년·기관을 위한 주거상생 공익자료입니다.", path: "/resources/", body: resourcesBody, bodyClass: "directory-page", breadcrumbs: [{ label: "주거상생 자료", href: "/resources/" }] }));
 
 for (const resource of resources) await emit(resource.href, resourcePage(resource), { updatedAt: resource.updatedAt });
 for (const article of homesharingArticles) await emit(article.href, homesharingPage(article), { updatedAt: article.updatedAt });
 for (const tool of livingLabPages) await emit(tool.href, livingLabPage(tool), { updatedAt: tool.updatedAt });
+for (const article of editorialGuides) await emit(article.href, editorialGuidePage(article), { updatedAt: article.updatedAt });
 
 const activitiesBody = `${pageHero({ eyebrow: "활동과 기록", title: "함께한 현장과<br>한지붕의 소식을 전합니다.", description: "어르신 상담 사진과 시니어 디지털·AI 교육 경험, 단체의 창립·등록 운영기록을 전합니다.", meta: `${updatedMeta("/activities/")}<div class="hero-actions"><a class="button button-secondary" href="#activity-records">활동 글목록 바로 보기</a><a class="text-link" href="/activities/field-records/">상담 현장사진 보기</a></div>` })}${impactSection()}${fieldRecordFeature()}<section class="section" id="activity-records"><div class="container"><div class="section-header"><div><p class="eyebrow">활동과 운영기록</p><h2>교육 경험과 운영기록으로 만나는<br>한지붕의 발걸음</h2></div><p>구성원의 교육 경험과 단체 운영기록을 구분하여 소개합니다. 게시일은 실제 교육일을 뜻하지 않습니다.</p></div><div class="record-list">${activities.map((activity) => `<article class="record-item"><time datetime="${activity.eventDate || activity.publishedAt}">${activity.eventDate ? "활동일 " : "게시일 "}${activity.eventLabel || activity.publishedLabel}</time><div><span class="resource-meta">${activity.category}</span><h3>${activity.title}</h3><p>${activity.description}</p></div>${cardLink(activity.href, "기록 확인")}</article>`).join("")}</div></div></section>`;
 await emit("/activities/", layout({ title: "활동과 기록", description: "어르신 상담 현장과 디지털 교육 경험, 한지붕의 창립·등록 기록을 소개합니다.", path: "/activities/", body: activitiesBody + activityTimeline(), bodyClass: "directory-page", breadcrumbs: [{ label: "활동과 기록", href: "/activities/" }] }));
@@ -142,6 +145,10 @@ await cp(path.join(root, "src", "assets", "inquiry.js"), path.join(out, "assets"
 await cp(path.join(root, "src", "assets", "living-lab.mjs"), path.join(out, "assets", "living-lab.mjs"));
 await cp(path.join(root, "src", "assets", "favicon.svg"), path.join(out, "assets", "favicon.svg"));
 await mkdir(path.join(out, "assets", "activities"), { recursive: true });
+await mkdir(path.join(out, "assets", "guides"), { recursive: true });
+for (const article of editorialGuides) {
+  for (const suffix of [".jpg", "-640.webp", "-1200.webp"]) await cp(path.join(root, "src", "assets", "guides", article.image + suffix), path.join(out, "assets", "guides", article.image + suffix));
+}
 for (const activity of activities.filter((item) => item.image)) {
   await cp(path.join(root, "src", "assets", "activities", activity.image), path.join(out, "assets", "activities", activity.image));
   for (const variant of photoVariants({...activity, file: activity.image})) await cp(path.join(root, "src", "assets", "activities", variant.file), path.join(out, "assets", "activities", variant.file));

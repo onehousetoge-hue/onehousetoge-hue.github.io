@@ -68,7 +68,7 @@ export function pageHead({ title, documentTitle, description, path, type = "webs
 
 export function header(currentPath = "/") {
   const links = navigation
-    .map(([label, href]) => `<a href="${href}"${currentPath.startsWith(href) && href !== "/" ? ' aria-current="page"' : ""}>${label}</a>`)
+    .map(([label, href]) => `<a href="${href}"${(currentPath.startsWith(href) || (href === "/resources/" && currentPath.startsWith("/guide/"))) && href !== "/" ? ' aria-current="page"' : ""}>${label}</a>`)
     .join("");
   return `
     <a class="skip-link" href="#main-content">본문으로 바로가기</a>

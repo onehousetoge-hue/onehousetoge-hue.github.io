@@ -7,6 +7,7 @@ const files = [
   "src/config/inquiries.mjs", "src/config/page-dates.mjs", "src/assets/inquiry.js", "src/lib/inquiry-page.mjs", "integrations/inquiries/Code.gs", "scripts/crawl.mjs",
   "src/config/site.mjs",
   "src/lib/living-lab.mjs", "src/assets/living-lab.mjs",
+  "src/content/editorial-guides.mjs", "src/lib/editorial-guide-page.mjs",
   "src/content/resources.mjs",
   "src/content/activities.mjs",
   "src/content/funding.mjs",
