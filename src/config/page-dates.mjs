@@ -5,7 +5,7 @@ export const pageDates = Object.freeze({
   "/programs/senior-home-consulting/": "2026-09-25",
   "/programs/intergenerational-volunteer/": "2026-09-25",
   "/programs/housing-research/": "2026-09-24",
-  "/resources/": "2026-09-25", "/activities/": "2026-09-24",
+  "/resources/": "2026-09-25", "/activities/": "2026-09-25",
   "/activities/field-records/": "2026-09-24", "/transparency/": "2026-09-25",
   "/participate/": "2026-09-24", "/contact/": "2026-09-24",
   "/privacy/": "2026-09-25", "/terms/": "2026-09-24",

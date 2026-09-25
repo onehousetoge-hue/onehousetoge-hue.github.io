@@ -8,6 +8,7 @@ const files = [
   "src/config/site.mjs",
   "src/lib/living-lab.mjs", "src/assets/living-lab.mjs",
   "src/content/editorial-guides.mjs", "src/lib/editorial-guide-page.mjs",
+  "src/content/field-stories.mjs", "src/lib/field-story-page.mjs",
   "src/content/resources.mjs",
   "src/content/activities.mjs",
   "src/content/funding.mjs",

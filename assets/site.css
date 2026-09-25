@@ -1243,3 +1243,57 @@ main [id], .form-error-summary { scroll-margin-top: 120px; }
   .guide-photo figcaption { font-size: 10pt; }
   .guide-next, .guide-home-strip, .guide-reading { display: none; }
 }
+
+/* Field reports: activity metadata and explanatory living-space imagery. */
+#september-field-stories { scroll-margin-top: 110px; }
+.field-story-directory { padding-top: 36px; background: var(--green-soft); }
+.field-story-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.field-story-card { display: flex; flex-direction: column; min-width: 0; padding: 32px; background: var(--surface); border: 1px solid var(--line); }
+.field-story-card:last-child { grid-column: 1 / -1; }
+.field-story-card-top { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; }
+.field-story-number { font-size: 32px; line-height: 1; font-weight: 800; color: var(--accent); }
+.field-story-card .resource-meta, .field-story-date, .field-story-area { font-size: 18px; line-height: 1.6; }
+.field-story-date { margin: 0 0 12px; color: var(--muted); }
+.field-story-card h3 { margin: 0 0 16px; font-size: 28px; line-height: 1.45; text-wrap: balance; }
+.field-story-card h3 a { color: var(--ink); text-decoration: none; }
+.field-story-card h3 a:hover { text-decoration: underline; text-underline-offset: 5px; }
+.field-story-area { color: var(--accent); margin: 0 0 12px; font-weight: 700; }
+.field-story-takeaway { margin-top: auto; margin-bottom: 18px; padding-top: 20px; border-top: 1px solid var(--line); }
+.field-story-takeaway strong { font-size: 18px; color: var(--muted); }
+.field-story-takeaway p { margin: 8px 0 0; }
+.field-story-overview { padding: 28px; background: var(--green-soft); border-top: 4px solid var(--accent); }
+.field-story-overview h2 { margin-top: 0; }
+.field-story-overview dl { margin: 0; }
+.field-story-overview dl > div { display: grid; grid-template-columns: 110px minmax(0,1fr); gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.field-story-overview dt { font-weight: 800; }
+.field-story-overview dd { margin: 0; }
+.field-story-overview .field-story-lead { margin-bottom: 0; font-weight: 800; }
+.field-story-article h2[id] { scroll-margin-top: 110px; }
+.field-questions { margin-block: 40px; padding: 24px 28px; border-left: 4px solid var(--accent); background: var(--surface); }
+.field-questions h2 { margin-top: 0; }
+.field-questions li { padding-block: 8px; }
+.field-explainer { margin: 44px 0; padding: 24px; border: 1px solid var(--line); background: var(--surface); }
+.field-explainer h3 { margin-top: 8px; font-size: 25px; line-height: 1.5; }
+.field-explainer figure { margin: 20px 0 0; }
+.field-explainer img { display: block; width: 100%; height: auto; }
+.field-explainer figcaption { padding-top: 16px; color: var(--muted); font-size: 18px; line-height: 1.75; }
+.field-media-panel { margin-block: 36px; padding: 28px; background: var(--surface); border: 2px solid var(--accent); }
+.field-media-panel h2 { margin-top: 12px; font-size: 30px; }
+.field-media-panel .resource-meta { font-size: 18px; margin-bottom: 0; }
+.field-scope { margin-top: 48px; padding-top: 28px; border-top: 2px solid var(--ink); }
+@media (max-width: 760px) {
+  .field-story-grid { grid-template-columns: 1fr; }
+  .field-story-card { padding: 24px; }
+  .field-story-card h3 { font-size: 25px; }
+  .field-story-overview, .field-media-panel, .field-questions { padding: 22px; }
+  .field-story-overview dl > div { grid-template-columns: 1fr; gap: 4px; }
+  .field-explainer { padding: 18px; }
+  .field-media-panel h2 { font-size: 25px; }
+  .field-media-panel .hero-actions .button { width: 100%; }
+}
+@media print {
+  .field-story-overview { background: none; }
+  .field-explainer { max-width: 130mm; break-inside: avoid; }
+  .field-explainer figcaption { font-size: 10pt; }
+  .field-scope, .field-media-panel .hero-actions { display: none; }
+}

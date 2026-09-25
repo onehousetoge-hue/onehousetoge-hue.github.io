@@ -7,7 +7,7 @@ const commands = [
   ["scripts/lint.mjs"],
   ["scripts/typecheck.mjs"],
   ["scripts/build.mjs"],
-  ["--test", "tests/site.test.mjs", "tests/inquiries.test.mjs", "tests/living-lab.test.mjs", "tests/editorial-guides.test.mjs"],
+  ["--test", "tests/site.test.mjs", "tests/inquiries.test.mjs", "tests/living-lab.test.mjs", "tests/editorial-guides.test.mjs", "tests/field-stories.test.mjs"],
   ["scripts/audit.mjs", "dist"],
 ];
 

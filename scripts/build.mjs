@@ -27,6 +27,8 @@ import { guideFinder, youthGuides } from "../src/lib/help-paths.mjs";
 import { livingLabFeature, livingLabPage, livingLabPages } from "../src/lib/living-lab.mjs";
 import { editorialGuides } from "../src/content/editorial-guides.mjs";
 import { editorialGuideCards, editorialGuidePage } from "../src/lib/editorial-guide-page.mjs";
+import { fieldStories } from "../src/content/field-stories.mjs";
+import { fieldStoryCards, fieldStoryPage } from "../src/lib/field-story-page.mjs";
 import { programPage } from "../src/lib/program-page.mjs";
 import { absolute, escapeHtml, icon, layout, organizationSchema, pageHero } from "../src/lib/template.mjs";
 
@@ -93,9 +95,10 @@ for (const article of homesharingArticles) await emit(article.href, homesharingP
 for (const tool of livingLabPages) await emit(tool.href, livingLabPage(tool), { updatedAt: tool.updatedAt });
 for (const article of editorialGuides) await emit(article.href, editorialGuidePage(article), { updatedAt: article.updatedAt });
 
-const activitiesBody = `${pageHero({ eyebrow: "활동과 기록", title: "함께한 현장과<br>한지붕의 소식을 전합니다.", description: "어르신 상담 사진과 시니어 디지털·AI 교육 경험, 단체의 창립·등록 운영기록을 전합니다.", meta: `${updatedMeta("/activities/")}<div class="hero-actions"><a class="button button-secondary" href="#activity-records">활동 글목록 바로 보기</a><a class="text-link" href="/activities/field-records/">상담 현장사진 보기</a></div>` })}${impactSection()}${fieldRecordFeature()}<section class="section" id="activity-records"><div class="container"><div class="section-header"><div><p class="eyebrow">활동과 운영기록</p><h2>교육 경험과 운영기록으로 만나는<br>한지붕의 발걸음</h2></div><p>구성원의 교육 경험과 단체 운영기록을 구분하여 소개합니다. 게시일은 실제 교육일을 뜻하지 않습니다.</p></div><div class="record-list">${activities.map((activity) => `<article class="record-item"><time datetime="${activity.eventDate || activity.publishedAt}">${activity.eventDate ? "활동일 " : "게시일 "}${activity.eventLabel || activity.publishedLabel}</time><div><span class="resource-meta">${activity.category}</span><h3>${activity.title}</h3><p>${activity.description}</p></div>${cardLink(activity.href, "기록 확인")}</article>`).join("")}</div></div></section>`;
+const activitiesBody = `${pageHero({ eyebrow: "활동과 기록", title: "동네에서 듣고,<br>다음 상담에 반영합니다.", description: "경춘선숲길·불암산·경로당·공릉동 현장 이야기와 대표자 인터뷰, 기존 상담사진과 단체 운영기록을 전합니다.", meta: `${updatedMeta("/activities/")}<div class="hero-actions"><a class="button" href="#september-field-stories">9월 새 기록 5편</a><a class="button button-secondary" href="#activity-records">이전 활동 글목록</a><a class="text-link" href="/activities/field-records/">기존 상담 현장사진</a></div>` })}${fieldStoryCards()}${impactSection()}${fieldRecordFeature()}<section class="section" id="activity-records"><div class="container"><div class="section-header"><div><p class="eyebrow">활동과 운영기록</p><h2>교육 경험과 운영기록으로 만나는<br>한지붕의 발걸음</h2></div><p>구성원의 교육 경험과 단체 운영기록을 구분하여 소개합니다. 게시일은 실제 교육일을 뜻하지 않습니다.</p></div><div class="record-list">${activities.map((activity) => `<article class="record-item"><time datetime="${activity.eventDate || activity.publishedAt}">${activity.eventDate ? "활동일 " : "게시일 "}${activity.eventLabel || activity.publishedLabel}</time><div><span class="resource-meta">${activity.category}</span><h3>${activity.title}</h3><p>${activity.description}</p></div>${cardLink(activity.href, "기록 확인")}</article>`).join("")}</div></div></section>`;
 await emit("/activities/", layout({ title: "활동과 기록", description: "어르신 상담 현장과 디지털 교육 경험, 한지붕의 창립·등록 기록을 소개합니다.", path: "/activities/", body: activitiesBody + activityTimeline(), bodyClass: "directory-page", breadcrumbs: [{ label: "활동과 기록", href: "/activities/" }] }));
 await emit(digitalLearning.href, fieldRecordPage());
+for (const item of fieldStories) await emit(item.href, fieldStoryPage(item), { updatedAt: item.updatedAt });
 for (const record of consultationRecords) await emit(record.href, consultationRecordPage(record), { updatedAt: record.updatedAt });
 
 function activityPage(activity) {
@@ -146,6 +149,10 @@ await cp(path.join(root, "src", "assets", "living-lab.mjs"), path.join(out, "ass
 await cp(path.join(root, "src", "assets", "favicon.svg"), path.join(out, "assets", "favicon.svg"));
 await mkdir(path.join(out, "assets", "activities"), { recursive: true });
 await mkdir(path.join(out, "assets", "guides"), { recursive: true });
+await mkdir(path.join(out, "assets", "field-guides"), { recursive: true });
+for (const item of fieldStories.filter(item => item.illustration)) {
+  for (const suffix of [".jpg", "-640.webp", "-1200.webp"]) await cp(path.join(root, "src", "assets", "field-guides", item.illustration.image + suffix), path.join(out, "assets", "field-guides", item.illustration.image + suffix));
+}
 for (const article of editorialGuides) {
   for (const suffix of [".jpg", "-640.webp", "-1200.webp"]) await cp(path.join(root, "src", "assets", "guides", article.image + suffix), path.join(out, "assets", "guides", article.image + suffix));
 }
