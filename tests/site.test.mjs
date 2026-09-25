@@ -58,6 +58,24 @@ test("all required public routes exist", async () => {
   assert.equal((await stat(routeFile("/activities/senior-digital-education/"))).isFile(), true);
 });
 
+test("consolidation preserves one entry per worksheet and explicit past/current activity scope", async () => {
+  const directory = await readFile(routeFile('/resources/'), 'utf8');
+  const main = directory.match(/<main[\s\S]*?<\/main>/)[0];
+  for (const slug of ['family-checklist','shared-living-rules','consultation-preparation','private-common-space','conflict-prevention','korean-housing-culture']) {
+    assert.equal((main.match(new RegExp(`href="/resources/${slug}/"`,'g')) || []).length,1);
+  }
+  for (const route of ['/activities/field-records/','/activities/vacant-room-consultation/','/activities/community-cooperation/','/activities/gongneung-consultation-september/']) {
+    const html=await readFile(routeFile(route),'utf8');
+    assert.match(html,/data-service-scope="past"/);
+    assert.match(html,/현재 개인 기초상담은 전화·이메일로 진행합니다/);
+  }
+  const home=await readFile(routeFile('/'),'utf8');
+  const homeMain=home.match(/<main[\s\S]*?<\/main>/)[0];
+  assert.ok((homeMain.match(/<h2\b/g)||[]).length<=6);
+  assert.ok((homeMain.match(/<a\b/g)||[]).length<=30);
+  assert.doesNotMatch(home,/단순히 빈방을 연결하는 것을 넘어/);
+});
+
 test("homepage states the actual services and prioritizes free consulting", async () => {
   const html = await readFile(routeFile("/"), "utf8");
   assert.match(html, /어르신 유휴공간·빈방 활용 무료상담과 세대교류 교육·봉사/);
@@ -157,8 +175,8 @@ test("about metadata has the requested title, canonical and sourced organization
 
 test("editorial redesign keeps direct inquiry actions and a shared visual system", async () => {
   const home = await readFile(routeFile("/"), "utf8");
-  for (const name of ["editorial-cover", "editorial-process", "editorial-stories", "editorial-guides", "editorial-transparency"]) assert.ok(home.includes(name));
-  const stories = home.match(/class="editorial-story-list">([\s\S]*?)<\/section>/)?.[1];
+  for (const name of ["editorial-cover", "help-paths", "home-updates", "editorial-transparency"]) assert.ok(home.includes(name));
+  const stories = home.match(/id="latest-updates"([\s\S]*?)<\/section>/)?.[1];
   assert.ok(stories.includes("/activities/gongneung-consultation-september/"));
   assert.ok(stories.indexOf("2026-09-18") < stories.indexOf("2026-09-12"));
   for (const route of routes) {
@@ -206,7 +224,8 @@ test("review improvements separate inquiries, dates and worksheet navigation", a
   assert.ok(consulting.includes("마지막 수정일 2026.09.25"));
   assert.ok(consulting.includes('href="/resources/consultation-preparation/#prepare"'));
   const resourcesIndex = await readFile(routeFile("/resources/"), "utf8");
-  for (const target of ["homesharing-articles", "worksheets", "find-guide", "youth-housing"]) assert.ok(resourcesIndex.includes(`href="#${target}"`));
+  for (const target of ["homesharing-articles", "worksheets", "find-guide", "youth-housing"]) assert.ok(resourcesIndex.includes(`id="${target}"`));
+  for (const target of ["find-guide", "living-lab-title", "housing-reading"]) assert.ok(resourcesIndex.includes(`href="#${target}"`));
 });
 
 test("unused thank-you routes are absent from build and all public journeys", async () => {
@@ -287,7 +306,8 @@ test("five documented photos remain and the presentation photo is removed", asyn
     assert.ok(html.includes(`alt="${photo.alt}"`));
     assert.ok(html.includes(`width="${photo.width}" height="${photo.height}"`));
   }
-  for (const route of ["/", "/activities/"]) assert.ok((await readFile(routeFile(route), "utf8")).includes(`href="${record.href}"`));
+  assert.ok((await readFile(routeFile("/activities/"), "utf8")).includes(`href="${record.href}"`));
+  assert.ok((await readFile(routeFile("/"), "utf8")).includes('href="/activities/"'));
   assert.ok((await readFile(path.join(root, "sitemap.xml"), "utf8")).includes(record.href));
 });
 
@@ -334,7 +354,7 @@ test("education experience retains publication dates but removes the withdrawn e
   assert.match(html, /공릉종합사회복지관 AI 교육/);
   assert.match(html, /반복 실습/);
   assert.match(html, /개별 사진의 촬영일·기관은 특정하지 않았으며/);
-  for (const route of ["/", "/activities/", "/activities/field-records/"]) {
+  for (const route of ["/activities/", "/activities/field-records/"]) {
     const page = await readFile(routeFile(route), "utf8");
     assert.ok(page.includes(`href="${education.href}"`));
     assert.doesNotMatch(page, /2026-08-12|8월 12일|datetime="null"/);

@@ -4,14 +4,19 @@ import { readFile, stat } from "node:fs/promises";
 import { fieldStories } from "../src/content/field-stories.mjs";
 const route = href => readFile(new URL(`../dist${href}index.html`, import.meta.url), "utf8");
 
-test("homepage exposes current activity, sourced news and practical resources before deep content", async () => {
+test("homepage has one compact activity and tool entry; external news belongs in the activity archive", async () => {
   const html=await route("/");
   const section=html.match(/id="latest-updates"[\s\S]*?<\/section>/)?.[0];
   assert.ok(section);
   assert.equal((section.match(/class="home-update-card"/g)||[]).length,3);
-  assert.ok(html.indexOf('id="latest-updates"')<html.indexOf('id="living-lab-title"'));
-  for(const href of ["/activities/gyeongchun-line-field-counseling/","/activities/buramsan-housing-survey/","/activities/mbc-news-home-sharing/","/programs/housing-research/#progress","/guide/senior-empty-room/","/guide/youth-housing-checklist/","/resources/preparation-room/","/resources/#housing-reading"]) assert.ok(section.includes(`href="${href}"`));
-  assert.match(section,/방송.*2026-09-12/);
+  assert.ok(html.indexOf('id="help-paths-title"')<html.indexOf('id="latest-updates"'));
+  assert.doesNotMatch(html,/editorial-stories|editorial-guides|living-lab-feature/);
+  for(const href of ["/activities/gongneung-consultation-september/","/activities/","/programs/housing-research/#progress","/resources/preparation-room/","/resources/#housing-reading"]) assert.ok(section.includes(`href="${href}"`));
+  assert.doesNotMatch(section,/MBC|대표자 인터뷰/);
+  const directory=await route("/activities/");
+  const external=directory.match(/id="external-activities"[\s\S]*?<\/section>/)?.[0];
+  assert.ok(external.includes("/activities/mbc-news-home-sharing/"));
+  assert.match(external,/외부 사업의 자격/);
   assert.doesNotMatch(section,/<iframe|<form|autoplay|보도자료 준비 중/);
 });
 

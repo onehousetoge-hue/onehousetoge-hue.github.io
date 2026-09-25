@@ -23,7 +23,8 @@ import { consultationPhotos } from "../src/content/consultation-photos.mjs";
 import { photoVariants } from "../src/lib/photo-variants.mjs";
 import { aboutBody, aboutTitle, aboutDescription } from "../src/content/about.mjs";
 import { landingPage } from "../src/lib/landing-page.mjs";
-import { guideFinder, youthGuides } from "../src/lib/help-paths.mjs";
+import { resourceDirectory } from "../src/lib/resource-directory.mjs";
+import { serviceScope } from "../src/lib/service-scope.mjs";
 import { livingLabFeature, livingLabPage, livingLabPages } from "../src/lib/living-lab.mjs";
 import { editorialGuides } from "../src/content/editorial-guides.mjs";
 import { editorialGuideCards, editorialGuidePage } from "../src/lib/editorial-guide-page.mjs";
@@ -72,7 +73,7 @@ function activityCards(items = activities) {
   return items.map((activity) => `<article class="activity-card"><div class="resource-meta"><span>${activity.category}</span><time datetime="${activity.eventDate || activity.publishedAt}">${activity.eventDate ? "활동일 " : "게시일 "}${activity.eventLabel || activity.publishedLabel}</time></div><h3>${activity.title}</h3><p>${activity.description}</p>${cardLink(activity.href, "기록 확인하기")}</article>`).join("");
 }
 
-const homeBody = landingPage(programCards);
+const homeBody = landingPage();
 
 await emit("/", layout({ title: site.name, description: site.nonprofitDescription, path: "/", body: homeBody, jsonLd: [{ "@context": "https://schema.org", "@type": "WebSite", name: site.name, alternateName: site.englishName, url: absolute("/") }, organizationSchema] }));
 
@@ -87,7 +88,7 @@ for (const kind of ["consultation", "partnership"]) {
   await emit(`/${kind}/complete/`, inquiryCompletePage(kind), { indexable: false });
 }
 
-const resourcesBody = `${pageHero({ eyebrow: "주거정보와 생활자료", title: "가족과 이야기할 때,<br>함께 생활할 때 꺼내 보세요.", description: "새 주거정보 글 5편에서 공간·생활·세대교류를 읽고, 공동생활 준비실에서 질문을 정리해 보세요. 기존 안내글 2편과 작성형 생활자료 6종도 무료로 이용할 수 있습니다.", meta: updatedMeta("/resources/") })}<section class="section"><div class="container"><nav class="section-jumps resource-navigation" aria-label="자료 유형 선택"><a href="#housing-reading">새 주거정보 · 글 5편</a><a href="#living-lab-title">공동생활 준비실 · 도구 4가지</a><a href="#find-guide">내 상황에 맞는 자료 찾기</a><a href="#homesharing-articles">먼저 이해하기 · 안내글 2편</a><a href="#worksheets">직접 작성하기 · 자료 6종</a><a href="#youth-housing">청년·유학생 안내</a></nav>${editorialGuideCards()}${livingLabFeature({ compact: true })}${guideFinder()}${homesharingCards()}<h2 id="worksheets">직접 작성하는 생활자료 6종</h2><p>화면에서 메모하거나 체크하고, 필요한 내용은 인쇄할 수 있습니다. 회원가입이나 상담 신청 없이 이용하세요.</p><div class="resource-grid">${resourceCards(resources, 3)}</div>${youthGuides()}</div></section>`;
+const resourcesBody = resourceDirectory(updatedMeta("/resources/"));
 await emit("/resources/", layout({ title: "주거상생 자료", description: "어르신 주택과 세대공존을 준비하는 가족·청년·기관을 위한 주거상생 공익자료입니다.", path: "/resources/", body: resourcesBody, bodyClass: "directory-page", breadcrumbs: [{ label: "주거상생 자료", href: "/resources/" }] }));
 
 for (const resource of resources) await emit(resource.href, resourcePage(resource), { updatedAt: resource.updatedAt });
@@ -95,8 +96,8 @@ for (const article of homesharingArticles) await emit(article.href, homesharingP
 for (const tool of livingLabPages) await emit(tool.href, livingLabPage(tool), { updatedAt: tool.updatedAt });
 for (const article of editorialGuides) await emit(article.href, editorialGuidePage(article), { updatedAt: article.updatedAt });
 
-const activitiesBody = `${pageHero({ eyebrow: "활동과 기록", title: "동네에서 듣고,<br>다음 상담에 반영합니다.", description: "경춘선숲길·불암산·경로당·공릉동 현장 이야기와 대표자 인터뷰, 기존 상담사진과 단체 운영기록을 전합니다.", meta: `${updatedMeta("/activities/")}<div class="hero-actions"><a class="button" href="#september-field-stories">9월 새 기록 5편</a><a class="button button-secondary" href="#activity-records">이전 활동 글목록</a><a class="text-link" href="/activities/field-records/">기존 상담 현장사진</a></div>` })}${fieldStoryCards()}${impactSection()}${fieldRecordFeature()}<section class="section" id="activity-records"><div class="container"><div class="section-header"><div><p class="eyebrow">활동과 운영기록</p><h2>교육 경험과 운영기록으로 만나는<br>한지붕의 발걸음</h2></div><p>구성원의 교육 경험과 단체 운영기록을 구분하여 소개합니다. 게시일은 실제 교육일을 뜻하지 않습니다.</p></div><div class="record-list">${activities.map((activity) => `<article class="record-item"><time datetime="${activity.eventDate || activity.publishedAt}">${activity.eventDate ? "활동일 " : "게시일 "}${activity.eventLabel || activity.publishedLabel}</time><div><span class="resource-meta">${activity.category}</span><h3>${activity.title}</h3><p>${activity.description}</p></div>${cardLink(activity.href, "기록 확인")}</article>`).join("")}</div></div></section>`;
-await emit("/activities/", layout({ title: "활동과 기록", description: "어르신 상담 현장과 디지털 교육 경험, 한지붕의 창립·등록 기록을 소개합니다.", path: "/activities/", body: activitiesBody + activityTimeline(), bodyClass: "directory-page", breadcrumbs: [{ label: "활동과 기록", href: "/activities/" }] }));
+const activitiesBody = `${pageHero({ eyebrow: "활동과 기록", title: "동네에서 듣고,<br>다음 상담에 반영합니다.", description: "한지붕의 현장활동, 구성원의 관련 경험, 단체 운영기록을 구분해 소개합니다. 대표자의 외부 인터뷰는 별도 구역에서 확인할 수 있습니다.", meta: `${updatedMeta("/activities/")}<div class="hero-actions"><a class="button" href="#september-field-stories">9월 현장 기록</a><a class="button button-secondary" href="#activity-records">활동·운영 글목록</a><a class="button button-secondary" href="#external-activities">대표자 외부활동</a><a class="text-link" href="/activities/field-records/">기존 상담 현장사진</a></div>` })}<section class="section"><div class="container">${serviceScope()}</div></section>${fieldStoryCards()}${fieldRecordFeature()}<section class="section" id="activity-records"><div class="container"><div class="section-header"><div><p class="eyebrow">활동과 운영기록</p><h2>교육 경험과 운영기록으로 만나는<br>한지붕의 발걸음</h2></div><p>구성원의 교육 경험과 단체 운영기록을 구분하여 소개합니다. 게시일은 실제 교육일을 뜻하지 않습니다.</p></div><div class="record-list">${activities.map((activity) => `<article class="record-item"><time datetime="${activity.eventDate || activity.publishedAt}">${activity.eventDate ? "활동일 " : "게시일 "}${activity.eventLabel || activity.publishedLabel}</time><div><span class="resource-meta">${activity.category}</span><h3>${activity.title}</h3><p>${activity.description}</p></div>${cardLink(activity.href, "기록 확인")}</article>`).join("")}</div></div></section>`;
+await emit("/activities/", layout({ title: "활동과 기록", description: "어르신 상담 현장과 디지털 교육 경험, 한지붕의 창립·등록 기록을 소개합니다.", path: "/activities/", body: activitiesBody + `<section class="section" id="external-activities"><div class="container"><p class="eyebrow">별도 분류 · 대표자 외부활동</p><h2>외부 사업의 자격으로 참여한 인터뷰</h2><p>한지붕 자체 사업의 성과·입주지원 사례와 구분해 소개합니다.</p>${fieldStories.filter(item=>item.media).map(item=>`<article class="record-item"><time datetime="${item.date}">방송 ${item.dateLabel}</time><div><h3><a href="${item.href}">${escapeHtml(item.title)}</a></h3><p>${escapeHtml(item.area)}</p><p>${escapeHtml(item.description)}</p></div></article>`).join("")}</div></section>` + activityTimeline(), bodyClass: "directory-page", breadcrumbs: [{ label: "활동과 기록", href: "/activities/" }] }));
 await emit(digitalLearning.href, fieldRecordPage());
 for (const item of fieldStories) await emit(item.href, fieldStoryPage(item), { updatedAt: item.updatedAt });
 for (const record of consultationRecords) await emit(record.href, consultationRecordPage(record), { updatedAt: record.updatedAt });

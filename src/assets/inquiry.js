@@ -19,7 +19,7 @@ export function validateInquiryInput(values, kind) {
   if (values.consent !== true) errors.consent = '개인정보 수집·이용 안내를 확인한 뒤 동의에 체크해 주세요.';
   return errors;
 }
-async function send(endpoint, payload) {
+export async function send(endpoint, payload) {
   if (!/^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(endpoint)) throw new Error('UNAVAILABLE');
   const response = await fetch(endpoint, {method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload),redirect:'follow',credentials:'omit',referrerPolicy:'no-referrer',signal:AbortSignal.timeout(55000)});
   if (!response.ok || response.type === 'opaque') throw new Error('UNAVAILABLE');
@@ -99,13 +99,14 @@ if (form) {
     }
     const fields = new FormData(form);
     const payload = Object.fromEntries(fields); Object.assign(payload,{action:'submit',kind,requestId,consent:form.elements.consent.checked,consentVersion:form.dataset.consentVersion});
-    busy = true; button.disabled = true; fieldset.disabled = true; form.setAttribute('aria-busy','true'); status.textContent = '문의 내용을 저장하고 있습니다. 잠시만 기다려 주세요.';
+    busy = true; button.disabled = true; button.textContent = '접수 확인 중…'; fieldset.disabled = true; form.setAttribute('aria-busy','true'); status.textContent = '문의 내용을 저장하고 있습니다. 잠시만 기다려 주세요.';
     try {
       const receipt = await send(endpoint,payload); submitted = true; form.reset();
       try { sessionStorage.setItem(receiptKey(kind),JSON.stringify(receipt)); }
       catch { showReceipt(status,receipt); return; }
       location.assign(`/${kind}/complete/`);
     } catch (error) {
+      button.textContent = '같은 내용으로 다시 보내기';
       status.textContent = error.message === 'SENSITIVE' ? '주민등록번호처럼 보이는 내용은 보내실 수 없습니다. 민감정보를 지운 뒤 다시 보내 주세요.' : error.message === 'CONFLICT' ? '내용이 바뀐 문의입니다. 입력 내용을 한 번 수정한 뒤 다시 보내 주세요.' : '접수 여부를 확인하지 못했습니다. 입력 내용은 남아 있습니다. 다시 보내기를 눌러 확인하거나 전화·이메일로 문의해 주세요. 같은 내용을 그대로 다시 보내면 중복 접수를 방지합니다.';
       if (error.name === 'TimeoutError') status.textContent = '저장 확인 응답이 늦어지고 있습니다. 이미 저장됐을 수 있으니 입력 내용을 바꾸지 말고 다시 보내기를 눌러 접수 여부를 확인해 주세요.';
       status.focus(); status.scrollIntoView({block:'center',behavior:'instant'});

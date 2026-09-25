@@ -3,10 +3,21 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 import { inquiries } from '../src/config/inquiries.mjs';
-import { validateInquiryInput } from '../src/assets/inquiry.js';
+import { validateInquiryInput, send } from '../src/assets/inquiry.js';
 import { consultationRecords, validateConsultationRecord } from '../src/content/consultation-records.mjs';
 const code = await readFile(new URL('../integrations/inquiries/Code.gs',import.meta.url),'utf8');
 const valid = {action:'submit',kind:'consultation',requestId:'11111111-2222-4333-8444-555555555555',name:'접수 시험',contactMethod:'email',contact:'qa@hanjibung.invalid',organization:'',topic:'기타 상담',message:'연결 검증용 비개인 시험 내용입니다.',consent:true,consentVersion:'2026-09-24',website:''};
+test('client transport rejects errors, timeouts, malformed and mismatched receipts without real network',async(t)=>{
+  const good={ok:true,kind:valid.kind,requestId:valid.requestId,receivedAt:'2026-09-25 12:00:00'};
+  const stub=t.mock.method(globalThis,'fetch',async()=>({ok:true,type:'basic',json:async()=>good}));
+  assert.deepEqual(await send(inquiries.endpoint,valid),{kind:good.kind,requestId:good.requestId,receivedAt:good.receivedAt});
+  for(const response of [{ok:false},{ok:true,type:'opaque'},{ok:true,json:async()=>({...good,requestId:'wrong'})},{ok:true,json:async()=>({...good,kind:'partnership'})},{ok:true,json:async()=>({...good,receivedAt:''})},{ok:true,json:async()=>{throw new SyntaxError('invalid JSON');}}]) {
+    stub.mock.mockImplementation(async()=>response); await assert.rejects(send(inquiries.endpoint,valid));
+  }
+  stub.mock.mockImplementation(async()=>{throw new DOMException('timeout','TimeoutError');});
+  await assert.rejects(send(inquiries.endpoint,valid),{name:'TimeoutError'});
+  const calls=stub.mock.callCount(); await assert.rejects(send('https://unapproved.invalid',valid)); assert.equal(stub.mock.callCount(),calls);
+});
 test('client validation gives actionable errors without sending an inquiry',()=>{
   assert.deepEqual(validateInquiryInput(valid,'consultation'),{});
   assert.deepEqual(validateInquiryInput({...valid,contactMethod:'phone',contact:'010-1234-5678'},'consultation'),{});

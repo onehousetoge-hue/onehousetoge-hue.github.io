@@ -2,8 +2,8 @@ import { getResource } from "../content/resources.mjs";
 
 export function helpPaths() {
   return `<section class="section help-paths" aria-labelledby="help-paths-title"><div class="container"><p class="eyebrow">누가 도움을 받을 수 있나요?</p><h2 id="help-paths-title">어르신과 청년에게 필요한 도움,<br>지역기관과 함께 만듭니다.</h2><p>두 세대가 충분한 정보를 바탕으로 주거생활을 준비하도록 돕습니다. 가족도 어르신과 함께 상담할 수 있으며, 지역기관은 활동을 함께 기획하는 협력 대상입니다.</p><div class="resource-grid">
-  <article class="resource-card"><h3>어르신</h3><p>유휴공간 활용, 공동생활 준비와 생활환경에 관한 무료상담과 정보를 제공합니다. 가족과 의논할 사항과 생활규칙을 함께 정리합니다.</p><a class="text-link" href="/programs/senior-home-consulting/">내가 받을 수 있는 상담 확인</a></article>
-  <article class="resource-card"><h3>청년·외국인 유학생</h3><p>주거문화, 공동생활 전 안전을 위해 확인할 사항, 개인공간과 생활규칙에 관한 공익 정보를 제공합니다. 회원가입 없이 자료를 읽을 수 있습니다.</p><a class="text-link" href="/resources/#youth-housing">청년 주거정보 보기</a><a class="text-link" href="/resources/#find-guide">상황에 맞는 생활자료 찾기</a></article>
+  <article class="resource-card"><h3>어르신과 가족</h3><p>전화·이메일 무료상담으로 빈방 활용의 준비사항을 안내합니다. 가족과 의논할 질문, 개인·공용공간, 생활규칙을 함께 정리합니다.</p><a class="text-link" href="/programs/senior-home-consulting/">내가 받을 수 있는 상담 확인</a></article>
+  <article class="resource-card"><h3>청년·외국인 유학생</h3><p>주거문화, 공동생활 전 안전을 위해 확인할 사항, 개인공간과 생활규칙에 관한 공익 정보를 제공합니다. 회원가입 없이 자료를 읽을 수 있습니다.</p><a class="text-link" href="/resources/#youth-housing">청년 주거정보 보기</a></article>
   <article class="resource-card"><h3>지역기관 · 협력 대상</h3><p>복지관·경로당·주민센터·학교 등과 교육, 상담, 세대교류 활동을 협의합니다. 대상·주제·진행 여건부터 함께 확인합니다.</p><a class="text-link" href="/partnership/">교육·봉사 기관협력 문의</a></article>
   </div></div></section>`;
 }
@@ -22,7 +22,7 @@ export function youthGuides() {
 }
 
 export function guideFinder() {
-  return `<section id="find-guide" class="guide-finder jump-target" aria-labelledby="guide-finder-title"><p class="eyebrow">상황별 자료 길잡이</p><h2 id="guide-finder-title">어떤 질문이 가장 가까운가요?</h2><p>질문을 누르면 먼저 할 일과 연결 자료가 펼쳐집니다. 선택 내용은 저장하거나 전송하지 않습니다.</p><div class="faq">${paths.map(([question, slug, advice]) => { const guide = getResource(slug); return `<details><summary>${question}</summary><div class="guide-answer"><p>${advice}</p><p><strong>이 자료로 남길 수 있는 것</strong><br>${guide.outcome}</p><a class="text-link" href="${guide.href}">${guide.title} 읽기</a></div></details>`; }).join("")}</div><p>함께 정리하고 싶다면 <a href="/consultation/">무료상담 문의</a>를 이용하세요. 자료는 누구나 바로 읽을 수 있습니다.</p></section>`;
+  return `<section id="find-guide" class="guide-finder jump-target" aria-labelledby="guide-finder-title"><p class="eyebrow" id="worksheets">직접 작성하는 생활자료 6종</p><h2 id="guide-finder-title">어떤 질문이 가장 가까운가요?</h2><p>질문을 누르면 먼저 할 일과 연결 자료가 펼쳐집니다. 선택 내용은 저장하거나 전송하지 않습니다.</p><div class="faq">${paths.map(([question, slug, advice]) => { const guide = getResource(slug); return `<details><summary>${question}</summary><div class="guide-answer"><p>${advice}</p><p><strong>이 자료로 남길 수 있는 것</strong><br>${guide.outcome}</p><a class="text-link" href="${guide.href}">${guide.title} 읽기</a></div></details>`; }).join("")}</div><p>함께 정리하고 싶다면 <a href="/consultation/">무료상담 문의</a>를 이용하세요. 자료는 누구나 바로 읽을 수 있습니다.</p></section>`;
 }
 
 export function consultationExample() {
