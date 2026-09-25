@@ -4,6 +4,17 @@ import { readFile, stat } from "node:fs/promises";
 import { fieldStories } from "../src/content/field-stories.mjs";
 const route = href => readFile(new URL(`../dist${href}index.html`, import.meta.url), "utf8");
 
+test("homepage exposes current activity, sourced news and practical resources before deep content", async () => {
+  const html=await route("/");
+  const section=html.match(/id="latest-updates"[\s\S]*?<\/section>/)?.[0];
+  assert.ok(section);
+  assert.equal((section.match(/class="home-update-card"/g)||[]).length,3);
+  assert.ok(html.indexOf('id="latest-updates"')<html.indexOf('id="living-lab-title"'));
+  for(const href of ["/activities/gyeongchun-line-field-counseling/","/activities/buramsan-housing-survey/","/activities/mbc-news-home-sharing/","/programs/housing-research/#progress","/guide/senior-empty-room/","/guide/youth-housing-checklist/","/resources/preparation-room/","/resources/#housing-reading"]) assert.ok(section.includes(`href="${href}"`));
+  assert.match(section,/방송.*2026-09-12/);
+  assert.doesNotMatch(section,/<iframe|<form|autoplay|보도자료 준비 중/);
+});
+
 test("five September records have distinct contents, period precision and working entry points", async () => {
   assert.equal(fieldStories.length, 5);
   const directory=await route("/activities/");

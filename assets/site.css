@@ -1245,6 +1245,27 @@ main [id], .form-error-summary { scroll-margin-top: 120px; }
 }
 
 /* Field reports: activity metadata and explanatory living-space imagery. */
+.home-updates { background: var(--green-soft); }
+.home-update-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.home-update-card { display: flex; flex-direction: column; min-width: 0; padding: 28px; border: 1px solid var(--line); background: var(--surface); }
+.home-update-number { margin: 0 0 20px; color: var(--accent); font-size: 30px; line-height: 1; font-weight: 800; }
+.home-update-card h3 { margin: 0; font-size: 27px; line-height: 1.45; }
+.home-update-card > p:not(.home-update-number) { margin: 20px 0; }
+.home-update-card ul { list-style: none; padding: 0; margin: 0; }
+.home-update-card li { padding: 20px 0; border-top: 1px solid var(--line); }
+.home-update-card .resource-meta { margin: 0 0 8px; font-size: 18px; line-height: 1.6; }
+.home-update-card h4 { margin: 0; font-size: 21px; line-height: 1.6; }
+.home-update-card h4 a { color: var(--ink); text-decoration-thickness: 1px; text-underline-offset: 5px; }
+.home-update-detail { color: var(--muted); font-size: 18px; line-height: 1.7; }
+.home-update-links { display: grid; gap: 14px; padding-top: 24px; margin-top: auto; border-top: 1px solid var(--line); }
+.home-update-links a { font-size: 19px; line-height: 1.6; }
+#latest-updates { scroll-margin-top: 110px; }
+@media (max-width: 1080px) {
+  .home-update-grid { grid-template-columns: 1fr; }
+  .home-update-card { padding: 24px; }
+  .home-update-card h3 { font-size: 26px; }
+}
+@media print { .home-updates { display: none; } }
 #september-field-stories { scroll-margin-top: 110px; }
 .field-story-directory { padding-top: 36px; background: var(--green-soft); }
 .field-story-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
