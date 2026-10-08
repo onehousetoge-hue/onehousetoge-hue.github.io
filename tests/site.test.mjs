@@ -464,13 +464,14 @@ test("four consented consultation photos are published without original metadata
   assert.match(html, /임대수익을 보장하거나 입주를 알선하는 서비스가 아닙니다/);
 });
 
-test("public pages use Hanjibung with the approved Figma copyright credit", async () => {
+test("public pages use the requested Hanjibung copyright credit", async () => {
   const manifest = JSON.parse(await readFile(path.join(root, "build-manifest.json"), "utf8"));
   const removedBrand = /\uD648\uD22C\uAC8C\uB354|home\s*together/i;
   for (const page of manifest.pages) {
     const file = page.route === "/404.html" ? path.join(root, "404.html") : routeFile(page.route);
     const html = await readFile(file, "utf8");
-    assert.doesNotMatch(["/", "/reservation/"].includes(page.route) ? html.replace("© 2026 Home Together. All rights reserved.", "") : html, removedBrand, page.route);
+    assert.doesNotMatch(html, removedBrand, page.route);
+    assert.match(html, /© 2026 hanjibung\. All rights reserved\./, page.route);
   }
 });
 
@@ -677,12 +678,13 @@ test("consultation, research and funding pages link into one public evidence flo
   }
 });
 
-test("nonprofit wording explains the tax status without claiming incorporation", async () => {
+test("requested nonprofit display label preserves the original registration history", async () => {
   for (const route of ["/", "/about/", "/transparency/", "/activities/nonprofit-registration/"]) {
     const html = await readFile(routeFile(route), "utf8");
     assert.match(html, /비영리단체/);
     assert.match(html, /국세기본법상 법인으로 보는 단체/);
-    assert.doesNotMatch(html, /민법상 법인 설립허가·등기 완료|비영리법인/);
+    assert.match(html, /비영리법인/);
+    assert.doesNotMatch(html, /민법상 법인 설립허가·등기 완료/);
   }
   const registration = await readFile(routeFile("/activities/nonprofit-registration/"), "utf8");
   assert.match(registration, /법인세법 제2조/);

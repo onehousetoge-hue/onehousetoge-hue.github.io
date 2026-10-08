@@ -1,4 +1,5 @@
 import { navigation, site } from "../config/site.mjs";
+import { diagnosisBanner } from "./template.mjs";
 
 const art = (file, alt, width, height, eager = false) => `<img src="/assets/figma/${file}" alt="${alt}" width="${width}" height="${height}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">`;
 const benefits = [
@@ -15,7 +16,7 @@ const reviews = [
 
 export function roomCheckPage() {
   const menu = navigation.map(group => `<details class="nav-group"><summary>${group.label}</summary><div class="menu-panel">${group.links.map(([label, href]) => `<a href="${href}">${label}</a>`).join("")}</div></details>`).join("");
-  return `<div class="room-app">
+  return `<div class="room-app">${diagnosisBanner()}
     <header class="header"><div class="header-inner"><a class="brand" href="/" aria-label="한지붕 홈"><span class="brand-wordmark">한지붕</span></a><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-menu">메뉴</button><nav id="site-menu" class="site-menu" aria-label="한지붕 메뉴">${menu}</nav></div></header>
     <div class="host-main">
       <section class="host-hero" aria-labelledby="host-title"><div class="host-container hero-layout"><div class="host-hero-copy"><h1 id="host-title">비어 있는 <strong>방 한 칸,</strong><br><strong>검증된 청년</strong>으로 안심하고,<br><strong>매달 생활비</strong>로 여유롭게.</h1><p class="hero-description">방 준비부터 청년 입주, 거주 중 관리까지<br>한지붕이 함께합니다.</p><a class="host-primary hero-diagnosis" href="/reservation/">우리 집 예상 월세 무료 진단 받기 ${art("arrow-cta.svg", "", 8, 12)}</a></div><div class="hero-floorplan">${art("hero-floorplan.png", "남는 방 한 칸을 월세 생활비로 활용하는 주택 평면도", 837, 730, true)}</div></div></section>
@@ -34,6 +35,6 @@ export function roomCheckPage() {
         <article class="host-faq-card"><h3>문제가 생기면 누가 해결하나요?</h3><p class="faq-lead">혼자 감당하지 않으셔도 됩니다.</p><p>불편한 상황이 생기면 한지붕에 알려주세요. 언제 무슨 일이 있었는지와 입주 전에 정한 생활규칙을 확인하고, 양쪽 이야기를 들어 조율을 지원합니다.</p><p>가구나 시설이 손상되면 정상적인 사용에 따른 노후화와 고의·과실에 따른 손상을 구분해 책임 범위를 확인합니다. 입주 전 방과 가구 상태를 사진으로 남겨두시면 확인이 쉽습니다.</p><p>문제가 반복되거나 계약 유지가 어려우면 계약 내용과 관계 법령에 따른 후속 절차를 안내합니다.</p><a href="/resources/conflict-prevention/">계약·정산·거주 관리 질문 더 보기 <span aria-hidden="true">↗</span></a></article>
       </div></div></section>
     </div>
-    <footer class="host-footer"><div class="host-container"><div class="footer-contact"><div><a href="mailto:contact@hanjibung.kr">E-mail : contact@hanjibung.kr</a><a href="${site.phoneHref}">Tel : ${site.phone}</a></div><p>© 2026 Home Together. All rights reserved.</p></div><p class="footer-legal">${site.legalType} · 고유번호 ${site.registrationNumber} · 대표 ${site.representative}</p><p class="footer-legal">${site.address} <a href="/privacy/">개인정보 처리방침</a></p></div></footer>
+    <footer class="host-footer"><div class="host-container"><div class="footer-contact"><div><a href="mailto:contact@hanjibung.kr">E-mail : contact@hanjibung.kr</a><a href="${site.phoneHref}">Tel : ${site.phone}</a></div><p>© 2026 hanjibung. All rights reserved.</p></div><p class="footer-legal">${site.legalType} · 고유번호 ${site.registrationNumber} · 대표 ${site.representative}</p><p class="footer-legal">${site.address} <a href="/privacy/">개인정보 처리방침</a></p></div></footer>
     <a class="floating-diagnosis" href="/reservation/" aria-hidden="true" tabindex="-1">${art("benefit-income.svg", "", 34, 34)}<strong>예상 월세 무료 진단 받기</strong><span class="floating-arrow" aria-hidden="true">→</span></a></div>`;
 }

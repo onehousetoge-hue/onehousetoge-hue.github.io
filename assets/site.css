@@ -1347,6 +1347,13 @@ main [id], .form-error-summary { scroll-margin-top: 120px; }
 }
 
 /* Organization pages use one information menu and a persistent diagnosis link. */
+.diagnosis-top-banner,.room-app .diagnosis-top-banner{display:flex;align-items:center;justify-content:center;gap:10px;height:44px;box-sizing:border-box;padding:6px 16px;background:#6282de;color:#fff;font-size:15px;font-weight:700;line-height:1.4;text-decoration:none;text-align:center}
+.diagnosis-top-banner img{display:block;flex:none;width:30px;height:30px;object-fit:contain}
+.diagnosis-top-banner .banner-arrow{margin-left:4px;font-size:18px;line-height:1}
+.diagnosis-top-banner:hover,.room-app .diagnosis-top-banner:hover{background:#5072cf;color:#fff;text-decoration:none}
+.diagnosis-top-banner:focus-visible{outline:3px solid #fff;outline-offset:-4px}
+@media(max-width:650px){.diagnosis-top-banner,.room-app .diagnosis-top-banner{gap:8px;font-size:14px}.diagnosis-top-banner img{width:28px;height:28px}}
+@media print{.diagnosis-top-banner,.room-app .diagnosis-top-banner{display:none}}
 :root { --diagnosis-accent: #227dff; --diagnosis-accent-hover: #1769dd; }
 .site-header[data-consolidated-menu] { background: #fff; border-color: #e6ebf3; }
 .site-header[data-consolidated-menu] .header-inner { min-height: 80px; gap: 28px; }
@@ -1368,7 +1375,7 @@ body:has(> .rent-diagnosis-dock) { padding-bottom: 104px; }
 .menu-open .rent-diagnosis-dock { visibility: hidden; }
 @media (max-width: 1280px) {
   .site-header[data-consolidated-menu] .header-inner { gap: 12px; }
-  .site-header[data-consolidated-menu] .primary-navigation { top: 80px; padding-bottom: calc(28px + env(safe-area-inset-bottom)); background: #fafbfc; }
+  .site-header[data-consolidated-menu] .primary-navigation { top: 124px; padding-bottom: calc(28px + env(safe-area-inset-bottom)); background: #fafbfc; }
   .site-header[data-consolidated-menu] .nav-group[open] > .nav-group-menu { width: 100%; max-height: none; padding: 8px 0 16px; overflow: visible; }
   .site-header[data-consolidated-menu] .nav-group-menu a { min-height: 52px; border-color: #e6ebf3; }
   .site-header[data-consolidated-menu] .primary-navigation > .button { margin-top: 24px; }
@@ -1376,7 +1383,7 @@ body:has(> .rent-diagnosis-dock) { padding-bottom: 104px; }
 @media (max-width: 760px) {
   .site-header[data-consolidated-menu] .header-inner { min-height: 72px; }
   .site-header[data-consolidated-menu] .header-quick-action { display: none; }
-  .site-header[data-consolidated-menu] .primary-navigation { top: 72px; }
+  .site-header[data-consolidated-menu] .primary-navigation { top: 116px; }
   .site-header[data-consolidated-menu] .nav-group[open] > .nav-group-menu { grid-template-columns: 1fr; }
   body:has(> .rent-diagnosis-dock) { padding-bottom: calc(92px + env(safe-area-inset-bottom)); }
   .rent-diagnosis-dock { left: 0; bottom: 0; transform: none; width: 100%; padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid #e6ebf3; background: #fff; }

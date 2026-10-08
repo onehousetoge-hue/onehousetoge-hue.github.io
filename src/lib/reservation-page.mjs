@@ -22,6 +22,6 @@ export function reservationPage() {
         <div class="success" hidden><span class="success-mark" aria-hidden="true">✓</span><h3 tabindex="-1">신청해 주셔서 감사합니다</h3><p>보내주신 방 정보를 확인한 후<br>남겨주신 연락처로 안내해 드릴게요.</p><a class="primary" href="/">한지붕 홈으로</a></div>
       </section>
     </div>
-    <footer class="reservation-footer"><div><a href="/">한지붕</a><a href="/privacy/">개인정보 처리방침</a><a href="${site.phoneHref}">문의 ${site.phone}</a></div><p>© 2026 Home Together. All rights reserved.</p></footer>
+    <footer class="reservation-footer"><div><a href="/">한지붕</a><a href="/privacy/">개인정보 처리방침</a><a href="${site.phoneHref}">문의 ${site.phone}</a></div><p>© 2026 hanjibung. All rights reserved.</p></footer>
   </div>`;
 }

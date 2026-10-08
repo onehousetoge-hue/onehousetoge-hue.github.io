@@ -2,7 +2,7 @@ export const site = Object.freeze({
   name: "한지붕",
   englishName: "HANJIBUNG",
   type: "비영리단체",
-  legalType: "비영리단체 · 국세기본법상 법인으로 보는 단체",
+  legalType: "비영리법인",
   registrationNumber: "120-82-82898",
   representative: "김현수",
   foundedAt: "2026-07-05",
