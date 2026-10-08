@@ -16,8 +16,9 @@
 .reservation-app .reservation-header-label{font-size:15px;color:#525a65;border-left:1px solid #d9dde3;padding-left:20px;line-height:20px}
 .reservation-app .reservation-about{display:inline-flex;align-items:center;gap:9px;min-height:44px;margin-left:auto;font-size:14px;color:var(--form-muted)}
 .reservation-app .reservation-about:hover{color:var(--form-blue)}
-.reservation-app .reservation-layout{width:min(760px,calc(100% - 64px));margin-inline:auto;padding:58px 0 80px}
-.reservation-app .reservation-intro{margin-bottom:46px}
+.reservation-app .reservation-layout{display:grid;grid-template-columns:320px minmax(0,1fr);align-items:start;gap:64px;width:min(1040px,calc(100% - 64px));margin-inline:auto;padding:58px 0 80px}
+.reservation-app .reservation-intro{min-width:0;padding-top:4px}
+.reservation-app .reservation-illustration{display:block;width:100%;height:auto;margin-top:32px;object-fit:contain}
 .reservation-app .reservation-kicker{font-size:14px;font-weight:600;color:var(--form-blue);margin-bottom:12px}
 .reservation-app .reservation-intro h1{font-size:34px;line-height:1.4;font-weight:700;letter-spacing:-1.2px}
 .reservation-app .reservation-description{font-size:16px;line-height:1.8;color:var(--form-muted);margin-top:18px}
@@ -39,8 +40,8 @@
 .reservation-app .form-section-fields{display:grid;gap:22px}
 .reservation-app .form-row{display:block;min-width:0}
 .reservation-app .form-row::after{content:"";display:block;clear:both}
-.reservation-app .form-row>legend,.reservation-app .form-row>label{float:left;width:136px;padding:13px 0 0;margin:0;font-size:15px;font-weight:600;line-height:1.6}
-.reservation-app .field-control{margin-left:160px;min-width:0}
+.reservation-app .form-row>legend,.reservation-app .form-row>label{float:left;width:116px;padding:13px 0 0;margin:0;font-size:15px;font-weight:600;line-height:1.6}
+.reservation-app .field-control{margin-left:136px;min-width:0}
 .reservation-app .required{margin-left:3px}
 .reservation-app .choices{display:flex;gap:8px}
 .reservation-app .choice{position:relative;display:flex;align-items:center;justify-content:center;gap:9px;flex:1;min-width:0;min-height:50px;padding:10px 12px;border:1px solid #d4d9e0;border-radius:5px;color:#4c5562;background:#fff;font-size:15px;cursor:pointer;transition:border-color .15s,background-color .15s}
@@ -71,7 +72,7 @@
 .reservation-app .photo-item>button{position:absolute;right:-8px;top:-8px;display:grid;place-items:center;width:44px;height:44px;isolation:isolate;background:transparent;color:#fff;font-size:16px;font-weight:600}
 .reservation-app .photo-item>button::before{content:"";position:absolute;inset:8px;border-radius:50%;background:#39475a;z-index:-1}
 .reservation-app .photo-item>span{display:block;text-align:center;font-size:12px;color:var(--form-muted);margin-top:5px}
-.reservation-app .consent-area{margin:22px 0 0 160px}
+.reservation-app .consent-area{margin:22px 0 0 136px}
 .reservation-app .consent{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0 14px}
 .reservation-app .consent label{display:flex;align-items:center;gap:9px;min-height:44px;cursor:pointer;font-size:14px;color:#394351}
 .reservation-app .consent label strong{font-weight:500}
@@ -80,7 +81,7 @@
 .reservation-app .privacy{margin-top:12px;padding:20px;background:#f7f8fa;border:1px solid var(--form-line);border-radius:4px;color:#596371;font-size:14px;line-height:1.85;overflow-wrap:anywhere}
 .reservation-app .privacy p{margin-top:8px}
 .reservation-app .privacy a{color:var(--form-blue);text-decoration:underline}
-.reservation-app .reservation-actions{padding-top:30px;margin-left:160px}
+.reservation-app .reservation-actions{padding-top:30px;margin-left:136px}
 .reservation-app .primary{display:flex;align-items:center;justify-content:center;width:100%;min-height:56px;padding:15px 20px;border:0;border-radius:6px;background:var(--form-blue);color:#fff;font-size:17px;font-weight:600;line-height:1.5;text-align:center}
 .reservation-app .primary:hover:not(:disabled){background:#1955bb}
 .reservation-app .submit-note{text-align:center;font-size:14px;line-height:1.7;color:var(--form-muted);margin-top:12px}
@@ -91,9 +92,15 @@
 .reservation-app .success p{font-size:16px;color:var(--form-muted);line-height:1.8;margin-top:14px}
 .reservation-app .success .primary{margin-top:30px}
 .reservation-app .inquiry-form.is-uncertain .form-fields{pointer-events:none}
-.reservation-app .reservation-footer{border-top:1px solid var(--form-line);width:min(760px,calc(100% - 64px));margin-inline:auto;padding:24px 0 36px;color:#7f8792;font-size:13px}
+.reservation-app .reservation-footer{border-top:1px solid var(--form-line);width:min(1040px,calc(100% - 64px));margin-inline:auto;padding:24px 0 36px;color:#7f8792;font-size:13px}
 .reservation-app .reservation-footer>div{display:flex;align-items:center;flex-wrap:wrap;gap:8px 24px;margin-bottom:6px}
 .reservation-app .reservation-footer a{display:inline-flex;align-items:center;min-height:36px;color:#646d79}
+@media(max-width:980px){
+.reservation-app .reservation-layout{grid-template-columns:minmax(0,1fr);gap:40px;width:min(760px,calc(100% - 64px))}
+.reservation-app .reservation-intro{display:grid;grid-template-columns:minmax(0,1fr) 220px;align-items:center;gap:32px;padding-top:0}
+.reservation-app .reservation-illustration{margin-top:0}
+.reservation-app .reservation-footer{width:min(760px,calc(100% - 64px))}
+}
 @media(max-width:650px){
 .reservation-app .reservation-header{height:64px}
 .reservation-app .reservation-header-inner{width:calc(100% - 40px);gap:14px}
@@ -101,8 +108,9 @@
 .reservation-app .reservation-header-label{font-size:14px;padding-left:14px}
 .reservation-app .reservation-about{font-size:13px;gap:6px}
 .reservation-app .reservation-layout,.reservation-app .reservation-footer{width:calc(100% - 40px)}
-.reservation-app .reservation-layout{padding:34px 0 52px}
-.reservation-app .reservation-intro{margin-bottom:32px}
+.reservation-app .reservation-layout{padding:34px 0 52px;gap:30px}
+.reservation-app .reservation-intro{display:block}
+.reservation-app .reservation-illustration{width:180px;margin:20px auto 0}
 .reservation-app .reservation-kicker{font-size:13px;margin-bottom:10px}
 .reservation-app .reservation-intro h1{font-size:28px;line-height:1.4;letter-spacing:-1px}
 .reservation-app .reservation-description{font-size:15px;line-height:1.7;margin-top:14px;word-break:keep-all}
