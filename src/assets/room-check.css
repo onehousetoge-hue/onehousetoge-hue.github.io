@@ -223,10 +223,11 @@ footer>span:last-of-type{margin-left:auto}
 }
 @media(max-width:650px){footer>span:last-of-type{margin-left:0}footer>a:not(.footer-brand){font-size:13px}}
 
-/* Reassure people beside the diagnosis action that today's clutter does not affect the estimate. */
-.cta-note{display:flex;flex-direction:column;align-items:flex-start;gap:3px;max-width:430px;margin-top:14px;padding:12px 14px;border:1px solid #d8e5ff;border-left:3px solid #2967ee;border-radius:9px;background:#f4f8ff;color:#315680;word-break:keep-all}
-.cta-note strong{font-size:16px;line-height:1.5;font-weight:750;color:#213e70}
-.cta-note span{font-size:15px;line-height:1.55;font-weight:700;color:#245bd1}
+/* Supporting reassurance stays quiet so the diagnosis action remains primary. */
+.cta-note{display:flex;flex-direction:column;align-items:flex-start;gap:2px;max-width:430px;margin-top:12px;padding:2px 0 2px 12px;border:0;border-left:2px solid #c9d7ea;border-radius:0;background:transparent;text-align:left;word-break:keep-all}
+.cta-note strong{font-size:14px;line-height:1.5;font-weight:650;color:#43566d}
+.cta-note span{font-size:13px;line-height:1.55;font-weight:400;color:#6d7c8e}
+@media(max-width:650px){.cta-note{padding-left:10px}}
 
 /* The uploaded house illustration is the site mark; its canvas is transparent. */
 .room-app .brand-logo{display:block;width:52px;height:auto;flex:none}
