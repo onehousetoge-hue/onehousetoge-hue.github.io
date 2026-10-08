@@ -21,7 +21,7 @@ const documents = new Map(await Promise.all(htmlFiles.map(async (file) => [file,
 const titles = new Map();
 const descriptions = new Map();
 const manifest = JSON.parse(await readFile(path.join(target, "build-manifest.json"), "utf8"));
-const roomTransport = await readFile(path.join(target, "assets", "room-check.js"), "utf8").catch(() => "");
+const roomTransport = await readFile(path.join(target, "assets", "reservation.js"), "utf8").catch(() => "");
 const verifiedRoomEndpoint = /const endpoint = "https:\/\/hanjibung-room-api\.vercel\.app\/api\/inquiries"/.test(roomTransport);
 // A truthful program planning status is not an empty-page placeholder.
 // Specific research-state regression tests guard against inflated service claims.
@@ -67,7 +67,7 @@ for (const file of htmlFiles) {
   if (new Set(pageIds).size !== pageIds.length) failures.push(`${relative}: 중복 id가 있습니다.`);
   for (const match of html.matchAll(/<img\b([^>]*)>/g)) if (!/\balt="[^"]*"/.test(match[1])) failures.push(`${relative}: alt 없는 이미지가 있습니다.`);
   const verifiedLegacyForm = /<form[^>]*data-inquiry="(?:consultation|partnership)"[^>]*data-endpoint="https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec"/.test(html);
-  const verifiedRoomForm = relative === "index.html" && /<form class="inquiry-form"/.test(html) && verifiedRoomEndpoint;
+  const verifiedRoomForm = relative === path.join("reservation", "index.html") && /<form class="inquiry-form"/.test(html) && /src="\/assets\/reservation\.js\?v=/.test(html) && verifiedRoomEndpoint;
   if (/<form\b/.test(html) && !verifiedLegacyForm && !verifiedRoomForm) failures.push(`${relative}: 검증된 접수 URL 없는 form이 있습니다.`);
   const route = relative === "index.html" ? "/" : "/" + relative.replaceAll(path.sep, "/").replace(/index\.html$/, "");
   const indexed = manifest.pages.find(page => page.route === route)?.indexable;

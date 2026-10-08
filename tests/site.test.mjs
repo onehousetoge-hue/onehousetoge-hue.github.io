@@ -5,25 +5,26 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "dist");
-const routes = ["/", "/overview/", "/about/", "/programs/", "/programs/senior-home-consulting/", "/programs/intergenerational-volunteer/", "/programs/housing-research/", "/resources/", "/resources/family-checklist/", "/resources/shared-living-rules/", "/resources/consultation-preparation/", "/resources/private-common-space/", "/resources/conflict-prevention/", "/resources/korean-housing-culture/", "/activities/", "/activities/founding-meeting/", "/activities/nonprofit-registration/", "/transparency/", "/participate/", "/contact/", "/privacy/", "/terms/"];
+const routes = ["/", "/reservation/", "/overview/", "/about/", "/programs/", "/programs/senior-home-consulting/", "/programs/intergenerational-volunteer/", "/programs/housing-research/", "/resources/", "/resources/family-checklist/", "/resources/shared-living-rules/", "/resources/consultation-preparation/", "/resources/private-common-space/", "/resources/conflict-prevention/", "/resources/korean-housing-culture/", "/activities/", "/activities/founding-meeting/", "/activities/nonprofit-registration/", "/transparency/", "/participate/", "/contact/", "/privacy/", "/terms/"];
 const routeFile = (route) => route === "/" ? path.join(root, "index.html") : path.join(root, route.replace(/^\//, ""), "index.html");
 
-test("room diagnostic is native to the first screen and the original homepage remains at overview", async () => {
+test("homepage links to the dedicated diagnosis page and keeps organization information under one menu", async () => {
   const { navigation } = await import("../src/config/site.mjs");
   const room = await readFile(routeFile("/"), "utf8");
   const overview = await readFile(routeFile("/overview/"), "utf8");
-  const css = await readFile(path.join(root, "assets/room-check.css"), "utf8");
   assert.match(room, /class="room-check-page"/);
-  assert.doesNotMatch(room, /<iframe/);
-  assert.match(room, /<dialog id="room-inquiry"/);
+  assert.doesNotMatch(room, /<iframe|<dialog|data-open-inquiry/);
   assert.match(room, /예상 월세 무료 진단 받기/);
-  assert.match(room, /방에 짐이 있거나 정리가 안 되어 있어도 괜찮아요\./);
-  assert.match(room, /짐과 정리 상태는 예상 월세에 반영하지 않고 진단해요\./);
+  assert.match(room, /id="goals"/);
+  const floating = room.match(/<a\b[^>]*class="floating-diagnosis"[^>]*>/)?.[0];
+  assert.ok(floating, "The persistent diagnosis action is a real page link");
+  assert.match(floating, /href="\/reservation\/"/);
+  assert.match(floating, /aria-hidden="true"/);
+  assert.match(floating, /tabindex="-1"/);
   assert.match(room, /<title>우리 집 남는 방 예상 월세 진단 \| 한지붕<\/title>/);
   assert.doesNotMatch(room, /방 진단 화면이 보이지 않거나|한지붕의 기존 홈페이지 보기/);
   assert.doesNotMatch(room, /<header class="site-header"/);
   assert.doesNotMatch(room, /<footer class="site-footer"/);
-  assert.match(css, /\.inquiry-dialog\{position:fixed/);
   assert.match(overview, /class="editorial-hero"/);
   assert.match(overview, /<footer class="site-footer"/);
   assert.match(overview, /<link rel="canonical" href="https:\/\/hanjibung\.kr\/overview\/">/);
@@ -33,6 +34,104 @@ test("room diagnostic is native to the first screen and the original homepage re
     assert.ok(overview.includes(`href="${href}"`), href);
   }
   assert.match(overview, /href="\/consultation\/">무료상담 문의/);
+});
+
+test("dedicated diagnosis page preserves the existing required information and explicit consent", async () => {
+  const html = await readFile(routeFile("/reservation/"), "utf8");
+  assert.match(html, /class="reservation-app"/);
+  assert.match(html, /<link rel="canonical" href="https:\/\/hanjibung\.kr\/reservation\/">/);
+  assert.equal((html.match(/<h1\b/g) || []).length, 1);
+  assert.equal((html.match(/<form\b/g) || []).length, 1);
+  assert.doesNotMatch(html, /<dialog|<iframe|data-open-inquiry/);
+  const inputs = [...html.matchAll(/<input\b[^>]*>/g)].map((match) => match[0]);
+  const fields = inputs.filter((input) => /\bname="/.test(input));
+  assert.deepEqual([...new Set(fields.map((input) => input.match(/\bname="([^"]+)"/)[1]))].sort(), ["aircon", "area", "areaType", "consent", "location", "phone", "rooms", "tenure"]);
+  for (const field of fields) assert.match(field, /\brequired(?:\s|>)/);
+  const consent = fields.find((input) => /name="consent"/.test(input));
+  assert.match(consent, /type="checkbox"/);
+  assert.doesNotMatch(consent, /\bchecked(?:\s|>)/);
+  const photos = inputs.find((input) => /id="photos"/.test(input));
+  assert.match(photos, /type="file"/);
+  assert.match(photos, /accept="image\/jpeg,image\/png,image\/webp"/);
+  assert.match(photos, /\bmultiple(?:\s|>)/);
+  for (const text of ["방에 짐이 있거나 정리가 안 되어 있어도 괜찮아요.", "짐과 정리 상태는 예상 월세에 반영하지 않고 진단해요.", "30MB", "90일", 'href="/privacy/"']) assert.ok(html.includes(text), text);
+  const submit = html.match(/<button\b[^>]*type="submit"[^>]*>/)?.[0];
+  assert.match(submit, /\bdisabled(?:\s|>)/);
+  assert.doesNotMatch(html, /class="rent-diagnosis-dock"/);
+});
+
+test("diagnosis banner follows the goals section and remains inaccessible while hidden or covered by the menu", async () => {
+  const { runInNewContext } = await import("node:vm");
+  const script = await readFile(path.join(root, "assets/room-check.js"), "utf8");
+  const makeElement = () => {
+    const classes = new Set();
+    return {
+      attributes: {}, listeners: {}, tabIndex: -1, inert: false,
+      classList: { contains: (name) => classes.has(name), toggle: (name, value) => value ? classes.add(name) : classes.delete(name) },
+      setAttribute(name, value) { this.attributes[name] = value; },
+      getAttribute(name) { return this.attributes[name]; },
+      addEventListener(type, callback) { this.listeners[type] = callback; },
+      querySelectorAll: () => [], querySelector: () => null,
+      getClientRects: () => [{}], focus() { this.focused = true; },
+    };
+  };
+  const nav = makeElement();
+  const toggle = makeElement();
+  const floating = makeElement();
+  let goalTop = 1200;
+  const goals = { getBoundingClientRect: () => ({ top: goalTop }) };
+  const selectors = { ".site-menu": nav, ".nav-toggle": toggle, "#goals": goals, ".floating-diagnosis": floating };
+  const app = { querySelector: (selector) => selectors[selector], querySelectorAll: () => [] };
+  const windowEvents = {};
+  const documentEvents = {};
+  const frames = [];
+  const document = { querySelector: () => app, addEventListener: (type, callback) => { documentEvents[type] = callback; } };
+  const window = {
+    location: { href: "https://hanjibung.kr/" }, innerHeight: 800,
+    addEventListener: (type, callback) => { windowEvents[type] = callback; },
+    requestAnimationFrame: (callback) => { frames.push(callback); },
+    matchMedia: () => ({ addEventListener() {} }),
+  };
+  runInNewContext(script, { document, window, URL });
+  const assertVisible = (visible) => {
+    assert.equal(floating.classList.contains("is-visible"), visible);
+    assert.equal(floating.attributes["aria-hidden"], String(!visible));
+    assert.equal(floating.tabIndex, visible ? 0 : -1);
+    assert.equal(floating.inert, !visible);
+  };
+  const scrollToGoal = (top) => {
+    goalTop = top;
+    windowEvents.scroll();
+    while (frames.length) frames.shift()();
+  };
+  assertVisible(false);
+  scrollToGoal(500);
+  assertVisible(true);
+  scrollToGoal(-1600);
+  assertVisible(true);
+  scrollToGoal(1200);
+  assertVisible(false);
+  scrollToGoal(500);
+  toggle.listeners.click();
+  assertVisible(false);
+  documentEvents.keydown({ key: "Escape" });
+  assertVisible(true);
+  assert.equal(toggle.focused, true);
+  goalTop = 1200;
+  windowEvents.pageshow();
+  while (frames.length) frames.shift()();
+  assertVisible(false);
+});
+
+test("existing diagnosis bookmarks redirect to the new form without losing other query parameters", async () => {
+  const { runInNewContext } = await import("node:vm");
+  const script = await readFile(path.join(root, "assets/room-check.js"), "utf8");
+  let destination;
+  runInNewContext(script, {
+    document: { querySelector: () => ({}) }, URL,
+    window: { location: { href: "https://hanjibung.kr/?diagnosis=1&utm_source=bookmark#goals", replace: (url) => { destination = url; } } },
+  });
+  assert.equal(destination, "https://hanjibung.kr/reservation/?utm_source=bookmark#goals");
 });
 
 test("privacy distinguishes room diagnosis from existing inquiry forms", async () => {
@@ -46,9 +145,9 @@ test("privacy distinguishes room diagnosis from existing inquiry forms", async (
 test("mobile navigation preserves direct inquiries and long-page return links", async () => {
   for (const route of routes) {
     const html = await readFile(routeFile(route), "utf8");
-    if (route !== "/") {
-      assert.match(html, /class="header-quick-action" href="\/\?diagnosis=1"/);
-      assert.match(html, /class="rent-diagnosis-dock"[^>]*><a href="\/\?diagnosis=1"/);
+    if (route !== "/" && route !== "/reservation/") {
+      assert.match(html, /class="header-quick-action" href="\/reservation\/"/);
+      assert.match(html, /class="rent-diagnosis-dock"[^>]*><a href="\/reservation\/"/);
       assert.match(html, /data-menu-label>메뉴/);
       assert.match(html, /class="back-to-top" href="#page-top"/);
     }
@@ -217,7 +316,7 @@ test("editorial redesign keeps direct inquiry actions and a shared visual system
   const stories = home.match(/id="latest-updates"([\s\S]*?)<\/section>/)?.[1];
   assert.ok(stories.includes("/activities/gongneung-consultation-september/"));
   assert.ok(stories.indexOf("2026-09-18") < stories.indexOf("2026-09-12"));
-  for (const route of routes.filter((route) => route !== "/")) {
+  for (const route of routes.filter((route) => route !== "/" && route !== "/reservation/")) {
     const html = await readFile(routeFile(route), "utf8");
     const header = html.match(/<header[\s\S]*?<\/header>/)?.[0];
     assert.match(header, /href="\/consultation\/">무료상담 문의/);
@@ -371,7 +470,7 @@ test("public pages use Hanjibung with the approved Figma copyright credit", asyn
   for (const page of manifest.pages) {
     const file = page.route === "/404.html" ? path.join(root, "404.html") : routeFile(page.route);
     const html = await readFile(file, "utf8");
-    assert.doesNotMatch(page.route === "/" ? html.replace("© 2026 Home Together. All rights reserved.", "") : html, removedBrand, page.route);
+    assert.doesNotMatch(["/", "/reservation/"].includes(page.route) ? html.replace("© 2026 Home Together. All rights reserved.", "") : html, removedBrand, page.route);
   }
 });
 
@@ -462,6 +561,7 @@ test("the parent and room diagnostic share GA without exposing inquiry details",
     const scripts = [...content.matchAll(/<script[^>]+src="([^"]+)"/g)].map((match) => match[1]);
     const expected = ["/assets/site.js", "/assets/analytics.js"];
     if (page.route === "/") expected.push("/assets/room-check.js");
+    if (page.route === "/reservation/") expected.push("/assets/reservation.js");
     if (/^\/(consultation|partnership)\//.test(page.route)) expected.push("/assets/inquiry.js");
     if (/^\/resources\/(preparation-room|conversation-practice|living-cost-planner|community-session-kit)\/$/.test(page.route)) expected.push("/assets/living-lab.mjs");
     assert.deepEqual(scripts.map((src) => new URL(src, "https://hanjibung.kr").pathname), expected);
@@ -612,7 +712,10 @@ test("site chrome preserves the brand while the diagnostic home uses a text word
       assert.equal(imageCount, 0, page.route);
       assert.match(html, /class="brand-wordmark">한지붕<\/span>/);
       assert.match(html, /class="host-footer"/);
-      assert.match(html, /class="floating-diagnosis"[^>]*data-open-inquiry/);
+      assert.match(html, /class="floating-diagnosis"[^>]*href="\/reservation\/"/);
+    } else if (page.route === "/reservation/") {
+      assert.equal(imageCount, 0, page.route);
+      assert.match(html, /class="reservation-app"/);
     } else {
       assert.equal(imageCount, 2, page.route);
     }
@@ -760,10 +863,12 @@ test("copy handlers use only static text and recover from clipboard rejection", 
 
 test("CSS and JavaScript versions match the built bytes", async () => {
   const { createHash } = await import("node:crypto");
-  const html = await readFile(routeFile("/"), "utf8");
-  for (const name of ["site.css", "site.js", "room-check.css", "room-check.js"]) {
-    const bytes = await readFile(path.join(root, "assets", name));
-    const version = createHash("sha256").update(bytes).digest("hex").slice(0, 12);
-    assert.ok(html.includes(`/assets/${name}?v=${version}`));
+  for (const [route, names] of [["/", ["site.css", "site.js", "room-check.css", "room-check.js"]], ["/reservation/", ["site.css", "site.js", "reservation.css", "reservation.js"]]]) {
+    const html = await readFile(routeFile(route), "utf8");
+    for (const name of names) {
+      const bytes = await readFile(path.join(root, "assets", name));
+      const version = createHash("sha256").update(bytes).digest("hex").slice(0, 12);
+      assert.ok(html.includes(`/assets/${name}?v=${version}`), `${route}: ${name}`);
+    }
   }
 });

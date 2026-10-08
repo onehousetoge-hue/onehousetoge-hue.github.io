@@ -82,20 +82,20 @@ export function header(currentPath = "/") {
           <img class="site-brand-logo" src="/assets/hanjibung-logo-256.png" width="56" height="51" alt="">
           <span><strong>${site.name}</strong> <small>${site.englishName}</small></span>
         </a>
-        <a class="header-quick-action" href="/?diagnosis=1">무료 월세 진단</a>
+        <a class="header-quick-action" href="/reservation/">무료 월세 진단</a>
         <button class="menu-button" type="button" aria-expanded="false" aria-controls="primary-navigation" data-menu-button>
           <span class="menu-open-icon">${icon("menu")}</span><span class="menu-close-icon">${icon("close")}</span><span class="menu-label" aria-hidden="true" data-menu-label>메뉴</span><span class="visually-hidden">전체 메뉴 열기</span>
         </button>
         <nav class="primary-navigation" id="primary-navigation" aria-label="주요 메뉴" data-navigation>
           <div class="nav-links">${links}</div>
-          <a class="button button-small" href="/?diagnosis=1">예상 월세 무료 진단 받기</a>
+          <a class="button button-small" href="/reservation/">예상 월세 무료 진단 받기</a>
         </nav>
       </div>
     </header>`;
 }
 
 export function rentDiagnosisDock() {
-  return `<aside class="rent-diagnosis-dock" aria-label="예상 월세 무료 진단"><a href="/?diagnosis=1"><span>예상 월세 무료 진단 받기</span>${icon("arrow")}</a></aside>`;
+  return `<aside class="rent-diagnosis-dock" aria-label="예상 월세 무료 진단"><a href="/reservation/"><span>예상 월세 무료 진단 받기</span>${icon("arrow")}</a></aside>`;
 }
 
 export function footer() {

@@ -14,3 +14,6 @@ export const inquiryScriptUrl = assetUrl("inquiry.js");
 export const livingLabScriptUrl = assetUrl("living-lab.mjs");
 export const roomCheckStylesheetUrl = assetUrl("room-check.css");
 export const roomCheckScriptUrl = assetUrl("room-check.js");
+
+export const reservationStylesheetUrl = assetUrl("reservation.css");
+export const reservationScriptUrl = assetUrl("reservation.js");
