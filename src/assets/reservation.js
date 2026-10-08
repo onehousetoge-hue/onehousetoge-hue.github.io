@@ -23,8 +23,11 @@
   let started = false;
   let submissionStart = 0;
   const endpoint = "https://hanjibung-room-api.vercel.app/api/inquiries";
+  const analyticsId = document.querySelector("script[data-analytics-id]")?.dataset.analyticsId;
   const event = (name, params = {}) => {
-    if (typeof window.gtag === "function") window.gtag("event", name, params);
+    if (typeof window.gtag === "function" && /^G-[A-Z0-9]{6,20}$/.test(analyticsId || "")) {
+      window.gtag("event", name, { ...params, send_to: analyticsId });
+    }
   };
   const setError = (message) => {
     error.textContent = message;
@@ -140,7 +143,7 @@
       xhr.onerror = xhr.ontimeout = () => resolve({ ok: false, uncertain: true, message: "접수 결과를 확인하지 못했어요. 다시 확인해 주세요." });
       xhr.onload = () => {
         let result; try { result = JSON.parse(xhr.responseText); } catch { result = null; }
-        if (xhr.status >= 200 && xhr.status < 300 && result?.ok && result.requestId === id) resolve({ ok: true });
+        if (xhr.status >= 200 && xhr.status < 300 && result?.ok && result.requestId === id) resolve({ ok: true, requestId: result.requestId });
         else resolve({ ok: false, uncertain: result?.uncertain === true || xhr.status >= 500, message: result?.message || "접수 결과를 확인하지 못했어요. 다시 확인해 주세요." });
       };
       xhr.send(body);
@@ -167,6 +170,11 @@
     if (result.ok) {
       uncertain = false; lock(false);
       event("inquiry_complete", { photo_count: photos.length, value: Math.min(3600, Math.round((performance.now() - submissionStart) / 1000)) });
+      // Only this branch has a successful response with the exact request ID.
+      // Ad measurement must not interrupt the saved submission's success UI.
+      try {
+        window.hanjibungTrackDiagnosisAdsConversion?.(result.requestId);
+      } catch { /* The inquiry has already been accepted. */ }
       form.hidden = true; success.hidden = false; heading.textContent = "진단 신청이 접수되었어요";
       description.textContent = "보내주신 방 정보를 확인한 후 남겨주신 연락처로 안내해 드릴게요.";
       heading.setAttribute("tabindex", "-1"); heading.focus();

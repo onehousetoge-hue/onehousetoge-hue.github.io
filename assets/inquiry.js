@@ -27,6 +27,16 @@ export async function send(endpoint, payload) {
   if (!result.ok || result.requestId !== payload.requestId || result.kind !== payload.kind || !/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(result.receivedAt || '')) throw new Error(result.code || 'UNAVAILABLE');
   return {requestId:result.requestId, kind:result.kind, receivedAt:result.receivedAt};
 }
+// The caller must pass the receipt returned by send() after a verified submit.
+// The selected topic is used locally and is never included in the Ads event.
+export async function recordHostConsultationConversion(receipt, payload) {
+  const hostTopics = new Set(['빈방·유휴공간 활용', '공동생활 준비', '가족과 생활규칙']);
+  if (payload?.action !== 'submit' || receipt?.kind !== 'consultation'
+    || payload.kind !== receipt.kind || payload.requestId !== receipt.requestId
+    || !hostTopics.has(payload.topic)) return;
+  try { await window.hanjibungTrackConsultationAdsConversion?.(receipt.requestId); }
+  catch { /* Measurement must not interrupt a confirmed receipt. */ }
+}
 function showReceipt(target, receipt) {
   target.replaceChildren();
   const heading = document.createElement('h2'); heading.textContent = '문의가 접수되었습니다';
@@ -102,6 +112,8 @@ if (form) {
     busy = true; button.disabled = true; button.textContent = '접수 확인 중…'; fieldset.disabled = true; form.setAttribute('aria-busy','true'); status.textContent = '문의 내용을 저장하고 있습니다. 잠시만 기다려 주세요.';
     try {
       const receipt = await send(endpoint,payload); submitted = true; form.reset();
+      status.textContent = '문의가 접수되었습니다. 완료 화면으로 이동합니다.';
+      await recordHostConsultationConversion(receipt, payload);
       try { sessionStorage.setItem(receiptKey(kind),JSON.stringify(receipt)); }
       catch { showReceipt(status,receipt); return; }
       location.assign(`/${kind}/complete/`);
