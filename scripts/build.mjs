@@ -76,7 +76,7 @@ function activityCards(items = activities) {
 
 const homeBody = landingPage();
 
-await emit("/", layout({ title: "우리 집 남는 방 예상 월세 진단", description: "한지붕 우리 집 남는 방 예상 월세 진단에서 방 사진과 지역 정보를 보내고 예상 월세와 준비사항을 안내받으세요.", path: "/", body: roomCheckPage(), bodyClass: "room-check-page", showHeader: false, jsonLd: [{ "@context": "https://schema.org", "@type": "WebSite", name: site.name, alternateName: site.englishName, url: absolute("/") }, organizationSchema] }));
+await emit("/", layout({ title: "우리 집 남는 방 예상 월세 진단", description: "한지붕 우리 집 남는 방 예상 월세 진단에서 방 사진과 지역 정보를 보내고 예상 월세와 준비사항을 안내받으세요.", path: "/", body: roomCheckPage(), bodyClass: "room-check-page", showHeader: false, showFooter: false, jsonLd: [{ "@context": "https://schema.org", "@type": "WebSite", name: site.name, alternateName: site.englishName, url: absolute("/") }, organizationSchema] }));
 await emit("/overview/", layout({ title: "한지붕 소개와 공익사업", description: site.nonprofitDescription, path: "/overview/", body: homeBody, jsonLd: organizationSchema }));
 
 await emit("/about/", layout({ title: "한지붕 소개", documentTitle: aboutTitle, description: aboutDescription, path: "/about/", body: aboutBody, updatedAt: pageDates["/about/"], breadcrumbs: [{ label: "한지붕 소개", href: "/about/" }], jsonLd: organizationSchema }));

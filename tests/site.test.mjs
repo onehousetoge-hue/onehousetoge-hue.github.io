@@ -19,8 +19,10 @@ test("room diagnostic fills the first screen and the original homepage remains a
   assert.match(room, /title="한지붕 우리 집 남는 방 예상 월세 진단"/);
   assert.doesNotMatch(room, /방 진단 화면이 보이지 않거나|한지붕의 기존 홈페이지 보기/);
   assert.doesNotMatch(room, /<header class="site-header"/);
+  assert.doesNotMatch(room, /<footer class="site-footer"/);
   assert.match(css, /\.room-check-viewport \{[^}]*height: 100svh/);
   assert.match(overview, /class="editorial-hero"/);
+  assert.match(overview, /<footer class="site-footer"/);
   assert.match(overview, /<link rel="canonical" href="https:\/\/hanjibung\.kr\/overview\/">/);
   assert.equal(navigation.length, 3);
   assert.deepEqual(navigation.map((group) => group.label), ["한지붕 소개", "주거정보", "활동·참여"]);
@@ -44,8 +46,8 @@ test("mobile navigation preserves direct inquiries and long-page return links", 
     if (route !== "/") {
       assert.match(html, /class="header-quick-action" href="\/consultation\/"/);
       assert.match(html, /data-menu-label>메뉴/);
+      assert.match(html, /class="back-to-top" href="#page-top"/);
     }
-    assert.match(html, /class="back-to-top" href="#page-top"/);
     assert.match(html, /<body id="page-top"/);
   }
 });
