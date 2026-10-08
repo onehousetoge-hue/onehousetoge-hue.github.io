@@ -50,8 +50,15 @@
     submit.textContent = ready ? "진단 신청하기 →" : "신청 접수 준비 중";
     setup.hidden = ready;
   }
-  function show() {
-    lastTrigger = document.activeElement;
+  function setMenu(open, restoreFocus = false) {
+    navToggle.setAttribute("aria-expanded", String(open));
+    navToggle.textContent = open ? "닫기" : "메뉴";
+    nav.classList.toggle("is-open", open);
+    if (!open) nav.querySelectorAll(".nav-group").forEach((group) => { group.open = false; });
+    if (restoreFocus && navToggle.getClientRects().length) navToggle.focus();
+  }
+  function show(trigger = document.activeElement) {
+    lastTrigger = trigger;
     dialog.showModal();
     event("inquiry_open");
     checkConnection();
@@ -59,7 +66,6 @@
   function close() {
     if (busy) return;
     dialog.close();
-    lastTrigger?.focus?.();
     if (!success.hidden) {
       success.hidden = true; form.hidden = false;
       heading.innerHTML = "우리 집에 맞는 조건을<br>알려드릴게요";
@@ -69,16 +75,25 @@
     }
   }
   root.querySelectorAll("[data-open-inquiry]").forEach((button) => button.addEventListener("click", () => {
-    nav.classList.remove("is-open"); navToggle.setAttribute("aria-expanded", "false"); show();
+    const trigger = nav.contains(button) && navToggle.getClientRects().length ? navToggle : button;
+    setMenu(false);
+    show(trigger);
   }));
   dialog.querySelector(".close").addEventListener("click", close);
   success.querySelector("button").addEventListener("click", close);
   dialog.addEventListener("cancel", (e) => { if (busy) e.preventDefault(); });
+  dialog.addEventListener("close", () => { lastTrigger?.focus?.(); });
   navToggle.addEventListener("click", () => {
-    const expanded = navToggle.getAttribute("aria-expanded") !== "true";
-    navToggle.setAttribute("aria-expanded", String(expanded));
-    navToggle.textContent = expanded ? "닫기" : "메뉴";
-    nav.classList.toggle("is-open", expanded);
+    setMenu(navToggle.getAttribute("aria-expanded") !== "true");
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && nav.classList.contains("is-open")) setMenu(false, true);
+  });
+  document.addEventListener("click", (e) => {
+    if (nav.classList.contains("is-open") && !nav.contains(e.target) && !navToggle.contains(e.target)) setMenu(false);
+  });
+  window.matchMedia("(min-width: 981px)").addEventListener("change", (e) => {
+    if (e.matches) setMenu(false);
   });
   root.querySelectorAll(".nav-group").forEach((group) => group.addEventListener("toggle", () => {
     if (group.open) root.querySelectorAll(".nav-group").forEach((other) => { if (other !== group) other.open = false; });
