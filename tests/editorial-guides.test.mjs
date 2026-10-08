@@ -40,7 +40,7 @@ test("research essay distinguishes question themes, current progress and contact
   assert.match(html, /href="\/contact\/">조사 참여 방법 문의/);
 });
 test("guides are reachable from home and directory without replacing existing resources", async () => {
-  const home=await readRoute("/");
+  const home=await readRoute("/overview/");
   const directory=await readRoute("/resources/");
   assert.match(home, /href="\/resources\/#housing-reading"/);
   for (const article of editorialGuides) assert.ok(directory.includes(article.href));

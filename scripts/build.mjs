@@ -23,6 +23,7 @@ import { consultationPhotos } from "../src/content/consultation-photos.mjs";
 import { photoVariants } from "../src/lib/photo-variants.mjs";
 import { aboutBody, aboutTitle, aboutDescription } from "../src/content/about.mjs";
 import { landingPage } from "../src/lib/landing-page.mjs";
+import { roomCheckPage } from "../src/lib/room-check-page.mjs";
 import { resourceDirectory } from "../src/lib/resource-directory.mjs";
 import { serviceScope } from "../src/lib/service-scope.mjs";
 import { livingLabFeature, livingLabPage, livingLabPages } from "../src/lib/living-lab.mjs";
@@ -75,7 +76,8 @@ function activityCards(items = activities) {
 
 const homeBody = landingPage();
 
-await emit("/", layout({ title: site.name, description: site.nonprofitDescription, path: "/", body: homeBody, jsonLd: [{ "@context": "https://schema.org", "@type": "WebSite", name: site.name, alternateName: site.englishName, url: absolute("/") }, organizationSchema] }));
+await emit("/", layout({ title: "우리 집 남는 방 예상 월세 진단", description: "한지붕 우리 집 남는 방 예상 월세 진단에서 방 사진과 지역 정보를 보내고 예상 월세와 준비사항을 안내받으세요.", path: "/", body: roomCheckPage(), bodyClass: "room-check-page", showHeader: false, jsonLd: [{ "@context": "https://schema.org", "@type": "WebSite", name: site.name, alternateName: site.englishName, url: absolute("/") }, organizationSchema] }));
+await emit("/overview/", layout({ title: "한지붕 소개와 공익사업", description: site.nonprofitDescription, path: "/overview/", body: homeBody, jsonLd: organizationSchema }));
 
 await emit("/about/", layout({ title: "한지붕 소개", documentTitle: aboutTitle, description: aboutDescription, path: "/about/", body: aboutBody, updatedAt: pageDates["/about/"], breadcrumbs: [{ label: "한지붕 소개", href: "/about/" }], jsonLd: organizationSchema }));
 
@@ -125,7 +127,7 @@ await emit("/participate/", layout({ title: "참여하기", description: "어르
 
 await emit("/contact/", layout({ title: "문의", description: `한지붕 전화 ${site.phone}, 이메일 ${site.email}과 문의 시 필요한 최소정보를 안내합니다.`, path: "/contact/", body: contactBody, breadcrumbs: [{ label: "문의", href: "/contact/" }] }));
 
-await emit("/privacy/", layout({ title: "개인정보 처리방침", description: "한지붕 웹사이트와 전화·이메일 문의 과정의 개인정보 처리항목, 목적과 이용자 권리를 안내합니다.", path: "/privacy/", body: privacyBody, breadcrumbs: [{ label: "개인정보 처리방침", href: "/privacy/" }] }));
+await emit("/privacy/", layout({ title: "개인정보 처리방침", description: "한지붕 방 진단, 일반 문의와 전화·이메일 상담의 개인정보 처리항목, 보관기간과 이용자 권리를 안내합니다.", path: "/privacy/", body: privacyBody, breadcrumbs: [{ label: "개인정보 처리방침", href: "/privacy/" }] }));
 
 const termsBody = `${pageHero({ eyebrow: "사이트 및 프로그램 이용안내", title: "한지붕 정보의 범위와<br>이용 원칙을 안내합니다.", description: "공익자료와 상담을 이용하기 전에 서비스의 성격, 책임범위와 금지행위를 확인해 주세요.", meta: updatedMeta("/terms/") })}<section class="section"><div class="container content-layout"><article class="prose"><h2>1. 사이트의 목적</h2><p>한지붕 웹사이트는 어르신 유휴공간·빈방 활용 무료상담, 기관 협의형 교육·봉사와 자체 공익자료를 안내합니다. 주거상생 실태조사는 진행 중이며, 조사 결과와 공익 보고서는 검토를 거쳐 공개할 예정입니다.</p><h2>2. 공익자료의 범위</h2><p>사이트의 자료는 생활 전 확인할 일반 정보와 대화 도구입니다. 개별 주택에 대한 건축·전기·가스·소방 진단, 부동산 중개, 계약대행, 법률·세무 자문을 대신하지 않습니다.</p><h2>3. 무료상담</h2><p>기초상담은 무료이며 상담 신청만으로 공간 제공, 입주, 계약 또는 유료서비스 이용이 확정되지 않습니다. 이용자는 상담 후에도 진행하지 않거나 참여를 중단할 수 있습니다.</p><h2>4. 정확한 정보 제공</h2><p>문의자는 다른 사람의 개인정보를 권한 없이 제공하지 않아야 하며, 상담과 참여에 필요한 범위에서 사실에 맞는 정보를 알려야 합니다. 초기 문의에 주민등록번호, 신분증, 계좌번호와 상세주소를 보내지 마세요.</p><h2>5. 지식재산과 인용</h2><p>한지붕이 작성한 자료는 출처와 제목, 주소를 표시하여 비영리 교육 목적으로 인용할 수 있습니다. 문맥을 왜곡하거나 상업적 상품의 보증자료로 사용하는 것은 허용하지 않습니다.</p><h2>6. 외부기관 확인</h2><p>거주 형태, 계약, 전입신고, 세금과 법적 권리·의무는 개별 상황에 따라 달라질 수 있으므로 주민센터, 법률·세무 전문가 또는 관계기관에 별도로 확인해야 합니다.</p><h2>7. 이용 제한</h2><p>타인의 개인정보 침해, 허위정보 제출, 사기·폭력·차별·영업 목적 이용, 사이트의 정상적인 운영을 방해하는 행위는 제한될 수 있습니다.</p><h2>8. 문의</h2><p>이용안내와 프로그램 범위에 관한 문의는 전화 <a href="${site.phoneHref}">${site.phone}</a> 또는 이메일 <a href="${site.emailHref}">${site.email}</a>로 보내 주세요.</p></article><aside class="side-nav"><h2>관련 안내</h2><a href="/privacy/">개인정보 처리방침</a><a href="/programs/">공익사업</a><a href="/contact/">문의</a></aside></div></section>`;
 await emit("/terms/", layout({ title: "사이트 및 프로그램 이용안내", description: "한지붕 공익자료와 무료상담의 성격, 책임범위, 개인정보와 이용 원칙을 안내합니다.", path: "/terms/", body: termsBody, breadcrumbs: [{ label: "이용안내", href: "/terms/" }] }));

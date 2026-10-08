@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://hanjibung.kr/</loc><lastmod>2026-09-25</lastmod></url>
+  <url><loc>https://hanjibung.kr/</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://hanjibung.kr/overview/</loc><lastmod>2026-10-08</lastmod></url>
   <url><loc>https://hanjibung.kr/about/</loc><lastmod>2026-09-25</lastmod></url>
   <url><loc>https://hanjibung.kr/programs/</loc><lastmod>2026-09-24</lastmod></url>
   <url><loc>https://hanjibung.kr/programs/senior-home-consulting/</loc><lastmod>2026-09-25</lastmod></url>
@@ -49,6 +50,6 @@
   <url><loc>https://hanjibung.kr/transparency/</loc><lastmod>2026-09-25</lastmod></url>
   <url><loc>https://hanjibung.kr/participate/</loc><lastmod>2026-09-24</lastmod></url>
   <url><loc>https://hanjibung.kr/contact/</loc><lastmod>2026-09-24</lastmod></url>
-  <url><loc>https://hanjibung.kr/privacy/</loc><lastmod>2026-09-25</lastmod></url>
+  <url><loc>https://hanjibung.kr/privacy/</loc><lastmod>2026-10-08</lastmod></url>
   <url><loc>https://hanjibung.kr/terms/</loc><lastmod>2026-09-24</lastmod></url>
 </urlset>

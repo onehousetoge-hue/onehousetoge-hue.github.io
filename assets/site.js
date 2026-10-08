@@ -34,6 +34,7 @@
 
   const button = document.querySelector("[data-menu-button]");
   const navigation = document.querySelector("[data-navigation]");
+  const navGroups = [...document.querySelectorAll(".nav-group")];
   let lastFocused = null;
 
   function setMenu(open) {
@@ -46,7 +47,7 @@
     document.querySelectorAll("main, footer, .breadcrumb").forEach((element) => { element.inert = open; });
     if (open) {
       lastFocused = document.activeElement;
-      navigation.querySelector("a")?.focus();
+      navigation.querySelector("summary, a")?.focus();
     } else if ((lastFocused === button || navigation.contains(lastFocused)) && button.getClientRects().length) {
       button.focus();
     }
@@ -56,8 +57,15 @@
   navigation?.addEventListener("click", (event) => {
     if (event.target.closest("a")) setMenu(false);
   });
+  navGroups.forEach((group) => group.addEventListener("toggle", () => {
+    if (group.open) navGroups.filter((other) => other !== group).forEach((other) => { other.open = false; });
+  }));
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && button?.getAttribute("aria-expanded") === "true") setMenu(false);
+    else if (event.key === "Escape") {
+      const openGroup = navGroups.find((group) => group.open);
+      if (openGroup) { openGroup.open = false; openGroup.querySelector("summary")?.focus(); }
+    }
     if (event.key === "Tab" && button?.getAttribute("aria-expanded") === "true") {
       const links = [...navigation.querySelectorAll("a")];
       const first = button;
@@ -67,6 +75,7 @@
     }
   });
   document.addEventListener("click", (event) => {
+    navGroups.filter((group) => group.open && !group.contains(event.target)).forEach((group) => { group.open = false; });
     if (button?.getAttribute("aria-expanded") !== "true") return;
     if (!navigation?.contains(event.target) && !button.contains(event.target)) setMenu(false);
   });

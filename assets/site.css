@@ -1244,6 +1244,40 @@ main [id], .form-error-summary { scroll-margin-top: 120px; }
   .guide-next, .guide-home-strip, .guide-reading { display: none; }
 }
 
+/* Three compact navigation groups retain every public section. */
+.nav-group { position: relative; flex: 0 0 auto; }
+.nav-group > summary { display: inline-flex; align-items: center; gap: 7px; min-height: 48px; color: var(--ink); font-size: 18px; font-weight: 700; cursor: pointer; list-style: none; white-space: nowrap; }
+.nav-group > summary::-webkit-details-marker { display: none; }
+.nav-group > summary::after { content: ""; width: 7px; height: 7px; margin-top: -4px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); }
+.nav-group[open] > summary, .nav-group > summary:hover { color: var(--accent); }
+.nav-group[open] > summary::after { margin-top: 4px; transform: rotate(225deg); }
+.nav-group-menu { display: none; }
+.nav-group[open] > .nav-group-menu { position: absolute; top: calc(100% + 8px); right: 0; z-index: 60; display: grid; min-width: 230px; padding: 8px; border: 1px solid var(--line); border-radius: 10px; background: #fff; box-shadow: 0 16px 35px rgba(0, 0, 0, .14); }
+.nav-group-menu a { min-height: 43px; padding: 7px 12px; border-radius: 5px; font-size: 16px; line-height: 1.4; }
+.nav-group-menu a:hover, .nav-group-menu a[aria-current="page"] { background: var(--green-soft); text-decoration: none; }
+
+/* The branded room diagnostic supplies the only first-screen header and menu. */
+.room-check-viewport { width: 100%; height: 100vh; height: 100svh; min-height: 500px; background: #fff; }
+.room-check-frame { display: block; width: 100%; height: 100%; border: 0; }
+.room-check-access { padding: 18px 0; border-top: 1px solid var(--line); background: #fff; font-size: 16px; }
+.room-check-access > .container { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 28px; align-items: center; }
+.room-check-access p { margin: 0; }
+.room-check-access a { color: #2158c7; font-weight: 700; }
+@media (max-width: 1280px) {
+  .nav-group { border-bottom: 1px solid var(--line); }
+  .nav-group > summary { display: flex; justify-content: space-between; min-height: 58px; font-size: 20px; }
+  .nav-group[open] > .nav-group-menu { position: static; min-width: 0; padding: 0 0 12px 12px; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+  .nav-group-menu a { min-height: 48px; padding: 8px 12px; font-size: 18px; }
+}
+@media (max-width: 580px) {
+  .room-check-access > .container { display: block; }
+  .room-check-access > .container > a { display: inline-block; margin-top: 8px; }
+}
+@media print {
+  .room-check-viewport { height: auto; min-height: 0; }
+  .room-check-frame { display: none; }
+}
+
 /* Field reports: activity metadata and explanatory living-space imagery. */
 .home-updates { background: var(--green-soft); }
 .home-update-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }

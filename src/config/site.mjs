@@ -21,13 +21,27 @@ export const site = Object.freeze({
   updatedAt: "2026-09-24",
 });
 
+// The Sites address is kept in one place so the embed can follow a renamed room-check site.
+export const roomCheckUrl = "https://hanjibung-room-check.hometo-kr.chatgpt.site/";
+
 export const navigation = Object.freeze([
-  ["한지붕 소개", "/about/"],
-  ["우리가 하는 일", "/programs/"],
-  ["주거정보", "/resources/"],
-  ["조사·연구", "/research/housing-coexistence/"],
-  ["활동기록", "/activities/"],
-  ["참여하기", "/participate/"],
+  { label: "한지붕 소개", links: [
+    ["한지붕 소개", "/about/"],
+    ["우리가 하는 일", "/programs/"],
+    ["기존 홈페이지·소식", "/overview/"],
+    ["운영·투명성", "/transparency/"],
+    ["개인정보 처리방침", "/privacy/"],
+    ["사이트 이용안내", "/terms/"],
+  ] },
+  { label: "주거정보", links: [
+    ["주거정보", "/resources/"],
+    ["조사·연구", "/research/housing-coexistence/"],
+  ] },
+  { label: "활동·참여", links: [
+    ["활동기록", "/activities/"],
+    ["참여하기", "/participate/"],
+    ["기관협력 문의", "/partnership/"],
+  ] },
 ]);
 
 export const programs = Object.freeze([

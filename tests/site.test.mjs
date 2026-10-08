@@ -5,14 +5,46 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "dist");
-const routes = ["/", "/about/", "/programs/", "/programs/senior-home-consulting/", "/programs/intergenerational-volunteer/", "/programs/housing-research/", "/resources/", "/resources/family-checklist/", "/resources/shared-living-rules/", "/resources/consultation-preparation/", "/resources/private-common-space/", "/resources/conflict-prevention/", "/resources/korean-housing-culture/", "/activities/", "/activities/founding-meeting/", "/activities/nonprofit-registration/", "/transparency/", "/participate/", "/contact/", "/privacy/", "/terms/"];
+const routes = ["/", "/overview/", "/about/", "/programs/", "/programs/senior-home-consulting/", "/programs/intergenerational-volunteer/", "/programs/housing-research/", "/resources/", "/resources/family-checklist/", "/resources/shared-living-rules/", "/resources/consultation-preparation/", "/resources/private-common-space/", "/resources/conflict-prevention/", "/resources/korean-housing-culture/", "/activities/", "/activities/founding-meeting/", "/activities/nonprofit-registration/", "/transparency/", "/participate/", "/contact/", "/privacy/", "/terms/"];
 const routeFile = (route) => route === "/" ? path.join(root, "index.html") : path.join(root, route.replace(/^\//, ""), "index.html");
+
+test("room diagnostic fills the first screen and the original homepage remains at overview", async () => {
+  const { roomCheckUrl, navigation } = await import("../src/config/site.mjs");
+  const room = await readFile(routeFile("/"), "utf8");
+  const overview = await readFile(routeFile("/overview/"), "utf8");
+  const css = await readFile(path.join(root, "assets/site.css"), "utf8");
+  assert.equal(roomCheckUrl, "https://hanjibung-room-check.hometo-kr.chatgpt.site/");
+  assert.match(room, /class="room-check-page"/);
+  assert.match(room, new RegExp(`<iframe[^>]+src="${roomCheckUrl.replaceAll(".", "\\.").replaceAll("/", "\\/")}"`));
+  assert.match(room, /title="한지붕 우리 집 남는 방 예상 월세 진단"/);
+  assert.match(room, /href="\/overview\/">한지붕의 기존 홈페이지 보기/);
+  assert.doesNotMatch(room, /<header class="site-header"/);
+  assert.match(css, /\.room-check-viewport \{[^}]*height: 100svh/);
+  assert.match(overview, /class="editorial-hero"/);
+  assert.match(overview, /<link rel="canonical" href="https:\/\/hanjibung\.kr\/overview\/">/);
+  assert.equal(navigation.length, 3);
+  assert.deepEqual(navigation.map((group) => group.label), ["한지붕 소개", "주거정보", "활동·참여"]);
+  for (const href of ["/overview/", "/about/", "/programs/", "/resources/", "/research/housing-coexistence/", "/activities/", "/participate/", "/transparency/", "/partnership/"]) {
+    assert.ok(overview.includes(`href="${href}"`), href);
+  }
+  assert.match(overview, /href="\/consultation\/">무료상담 문의/);
+});
+
+test("privacy distinguishes room diagnosis from existing inquiry forms", async () => {
+  const policy = await readFile(routeFile("/privacy/"), "utf8");
+  const inquiry = await readFile(routeFile("/consultation/"), "utf8");
+  for (const text of ["동네 수준", "상세주소는 받지 않음", "방 정보", "방 사진", "전화번호", "Google Apps Script", "Google Sheets", "Google Drive", "ChatGPT Sites와 Cloudflare", "최대 90일", "최대 1년", "180일", "분석 이벤트에 실어 보내지 않습니다"]) assert.ok(policy.includes(text), text);
+  assert.doesNotMatch(inquiry, /<input[^>]*type="file"/);
+  assert.match(policy, /일반 무료상담 문의폼은 사진을 요구하거나 업로드하지 않습니다/);
+});
 
 test("mobile navigation preserves direct inquiries and long-page return links", async () => {
   for (const route of routes) {
     const html = await readFile(routeFile(route), "utf8");
-    assert.match(html, /class="header-quick-action" href="\/consultation\/"/);
-    assert.match(html, /data-menu-label>메뉴/);
+    if (route !== "/") {
+      assert.match(html, /class="header-quick-action" href="\/consultation\/"/);
+      assert.match(html, /data-menu-label>메뉴/);
+    }
     assert.match(html, /class="back-to-top" href="#page-top"/);
     assert.match(html, /<body id="page-top"/);
   }
@@ -38,7 +70,7 @@ test("directory and worksheet journeys bring choices and reading tools within re
 });
 
 test("benchmark journeys provide distinct entry paths, six native guide choices and a clearly fictional example", async () => {
-  const home = await readFile(routeFile("/"), "utf8");
+  const home = await readFile(routeFile("/overview/"), "utf8");
   assert.match(home, /어르신과 청년에게 필요한 도움/);
   assert.match(home, /상황에 맞는 생활자료 찾기/);
   const resources = await readFile(routeFile("/resources/"), "utf8");
@@ -69,15 +101,15 @@ test("consolidation preserves one entry per worksheet and explicit past/current 
     assert.match(html,/data-service-scope="past"/);
     assert.match(html,/현재 개인 기초상담은 전화·이메일로 진행합니다/);
   }
-  const home=await readFile(routeFile('/'),'utf8');
+  const home=await readFile(routeFile('/overview/'),'utf8');
   const homeMain=home.match(/<main[\s\S]*?<\/main>/)[0];
   assert.ok((homeMain.match(/<h2\b/g)||[]).length<=6);
   assert.ok((homeMain.match(/<a\b/g)||[]).length<=30);
   assert.doesNotMatch(home,/단순히 빈방을 연결하는 것을 넘어/);
 });
 
-test("homepage states the actual services and prioritizes free consulting", async () => {
-  const html = await readFile(routeFile("/"), "utf8");
+test("overview preserves the original homepage and prioritizes free consulting", async () => {
+  const html = await readFile(routeFile("/overview/"), "utf8");
   assert.match(html, /어르신 유휴공간·빈방 활용 무료상담과 세대교류 교육·봉사/);
   assert.match(html, /주거상생 실태조사는 현재 진행 중/);
   const hero = html.match(/<section class="editorial-hero">([\s\S]*?)<\/section>/)?.[1];
@@ -98,7 +130,7 @@ test("mission, audiences and organizational purpose connect to real pages", asyn
 });
 
 test("mobile menu has accessible state and controls", async () => {
-  const html = await readFile(routeFile("/"), "utf8");
+  const html = await readFile(routeFile("/overview/"), "utf8");
   assert.match(html, /aria-expanded="false"/);
   assert.match(html, /aria-controls="primary-navigation"/);
   const js = await readFile(path.join(root, "assets", "site.js"), "utf8");
@@ -174,12 +206,12 @@ test("about metadata has the requested title, canonical and sourced organization
 });
 
 test("editorial redesign keeps direct inquiry actions and a shared visual system", async () => {
-  const home = await readFile(routeFile("/"), "utf8");
+  const home = await readFile(routeFile("/overview/"), "utf8");
   for (const name of ["editorial-cover", "help-paths", "home-updates", "editorial-transparency"]) assert.ok(home.includes(name));
   const stories = home.match(/id="latest-updates"([\s\S]*?)<\/section>/)?.[1];
   assert.ok(stories.includes("/activities/gongneung-consultation-september/"));
   assert.ok(stories.indexOf("2026-09-18") < stories.indexOf("2026-09-12"));
-  for (const route of routes) {
+  for (const route of routes.filter((route) => route !== "/")) {
     const html = await readFile(routeFile(route), "utf8");
     const header = html.match(/<header[\s\S]*?<\/header>/)?.[0];
     assert.match(header, /href="\/consultation\/">무료상담 문의/);
@@ -214,7 +246,7 @@ test("contact page uses real contact links, not implementation details or a fake
 });
 
 test("review improvements separate inquiries, dates and worksheet navigation", async () => {
-  const home = await readFile(routeFile("/"), "utf8");
+  const home = await readFile(routeFile("/overview/"), "utf8");
   assert.ok(home.includes("72건"));
   const report = await readFile(routeFile("/activities/2026-impact/"), "utf8");
   assert.ok(report.includes("누적 문의 접수 · 72건"));
@@ -307,7 +339,7 @@ test("five documented photos remain and the presentation photo is removed", asyn
     assert.ok(html.includes(`width="${photo.width}" height="${photo.height}"`));
   }
   assert.ok((await readFile(routeFile("/activities/"), "utf8")).includes(`href="${record.href}"`));
-  assert.ok((await readFile(routeFile("/"), "utf8")).includes('href="/activities/"'));
+  assert.ok((await readFile(routeFile("/overview/"), "utf8")).includes('href="/activities/"'));
   assert.ok((await readFile(path.join(root, "sitemap.xml"), "utf8")).includes(record.href));
 });
 
@@ -388,7 +420,7 @@ test("research is in progress without claiming published results", async () => {
 
 test("privacy states owner-confirmed Workspace custody and manual deletion responsibility", async () => {
   const html = await readFile(routeFile("/privacy/"), "utf8");
-  for (const term of ["Google Workspace 기반 서비스", "대표자와 지정된 운영담당자로 제한", "대표자 또는 지정 개인정보 관리담당자", "정기적으로 보관기간을 확인", "해당 정보만 분리"]) assert.ok(html.includes(term), term);
+  for (const term of ["Google Apps Script", "Google Sheets", "Google Drive", "대표자와 지정된 운영담당자로 제한", "대표자 또는 지정 개인정보 관리담당자", "정기적으로 보관기간을 확인", "해당 정보만 분리"]) assert.ok(html.includes(term), term);
   assert.doesNotMatch(html, /자동 삭제|국내에만|대한민국에만/);
 });
 
@@ -407,10 +439,12 @@ test("operating guidance states available channels and prior agreement rules", a
   }
 });
 
-test("tracking remains off until an actual account and meaningful conversion flow are verified", async () => {
+test("the parent site has no analytics tags and room-diagnostic tracking is disclosed", async () => {
   const html = await readFile(routeFile("/privacy/"), "utf8");
-  assert.match(html, /광고 전환 추적 태그를 사용하지 않습니다/);
-  assert.match(html, /버튼 클릭만으로 실제 통화나 문의 수신 여부를 확인하지 않으며/);
+  assert.match(html, /일반 안내 페이지에는 별도의 Google Analytics 태그나 광고 전환 추적 태그를 설치하지 않았습니다/);
+  assert.match(html, /분석 쿠키의 최대 보관기간은 180일/);
+  assert.match(html, /방 정보·전화번호, 업로드한 사진.*분석 이벤트에 실어 보내지 않습니다/);
+  assert.match(html, /버튼 클릭만으로 실제 통화나 문의 수신 여부를 확인하지 않습니다/);
   const manifest = JSON.parse(await readFile(path.join(root, "build-manifest.json"), "utf8"));
   for (const page of manifest.pages) {
     const file = page.route === "/404.html" ? path.join(root, "404.html") : routeFile(page.route);
@@ -491,7 +525,7 @@ test("dated consultation records use confirmed photo order and keep all photos",
 });
 
 test("operator-confirmed impact is published with a reference date and distinct counting scopes", async () => {
-  const home = await readFile(routeFile("/"), "utf8");
+  const home = await readFile(routeFile("/overview/"), "utf8");
   for (const text of ["40건", "12회", "86명", "9곳", "127명", "6종", "9월 24일 기준", "중복을 제외", "서로 더해"]) assert.ok(home.includes(text), text);
   const consulting = await readFile(routeFile("/programs/senior-home-consulting/"), "utf8");
   for (const text of ["18가구", "25건", "공간 확인", "후속상담", "과거 활동 실적"]) assert.ok(consulting.includes(text), text);
@@ -553,7 +587,7 @@ test("photo context precedes income-themed photographs without removing them", a
 });
 
 test("brand accessible names include both visible Korean and English names", async () => {
-  const html = await readFile(routeFile("/"), "utf8");
+  const html = await readFile(routeFile("/overview/"), "utf8");
   const names = [...html.matchAll(/class="brand(?: footer-brand)?" href="\/" aria-label="([^"]+)"/g)].map((match) => match[1]);
   assert.deepEqual(names, ["한지붕 HANJIBUNG 홈페이지", "한지붕 HANJIBUNG 홈페이지"]);
 });
@@ -581,7 +615,7 @@ test("responsive WebP delivery preserves JPEG fallbacks and excludes source meta
     }
   }
   assert.equal((html.match(/<picture>/g) || []).length, 9);
-  const home = await readFile(routeFile("/"), "utf8");
+  const home = await readFile(routeFile("/overview/"), "utf8");
   assert.match(home, /consultation-walk-960\.webp 960w/);
   assert.match(home, /consultation-walk-768\.webp 768w/);
   assert.match(home, /loading="eager" fetchpriority="high"/);
@@ -661,7 +695,7 @@ test("copy handlers use only static text and recover from clipboard rejection", 
       querySelectorAll: (selector) => selector === "[data-copy-contact], [data-copy-template]" ? [button] : [],
       querySelector: () => null,
       getElementById: (id) => id === "prompt" ? target : status,
-      addEventListener() {}, body: { classList: { add() {} } },
+      addEventListener() {}, body: { classList: { add() {}, contains() { return false; } } },
     };
     runInNewContext(script, {
       document, navigator: { clipboard: writeText ? { writeText } : undefined },

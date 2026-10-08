@@ -64,8 +64,8 @@ test("new original pages have complete HTML, printable outcomes and honest scope
   const session = await readFile(new URL("../dist/resources/community-session-kit/index.html", import.meta.url), "utf8");
   assert.match(session, /실제로 개최한 행사나 확정 모집 공고가 아닙니다/);
 });
-test("home and directory expose the new tools without replacing historical six-resource counts", async () => {
-  for (const relative of ["index.html", "resources/index.html"]) {
+test("overview and directory expose the new tools without replacing historical six-resource counts", async () => {
+  for (const relative of ["overview/index.html", "resources/index.html"]) {
     const html = await readFile(new URL(`../dist/${relative}`, import.meta.url), "utf8");
     assert.match(html, /공동생활 준비실/);
     for (const slug of ["preparation-room", "conversation-practice", "living-cost-planner", "community-session-kit"]) assert.ok(html.includes(`/resources/${slug}/`));

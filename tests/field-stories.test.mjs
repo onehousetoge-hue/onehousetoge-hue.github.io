@@ -4,8 +4,8 @@ import { readFile, stat } from "node:fs/promises";
 import { fieldStories } from "../src/content/field-stories.mjs";
 const route = href => readFile(new URL(`../dist${href}index.html`, import.meta.url), "utf8");
 
-test("homepage has one compact activity and tool entry; external news belongs in the activity archive", async () => {
-  const html=await route("/");
+test("overview has one compact activity and tool entry; external news belongs in the activity archive", async () => {
+  const html=await route("/overview/");
   const section=html.match(/id="latest-updates"[\s\S]*?<\/section>/)?.[0];
   assert.ok(section);
   assert.equal((section.match(/class="home-update-card"/g)||[]).length,3);

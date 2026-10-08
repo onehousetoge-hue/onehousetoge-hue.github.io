@@ -26,6 +26,7 @@ const files = [
   "src/lib/evidence-flow.mjs",
   "src/lib/research-page.mjs",
   "src/lib/landing-page.mjs",
+  "src/lib/room-check-page.mjs",
   "src/lib/program-page.mjs",
   "src/lib/field-record-page.mjs",
   "src/lib/digital-education-page.mjs",

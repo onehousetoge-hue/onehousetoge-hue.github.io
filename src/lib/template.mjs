@@ -68,7 +68,9 @@ export function pageHead({ title, documentTitle, description, path, type = "webs
 
 export function header(currentPath = "/") {
   const links = navigation
-    .map(([label, href]) => `<a href="${href}"${(currentPath.startsWith(href) || (href === "/resources/" && currentPath.startsWith("/guide/"))) && href !== "/" ? ' aria-current="page"' : ""}>${label}</a>`)
+    .map((group) => `<details class="nav-group"><summary>${escapeHtml(group.label)}</summary><div class="nav-group-menu">${group.links
+      .map(([label, href]) => `<a href="${href}"${currentPath.startsWith(href) || (href === "/resources/" && currentPath.startsWith("/guide/")) ? ' aria-current="page"' : ""}>${escapeHtml(label)}</a>`)
+      .join("")}</div></details>`)
     .join("");
   return `
     <a class="skip-link" href="#main-content">본문으로 바로가기</a>
@@ -116,7 +118,7 @@ export function pageHero({ eyebrow, title, description, meta = "" }) {
   return `<section class="page-hero"><div class="container narrow"><p class="eyebrow">${escapeHtml(eyebrow)}</p><h1>${title}</h1><p class="page-lead">${escapeHtml(description)}</p>${meta}</div></section>`;
 }
 
-export function layout({ title, documentTitle, description, path, body, breadcrumbs = [], type, robots, publishedAt, updatedAt, jsonLd = [], bodyClass = "" }) {
+export function layout({ title, documentTitle, description, path, body, breadcrumbs = [], type, robots, publishedAt, updatedAt, jsonLd = [], bodyClass = "", showHeader = true }) {
   const breadcrumbSchema = breadcrumbs.length
     ? {
         "@context": "https://schema.org",
@@ -134,7 +136,7 @@ export function layout({ title, documentTitle, description, path, body, breadcru
     : null;
   const schemas = [...(Array.isArray(jsonLd) ? jsonLd : [jsonLd])].filter(Boolean);
   if (breadcrumbSchema) schemas.push(breadcrumbSchema);
-  return `<!doctype html><html lang="ko"><head>${pageHead({ title, documentTitle, description, path, type, robots, publishedAt, updatedAt, jsonLd: schemas })}</head><body id="page-top" class="${bodyClass}">${header(path)}${breadcrumb(breadcrumbs)}<main id="main-content">${body}</main>${footer()}</body></html>`;
+  return `<!doctype html><html lang="ko"><head>${pageHead({ title, documentTitle, description, path, type, robots, publishedAt, updatedAt, jsonLd: schemas })}</head><body id="page-top" class="${bodyClass}">${showHeader ? header(path) : '<a class="skip-link" href="#main-content">본문으로 바로가기</a>'}${breadcrumb(breadcrumbs)}<main id="main-content">${body}</main>${footer()}</body></html>`;
 }
 
 export const organizationSchema = {
