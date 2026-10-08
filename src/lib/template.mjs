@@ -163,7 +163,7 @@ export const organizationSchema = {
   description: site.nonprofitDescription,
   address: {
     "@type": "PostalAddress",
-    streetAddress: "동일로195길 14-5, 401호",
+    streetAddress: "동일로 195길",
     addressLocality: "노원구",
     addressRegion: "서울특별시",
     addressCountry: "KR",

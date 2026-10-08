@@ -8,7 +8,7 @@ export const site = Object.freeze({
   foundedAt: "2026-07-05",
   foundedAtLabel: "2026년 7월 5일",
   registeredAt: "2026-07-09",
-  address: "서울특별시 노원구 동일로195길 14-5, 401호",
+  address: "서울특별시 노원구 동일로 195길",
   phone: "010-4587-9428",
   phoneHref: "tel:+821045879428",
   email: "onehousetoge@gmail.com",
