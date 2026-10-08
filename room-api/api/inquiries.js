@@ -1,6 +1,7 @@
 import { createHmac } from "node:crypto";
 
 const MAX_BODY = 4_000_000;
+const allowedOrigins = new Set(["https://hanjibung.kr", "https://www.hanjibung.kr"]);
 const scriptUrl = process.env.GOOGLE_SCRIPT_URL;
 const secret = process.env.GOOGLE_SCRIPT_SECRET;
 const ready = () => process.env.COLLECTION_ENABLED === "true"
@@ -46,12 +47,18 @@ async function deliver(submission) {
 }
 
 export default async function handler(req, res) {
+  const origin = req.headers.origin;
+  if (allowedOrigins.has(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Vary", "Origin");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  }
+  if (req.method === "OPTIONS") return allowedOrigins.has(origin) ? res.status(204).end() : reply(res, 403, { ok: false });
   if (req.method === "GET") return reply(res, 200, { ready: ready() });
   if (req.method !== "POST") return reply(res, 405, { ok: false });
   if (!ready()) return reply(res, 503, { ok: false, message: "아직 신청 접수를 준비하고 있어요." });
-  const origin = req.headers.origin;
-  const expected = `https://${req.headers.host}`;
-  if (!origin || origin !== expected) return reply(res, 403, { ok: false, message: "한지붕 방 진단 화면에서 다시 신청해 주세요." });
+  if (!allowedOrigins.has(origin)) return reply(res, 403, { ok: false, message: "한지붕 방 진단 화면에서 다시 신청해 주세요." });
   if (!req.headers["content-type"]?.startsWith("application/json")) return reply(res, 415, { ok: false });
   if (Number(req.headers["content-length"]) > MAX_BODY) return reply(res, 413, { ok: false, message: "사진 용량이 너무 커요. 사진 수를 줄여 주세요." });
   try {

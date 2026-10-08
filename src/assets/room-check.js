@@ -24,7 +24,7 @@
   let lastTrigger = null;
   let started = false;
   let submissionStart = 0;
-  const endpoint = "/api/inquiries";
+  const endpoint = "https://hanjibung-room-api-hometogethers-projects-5dc18f8f.vercel.app/api/inquiries";
   const event = (name, params = {}) => {
     if (typeof window.gtag === "function") window.gtag("event", name, params);
   };

@@ -4,7 +4,7 @@ import test from "node:test";
 process.env.COLLECTION_ENABLED = "true";
 process.env.GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/test-script/exec";
 process.env.GOOGLE_SCRIPT_SECRET = "test-secret-value-with-at-least-32-characters";
-const { default: handler } = await import("../api/inquiries.js");
+const { default: handler } = await import("../room-api/api/inquiries.js");
 
 function response() {
   return {
@@ -12,6 +12,7 @@ function response() {
     status(value) { this.statusCode = value; return this; },
     setHeader(key, value) { this.headers[key] = value; return this; },
     json(value) { this.body = value; return this; },
+    end() { return this; },
   };
 }
 const request = (body, origin = "https://hanjibung.kr") => ({
@@ -32,6 +33,11 @@ test("room API readiness and origin rejection", async () => {
   const foreign = response();
   await handler(request(valid(), "https://example.com"), foreign);
   assert.equal(foreign.statusCode, 403);
+  assert.equal(foreign.headers["Access-Control-Allow-Origin"], undefined);
+  const preflight = response();
+  await handler({ method: "OPTIONS", headers: { origin: "https://hanjibung.kr" } }, preflight);
+  assert.equal(preflight.statusCode, 204);
+  assert.equal(preflight.headers["Access-Control-Allow-Origin"], "https://hanjibung.kr");
 });
 
 test("room API validates personal data and image before delivery", async () => {
