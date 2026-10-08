@@ -43,7 +43,8 @@ export function pageHead({ title, documentTitle, description, path, type = "webs
     <meta name="theme-color" content="#8f2929">
     <title>${escapeHtml(fullTitle)}</title>
     <link rel="canonical" href="${canonical}">
-    <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="/assets/hanjibung-icon-64.png" type="image/png" sizes="64x64">
+    <link rel="apple-touch-icon" href="/assets/hanjibung-icon-192.png" sizes="192x192">
     <link rel="manifest" href="/site.webmanifest">
     <link rel="stylesheet" href="${stylesheetUrl}">
     <meta property="og:locale" content="ko_KR">
@@ -78,6 +79,7 @@ export function header(currentPath = "/") {
     <header class="site-header" data-header>
       <div class="container header-inner">
         <a class="brand" href="/" aria-label="한지붕 HANJIBUNG 홈페이지">
+          <img class="site-brand-logo" src="/assets/hanjibung-logo-256.png" width="56" height="51" alt="">
           <span><strong>${site.name}</strong> <small>${site.englishName}</small></span>
         </a>
         <a class="header-quick-action" href="/consultation/">상담 문의</a>
@@ -98,7 +100,7 @@ export function footer() {
     <footer class="site-footer">
       <div class="container footer-grid">
         <div class="footer-intro">
-          <a class="brand footer-brand" href="/" aria-label="한지붕 HANJIBUNG 홈페이지"><span class="brand-mark" aria-hidden="true">${icon("home")}</span><span><strong>${site.name}</strong> <small>${site.englishName}</small></span></a>
+          <a class="brand footer-brand" href="/" aria-label="한지붕 HANJIBUNG 홈페이지"><img class="site-brand-logo" src="/assets/hanjibung-logo-256.png" width="56" height="51" alt=""><span><strong>${site.name}</strong> <small>${site.englishName}</small></span></a>
           <p>${site.footerDescription}</p>
         </div>
         <div class="footer-contact"><h2>단체 정보</h2><dl><div><dt>고유번호</dt><dd>${site.registrationNumber}</dd></div><div><dt>대표자</dt><dd>${site.representative}</dd></div><div><dt>소재지</dt><dd>${site.address}</dd></div><div><dt>전화</dt><dd><a href="${site.phoneHref}">${site.phone}</a></dd></div><div><dt>이메일</dt><dd><a href="${site.emailHref}">${site.email}</a></dd></div></dl></div>

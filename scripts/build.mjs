@@ -141,7 +141,7 @@ const sitemapEntries = generated.filter((page) => page.indexable && page.route !
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapEntries.map((page) => `  <url><loc>${absolute(page.route)}</loc><lastmod>${page.updatedAt}</lastmod></url>`).join("\n")}\n</urlset>\n`;
 await writeFile(path.join(out, "sitemap.xml"), sitemap, "utf8");
 await writeFile(path.join(out, "robots.txt"), `User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /admin/\nDisallow: /src/\nDisallow: /scripts/\nDisallow: /tests/\nDisallow: /README.md\nDisallow: /AD_GRANTS_READINESS.md\nDisallow: /CONTENT_SOURCES.md\nDisallow: /CONTENT_GAPS.md\nDisallow: /DEPLOYMENT.md\nDisallow: /POST_DEPLOY_CHECKLIST.md\nSitemap: ${site.url}/sitemap.xml\n`, "utf8");
-await writeFile(path.join(out, "site.webmanifest"), JSON.stringify({ name: "비영리단체 한지붕", short_name: site.name, start_url: "/", display: "standalone", background_color: "#faf9f5", theme_color: "#8f2929", icons: [{ src: "/assets/favicon.svg", sizes: "any", type: "image/svg+xml" }] }, null, 2), "utf8");
+await writeFile(path.join(out, "site.webmanifest"), JSON.stringify({ name: "비영리단체 한지붕", short_name: site.name, start_url: "/", display: "standalone", background_color: "#faf9f5", theme_color: "#8f2929", icons: [{ src: "/assets/hanjibung-icon-64.png", sizes: "64x64", type: "image/png" }, { src: "/assets/hanjibung-icon-192.png", sizes: "192x192", type: "image/png" }] }, null, 2), "utf8");
 await writeFile(path.join(out, "CNAME"), "hanjibung.kr\n", "utf8");
 await writeFile(path.join(out, ".nojekyll"), "", "utf8");
 await mkdir(path.join(out, "assets"), { recursive: true });
@@ -155,7 +155,9 @@ await cp(path.join(root, "src", "assets", "fonts", "PretendardVariable.woff2"), 
 await cp(path.join(root, "src", "assets", "fonts", "OFL.txt"), path.join(out, "assets", "fonts", "OFL.txt"));
 await cp(path.join(root, "src", "assets", "inquiry.js"), path.join(out, "assets", "inquiry.js"));
 await cp(path.join(root, "src", "assets", "living-lab.mjs"), path.join(out, "assets", "living-lab.mjs"));
-await cp(path.join(root, "src", "assets", "favicon.svg"), path.join(out, "assets", "favicon.svg"));
+for (const image of ["hanjibung-logo.png", "hanjibung-logo-256.png", "hanjibung-icon-64.png", "hanjibung-icon-192.png"]) {
+  await cp(path.join(root, "src", "assets", image), path.join(out, "assets", image));
+}
 await mkdir(path.join(out, "assets", "activities"), { recursive: true });
 await mkdir(path.join(out, "assets", "guides"), { recursive: true });
 await mkdir(path.join(out, "assets", "field-guides"), { recursive: true });

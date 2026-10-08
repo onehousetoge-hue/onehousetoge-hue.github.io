@@ -17,6 +17,8 @@ test("room diagnostic is native to the first screen and the original homepage re
   assert.doesNotMatch(room, /<iframe/);
   assert.match(room, /<dialog id="room-inquiry"/);
   assert.match(room, /예상 월세 무료 진단 받기/);
+  assert.match(room, /방에 짐이 있거나 정리가 안 되어 있어도 괜찮아요\./);
+  assert.match(room, /짐과 정리 상태는 예상 월세에 반영하지 않고 진단해요\./);
   assert.match(room, /<title>우리 집 남는 방 예상 월세 진단 \| 한지붕<\/title>/);
   assert.doesNotMatch(room, /방 진단 화면이 보이지 않거나|한지붕의 기존 홈페이지 보기/);
   assert.doesNotMatch(room, /<header class="site-header"/);
@@ -350,7 +352,7 @@ test("four consented consultation photos are published without original metadata
   const { consultationPhotos } = await import("../src/content/consultation-photos.mjs");
   assert.equal(consultationPhotos.length, 4);
   const html = await readFile(routeFile("/activities/field-records/"), "utf8");
-  assert.equal((html.match(/<img /g) || []).length, 9);
+  assert.equal((html.match(/<img [^>]*src="\/assets\/activities\//g) || []).length, 9);
   for (const photo of consultationPhotos) {
     const bytes = await readFile(path.join(root, "assets/activities", photo.file));
     assert.ok(bytes.length < 600000, photo.file);
@@ -381,7 +383,7 @@ test("education experience retains publication dates but removes the withdrawn e
   assert.match(html, /게시일 <time datetime="2026-09-23">2026년 9월 23일/);
   assert.match(html, /서울 노원구/);
   assert.match(html, /공개 동의/);
-  assert.equal((html.match(/<img /g) || []).length, 3);
+  assert.equal((html.match(/<img [^>]*src="\/assets\/activities\//g) || []).length, 3);
   assert.doesNotMatch(html, /housing-presentation|community-booth|명 참여|만족도/);
   const schema = JSON.parse(html.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);
   assert.equal(schema.datePublished, "2026-09-23");
@@ -525,7 +527,7 @@ test("dated consultation records use confirmed photo order and keep all photos",
     const section = html.slice(html.indexOf(`id="${item.id}"`)).split('</section>')[0];
     for (const fact of [item.date, item.title, item.area, item.participants, consultationPhotos[item.photoIndex].file, "활동 이후 진행한 사항"]) assert.ok(section.includes(fact), fact);
   }
-  assert.equal((html.match(/<img /g) || []).length, 9);
+  assert.equal((html.match(/<img [^>]*src="\/assets\/activities\//g) || []).length, 9);
   assert.match(html, /중복 제거한 전체 실인원으로 합산하지 않습니다/);
   assert.match(html, /활동 상세 반영일 <time datetime="2026-09-24">/);
 });
@@ -589,13 +591,25 @@ test("photo context precedes income-themed photographs without removing them", a
   const html = await readFile(routeFile("/activities/field-records/"), "utf8");
   assert.ok(html.indexOf('현재 상담은 생활의 준비사항을 안내합니다') < html.indexOf('src="/assets/activities/consultation-booth.jpg"'));
   assert.ok(html.indexOf('현장 기록과 현재 서비스 안내를 구분합니다') < html.indexOf('src="/assets/activities/community-booth.jpg"'));
-  assert.equal((html.match(/<img /g) || []).length, 9);
+  assert.equal((html.match(/<img [^>]*src="\/assets\/activities\//g) || []).length, 9);
 });
 
 test("brand accessible names include both visible Korean and English names", async () => {
   const html = await readFile(routeFile("/overview/"), "utf8");
   const names = [...html.matchAll(/class="brand(?: footer-brand)?" href="\/" aria-label="([^"]+)"/g)].map((match) => match[1]);
   assert.deepEqual(names, ["한지붕 HANJIBUNG 홈페이지", "한지붕 HANJIBUNG 홈페이지"]);
+});
+
+test("every page uses the transparent HanJibung mark in both site chrome positions", async () => {
+  const manifest = JSON.parse(await readFile(path.join(root, "build-manifest.json"), "utf8"));
+  for (const page of manifest.pages) {
+    const file = page.route === "/404.html" ? path.join(root, "404.html") : routeFile(page.route);
+    const html = await readFile(file, "utf8");
+    assert.equal((html.match(/<img[^>]+src="\/assets\/hanjibung-logo-256\.png"/g) || []).length, 2, page.route);
+    assert.ok(html.includes('href="/assets/hanjibung-icon-64.png"'), page.route);
+  }
+  const logo = await readFile(path.join(root, "assets", "hanjibung-logo-256.png"));
+  assert.equal(logo[25], 6); // PNG RGBA, with an actual alpha channel.
 });
 
 test("responsive WebP delivery preserves JPEG fallbacks and excludes source metadata", async () => {

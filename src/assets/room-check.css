@@ -222,3 +222,14 @@ footer>span:last-of-type{margin-left:auto}
   .nav-consultation{min-height:48px;margin:9px 0 0}
 }
 @media(max-width:650px){footer>span:last-of-type{margin-left:0}footer>a:not(.footer-brand){font-size:13px}}
+
+/* Reassure people beside the diagnosis action that today's clutter does not affect the estimate. */
+.cta-note{display:flex;flex-direction:column;align-items:flex-start;gap:3px;max-width:430px;margin-top:14px;padding:12px 14px;border:1px solid #d8e5ff;border-left:3px solid #2967ee;border-radius:9px;background:#f4f8ff;color:#315680;word-break:keep-all}
+.cta-note strong{font-size:16px;line-height:1.5;font-weight:750;color:#213e70}
+.cta-note span{font-size:15px;line-height:1.55;font-weight:700;color:#245bd1}
+
+/* The uploaded house illustration is the site mark; its canvas is transparent. */
+.room-app .brand-logo{display:block;width:52px;height:auto;flex:none}
+.room-app .footer-brand{display:inline-flex;align-items:center;gap:8px}
+.room-app .footer-brand img{display:block;width:38px;height:auto}
+@media(max-width:650px){.room-app .brand-logo{width:43px}.room-app .footer-brand img{width:34px}}

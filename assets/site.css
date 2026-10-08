@@ -1337,3 +1337,11 @@ main [id], .form-error-summary { scroll-margin-top: 120px; }
   .field-explainer figcaption { font-size: 10pt; }
   .field-scope, .field-media-panel .hero-actions { display: none; }
 }
+
+/* Shared transparent HanJibung mark in the header and footer. */
+.site-brand-logo { display: block; width: 56px; height: auto; flex: 0 0 auto; }
+.site-footer .site-brand-logo { width: 52px; }
+@media (max-width: 760px) {
+  .site-brand-logo { width: 44px; }
+  .site-footer .site-brand-logo { width: 46px; }
+}
