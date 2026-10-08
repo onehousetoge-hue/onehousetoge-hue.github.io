@@ -751,7 +751,7 @@ test("copy handlers use only static text and recover from clipboard rejection", 
 test("CSS and JavaScript versions match the built bytes", async () => {
   const { createHash } = await import("node:crypto");
   const html = await readFile(routeFile("/"), "utf8");
-  for (const name of ["site.css", "site.js"]) {
+  for (const name of ["site.css", "site.js", "room-check.css", "room-check.js"]) {
     const bytes = await readFile(path.join(root, "assets", name));
     const version = createHash("sha256").update(bytes).digest("hex").slice(0, 12);
     assert.ok(html.includes(`/assets/${name}?v=${version}`));

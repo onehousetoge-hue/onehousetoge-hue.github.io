@@ -12,3 +12,5 @@ export const scriptUrl = assetUrl("site.js");
 export const analyticsScriptUrl = assetUrl("analytics.js");
 export const inquiryScriptUrl = assetUrl("inquiry.js");
 export const livingLabScriptUrl = assetUrl("living-lab.mjs");
+export const roomCheckStylesheetUrl = assetUrl("room-check.css");
+export const roomCheckScriptUrl = assetUrl("room-check.js");
