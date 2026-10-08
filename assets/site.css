@@ -1256,18 +1256,11 @@ main [id], .form-error-summary { scroll-margin-top: 120px; }
 .nav-group-menu a { min-height: 43px; padding: 7px 12px; border-radius: 5px; font-size: 16px; line-height: 1.4; }
 .nav-group-menu a:hover, .nav-group-menu a[aria-current="page"] { background: var(--green-soft); text-decoration: none; }
 
-/* The branded room diagnostic supplies the only first-screen header and menu. */
-.room-check-viewport { width: 100%; height: 100vh; height: 100svh; background: #fff; }
-.room-check-frame { display: block; width: 100%; height: 100%; border: 0; }
 @media (max-width: 1280px) {
   .nav-group { border-bottom: 1px solid var(--line); }
   .nav-group > summary { display: flex; justify-content: space-between; min-height: 58px; font-size: 20px; }
   .nav-group[open] > .nav-group-menu { position: static; min-width: 0; padding: 0 0 12px 12px; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
   .nav-group-menu a { min-height: 48px; padding: 8px 12px; font-size: 18px; }
-}
-@media print {
-  .room-check-viewport { height: auto; min-height: 0; }
-  .room-check-frame { display: none; }
 }
 
 /* Field reports: activity metadata and explanatory living-space imagery. */
