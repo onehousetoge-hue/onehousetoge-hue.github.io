@@ -8,19 +8,20 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "d
 const routes = ["/", "/overview/", "/about/", "/programs/", "/programs/senior-home-consulting/", "/programs/intergenerational-volunteer/", "/programs/housing-research/", "/resources/", "/resources/family-checklist/", "/resources/shared-living-rules/", "/resources/consultation-preparation/", "/resources/private-common-space/", "/resources/conflict-prevention/", "/resources/korean-housing-culture/", "/activities/", "/activities/founding-meeting/", "/activities/nonprofit-registration/", "/transparency/", "/participate/", "/contact/", "/privacy/", "/terms/"];
 const routeFile = (route) => route === "/" ? path.join(root, "index.html") : path.join(root, route.replace(/^\//, ""), "index.html");
 
-test("room diagnostic fills the first screen and the original homepage remains at overview", async () => {
-  const { roomCheckUrl, navigation } = await import("../src/config/site.mjs");
+test("room diagnostic is native to the first screen and the original homepage remains at overview", async () => {
+  const { navigation } = await import("../src/config/site.mjs");
   const room = await readFile(routeFile("/"), "utf8");
   const overview = await readFile(routeFile("/overview/"), "utf8");
-  const css = await readFile(path.join(root, "assets/site.css"), "utf8");
-  assert.equal(roomCheckUrl, "https://hanjibung-room-check.hometo-kr.chatgpt.site/");
+  const css = await readFile(path.join(root, "assets/room-check.css"), "utf8");
   assert.match(room, /class="room-check-page"/);
-  assert.match(room, new RegExp(`<iframe[^>]+src="${roomCheckUrl.replaceAll(".", "\\.").replaceAll("/", "\\/")}"`));
-  assert.match(room, /title="한지붕 우리 집 남는 방 예상 월세 진단"/);
+  assert.doesNotMatch(room, /<iframe/);
+  assert.match(room, /<dialog id="room-inquiry"/);
+  assert.match(room, /예상 월세 무료 진단 받기/);
+  assert.match(room, /<title>우리 집 남는 방 예상 월세 진단 \| 한지붕<\/title>/);
   assert.doesNotMatch(room, /방 진단 화면이 보이지 않거나|한지붕의 기존 홈페이지 보기/);
   assert.doesNotMatch(room, /<header class="site-header"/);
   assert.doesNotMatch(room, /<footer class="site-footer"/);
-  assert.match(css, /\.room-check-viewport \{[^}]*height: 100svh/);
+  assert.match(css, /\.inquiry-dialog\{position:fixed/);
   assert.match(overview, /class="editorial-hero"/);
   assert.match(overview, /<footer class="site-footer"/);
   assert.match(overview, /<link rel="canonical" href="https:\/\/hanjibung\.kr\/overview\/">/);
@@ -35,7 +36,7 @@ test("room diagnostic fills the first screen and the original homepage remains a
 test("privacy distinguishes room diagnosis from existing inquiry forms", async () => {
   const policy = await readFile(routeFile("/privacy/"), "utf8");
   const inquiry = await readFile(routeFile("/consultation/"), "utf8");
-  for (const text of ["동네 수준", "상세주소는 받지 않음", "방 정보", "방 사진", "전화번호", "Google Apps Script", "Google Sheets", "Google Drive", "ChatGPT Sites와 Cloudflare", "최대 90일", "최대 1년", "180일", "분석 이벤트에 실어 보내지 않습니다"]) assert.ok(policy.includes(text), text);
+  for (const text of ["동네 수준", "상세주소는 받지 않음", "방 정보", "방 사진", "전화번호", "Google Apps Script", "Google Sheets", "Google Drive", "Vercel", "최대 90일", "최대 1년", "180일", "분석 이벤트에 실어 보내지 않습니다"]) assert.ok(policy.includes(text), text);
   assert.doesNotMatch(inquiry, /<input[^>]*type="file"/);
   assert.match(policy, /일반 무료상담 문의폼은 사진을 요구하거나 업로드하지 않습니다/);
 });
@@ -443,7 +444,7 @@ test("operating guidance states available channels and prior agreement rules", a
 
 test("the parent and room diagnostic share GA without exposing inquiry details", async () => {
   const html = await readFile(routeFile("/privacy/"), "utf8");
-  assert.match(html, /일반 안내 페이지와 별도 방 진단은 같은 Google Analytics 측정 설정/);
+  assert.match(html, /안내 페이지와 방 진단은 같은 Google Analytics 측정 설정/);
   assert.match(html, /첫 화면에서는 한지붕 페이지의 방문을 한 번만 기록/);
   assert.match(html, /분석 쿠키의 최대 보관기간은 180일/);
   assert.match(html, /방 정보·전화번호, 업로드한 사진.*분석 이벤트에 실어 보내지 않습니다/);
@@ -456,6 +457,7 @@ test("the parent and room diagnostic share GA without exposing inquiry details",
     assert.doesNotMatch(content, /googleadservices\.com/);
     const scripts = [...content.matchAll(/<script[^>]+src="([^"]+)"/g)].map((match) => match[1]);
     const expected = ["/assets/site.js", "/assets/analytics.js"];
+    if (page.route === "/") expected.push("/assets/room-check.js");
     if (/^\/(consultation|partnership)\//.test(page.route)) expected.push("/assets/inquiry.js");
     if (/^\/resources\/(preparation-room|conversation-practice|living-cost-planner|community-session-kit)\/$/.test(page.route)) expected.push("/assets/living-lab.mjs");
     assert.deepEqual(scripts.map((src) => new URL(src, "https://hanjibung.kr").pathname), expected);

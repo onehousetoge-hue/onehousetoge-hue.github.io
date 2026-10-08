@@ -22,9 +22,6 @@ export const site = Object.freeze({
   updatedAt: "2026-09-24",
 });
 
-// The Sites address is kept in one place so the embed can follow a renamed room-check site.
-export const roomCheckUrl = "https://hanjibung-room-check.hometo-kr.chatgpt.site/";
-
 export const navigation = Object.freeze([
   { label: "한지붕 소개", links: [
     ["한지붕 소개", "/about/"],
