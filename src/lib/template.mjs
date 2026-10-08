@@ -1,5 +1,5 @@
-import { navigation, site } from "../config/site.mjs";
-import { stylesheetUrl, scriptUrl } from "./static-assets.mjs";
+import { navigation, policies, site } from "../config/site.mjs";
+import { analyticsScriptUrl, stylesheetUrl, scriptUrl } from "./static-assets.mjs";
 
 const escapeHtml = (value = "") =>
   String(value)
@@ -63,7 +63,8 @@ export function pageHead({ title, documentTitle, description, path, type = "webs
     ${publishedAt ? `<meta property="article:published_time" content="${publishedAt}">` : ""}
     ${updatedAt ? `<meta property="article:modified_time" content="${updatedAt}">` : ""}
     ${schemas.map((schema) => `<script type="application/ld+json">${JSON.stringify(schema).replaceAll("<", "\\u003c")}</script>`).join("\n")}
-    <script src="${scriptUrl}" defer></script>`;
+    <script src="${scriptUrl}" defer></script>
+    ${policies.analyticsEnabled ? `<script src="${analyticsScriptUrl}" data-analytics-id="${site.analyticsMeasurementId}" defer></script>` : ""}`;
 }
 
 export function header(currentPath = "/") {

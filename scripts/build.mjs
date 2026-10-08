@@ -147,6 +147,7 @@ await writeFile(path.join(out, ".nojekyll"), "", "utf8");
 await mkdir(path.join(out, "assets"), { recursive: true });
 await cp(path.join(root, "src", "assets", "site.css"), path.join(out, "assets", "site.css"));
 await cp(path.join(root, "src", "assets", "site.js"), path.join(out, "assets", "site.js"));
+await cp(path.join(root, "src", "assets", "analytics.js"), path.join(out, "assets", "analytics.js"));
 await cp(path.join(root, "src", "assets", "inquiry.js"), path.join(out, "assets", "inquiry.js"));
 await cp(path.join(root, "src", "assets", "living-lab.mjs"), path.join(out, "assets", "living-lab.mjs"));
 await cp(path.join(root, "src", "assets", "favicon.svg"), path.join(out, "assets", "favicon.svg"));

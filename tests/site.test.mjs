@@ -17,7 +17,7 @@ test("room diagnostic fills the first screen and the original homepage remains a
   assert.match(room, /class="room-check-page"/);
   assert.match(room, new RegExp(`<iframe[^>]+src="${roomCheckUrl.replaceAll(".", "\\.").replaceAll("/", "\\/")}"`));
   assert.match(room, /title="한지붕 우리 집 남는 방 예상 월세 진단"/);
-  assert.match(room, /href="\/overview\/">한지붕의 기존 홈페이지 보기/);
+  assert.doesNotMatch(room, /방 진단 화면이 보이지 않거나|한지붕의 기존 홈페이지 보기/);
   assert.doesNotMatch(room, /<header class="site-header"/);
   assert.match(css, /\.room-check-viewport \{[^}]*height: 100svh/);
   assert.match(overview, /class="editorial-hero"/);
@@ -439,9 +439,10 @@ test("operating guidance states available channels and prior agreement rules", a
   }
 });
 
-test("the parent site has no analytics tags and room-diagnostic tracking is disclosed", async () => {
+test("the parent and room diagnostic share GA without exposing inquiry details", async () => {
   const html = await readFile(routeFile("/privacy/"), "utf8");
-  assert.match(html, /일반 안내 페이지에는 별도의 Google Analytics 태그나 광고 전환 추적 태그를 설치하지 않았습니다/);
+  assert.match(html, /일반 안내 페이지와 별도 방 진단은 같은 Google Analytics 측정 설정/);
+  assert.match(html, /첫 화면에서는 한지붕 페이지의 방문을 한 번만 기록/);
   assert.match(html, /분석 쿠키의 최대 보관기간은 180일/);
   assert.match(html, /방 정보·전화번호, 업로드한 사진.*분석 이벤트에 실어 보내지 않습니다/);
   assert.match(html, /버튼 클릭만으로 실제 통화나 문의 수신 여부를 확인하지 않습니다/);
@@ -449,9 +450,10 @@ test("the parent site has no analytics tags and room-diagnostic tracking is disc
   for (const page of manifest.pages) {
     const file = page.route === "/404.html" ? path.join(root, "404.html") : routeFile(page.route);
     const content = await readFile(file, "utf8");
-    assert.doesNotMatch(content, /googletagmanager\.com|google-analytics\.com|googleadservices\.com|gtag\(|dataLayer/);
+    assert.match(content, /data-analytics-id="G-58PJ9VG8GC"/);
+    assert.doesNotMatch(content, /googleadservices\.com/);
     const scripts = [...content.matchAll(/<script[^>]+src="([^"]+)"/g)].map((match) => match[1]);
-    const expected = ["/assets/site.js"];
+    const expected = ["/assets/site.js", "/assets/analytics.js"];
     if (/^\/(consultation|partnership)\//.test(page.route)) expected.push("/assets/inquiry.js");
     if (/^\/resources\/(preparation-room|conversation-practice|living-cost-planner|community-session-kit)\/$/.test(page.route)) expected.push("/assets/living-lab.mjs");
     assert.deepEqual(scripts.map((src) => new URL(src, "https://hanjibung.kr").pathname), expected);

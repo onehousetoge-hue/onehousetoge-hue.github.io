@@ -14,6 +14,7 @@ export const site = Object.freeze({
   email: "onehousetoge@gmail.com",
   emailHref: "mailto:onehousetoge@gmail.com",
   url: "https://hanjibung.kr",
+  analyticsMeasurementId: "G-58PJ9VG8GC",
   nonprofitDescription:
     "한지붕은 어르신 유휴공간·빈방 활용 무료상담과 세대교류 교육·봉사를 제공하는 비영리단체입니다. 국세기본법상 법인으로 보는 단체로 승인받았으며, 주거상생 실태조사는 현재 진행 중입니다.",
   footerDescription:
@@ -83,7 +84,7 @@ export const programs = Object.freeze([
 export const policies = Object.freeze({
   noCommercialBusiness: true,
   onlineFormEnabled: true,
-  analyticsEnabled: false,
+  analyticsEnabled: true,
   thirdPartyAds: false,
   goodstackVerified: true,
 });

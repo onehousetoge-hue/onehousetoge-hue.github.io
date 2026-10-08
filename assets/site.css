@@ -1259,19 +1259,11 @@ main [id], .form-error-summary { scroll-margin-top: 120px; }
 /* The branded room diagnostic supplies the only first-screen header and menu. */
 .room-check-viewport { width: 100%; height: 100vh; height: 100svh; min-height: 500px; background: #fff; }
 .room-check-frame { display: block; width: 100%; height: 100%; border: 0; }
-.room-check-access { padding: 18px 0; border-top: 1px solid var(--line); background: #fff; font-size: 16px; }
-.room-check-access > .container { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 28px; align-items: center; }
-.room-check-access p { margin: 0; }
-.room-check-access a { color: #2158c7; font-weight: 700; }
 @media (max-width: 1280px) {
   .nav-group { border-bottom: 1px solid var(--line); }
   .nav-group > summary { display: flex; justify-content: space-between; min-height: 58px; font-size: 20px; }
   .nav-group[open] > .nav-group-menu { position: static; min-width: 0; padding: 0 0 12px 12px; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
   .nav-group-menu a { min-height: 48px; padding: 8px 12px; font-size: 18px; }
-}
-@media (max-width: 580px) {
-  .room-check-access > .container { display: block; }
-  .room-check-access > .container > a { display: inline-block; margin-top: 8px; }
 }
 @media print {
   .room-check-viewport { height: auto; min-height: 0; }

@@ -37,6 +37,7 @@ const files = [
   "src/data/program-details.mjs",
   "src/lib/template.mjs",
   "src/assets/site.js",
+  "src/assets/analytics.js",
   "scripts/build.mjs",
   "scripts/publish.mjs",
   "scripts/check.mjs",
