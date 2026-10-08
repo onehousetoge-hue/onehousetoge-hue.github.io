@@ -54,6 +54,7 @@
     navToggle.setAttribute("aria-expanded", String(open));
     navToggle.textContent = open ? "닫기" : "메뉴";
     nav.classList.toggle("is-open", open);
+    if (open && nav.querySelectorAll(".nav-group").length === 1) nav.querySelector(".nav-group").open = true;
     if (!open) nav.querySelectorAll(".nav-group").forEach((group) => { group.open = false; });
     if (restoreFocus && navToggle.getClientRects().length) navToggle.focus();
   }
@@ -80,17 +81,30 @@
     show(trigger);
   }));
   dialog.querySelector(".close").addEventListener("click", close);
+  if (new URLSearchParams(window.location.search).get("diagnosis") === "1") {
+    show(root.querySelector(".floating-diagnosis"));
+    const cleanUrl = new URL(window.location.href);
+    cleanUrl.searchParams.delete("diagnosis");
+    window.history.replaceState(window.history.state, "", cleanUrl);
+  }
   success.querySelector("button").addEventListener("click", close);
   dialog.addEventListener("cancel", (e) => { if (busy) e.preventDefault(); });
   dialog.addEventListener("close", () => { lastTrigger?.focus?.(); });
   navToggle.addEventListener("click", () => {
     setMenu(navToggle.getAttribute("aria-expanded") !== "true");
   });
+  window.addEventListener("scroll", () => {
+    if (nav.classList.contains("is-open")) setMenu(false);
+  }, { passive: true });
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && nav.classList.contains("is-open")) setMenu(false, true);
+    else if (e.key === "Escape") {
+      const openGroup = nav.querySelector(".nav-group[open]");
+      if (openGroup) { openGroup.open = false; openGroup.querySelector("summary").focus(); }
+    }
   });
   document.addEventListener("click", (e) => {
-    if (nav.classList.contains("is-open") && !nav.contains(e.target) && !navToggle.contains(e.target)) setMenu(false);
+    if (!nav.contains(e.target) && !navToggle.contains(e.target)) setMenu(false);
   });
   window.matchMedia("(min-width: 981px)").addEventListener("change", (e) => {
     if (e.matches) setMenu(false);

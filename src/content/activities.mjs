@@ -155,4 +155,4 @@ export const activities = Object.freeze([
     href: "/activities/founding-meeting/",
     photo: false,
   },
-]);
+].map(activity => activity.paragraphs ? { ...activity, updatedAt: "2026-10-09" } : activity));

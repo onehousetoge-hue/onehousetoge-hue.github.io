@@ -151,6 +151,7 @@ await cp(path.join(root, "src", "assets", "site.js"), path.join(out, "assets", "
 await cp(path.join(root, "src", "assets", "analytics.js"), path.join(out, "assets", "analytics.js"));
 await cp(path.join(root, "src", "assets", "room-check.css"), path.join(out, "assets", "room-check.css"));
 await cp(path.join(root, "src", "assets", "room-check.js"), path.join(out, "assets", "room-check.js"));
+await cp(path.join(root, "src", "assets", "figma"), path.join(out, "assets", "figma"), { recursive: true });
 await mkdir(path.join(out, "assets", "fonts"), { recursive: true });
 await cp(path.join(root, "src", "assets", "fonts", "PretendardVariable.woff2"), path.join(out, "assets", "fonts", "PretendardVariable.woff2"));
 await cp(path.join(root, "src", "assets", "fonts", "OFL.txt"), path.join(out, "assets", "fonts", "OFL.txt"));

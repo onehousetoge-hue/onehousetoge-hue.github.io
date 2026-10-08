@@ -32,7 +32,7 @@ test("five September records have distinct contents, period precision and workin
     assert.ok(html.includes(item.takeaway));
     assert.ok(html.includes(`datetime="${item.date}"`));
     assert.equal((html.match(/<h1\b/g)||[]).length,1);
-    assert.match(html,/입주자 연결·계약대행과 주택 방문상담은 제공하지 않습니다/);
+    assert.match(html,/예상 월세 무료 진단, 방 준비, 청년 입주와 거주 중 관리를 지원합니다/);
     assert.match(html,/href="\/consultation\/"/);
     assert.match(html,/href="\/partnership\/"/);
     assert.doesNotMatch(html,/AI 사진|가상의 사진|가상 사진|홈투게더|<iframe\b|<form\b/);

@@ -76,23 +76,26 @@ export function header(currentPath = "/") {
     .join("");
   return `
     <a class="skip-link" href="#main-content">본문으로 바로가기</a>
-    <header class="site-header" data-header>
+    <header class="site-header" data-header data-consolidated-menu>
       <div class="container header-inner">
         <a class="brand" href="/" aria-label="한지붕 HANJIBUNG 홈페이지">
           <img class="site-brand-logo" src="/assets/hanjibung-logo-256.png" width="56" height="51" alt="">
           <span><strong>${site.name}</strong> <small>${site.englishName}</small></span>
         </a>
-        <a class="header-quick-action" href="/consultation/">상담 문의</a>
+        <a class="header-quick-action" href="/?diagnosis=1">무료 월세 진단</a>
         <button class="menu-button" type="button" aria-expanded="false" aria-controls="primary-navigation" data-menu-button>
           <span class="menu-open-icon">${icon("menu")}</span><span class="menu-close-icon">${icon("close")}</span><span class="menu-label" aria-hidden="true" data-menu-label>메뉴</span><span class="visually-hidden">전체 메뉴 열기</span>
         </button>
         <nav class="primary-navigation" id="primary-navigation" aria-label="주요 메뉴" data-navigation>
           <div class="nav-links">${links}</div>
-          <a class="button button-small" href="/consultation/">무료상담 문의</a>
-          <div class="mobile-contact-links"><a href="/partnership/">기관협력 문의</a><a href="/contact/">전화·이메일 안내</a></div>
+          <a class="button button-small" href="/?diagnosis=1">예상 월세 무료 진단 받기</a>
         </nav>
       </div>
     </header>`;
+}
+
+export function rentDiagnosisDock() {
+  return `<aside class="rent-diagnosis-dock" aria-label="예상 월세 무료 진단"><a href="/?diagnosis=1"><span>예상 월세 무료 진단 받기</span>${icon("arrow")}</a></aside>`;
 }
 
 export function footer() {
@@ -139,7 +142,7 @@ export function layout({ title, documentTitle, description, path, body, breadcru
     : null;
   const schemas = [...(Array.isArray(jsonLd) ? jsonLd : [jsonLd])].filter(Boolean);
   if (breadcrumbSchema) schemas.push(breadcrumbSchema);
-  return `<!doctype html><html lang="ko"><head>${pageHead({ title, documentTitle, description, path, type, robots, publishedAt, updatedAt, jsonLd: schemas })}</head><body id="page-top" class="${bodyClass}">${showHeader ? header(path) : '<a class="skip-link" href="#main-content">본문으로 바로가기</a>'}${breadcrumb(breadcrumbs)}<main id="main-content">${body}</main>${showFooter ? footer() : ""}</body></html>`;
+  return `<!doctype html><html lang="ko"><head>${pageHead({ title, documentTitle, description, path, type, robots, publishedAt, updatedAt, jsonLd: schemas })}</head><body id="page-top" class="${bodyClass}">${showHeader ? header(path) : '<a class="skip-link" href="#main-content">본문으로 바로가기</a>'}${breadcrumb(breadcrumbs)}<main id="main-content">${body}</main>${showFooter ? footer() : ""}${showHeader ? rentDiagnosisDock() : ""}</body></html>`;
 }
 
 export const organizationSchema = {

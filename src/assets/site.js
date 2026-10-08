@@ -34,7 +34,7 @@
 
   const button = document.querySelector("[data-menu-button]");
   const navigation = document.querySelector("[data-navigation]");
-  const navGroups = [...document.querySelectorAll(".nav-group")];
+  const navGroups = navigation ? [...navigation.querySelectorAll(".nav-group")] : [];
   let lastFocused = null;
 
   function setMenu(open) {

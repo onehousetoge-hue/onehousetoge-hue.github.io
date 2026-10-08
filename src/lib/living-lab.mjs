@@ -2,7 +2,7 @@ import { escapeHtml, icon, layout, pageHero } from "./template.mjs";
 import { livingLabScriptUrl } from "./static-assets.mjs";
 import { costItems, preparationQuestions } from "../assets/living-lab.mjs";
 
-const date = "2026-09-25";
+const date = "2026-10-09";
 const hub = "/resources/preparation-room/";
 const tools = [
   { slug: "preparation-room", title: "공동생활 준비실", description: "네 가지 질문으로 내 상황을 정리하고, 지금 먼저 이야기할 질문과 생활자료를 찾습니다.", outcome: "내 상황에 맞는 준비 질문표", label: "준비 질문표 만들기", time: "약 3분" },
@@ -39,7 +39,7 @@ const preparationBody = () => `<section class="section lab-section"><div class="
   <p class="lab-error" data-preparation-error role="alert" hidden></p><button class="button" type="button" data-preparation-run hidden>나의 준비 질문표 만들기${icon("arrow")}</button>${resetMarkup("data-preparation-reset")}
   <noscript><p>자동 정리 기능을 이용하려면 자바스크립트가 필요합니다. 아래 안내와 자료를 읽으며 종이에 질문을 정리할 수도 있습니다.</p></noscript></section>
   <section class="lab-result" data-preparation-result hidden aria-labelledby="preparation-result-heading"><p class="eyebrow">내 화면에서 만든 정리표</p><h2 id="preparation-result-heading" tabindex="-1">지금 함께 살펴볼 질문</h2><p>선택한 주제에 따른 안내입니다. 상담 접수·입주 신청·전문가 진단 결과가 아닙니다.</p><h3>먼저 기억할 점</h3><ul data-result-notes data-result-list></ul><h3 data-result-topic></h3><p class="lab-key-question" data-result-question></p><h3>내가 선택한 내용</h3><ul data-result-answers data-result-list></ul><div class="lab-result-actions"><a class="text-link" href="/resources/" data-result-link="topic">관련 자료 보기</a><a class="text-link" href="/resources/" data-result-link="next">다음 단계 보기</a><button type="button" class="print-button" data-print-result>${icon("print")}이 정리표 인쇄하기</button><a href="#preparation-questions">선택 수정하기</a></div><p class="lab-print-source">한지붕 공동생활 준비실 · https://hanjibung.kr/resources/preparation-room/ · 교육용 대화 도구</p></section>
-  <article class="prose lab-reading" id="preparation-reading"><h2>결정을 서두르지 않기 위한 세 가지 기준</h2><h3>1. 빈방이 있다고 함께 살아야 하는 것은 아닙니다</h3><p>공간을 그대로 두기, 취미나 가족 방문을 위한 공간으로 쓰기, 공동생활에 대해 더 알아보기는 모두 검토할 수 있는 선택입니다. ‘얼마를 받을까’에 앞서 현재의 생활에서 바꾸고 싶은 것과 유지하고 싶은 것을 구분하세요. 함께 살고 싶지 않다는 의견도 충분한 답입니다.</p><h3>2. 공간의 크기보다 일상의 경계를 먼저 이야기합니다</h3><p>문을 닫고 쉬는 시간, 방에 들어오기 전 허락을 구하는 방법, 냉장고와 수납장의 구역처럼 하루의 장면을 떠올려 보세요. ‘서로 배려한다’는 말은 사람마다 뜻이 다릅니다. 누구나 같은 행동을 떠올릴 수 있는 말로 바꾸어 적는 것이 도움이 됩니다.</p><h3>3. 생활 대화와 전문 확인은 나눕니다</h3><p>청소 순서와 방문객 연락 방법은 당사자가 이야기할 수 있습니다. 계약의 권리·의무, 세금, 체류와 시설 안전은 이 도구로 판단할 수 없습니다. <a href="/resources/korean-housing-culture/">공식 안내기관을 찾는 방법</a>에서 질문에 맞는 경로를 확인하세요.</p><h3>무엇을 하게 되나요?</h3><p>‘나의 준비 질문표’는 선택한 입장과 고민에 맞는 대화 질문을 보여줍니다. 가능성 점수, 예상 월세, 입주자 추천은 계산하지 않습니다. 정리표를 인쇄해 가족과 읽거나, 필요한 내용만 전화·이메일 상담에서 질문할 수 있습니다. 한지붕은 입주자 연결이나 계약대행을 제공하지 않습니다.</p></article>
+  <article class="prose lab-reading" id="preparation-reading"><h2>결정을 서두르지 않기 위한 세 가지 기준</h2><h3>1. 빈방이 있다고 함께 살아야 하는 것은 아닙니다</h3><p>공간을 그대로 두기, 취미나 가족 방문을 위한 공간으로 쓰기, 공동생활에 대해 더 알아보기는 모두 검토할 수 있는 선택입니다. ‘얼마를 받을까’에 앞서 현재의 생활에서 바꾸고 싶은 것과 유지하고 싶은 것을 구분하세요. 함께 살고 싶지 않다는 의견도 충분한 답입니다.</p><h3>2. 공간의 크기보다 일상의 경계를 먼저 이야기합니다</h3><p>문을 닫고 쉬는 시간, 방에 들어오기 전 허락을 구하는 방법, 냉장고와 수납장의 구역처럼 하루의 장면을 떠올려 보세요. ‘서로 배려한다’는 말은 사람마다 뜻이 다릅니다. 누구나 같은 행동을 떠올릴 수 있는 말로 바꾸어 적는 것이 도움이 됩니다.</p><h3>3. 생활 대화와 전문 확인은 나눕니다</h3><p>청소 순서와 방문객 연락 방법은 당사자가 이야기할 수 있습니다. 계약의 권리·의무, 세금, 체류와 시설 안전은 이 도구로 판단할 수 없습니다. <a href="/resources/korean-housing-culture/">공식 안내기관을 찾는 방법</a>에서 질문에 맞는 경로를 확인하세요.</p><h3>무엇을 하게 되나요?</h3><p>‘나의 준비 질문표’는 선택한 입장과 고민에 맞는 대화 질문을 보여줍니다. 가능성 점수, 예상 월세, 입주자 추천은 계산하지 않습니다. 정리표를 인쇄해 가족과 읽거나, 필요한 내용만 전화·이메일 상담에서 질문할 수 있습니다. 실제 방 준비·청년 입주·거주 관리 상담은 별도로 신청할 수 있습니다. 이 도구로 입주나 계약이 확정되지는 않습니다.</p></article>
   </div>${labAside()}</div></section><section class="section" id="other-tools"><div class="container">${relatedTools("preparation-room")}</div></section>`;
 
 const scenarios = [
@@ -93,7 +93,7 @@ const sessionBody = () => `<section class="section lab-section"><div class="cont
   </article>${labAside()}</div></section>`;
 
 function labAside() {
-  return `<aside class="side-nav lab-aside"><h2>함께 쓰는 도구</h2>${tools.map(t => `<a href="/resources/${t.slug}/">${t.title}</a>`).join("")}<a href="/resources/">모든 생활자료 보기</a><a href="/programs/senior-home-consulting/">전화·이메일 상담 안내</a><p>입주자 연결·계약대행은 제공하지 않습니다.</p></aside>`;
+  return `<aside class="side-nav lab-aside"><h2>함께 쓰는 도구</h2>${tools.map(t => `<a href="/resources/${t.slug}/">${t.title}</a>`).join("")}<a href="/resources/">모든 생활자료 보기</a><a href="/programs/senior-home-consulting/">전화·이메일 상담 안내</a><p>한지붕은 방 준비부터 청년 입주, 거주 중 관리까지 지원합니다. 계약대행과 개별 법률·세무 판단은 제공하지 않습니다.</p></aside>`;
 }
 
 function relatedTools(exclude) {
@@ -104,6 +104,6 @@ const bodies = { "preparation-room": preparationBody, "conversation-practice": c
 export const livingLabPages = tools.map(tool => ({ ...tool, href: `/resources/${tool.slug}/`, updatedAt: date }));
 
 export function livingLabPage(tool) {
-  const body = `${pageHero({ eyebrow: "한지붕 공동생활 준비실 · 무료 교육자료", title: tool.title, description: tool.description, meta: `<div class="page-meta"><span>${tool.time} · 예상 시간</span><span>작성: 한지붕</span><time datetime="${date}">공개·수정 2026.09.25</time></div><p class="lab-editorial-note">생활 대화를 돕기 위해 작성한 자체 콘텐츠입니다. 외부 전문가 검수나 법률·주택 안전 진단을 대신하지 않습니다.</p>` })}${bodies[tool.slug]()}<script type="module" src="${escapeHtml(livingLabScriptUrl)}"></script>`;
-  return layout({ title: tool.title, description: tool.description, path: tool.href, body, bodyClass: "living-lab-page", updatedAt: date, publishedAt: date, breadcrumbs: [{ label: "생활자료", href: "/resources/" }, ...(tool.href !== hub ? [{ label: "공동생활 준비실", href: hub }] : []), { label: tool.title, href: tool.href }] });
+  const body = `${pageHero({ eyebrow: "한지붕 공동생활 준비실 · 무료 교육자료", title: tool.title, description: tool.description, meta: `<div class="page-meta"><span>${tool.time} · 예상 시간</span><span>작성: 한지붕</span><time datetime="${date}">공개 2026.09.25 · 수정 2026.10.09</time></div><p class="lab-editorial-note">생활 대화를 돕기 위해 작성한 자체 콘텐츠입니다. 외부 전문가 검수나 법률·주택 안전 진단을 대신하지 않습니다.</p>` })}${bodies[tool.slug]()}<script type="module" src="${escapeHtml(livingLabScriptUrl)}"></script>`;
+  return layout({ title: tool.title, description: tool.description, path: tool.href, body, bodyClass: "living-lab-page", updatedAt: date, publishedAt: "2026-09-25", breadcrumbs: [{ label: "생활자료", href: "/resources/" }, ...(tool.href !== hub ? [{ label: "공동생활 준비실", href: hub }] : []), { label: tool.title, href: tool.href }] });
 }

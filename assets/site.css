@@ -1244,7 +1244,7 @@ main [id], .form-error-summary { scroll-margin-top: 120px; }
   .guide-next, .guide-home-strip, .guide-reading { display: none; }
 }
 
-/* Three compact navigation groups retain every public section. */
+/* One navigation group retains every public section. */
 .nav-group { position: relative; flex: 0 0 auto; }
 .nav-group > summary { display: inline-flex; align-items: center; gap: 7px; min-height: 48px; color: var(--ink); font-size: 18px; font-weight: 700; cursor: pointer; list-style: none; white-space: nowrap; }
 .nav-group > summary::-webkit-details-marker { display: none; }
@@ -1344,4 +1344,45 @@ main [id], .form-error-summary { scroll-margin-top: 120px; }
 @media (max-width: 760px) {
   .site-brand-logo { width: 44px; }
   .site-footer .site-brand-logo { width: 46px; }
+}
+
+/* Organization pages use one information menu and a persistent diagnosis link. */
+:root { --diagnosis-accent: #227dff; --diagnosis-accent-hover: #1769dd; }
+.site-header[data-consolidated-menu] { background: #fff; border-color: #e6ebf3; }
+.site-header[data-consolidated-menu] .header-inner { min-height: 80px; gap: 28px; }
+.site-header[data-consolidated-menu] .primary-navigation { gap: 28px; }
+.site-header[data-consolidated-menu] .nav-group > summary { color: #151d25; }
+.site-header[data-consolidated-menu] .nav-group[open] > .nav-group-menu { grid-template-columns: repeat(2, minmax(0, 1fr)); width: 430px; max-height: calc(100dvh - 116px); overflow-y: auto; overscroll-behavior: contain; gap: 4px; padding: 12px; border-color: #e6ebf3; }
+.site-header[data-consolidated-menu] .nav-group-menu a { color: #151d25; min-height: 46px; white-space: normal; }
+.site-header[data-consolidated-menu] .nav-group-menu a:hover,
+.site-header[data-consolidated-menu] .nav-group-menu a[aria-current="page"] { color: #151d25; background: #eef5ff; text-decoration: none; }
+.site-header[data-consolidated-menu] .primary-navigation > .button { min-height: 48px; padding: 12px 18px; border-radius: 8px; border-color: var(--diagnosis-accent); background: var(--diagnosis-accent); color: #fff; font-size: 19px; }
+.site-header[data-consolidated-menu] .primary-navigation > .button:hover { border-color: var(--diagnosis-accent-hover); background: var(--diagnosis-accent-hover); }
+.site-header[data-consolidated-menu] .header-quick-action { color: #155dbf; border-color: #d1e3ff; background: #f4f8ff; }
+body:has(> .rent-diagnosis-dock) { padding-bottom: 104px; }
+.rent-diagnosis-dock { position: fixed; z-index: 45; left: 50%; bottom: 24px; transform: translateX(-50%); width: min(420px, calc(100% - 32px)); }
+.rent-diagnosis-dock > a { display: flex; align-items: center; justify-content: center; gap: 20px; min-height: 64px; padding: 16px 24px; border-radius: 12px; background: var(--diagnosis-accent); color: #fff; box-shadow: 0 6px 24px #102b6126; font-size: 20px; font-weight: 750; line-height: 1.4; text-align: center; text-decoration: none; }
+.rent-diagnosis-dock > a:hover { background: var(--diagnosis-accent-hover); }
+.rent-diagnosis-dock .icon { flex: 0 0 auto; width: 22px; height: 22px; }
+.rent-diagnosis-dock > a:focus-visible { outline: 3px solid #151d25; outline-offset: 4px; }
+.menu-open .rent-diagnosis-dock { visibility: hidden; }
+@media (max-width: 1280px) {
+  .site-header[data-consolidated-menu] .header-inner { gap: 12px; }
+  .site-header[data-consolidated-menu] .primary-navigation { top: 80px; padding-bottom: calc(28px + env(safe-area-inset-bottom)); background: #fafbfc; }
+  .site-header[data-consolidated-menu] .nav-group[open] > .nav-group-menu { width: 100%; max-height: none; padding: 8px 0 16px; overflow: visible; }
+  .site-header[data-consolidated-menu] .nav-group-menu a { min-height: 52px; border-color: #e6ebf3; }
+  .site-header[data-consolidated-menu] .primary-navigation > .button { margin-top: 24px; }
+}
+@media (max-width: 760px) {
+  .site-header[data-consolidated-menu] .header-inner { min-height: 72px; }
+  .site-header[data-consolidated-menu] .header-quick-action { display: none; }
+  .site-header[data-consolidated-menu] .primary-navigation { top: 72px; }
+  .site-header[data-consolidated-menu] .nav-group[open] > .nav-group-menu { grid-template-columns: 1fr; }
+  body:has(> .rent-diagnosis-dock) { padding-bottom: calc(92px + env(safe-area-inset-bottom)); }
+  .rent-diagnosis-dock { left: 0; bottom: 0; transform: none; width: 100%; padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid #e6ebf3; background: #fff; }
+  .rent-diagnosis-dock > a { min-height: 56px; gap: 12px; padding: 13px 16px; border-radius: 8px; font-size: 19px; box-shadow: none; }
+}
+@media print {
+  .rent-diagnosis-dock { display: none !important; }
+  body:has(> .rent-diagnosis-dock) { padding-bottom: 0; }
 }

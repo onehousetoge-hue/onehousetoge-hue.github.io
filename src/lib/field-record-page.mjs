@@ -54,6 +54,6 @@ export function fieldRecordPage() {
   return layout({
     title: record.title, description: record.description, path: record.href, body,
     breadcrumbs: [{ label: "활동과 기록", href: "/activities/" }, { label: "어르신 상담 현장", href: record.href }],
-    jsonLd: { "@context": "https://schema.org", "@type": "CollectionPage", name: record.title, description: record.description, url: absolute(record.href), datePublished: record.publishedAt, dateModified: "2026-09-24", image: [...consultationPhotos, ...record.photos].map((item) => absolute("/assets/activities/" + item.file)) },
+    jsonLd: { "@context": "https://schema.org", "@type": "CollectionPage", name: record.title, description: record.description, url: absolute(record.href), datePublished: record.publishedAt, dateModified: "2026-10-09", image: [...consultationPhotos, ...record.photos].map((item) => absolute("/assets/activities/" + item.file)) },
   });
 }

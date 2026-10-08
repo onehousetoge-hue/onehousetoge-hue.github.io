@@ -15,7 +15,7 @@ test("five requested editorial routes preserve distinct content, captions and wo
     assert.ok(html.includes(article.caption));
     assert.equal((html.match(/<h1\b/g) || []).length, 1);
     assert.match(html, /data-print/);
-    assert.match(html, /입주자 연결·계약대행은 제공하지 않습니다/);
+    assert.match(html, /방 준비부터 청년 입주, 거주 중 관리까지 지원합니다/);
     assert.doesNotMatch(html, /<form\b|신청이 완료|AI 사진|가상의 사진|실제 주택 사례/);
     for (const section of article.sections) {
       assert.ok(html.includes(`href="#${section.id}"`));

@@ -27,8 +27,8 @@ test("room diagnostic is native to the first screen and the original homepage re
   assert.match(overview, /class="editorial-hero"/);
   assert.match(overview, /<footer class="site-footer"/);
   assert.match(overview, /<link rel="canonical" href="https:\/\/hanjibung\.kr\/overview\/">/);
-  assert.equal(navigation.length, 3);
-  assert.deepEqual(navigation.map((group) => group.label), ["한지붕 소개", "주거정보", "활동·참여"]);
+  assert.equal(navigation.length, 1);
+  assert.deepEqual(navigation.map((group) => group.label), ["한지붕 알아보기"]);
   for (const href of ["/overview/", "/about/", "/programs/", "/resources/", "/research/housing-coexistence/", "/activities/", "/participate/", "/transparency/", "/partnership/"]) {
     assert.ok(overview.includes(`href="${href}"`), href);
   }
@@ -47,7 +47,8 @@ test("mobile navigation preserves direct inquiries and long-page return links", 
   for (const route of routes) {
     const html = await readFile(routeFile(route), "utf8");
     if (route !== "/") {
-      assert.match(html, /class="header-quick-action" href="\/consultation\/"/);
+      assert.match(html, /class="header-quick-action" href="\/\?diagnosis=1"/);
+      assert.match(html, /class="rent-diagnosis-dock"[^>]*><a href="\/\?diagnosis=1"/);
       assert.match(html, /data-menu-label>메뉴/);
       assert.match(html, /class="back-to-top" href="#page-top"/);
     }
@@ -104,7 +105,7 @@ test("consolidation preserves one entry per worksheet and explicit past/current 
   for (const route of ['/activities/field-records/','/activities/vacant-room-consultation/','/activities/community-cooperation/','/activities/gongneung-consultation-september/']) {
     const html=await readFile(routeFile(route),'utf8');
     assert.match(html,/data-service-scope="past"/);
-    assert.match(html,/현재 개인 기초상담은 전화·이메일로 진행합니다/);
+    assert.match(html,/현재 한지붕은 예상 월세 무료 진단, 방 준비, 청년 입주와 거주 중 관리를 지원합니다/);
   }
   const home=await readFile(routeFile('/overview/'),'utf8');
   const homeMain=home.match(/<main[\s\S]*?<\/main>/)[0];
@@ -115,7 +116,7 @@ test("consolidation preserves one entry per worksheet and explicit past/current 
 
 test("overview preserves the original homepage and prioritizes free consulting", async () => {
   const html = await readFile(routeFile("/overview/"), "utf8");
-  assert.match(html, /어르신 유휴공간·빈방 활용 무료상담과 세대교류 교육·봉사/);
+  assert.match(html, /어르신의 빈방 활용 무료상담, 방 준비·청년 입주·거주 관리와 세대교류 교육·봉사/);
   assert.match(html, /주거상생 실태조사는 현재 진행 중/);
   const hero = html.match(/<section class="editorial-hero">([\s\S]*?)<\/section>/)?.[1];
   assert.ok(hero);
@@ -160,7 +161,7 @@ test("about tells a thirteen-section problem-to-mission story with truthful scop
     assert.ok(body.includes(`id="${id}"`));
   }
   assert.equal((body.match(/class="about-work-card"/g) || []).length, 4);
-  assert.match(body, /현재 한지붕은 입주자를 연결하거나 계약을 대행하지 않습니다/);
+  assert.match(body, /한지붕은 방 준비부터 청년 입주, 거주 중 관리까지 함께합니다/);
   assert.match(body, /전화·이메일 기초상담/);
   assert.match(body, /정관 원문은 현재 웹사이트에 공개하지 않습니다/);
   assert.doesNotMatch(body, /정부 인증|안전을 보장|수익을 보장|\.pdf["']/);
@@ -199,7 +200,7 @@ test("about metadata has the requested title, canonical and sourced organization
   assert.ok(html.includes(`<title>${aboutTitle}</title>`));
   assert.ok(html.includes(`<meta name="description" content="${aboutDescription}">`));
   assert.ok(html.includes('<link rel="canonical" href="https://hanjibung.kr/about/">'));
-  assert.ok(html.includes('<meta property="article:modified_time" content="2026-09-25">'));
+  assert.ok(html.includes('<meta property="article:modified_time" content="2026-10-09">'));
   const schemas = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(m => JSON.parse(m[1]));
   const organization = schemas.find(schema => schema["@type"] === "NGO");
   assert.equal(organization.name, "한지붕");
@@ -207,7 +208,7 @@ test("about metadata has the requested title, canonical and sourced organization
   assert.equal(organization.email, "onehousetoge@gmail.com");
   assert.match(organization.description, /비영리단체/);
   const sitemap = await readFile(path.join(root, "sitemap.xml"), "utf8");
-  assert.match(sitemap, /<loc>https:\/\/hanjibung.kr\/about\/<\/loc><lastmod>2026-09-25<\/lastmod>/);
+  assert.match(sitemap, /<loc>https:\/\/hanjibung.kr\/about\/<\/loc><lastmod>2026-10-09<\/lastmod>/);
 });
 
 test("editorial redesign keeps direct inquiry actions and a shared visual system", async () => {
@@ -227,13 +228,13 @@ test("editorial redesign keeps direct inquiry actions and a shared visual system
   assert.match(records, /href="\/partnership\/">기관·경로당 상담 요청하기/);
 });
 
-test("homesharing articles explain preparation without offering registration or matching", async () => {
+test("homesharing articles explain preparation and distinguish reading from service applications", async () => {
   const index = await readFile(routeFile("/resources/"), "utf8");
   for (const slug of ["prepare-unused-room", "homesharing-basics"]) {
     const route = `/resources/${slug}/`;
     assert.ok(index.includes(route));
     const html = await readFile(routeFile(route), "utf8");
-    assert.ok(html.includes("입주자 연결·계약대행은 제공하지 않습니다."));
+    assert.ok(html.includes("한지붕은 방 준비부터 청년 입주, 거주 중 관리까지 지원합니다."));
     assert.ok(html.includes('href="/consultation/"'));
     assert.ok(html.includes('href="/resources/"'));
     assert.ok(!html.includes('type="file"'));
@@ -258,7 +259,7 @@ test("review improvements separate inquiries, dates and worksheet navigation", a
   assert.ok(report.includes("무료 기초상담 · 40건"));
   assert.ok(report.includes("차이인 32건이 모두 상담 대기라는 뜻은 아닙니다."));
   const consulting = await readFile(routeFile("/programs/senior-home-consulting/"), "utf8");
-  assert.ok(consulting.includes("마지막 수정일 2026.09.25"));
+  assert.ok(consulting.includes("마지막 수정일 2026.10.09"));
   assert.ok(consulting.includes('href="/resources/consultation-preparation/#prepare"'));
   const resourcesIndex = await readFile(routeFile("/resources/"), "utf8");
   for (const target of ["homesharing-articles", "worksheets", "find-guide", "youth-housing"]) assert.ok(resourcesIndex.includes(`id="${target}"`));
@@ -364,12 +365,13 @@ test("four consented consultation photos are published without original metadata
   assert.match(html, /임대수익을 보장하거나 입주를 알선하는 서비스가 아닙니다/);
 });
 
-test("all public pages omit the removed brand name in copy and image descriptions", async () => {
+test("public pages use Hanjibung with the approved Figma copyright credit", async () => {
   const manifest = JSON.parse(await readFile(path.join(root, "build-manifest.json"), "utf8"));
   const removedBrand = /\uD648\uD22C\uAC8C\uB354|home\s*together/i;
   for (const page of manifest.pages) {
     const file = page.route === "/404.html" ? path.join(root, "404.html") : routeFile(page.route);
-    assert.doesNotMatch(await readFile(file, "utf8"), removedBrand, page.route);
+    const html = await readFile(file, "utf8");
+    assert.doesNotMatch(page.route === "/" ? html.replace("© 2026 Home Together. All rights reserved.", "") : html, removedBrand, page.route);
   }
 });
 
@@ -609,7 +611,8 @@ test("site chrome preserves the brand while the diagnostic home uses a text word
     if (page.route === "/") {
       assert.equal(imageCount, 0, page.route);
       assert.match(html, /class="brand-wordmark">한지붕<\/span>/);
-      assert.match(html, /class="footer-brand" href="\/">한지붕<\/a>/);
+      assert.match(html, /class="host-footer"/);
+      assert.match(html, /class="floating-diagnosis"[^>]*data-open-inquiry/);
     } else {
       assert.equal(imageCount, 2, page.route);
     }
@@ -701,7 +704,7 @@ test("long program pages expose working jumps and unambiguous excluded services"
       assert.ok(html.includes(`href="#${id}"`));
       assert.ok(html.includes(`id="${id}" tabindex="-1"`));
     }
-    assert.match(html, />제공하지 않는 업무<\/h2><p>다음 업무는 한지붕의 현재 서비스에 포함되지 않습니다/);
+    assert.match(html, />제공하지 않는 업무<\/h2><p>다음 업무는 이 프로그램의 제공 범위에 포함되지 않습니다/);
     assert.match(html, /href="\/contact\/#inquiry-templates"/);
   }
 });

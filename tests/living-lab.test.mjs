@@ -50,7 +50,7 @@ test("new original pages have complete HTML, printable outcomes and honest scope
   for (const slug of ["preparation-room", "conversation-practice", "living-cost-planner", "community-session-kit"]) {
     const html = await readFile(new URL(`../dist/resources/${slug}/index.html`, import.meta.url), "utf8");
     assert.match(html, /<h1>/);
-    assert.match(html, /입주자 연결·계약대행은 제공하지 않습니다/);
+    assert.match(html, /방 준비부터 청년 입주, 거주 중 관리까지 지원합니다/);
     assert.match(html, /자동 저장하지 않습니다/);
     assert.match(html, /작성: 한지붕/);
     assert.match(html, /외부 전문가 검수나/);

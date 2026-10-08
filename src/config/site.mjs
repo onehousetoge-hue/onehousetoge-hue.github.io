@@ -16,29 +16,27 @@ export const site = Object.freeze({
   url: "https://hanjibung.kr",
   analyticsMeasurementId: "G-58PJ9VG8GC",
   nonprofitDescription:
-    "한지붕은 어르신 유휴공간·빈방 활용 무료상담과 세대교류 교육·봉사를 제공하는 비영리단체입니다. 국세기본법상 법인으로 보는 단체로 승인받았으며, 주거상생 실태조사는 현재 진행 중입니다.",
+    "한지붕은 어르신의 빈방 활용 무료상담, 방 준비·청년 입주·거주 관리와 세대교류 교육·봉사를 제공하는 비영리단체입니다. 국세기본법상 법인으로 보는 단체로 승인받았으며, 주거상생 실태조사는 현재 진행 중입니다.",
   footerDescription:
-    "한지붕은 공익 목적의 무료상담·교육·봉사와 생활자료를 제공합니다. 주거상생 실태조사는 진행 중이며, 조사 결과와 공익 보고서는 검토를 거쳐 공개할 예정입니다.",
+    "한지붕은 공익 목적의 무료상담, 방 준비·청년 입주·거주 관리, 교육·봉사와 생활자료를 제공합니다. 주거상생 실태조사는 진행 중이며, 조사 결과와 공익 보고서는 검토를 거쳐 공개할 예정입니다.",
   updatedAt: "2026-09-24",
 });
 
 export const navigation = Object.freeze([
-  { label: "한지붕 소개", links: [
+  { label: "한지붕 알아보기", links: [
     ["한지붕 소개", "/about/"],
     ["우리가 하는 일", "/programs/"],
-    ["기존 홈페이지·소식", "/overview/"],
+    ["한지붕 소식", "/overview/"],
     ["운영·투명성", "/transparency/"],
-    ["개인정보 처리방침", "/privacy/"],
-    ["사이트 이용안내", "/terms/"],
-  ] },
-  { label: "주거정보", links: [
     ["주거정보", "/resources/"],
     ["조사·연구", "/research/housing-coexistence/"],
-  ] },
-  { label: "활동·참여", links: [
     ["활동기록", "/activities/"],
     ["참여하기", "/participate/"],
     ["기관협력 문의", "/partnership/"],
+    ["무료상담 문의", "/consultation/"],
+    ["전화·이메일 안내", "/contact/"],
+    ["개인정보 처리방침", "/privacy/"],
+    ["사이트 이용안내", "/terms/"],
   ] },
 ]);
 
@@ -51,7 +49,7 @@ export const programs = Object.freeze([
     status: "온라인 문의 접수 · 전화·이메일 상담",
     shortTitle: "빈방 활용 무료상담",
     description:
-      "한지붕 대표와 운영진이 빈방 활용을 검토할 때의 준비사항, 공간 정리·개선에 관한 일반 정보, 공동생활 기준과 청년 주거 공익정보를 전화·이메일로 안내합니다.",
+      "한지붕이 예상 월세를 무료로 진단하고 방 준비부터 청년 입주, 거주 중 관리까지 함께합니다. 입주 전에 신원·재학 여부와 생활조건을 확인하고 집주인의 동의를 받아 진행합니다.",
     href: "/programs/senior-home-consulting/",
   },
   {

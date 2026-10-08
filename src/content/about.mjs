@@ -62,7 +62,7 @@ export const aboutBody = `<div class="about-page">
 </div></section>
 
 <section class="about-section about-first" aria-labelledby="first-title"><div class="container">
-  <div class="about-split"><div><p class="eyebrow">연결보다 먼저, 준비</p><h2 id="first-title">한지붕은 빈방부터<br>연결하지 않습니다.</h2></div><div class="about-copy"><p>공간이 남는다고 곧바로 누군가와 함께 살 수 있는 것은 아닙니다. 누구와 함께 살 것인지보다 먼저 확인해야 할 질문이 있습니다.</p><p><strong>현재 한지붕은 입주자를 연결하거나 계약을 대행하지 않습니다.</strong> 전화·이메일 기초상담과 생활자료로 준비할 질문을 안내합니다.</p></div></div>
+  <div class="about-split"><div><p class="eyebrow">연결보다 먼저, 준비</p><h2 id="first-title">한지붕은 빈방부터<br>연결하지 않습니다.</h2></div><div class="about-copy"><p>공간이 남는다고 곧바로 누군가와 함께 살 수 있는 것은 아닙니다. 누구와 함께 살 것인지보다 먼저 확인해야 할 질문이 있습니다.</p><p><strong>한지붕은 방 준비부터 청년 입주, 거주 중 관리까지 함께합니다.</strong> 전화·이메일 기초상담에서 준비할 질문을 정리하고, 생활조건을 확인한 뒤 당사자의 동의에 따라 진행합니다.</p></div></div>
   <ul class="about-question-grid">${questions.map(q=>`<li>${icon("check")}<span>${q}</span></li>`).join("")}</ul>
   <p class="about-closing-line">‘방을 연결하는 것’보다<br>‘함께 살아갈 수 있는 조건을 만드는 것’을 먼저 생각합니다.</p>
 </div></section>
