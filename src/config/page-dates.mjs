@@ -1,7 +1,7 @@
 // Explicit editorial dates. Never derive lastmod from build time.
 // Update only the routes whose content changed; technical rebuilds do not reset dates.
 export const pageDates = Object.freeze({
-  "/": "2026-10-08", "/overview/": "2026-10-08", "/about/": "2026-09-25", "/programs/": "2026-09-24",
+  "/": "2026-10-09", "/overview/": "2026-10-08", "/about/": "2026-09-25", "/programs/": "2026-09-24",
   "/programs/senior-home-consulting/": "2026-09-25",
   "/programs/intergenerational-volunteer/": "2026-09-25",
   "/programs/housing-research/": "2026-09-24",

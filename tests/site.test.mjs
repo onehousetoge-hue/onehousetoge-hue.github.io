@@ -600,12 +600,19 @@ test("brand accessible names include both visible Korean and English names", asy
   assert.deepEqual(names, ["한지붕 HANJIBUNG 홈페이지", "한지붕 HANJIBUNG 홈페이지"]);
 });
 
-test("every page uses the transparent HanJibung mark in both site chrome positions", async () => {
+test("site chrome preserves the brand while the diagnostic home uses a text wordmark", async () => {
   const manifest = JSON.parse(await readFile(path.join(root, "build-manifest.json"), "utf8"));
   for (const page of manifest.pages) {
     const file = page.route === "/404.html" ? path.join(root, "404.html") : routeFile(page.route);
     const html = await readFile(file, "utf8");
-    assert.equal((html.match(/<img[^>]+src="\/assets\/hanjibung-logo-256\.png"/g) || []).length, 2, page.route);
+    const imageCount = (html.match(/<img[^>]+src="\/assets\/hanjibung-logo-256\.png"/g) || []).length;
+    if (page.route === "/") {
+      assert.equal(imageCount, 0, page.route);
+      assert.match(html, /class="brand-wordmark">한지붕<\/span>/);
+      assert.match(html, /class="footer-brand" href="\/">한지붕<\/a>/);
+    } else {
+      assert.equal(imageCount, 2, page.route);
+    }
     assert.ok(html.includes('href="/assets/hanjibung-icon-64.png"'), page.route);
   }
   const logo = await readFile(path.join(root, "assets", "hanjibung-logo-256.png"));
