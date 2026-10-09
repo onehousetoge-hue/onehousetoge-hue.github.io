@@ -4,7 +4,7 @@ import { callbackScriptUrl } from "./static-assets.mjs";
 
 export function callbackForm() {
   return `<div class="consultation-action">
-    <button class="consultation-trigger" type="button" data-open-callback aria-haspopup="dialog" aria-controls="callback-dialog" aria-label="사진 없이 10초만에 상담"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16v11H10l-5 3v-3H4z"/><path d="M8 9.5h8M8 12.5h5"/></svg><span><strong><em>사진 없이</em>10초만에 상담</strong><small>궁금한 점부터 편하게 물어보세요</small></span><span class="consultation-trigger-arrow" aria-hidden="true">↗</span></button>
+    <a class="consultation-trigger" href="/reservation/?consultation=quick" data-open-callback aria-haspopup="dialog" aria-controls="callback-dialog" aria-label="사진 없이 10초만에 상담"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16v11H10l-5 3v-3H4z"/><path d="M8 9.5h8M8 12.5h5"/></svg><span><strong><em>사진 없이</em>10초만에 상담</strong><small>궁금한 점부터 편하게 물어보세요</small></span><span class="consultation-trigger-arrow" aria-hidden="true">↗</span></a>
     <dialog class="callback-dialog" id="callback-dialog" data-callback-dialog aria-labelledby="callback-dialog-title" aria-describedby="callback-dialog-description">
       <div class="callback-dialog-head"><span class="callback-eyebrow">사진 없이 간단하게</span><button class="callback-close" type="button" data-close-callback aria-label="상담 신청 창 닫기">×</button><h2 id="callback-dialog-title" tabindex="-1">10초 만에 상담 신청</h2><p id="callback-dialog-description">이름과 연락처, 궁금한 점만 남겨주세요.<br>한지붕 매니저가 확인 후 연락드립니다.</p></div>
       <div class="callback-dialog-body"><form class="callback-form" data-callback-form data-endpoint="${escapeHtml(inquiries.endpoint)}" data-consent-version="${escapeHtml(inquiries.consentVersion)}" novalidate>

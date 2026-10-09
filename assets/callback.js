@@ -31,16 +31,36 @@ if (form) {
   const success = dialog?.querySelector("[data-callback-success]");
   if (form.dataset.endpoint) fieldset.disabled = false;
   let requestId = crypto.randomUUID(), busy = false, submitted = false;
-  trigger?.addEventListener("click", () => {
+  const quickUrl = () => {
+    const url = new URL(window.location.href);
+    url.searchParams.set("consultation", "quick");
+    return `${url.pathname}${url.search}${url.hash}`;
+  };
+  const openDialog = () => {
+    if (dialog.open) return;
     dialog.showModal();
     dialog.querySelector("#callback-dialog-title").focus();
+  };
+  trigger?.addEventListener("click", (event) => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    window.history.replaceState(window.history.state, "", quickUrl());
+    openDialog();
   });
+  if (new URL(window.location.href).searchParams.get("consultation") === "quick") openDialog();
   dialog?.querySelectorAll("[data-close-callback]").forEach((close) => {
     close.addEventListener("click", () => { if (!busy) dialog.close(); });
   });
   dialog?.addEventListener("click", (event) => { if (event.target === dialog && !busy) dialog.close(); });
   dialog?.addEventListener("cancel", (event) => { if (busy) event.preventDefault(); });
-  dialog?.addEventListener("close", () => trigger?.focus());
+  dialog?.addEventListener("close", () => {
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("consultation") === "quick") {
+      url.searchParams.delete("consultation");
+      window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
+    }
+    trigger?.focus();
+  });
   form.addEventListener("input", () => { if (!busy) requestId = crypto.randomUUID(); });
   form.addEventListener("submit", async (event) => {
     event.preventDefault();

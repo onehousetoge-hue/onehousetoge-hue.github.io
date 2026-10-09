@@ -59,6 +59,7 @@ test('photo-free form stays on reservation and cannot interfere with photo diagn
   assert.match(html,/<form class="callback-form"[^>]*>[\s\S]*?<fieldset disabled>/);
   assert.match(html,/사진 없이 먼저 상담 신청/);
   assert.match(html, /data-open-callback aria-haspopup="dialog"/);
+  assert.match(html, /href="\/reservation\/\?consultation=quick" data-open-callback/);
   assert.match(html, /<dialog[^>]*data-callback-dialog[^>]*aria-labelledby="callback-dialog-title"/);
   assert.ok(html.indexOf('사진 없이 먼저 상담 신청') < html.indexOf('class="reservation-illustration"'));
   assert.ok(html.includes(inquiries.endpoint));
