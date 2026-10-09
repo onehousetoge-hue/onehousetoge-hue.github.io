@@ -58,8 +58,9 @@ test('photo-free form stays on reservation and cannot interfere with photo diagn
   assert.equal((html.match(/class="inquiry-form"/g)||[]).length,1);
   assert.match(html,/<form class="callback-form"[^>]*>[\s\S]*?<fieldset disabled>/);
   assert.match(html,/사진 없이 먼저 상담 신청/);
-  assert.match(html, /class="consultation-rail"/);
-  assert.ok(html.indexOf('class="reservation-illustration"') < html.indexOf('class="consultation-rail"'));
+  assert.match(html, /data-open-callback aria-haspopup="dialog"/);
+  assert.match(html, /<dialog[^>]*data-callback-dialog[^>]*aria-labelledby="callback-dialog-title"/);
+  assert.ok(html.indexOf('사진 없이 먼저 상담 신청') < html.indexOf('class="reservation-illustration"'));
   assert.ok(html.includes(inquiries.endpoint));
   assert.match(html,/상담 종료일로부터 최대 1년간/);
   assert.match(html,/상담 완료 후 90일 이내/);

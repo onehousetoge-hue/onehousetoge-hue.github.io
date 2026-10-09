@@ -42,7 +42,7 @@ test("dedicated diagnosis page preserves the existing required information and e
   assert.match(html, /<link rel="canonical" href="https:\/\/hanjibung\.kr\/reservation\/">/);
   assert.equal((html.match(/<h1\b/g) || []).length, 1);
   assert.equal((html.match(/<form\b/g) || []).length, 2);
-  assert.doesNotMatch(html, /<dialog|<iframe|data-open-inquiry/);
+  assert.doesNotMatch(html, /<iframe|data-open-inquiry/);
   const diagnosisForm = html.match(/<form class="inquiry-form"[\s\S]*?<\/form>/)[0];
   const inputs = [...diagnosisForm.matchAll(/<input\b[^>]*>/g)].map((match) => match[0]);
   const fields = inputs.filter((input) => /\bname="/.test(input));

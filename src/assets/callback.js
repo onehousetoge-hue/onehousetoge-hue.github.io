@@ -26,8 +26,21 @@ if (form) {
   const fieldset = form.querySelector("fieldset");
   const button = form.querySelector("[type=submit]");
   const status = form.querySelector("[data-callback-status]");
+  const dialog = document.querySelector("[data-callback-dialog]");
+  const trigger = document.querySelector("[data-open-callback]");
+  const success = dialog?.querySelector("[data-callback-success]");
   if (form.dataset.endpoint) fieldset.disabled = false;
   let requestId = crypto.randomUUID(), busy = false, submitted = false;
+  trigger?.addEventListener("click", () => {
+    dialog.showModal();
+    dialog.querySelector("#callback-dialog-title").focus();
+  });
+  dialog?.querySelectorAll("[data-close-callback]").forEach((close) => {
+    close.addEventListener("click", () => { if (!busy) dialog.close(); });
+  });
+  dialog?.addEventListener("click", (event) => { if (event.target === dialog && !busy) dialog.close(); });
+  dialog?.addEventListener("cancel", (event) => { if (busy) event.preventDefault(); });
+  dialog?.addEventListener("close", () => trigger?.focus());
   form.addEventListener("input", () => { if (!busy) requestId = crypto.randomUUID(); });
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -52,7 +65,12 @@ if (form) {
       submitted = true; form.reset();
       button.textContent = "상담 신청 접수 완료";
       status.textContent = `상담 신청이 접수되었습니다. 남겨주신 번호로 안내드립니다. 접수번호: ${receipt.requestId}`;
-      status.focus();
+      if (success) {
+        form.hidden = true;
+        success.hidden = false;
+        success.querySelector("[data-callback-receipt]").textContent = `접수번호 ${receipt.requestId}`;
+        success.querySelector("h3").focus();
+      } else status.focus();
     } catch (error) {
       button.textContent = "같은 내용으로 다시 보내기";
       status.textContent = error.message === "SENSITIVE"
