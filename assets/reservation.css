@@ -22,6 +22,20 @@
 .reservation-app .reservation-kicker{font-size:14px;font-weight:600;color:var(--form-blue);margin-bottom:12px}
 .reservation-app .reservation-intro h1{font-size:34px;line-height:1.4;font-weight:700;letter-spacing:-1.2px}
 .reservation-app .reservation-description{font-size:16px;line-height:1.8;color:var(--form-muted);margin-top:18px}
+.reservation-app .callback-option{margin-top:22px;border:1px solid #c8d9ef;border-radius:8px;background:#f7faff}
+.reservation-app .callback-option>summary{min-height:48px;padding:12px 14px;color:#1d58b8;font-weight:700;cursor:pointer;line-height:1.6}
+.reservation-app .callback-content{padding:0 14px 16px;font-size:14px;line-height:1.7}
+.reservation-app .callback-form{margin-top:16px}
+.reservation-app .callback-form>fieldset>label{display:block;margin-top:14px;margin-bottom:6px;font-size:14px;font-weight:600}
+.reservation-app .callback-form textarea{display:block;width:100%;min-height:98px;padding:12px 14px;border:1px solid #dfe5ee;border-radius:4px;background:#fff;color:#26384b;font:inherit;font-size:16px;line-height:1.6;resize:vertical}
+.reservation-app .callback-hint,.reservation-app .callback-privacy{font-size:12px;color:#566579;margin-top:10px}
+.reservation-app .callback-privacy>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;text-decoration:underline}
+.reservation-app .callback-privacy a{text-decoration:underline;color:#1d58b8}
+.reservation-app .callback-form>fieldset>label.callback-consent{display:flex;align-items:flex-start;gap:8px;min-height:44px;font-size:12px;font-weight:400}
+.reservation-app .callback-consent input{width:20px;height:20px;flex:none;margin-top:2px;accent-color:#2464d6}
+.reservation-app .callback-status{font-size:13px;overflow-wrap:anywhere;margin-block:12px}
+.reservation-app .callback-status:empty{display:none}
+.reservation-app .callback-form [aria-invalid=true]{border-color:#b43535}
 .reservation-app .reservation-card{min-width:0;background:#fff}
 .reservation-app .reservation-card-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding-bottom:22px;border-bottom:2px solid #32383f}
 .reservation-app .reservation-card-heading h2{font-size:21px;line-height:1.5;font-weight:700;letter-spacing:-.6px}

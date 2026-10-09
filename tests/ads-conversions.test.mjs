@@ -24,6 +24,9 @@ const inert = load(source.replace('AW-18497247404/MD8JCKK0_ZUdEKyxlvRE','AW-CONV
 assert.equal(inert.hanjibungTrackDiagnosisAdsConversion, undefined);
 assert.equal(inert.dataLayer.some(args=>args[0]==='config' && String(args[1]).startsWith('AW-')), false);
 const enabled = load(source);
+const passthroughIndex = enabled.dataLayer.findIndex(args => args[0] === 'set' && args[1] === 'url_passthrough' && args[2] === true);
+assert.ok(passthroughIndex >= 0);
+assert.ok(passthroughIndex < enabled.dataLayer.findIndex(args => args[0] === 'config'));
 const callback = enabled.hanjibungTrackDiagnosisAdsConversion;
 assert.equal(callback('invalid'), false);
 const id='aa111111-2222-4333-8444-555555555555';

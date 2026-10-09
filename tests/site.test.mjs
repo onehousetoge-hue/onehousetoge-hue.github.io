@@ -41,9 +41,10 @@ test("dedicated diagnosis page preserves the existing required information and e
   assert.match(html, /class="reservation-app"/);
   assert.match(html, /<link rel="canonical" href="https:\/\/hanjibung\.kr\/reservation\/">/);
   assert.equal((html.match(/<h1\b/g) || []).length, 1);
-  assert.equal((html.match(/<form\b/g) || []).length, 1);
+  assert.equal((html.match(/<form\b/g) || []).length, 2);
   assert.doesNotMatch(html, /<dialog|<iframe|data-open-inquiry/);
-  const inputs = [...html.matchAll(/<input\b[^>]*>/g)].map((match) => match[0]);
+  const diagnosisForm = html.match(/<form class="inquiry-form"[\s\S]*?<\/form>/)[0];
+  const inputs = [...diagnosisForm.matchAll(/<input\b[^>]*>/g)].map((match) => match[0]);
   const fields = inputs.filter((input) => /\bname="/.test(input));
   assert.deepEqual([...new Set(fields.map((input) => input.match(/\bname="([^"]+)"/)[1]))].sort(), ["aircon", "area", "areaType", "consent", "location", "phone", "rooms", "tenure"]);
   for (const field of fields) assert.match(field, /\brequired(?:\s|>)/);
@@ -55,7 +56,7 @@ test("dedicated diagnosis page preserves the existing required information and e
   assert.match(photos, /accept="image\/jpeg,image\/png,image\/webp"/);
   assert.match(photos, /\bmultiple(?:\s|>)/);
   for (const text of ["방에 짐이 있거나 정리가 안 되어 있어도 괜찮아요.", "짐과 정리 상태는 예상 월세에 반영하지 않고 진단해요.", "30MB", "90일", 'href="/privacy/"']) assert.ok(html.includes(text), text);
-  const submit = html.match(/<button\b[^>]*type="submit"[^>]*>/)?.[0];
+  const submit = diagnosisForm.match(/<button\b[^>]*type="submit"[^>]*>/)?.[0];
   assert.match(submit, /\bdisabled(?:\s|>)/);
   assert.doesNotMatch(html, /class="rent-diagnosis-dock"/);
 });
@@ -562,7 +563,7 @@ test("the parent and room diagnostic share GA without exposing inquiry details",
     const scripts = [...content.matchAll(/<script[^>]+src="([^"]+)"/g)].map((match) => match[1]);
     const expected = ["/assets/site.js", "/assets/analytics.js"];
     if (page.route === "/") expected.push("/assets/room-check.js");
-    if (page.route === "/reservation/") expected.push("/assets/reservation.js");
+    if (page.route === "/reservation/") expected.push("/assets/reservation.js", "/assets/callback.js");
     if (/^\/(consultation|partnership)\//.test(page.route)) expected.push("/assets/inquiry.js");
     if (/^\/resources\/(preparation-room|conversation-practice|living-cost-planner|community-session-kit)\/$/.test(page.route)) expected.push("/assets/living-lab.mjs");
     assert.deepEqual(scripts.map((src) => new URL(src, "https://hanjibung.kr").pathname), expected);

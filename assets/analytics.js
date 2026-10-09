@@ -21,6 +21,9 @@
       ad_user_data: "denied", ad_personalization: "denied",
     });
     gtag("js", new Date());
+    // Preserve ad-click attribution on same-domain navigation without granting
+    // advertising storage or sending inquiry fields to Google.
+    gtag("set", "url_passthrough", true);
     gtag("config", analyticsId, {
       ...pageContext,
       send_page_view: false,

@@ -159,6 +159,7 @@ await mkdir(path.join(out, "assets", "fonts"), { recursive: true });
 await cp(path.join(root, "src", "assets", "fonts", "PretendardVariable.woff2"), path.join(out, "assets", "fonts", "PretendardVariable.woff2"));
 await cp(path.join(root, "src", "assets", "fonts", "OFL.txt"), path.join(out, "assets", "fonts", "OFL.txt"));
 await cp(path.join(root, "src", "assets", "inquiry.js"), path.join(out, "assets", "inquiry.js"));
+await cp(path.join(root, "src", "assets", "callback.js"), path.join(out, "assets", "callback.js"));
 await cp(path.join(root, "src", "assets", "living-lab.mjs"), path.join(out, "assets", "living-lab.mjs"));
 for (const image of ["hanjibung-logo.png", "hanjibung-logo-256.png", "hanjibung-icon-64.png", "hanjibung-icon-192.png"]) {
   await cp(path.join(root, "src", "assets", image), path.join(out, "assets", image));

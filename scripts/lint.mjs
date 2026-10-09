@@ -38,6 +38,7 @@ const files = [
   "src/lib/template.mjs",
   "src/assets/site.js",
   "src/assets/analytics.js",
+  "src/assets/callback.js", "src/lib/callback-form.mjs",
   "scripts/build.mjs",
   "scripts/publish.mjs",
   "scripts/check.mjs",
