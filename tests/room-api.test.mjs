@@ -73,3 +73,21 @@ test("room API signs a valid submission and returns its matching receipt", async
     assert.equal(JSON.parse(delivered.payload).inquiry.phone, "01012345678");
   } finally { globalThis.fetch = previous; }
 });
+
+test("room API forwards a photo-free submission and verifies its receipt", async () => {
+  const previous = globalThis.fetch;
+  const body = { ...valid(), photos: [] };
+  let delivered;
+  globalThis.fetch = async (_url, options) => {
+    delivered = JSON.parse(JSON.parse(options.body).payload);
+    return { ok: true, json: async () => ({ ok: true, requestId: body.requestId }) };
+  };
+  try {
+    const res = response(); await handler(request(body), res);
+    assert.equal(res.statusCode, 200);
+    assert.deepEqual(res.body, { ok: true, requestId: body.requestId });
+    assert.deepEqual(delivered.photos, []);
+    assert.deepEqual(delivered.inquiry, body.inquiry);
+    assert.equal(delivered.requestId, body.requestId);
+  } finally { globalThis.fetch = previous; }
+});

@@ -1,5 +1,6 @@
 import { navigation, site } from "../config/site.mjs";
 import { diagnosisBanner } from "./template.mjs";
+import { incomeCalculator } from "./income-calculator.mjs";
 
 const art = (file, alt, width, height, eager = false) => `<img src="/assets/figma/${file}" alt="${alt}" width="${width}" height="${height}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">`;
 const benefits = [
@@ -36,5 +37,5 @@ export function roomCheckPage() {
       </div></div></section>
     </div>
     <footer class="host-footer"><div class="host-container"><div class="footer-contact"><div><a href="mailto:contact@hanjibung.kr">E-mail : contact@hanjibung.kr</a><a href="${site.phoneHref}">Tel : ${site.phone}</a></div><p>© 2026 hanjibung. All rights reserved.</p></div><p class="footer-legal">${site.legalType} · 고유번호 ${site.registrationNumber} · 대표 ${site.representative}</p><p class="footer-legal">${site.address} <a href="/privacy/">개인정보 처리방침</a></p></div></footer>
-    <a class="floating-diagnosis" href="/reservation/" aria-hidden="true" tabindex="-1">${art("benefit-income.svg", "", 34, 34)}<strong>예상 월세 무료 진단 받기</strong><span class="floating-arrow" aria-hidden="true">→</span></a></div>`;
+    ${incomeCalculator()}</div>`;
 }

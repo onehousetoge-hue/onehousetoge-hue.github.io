@@ -150,7 +150,6 @@
 .room-app .site-menu.is-open{display:block}
 .room-app .nav-group summary{justify-content:space-between;font-size:18px}
 .room-app .menu-panel{position:static;width:auto;padding:8px 0 0;border:0;box-shadow:none}
-.room-app:has(.site-menu.is-open) .floating-diagnosis{visibility:hidden}
 .room-app .host-hero{padding:72px 0 90px}
 .room-app .hero-layout{grid-template-columns:1fr 1fr;gap:10px}
 .room-app .host-hero-copy{min-height:340px}
@@ -267,12 +266,3 @@
 }
 
 @media(prefers-reduced-motion:reduce){.room-app *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
-
-.room-app .floating-diagnosis{position:fixed;z-index:45;left:50%;bottom:24px;display:flex;align-items:center;justify-content:center;gap:12px;width:min(460px,calc(100% - 40px));min-height:56px;padding:10px 22px;border:1px solid #ffffff5c;border-radius:12px;background:#497fef;color:#fff;box-shadow:0 6px 22px #255db329;opacity:0;visibility:hidden;pointer-events:none;transform:translate(-50%,18px);transition:opacity .28s ease,transform .38s cubic-bezier(.22,1,.36,1),visibility .28s;text-align:center}
-.room-app .floating-diagnosis.is-visible{opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,0)}
-.room-app .floating-diagnosis img{width:34px;height:34px;object-fit:contain;flex:none}
-.room-app .floating-diagnosis strong{font-size:17px;font-weight:700;line-height:1.4}
-.room-app .floating-arrow{font-size:21px;margin-left:5px;line-height:1}
-.room-app .floating-diagnosis:hover{background:#346cdd}
-@media(max-width:650px){.room-app .floating-diagnosis{bottom:calc(12px + env(safe-area-inset-bottom));width:calc(100% - 32px);min-height:56px;padding:9px 14px;gap:9px}.room-app .floating-diagnosis strong{font-size:16px}.room-app .floating-arrow{margin-left:auto}}
-@media(prefers-reduced-motion:reduce){.room-app .floating-diagnosis{transition:none}}

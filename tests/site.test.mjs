@@ -16,11 +16,9 @@ test("homepage links to the dedicated diagnosis page and keeps organization info
   assert.doesNotMatch(room, /<iframe|<dialog|data-open-inquiry/);
   assert.match(room, /예상 월세 무료 진단 받기/);
   assert.match(room, /id="goals"/);
-  const floating = room.match(/<a\b[^>]*class="floating-diagnosis"[^>]*>/)?.[0];
-  assert.ok(floating, "The persistent diagnosis action is a real page link");
-  assert.match(floating, /href="\/reservation\/"/);
-  assert.match(floating, /aria-hidden="true"/);
-  assert.match(floating, /tabindex="-1"/);
+  assert.match(room, /data-income-calculator/);
+  assert.match(room, /class="income-reservation" href="\/reservation\/"/);
+  assert.doesNotMatch(room, /floating-diagnosis/);
   assert.match(room, /<title>우리 집 남는 방 예상 월세 진단 \| 한지붕<\/title>/);
   assert.doesNotMatch(room, /방 진단 화면이 보이지 않거나|한지붕의 기존 홈페이지 보기/);
   assert.doesNotMatch(room, /<header class="site-header"/);
@@ -51,23 +49,21 @@ test("dedicated diagnosis page preserves the existing required information and e
   const consent = fields.find((input) => /name="consent"/.test(input));
   assert.match(consent, /type="checkbox"/);
   assert.doesNotMatch(consent, /\bchecked(?:\s|>)/);
-  const photos = inputs.find((input) => /id="photos"/.test(input));
-  assert.match(photos, /type="file"/);
-  assert.match(photos, /accept="image\/jpeg,image\/png,image\/webp"/);
-  assert.match(photos, /\bmultiple(?:\s|>)/);
-  for (const text of ["방에 짐이 있거나 정리가 안 되어 있어도 괜찮아요.", "짐과 정리 상태는 예상 월세에 반영하지 않고 진단해요.", "30MB", "90일", 'href="/privacy/"']) assert.ok(html.includes(text), text);
+  assert.doesNotMatch(diagnosisForm, /type="file"|id="photos"|room-photos-title|사진 첨부/);
+  assert.match(diagnosisForm, /<span aria-hidden="true">02<\/span><h3 id="room-contact-title">월세 결과 받을 연락처<\/h3>/);
+  for (const text of ["집 위치와 방 정보를 남겨주세요.", "90일", 'href="/privacy/"']) assert.ok(html.includes(text), text);
   const submit = diagnosisForm.match(/<button\b[^>]*type="submit"[^>]*>/)?.[0];
   assert.match(submit, /\bdisabled(?:\s|>)/);
   assert.doesNotMatch(html, /class="rent-diagnosis-dock"/);
 });
 
-test("diagnosis banner follows the goals section and remains inaccessible while hidden or covered by the menu", async () => {
+test("mobile navigation opens independently and restores focus with Escape", async () => {
   const { runInNewContext } = await import("node:vm");
   const script = await readFile(path.join(root, "assets/room-check.js"), "utf8");
   const makeElement = () => {
     const classes = new Set();
     return {
-      attributes: {}, listeners: {}, tabIndex: -1, inert: false,
+      attributes: {}, listeners: {},
       classList: { contains: (name) => classes.has(name), toggle: (name, value) => value ? classes.add(name) : classes.delete(name) },
       setAttribute(name, value) { this.attributes[name] = value; },
       getAttribute(name) { return this.attributes[name]; },
@@ -78,50 +74,23 @@ test("diagnosis banner follows the goals section and remains inaccessible while 
   };
   const nav = makeElement();
   const toggle = makeElement();
-  const floating = makeElement();
-  let goalTop = 1200;
-  const goals = { getBoundingClientRect: () => ({ top: goalTop }) };
-  const selectors = { ".site-menu": nav, ".nav-toggle": toggle, "#goals": goals, ".floating-diagnosis": floating };
+  const selectors = { ".site-menu": nav, ".nav-toggle": toggle };
   const app = { querySelector: (selector) => selectors[selector], querySelectorAll: () => [] };
-  const windowEvents = {};
   const documentEvents = {};
-  const frames = [];
   const document = { querySelector: () => app, addEventListener: (type, callback) => { documentEvents[type] = callback; } };
   const window = {
-    location: { href: "https://hanjibung.kr/" }, innerHeight: 800,
-    addEventListener: (type, callback) => { windowEvents[type] = callback; },
-    requestAnimationFrame: (callback) => { frames.push(callback); },
+    location: { href: "https://hanjibung.kr/" },
+    addEventListener() {},
     matchMedia: () => ({ addEventListener() {} }),
   };
   runInNewContext(script, { document, window, URL });
-  const assertVisible = (visible) => {
-    assert.equal(floating.classList.contains("is-visible"), visible);
-    assert.equal(floating.attributes["aria-hidden"], String(!visible));
-    assert.equal(floating.tabIndex, visible ? 0 : -1);
-    assert.equal(floating.inert, !visible);
-  };
-  const scrollToGoal = (top) => {
-    goalTop = top;
-    windowEvents.scroll();
-    while (frames.length) frames.shift()();
-  };
-  assertVisible(false);
-  scrollToGoal(500);
-  assertVisible(true);
-  scrollToGoal(-1600);
-  assertVisible(true);
-  scrollToGoal(1200);
-  assertVisible(false);
-  scrollToGoal(500);
   toggle.listeners.click();
-  assertVisible(false);
+  assert.equal(nav.classList.contains("is-open"), true);
+  assert.equal(toggle.attributes["aria-expanded"], "true");
   documentEvents.keydown({ key: "Escape" });
-  assertVisible(true);
+  assert.equal(nav.classList.contains("is-open"), false);
+  assert.equal(toggle.attributes["aria-expanded"], "false");
   assert.equal(toggle.focused, true);
-  goalTop = 1200;
-  windowEvents.pageshow();
-  while (frames.length) frames.shift()();
-  assertVisible(false);
 });
 
 test("existing diagnosis bookmarks redirect to the new form without losing other query parameters", async () => {
@@ -552,7 +521,7 @@ test("the parent and room diagnostic share GA without exposing inquiry details",
   assert.match(html, /안내 페이지와 방 진단은 같은 Google Analytics 측정 설정/);
   assert.match(html, /첫 화면에서는 한지붕 페이지의 방문을 한 번만 기록/);
   assert.match(html, /분석 쿠키의 최대 보관기간은 180일/);
-  assert.match(html, /방 정보·전화번호, 업로드한 사진.*분석 이벤트에 실어 보내지 않습니다/);
+  assert.match(html, /방 정보·전화번호, 이전에 제출한 사진.*분석 이벤트에 실어 보내지 않습니다/);
   assert.match(html, /버튼 클릭만으로 실제 통화나 문의 수신 여부를 확인하지 않습니다/);
   const manifest = JSON.parse(await readFile(path.join(root, "build-manifest.json"), "utf8"));
   for (const page of manifest.pages) {
@@ -562,7 +531,7 @@ test("the parent and room diagnostic share GA without exposing inquiry details",
     assert.doesNotMatch(content, /googleadservices\.com/);
     const scripts = [...content.matchAll(/<script[^>]+src="([^"]+)"/g)].map((match) => match[1]);
     const expected = ["/assets/site.js", "/assets/analytics.js"];
-    if (page.route === "/") expected.push("/assets/room-check.js");
+    if (page.route === "/") expected.push("/assets/room-check.js", "/assets/income-calculator.js");
     if (page.route === "/reservation/") expected.push("/assets/reservation.js", "/assets/callback.js");
     if (/^\/(consultation|partnership)\//.test(page.route)) expected.push("/assets/inquiry.js");
     if (/^\/resources\/(preparation-room|conversation-practice|living-cost-planner|community-session-kit)\/$/.test(page.route)) expected.push("/assets/living-lab.mjs");
@@ -715,7 +684,7 @@ test("site chrome preserves the brand while the diagnostic home uses a text word
       assert.equal(imageCount, 0, page.route);
       assert.match(html, /class="brand-wordmark">한지붕<\/span>/);
       assert.match(html, /class="host-footer"/);
-      assert.match(html, /class="floating-diagnosis"[^>]*href="\/reservation\/"/);
+      assert.match(html, /class="income-reservation" href="\/reservation\/"/);
     } else if (page.route === "/reservation/") {
       assert.equal(imageCount, 0, page.route);
       assert.match(html, /class="reservation-app"/);

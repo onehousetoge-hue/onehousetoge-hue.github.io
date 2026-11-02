@@ -27,6 +27,7 @@ const files = [
   "src/lib/research-page.mjs",
   "src/lib/landing-page.mjs",
   "src/lib/room-check-page.mjs", "src/lib/reservation-page.mjs", "src/assets/room-check.js", "src/assets/reservation.js",
+  "src/lib/income-calculator.mjs", "src/assets/income-calculator.js", "src/assets/income-calculator.css",
   "src/lib/program-page.mjs",
   "src/lib/field-record-page.mjs",
   "src/lib/digital-education-page.mjs",

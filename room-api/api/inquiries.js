@@ -71,7 +71,7 @@ export default async function handler(req, res) {
       || !["1개", "2개", "3개 이상"].includes(i.rooms) || !["있음", "없음"].includes(i.aircon)
       || !["자가", "전세·월세"].includes(i.tenure) || !/^01[016789]\d{7,8}$/.test(i.phone)
       || i.consent !== true || i.consentVersion !== "2026-09-20"
-      || !Array.isArray(data.photos) || data.photos.length < 1 || data.photos.length > 5) return reply(res, 400, fail(400, "신청 내용을 다시 확인해 주세요."));
+      || !Array.isArray(data.photos) || data.photos.length > 5) return reply(res, 400, fail(400, "신청 내용을 다시 확인해 주세요."));
     for (const photo of data.photos) {
       if (!photo || !text(photo.name, 180) || photo.mime !== "image/jpeg" || typeof photo.base64 !== "string"
         || photo.base64.length > 700000 || photo.base64.length % 4 || !/^[A-Za-z0-9+/]+={0,2}$/.test(photo.base64)) return reply(res, 400, fail(400, "사진 파일을 확인해 주세요."));

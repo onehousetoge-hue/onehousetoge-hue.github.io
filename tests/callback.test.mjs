@@ -52,21 +52,23 @@ test('callback tracks only after a matching saved receipt, and retry preserves i
   assert.equal(fetchStub.mock.callCount(),calls);
 });
 
-test('photo-free form stays on reservation and cannot interfere with photo diagnosis',async()=>{
+test('quick consultation stays on reservation and cannot interfere with diagnosis',async()=>{
   const html=await readFile(new URL('../dist/reservation/index.html',import.meta.url),'utf8');
   assert.equal((html.match(/data-callback-form/g)||[]).length,1);
   assert.equal((html.match(/class="inquiry-form"/g)||[]).length,1);
   assert.match(html,/<form class="callback-form"[^>]*>[\s\S]*?<fieldset disabled>/);
-  assert.match(html,/사진 없이 먼저 상담 신청/);
+  assert.match(html,/aria-label="사진 없이 10초만에 상담"/);
   assert.match(html, /data-open-callback aria-haspopup="dialog"/);
   assert.match(html, /href="\/reservation\/\?consultation=quick" data-open-callback/);
   assert.match(html, /<dialog[^>]*data-callback-dialog[^>]*aria-labelledby="callback-dialog-title"/);
-  assert.ok(html.indexOf('사진 없이 먼저 상담 신청') < html.indexOf('class="reservation-illustration"'));
+  assert.ok(html.indexOf('data-open-callback') < html.indexOf('class="reservation-illustration"'));
   assert.ok(html.includes(inquiries.endpoint));
   assert.match(html,/상담 종료일로부터 최대 1년간/);
   assert.match(html,/상담 완료 후 90일 이내/);
   assert.doesNotMatch(html.match(/<form class="callback-form"[\s\S]*?<\/form>/)[0],/type="file"|data-inquiry=/);
   const diagnosis=await readFile(new URL('../src/assets/reservation.js',import.meta.url),'utf8');
-  assert.match(diagnosis,/if \(!photos.length\)/);
+  assert.doesNotMatch(html, /type="file"/);
+  assert.match(diagnosis, /photos: \[\]/);
+  assert.doesNotMatch(diagnosis, /fileInput|addPhotos|compressPhoto/);
   assert.match(diagnosis,/hanjibungTrackDiagnosisAdsConversion/);
 });

@@ -104,23 +104,6 @@
 .reservation-app input::placeholder{color:#9299a3;opacity:1}
 .reservation-app #area{margin-top:10px}
 .reservation-app .help{display:block;font-size:14px;line-height:1.7;color:var(--form-muted);margin-top:8px}
-.reservation-app .photo-heading{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px;font-size:14px;color:var(--form-muted)}
-.reservation-app .photo-count{font-size:14px;color:#4f5967;font-variant-numeric:tabular-nums;white-space:nowrap}
-.reservation-app .upload{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:98px;padding:20px 16px;border:1px dashed #b9c2cf;border-radius:5px;background:#fafbfc;color:#39475a}
-.reservation-app .upload-icon{font-size:25px;font-weight:400;line-height:1;color:#63748b}
-.reservation-app .upload strong{font-size:16px;font-weight:600}
-.reservation-app .upload-limit{font-size:13px;color:#7b8490;padding-left:2px}
-.reservation-app .upload:hover{border-color:var(--form-blue);background:#f6f9fe}
-.reservation-app .photo-reassurance{padding-top:14px;color:#505c6b;font-size:14px;line-height:1.7}
-.reservation-app .photo-reassurance strong{font-weight:500}
-.reservation-app .photo-reassurance p{color:var(--form-muted);margin-top:3px}
-.reservation-app .photo-list{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-top:20px}
-.reservation-app .photo-list:empty{margin:0}
-.reservation-app .photo-item{position:relative;min-width:0}
-.reservation-app .photo-item>img{display:block;width:100%;aspect-ratio:1;object-fit:cover;border-radius:4px;border:1px solid var(--form-line)}
-.reservation-app .photo-item>button{position:absolute;right:-8px;top:-8px;display:grid;place-items:center;width:44px;height:44px;isolation:isolate;background:transparent;color:#fff;font-size:16px;font-weight:600}
-.reservation-app .photo-item>button::before{content:"";position:absolute;inset:8px;border-radius:50%;background:#39475a;z-index:-1}
-.reservation-app .photo-item>span{display:block;text-align:center;font-size:12px;color:var(--form-muted);margin-top:5px}
 .reservation-app .consent-area{margin:22px 0 0 136px}
 .reservation-app .consent{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0 14px}
 .reservation-app .consent label{display:flex;align-items:center;gap:9px;min-height:44px;cursor:pointer;font-size:14px;color:#394351}
@@ -181,8 +164,6 @@
 .reservation-app .form-row>legend,.reservation-app .form-row>label{float:none;width:auto;padding:0;margin-bottom:10px;font-size:15px}
 .reservation-app .field-control{margin-left:0}
 .reservation-app .choice{padding:10px 6px;gap:7px;font-size:15px}
-.reservation-app .photo-heading{font-size:14px;gap:8px}
-.reservation-app .photo-list{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .reservation-app .consent-area{margin:20px 0 0}
 .reservation-app .privacy-toggle{margin-left:auto}
 .reservation-app .reservation-actions{margin-left:0;padding-top:26px}

@@ -15,6 +15,8 @@ export const callbackScriptUrl = assetUrl("callback.js");
 export const livingLabScriptUrl = assetUrl("living-lab.mjs");
 export const roomCheckStylesheetUrl = assetUrl("room-check.css");
 export const roomCheckScriptUrl = assetUrl("room-check.js");
+export const incomeCalculatorStylesheetUrl = assetUrl("income-calculator.css");
+export const incomeCalculatorScriptUrl = assetUrl("income-calculator.js");
 
 export const reservationStylesheetUrl = assetUrl("reservation.css");
 export const reservationScriptUrl = assetUrl("reservation.js");
