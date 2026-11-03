@@ -88,6 +88,40 @@ test("room API forwards a photo-free submission and verifies its receipt", async
     assert.deepEqual(res.body, { ok: true, requestId: body.requestId });
     assert.deepEqual(delivered.photos, []);
     assert.deepEqual(delivered.inquiry, body.inquiry);
+    assert.equal(Object.hasOwn(delivered.inquiry, "homeType"), false);
     assert.equal(delivered.requestId, body.requestId);
+  } finally { globalThis.fetch = previous; }
+});
+
+test("room API preserves optional home type without changing tenure or available rooms", async () => {
+  const previous = globalThis.fetch;
+  let delivered;
+  globalThis.fetch = async (_url, options) => {
+    delivered = JSON.parse(JSON.parse(options.body).payload);
+    return { ok: true, json: async () => ({ ok: true, requestId: delivered.requestId }) };
+  };
+  try {
+    for (const homeType of ["원룸", "투룸 +", "단독 주택", "아파트"]) {
+      const body = { ...valid(), inquiry: { ...valid().inquiry, homeType }, photos: [] };
+      const res = response(); await handler(request(body), res);
+      assert.equal(res.statusCode, 200);
+      assert.deepEqual(delivered.inquiry, body.inquiry);
+      assert.equal(delivered.inquiry.tenure, "자가");
+      assert.equal(delivered.inquiry.rooms, "1개");
+    }
+  } finally { globalThis.fetch = previous; }
+});
+
+test("room API rejects unrecognized home types before upstream delivery", async () => {
+  const previous = globalThis.fetch;
+  let calls = 0;
+  globalThis.fetch = async () => { calls++; throw new Error("unexpected delivery"); };
+  try {
+    for (const homeType of ["", null, "자가", "투룸", "villa", { value: "아파트" }]) {
+      const body = { ...valid(), inquiry: { ...valid().inquiry, homeType }, photos: [] };
+      const res = response(); await handler(request(body), res);
+      assert.equal(res.statusCode, 400);
+    }
+    assert.equal(calls, 0);
   } finally { globalThis.fetch = previous; }
 });

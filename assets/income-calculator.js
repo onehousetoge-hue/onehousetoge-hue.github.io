@@ -8,6 +8,20 @@
   const searchButton = root.querySelector("[data-income-search]");
   const area = root.querySelector("#income-area");
   const message = root.querySelector("[data-income-message]");
+  const prefill = window.hanjibungDiagnosisPrefill;
+  const draft = prefill?.read();
+  if (draft) {
+    if (!area.value) area.value = draft.area;
+    root.querySelectorAll('[name="homeType"]').forEach((input) => {
+      input.checked = prefill.homeTypes[input.value] === draft.homeType;
+    });
+  }
+  function saveDraft() {
+    prefill?.save({ area: area.value, homeType: root.querySelector('[name="homeType"]:checked')?.value });
+  }
+  area.addEventListener("input", saveDraft);
+  root.querySelectorAll('[name="homeType"]').forEach((input) => input.addEventListener("change", saveDraft));
+  root.querySelector(".income-reservation").addEventListener("click", saveDraft);
   const desktop = window.matchMedia("(min-width: 1200px)");
   let open = desktop.matches;
   let manuallyToggled = false;
@@ -57,7 +71,8 @@
 
   function explainDiagnosis() {
     message.hidden = false;
-    message.textContent = "예상 월세는 무료 진단 신청 후 안내해 드립니다.";
+    saveDraft();
+    message.textContent = area.value.trim() ? "입력하신 내용은 진단 신청서에 자동으로 반영됩니다." : "대학교나 지하철역을 입력해 주세요.";
     area.focus();
   }
   searchButton.addEventListener("click", explainDiagnosis);

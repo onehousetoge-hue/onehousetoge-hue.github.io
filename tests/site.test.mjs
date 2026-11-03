@@ -44,8 +44,11 @@ test("dedicated diagnosis page preserves the existing required information and e
   const diagnosisForm = html.match(/<form class="inquiry-form"[\s\S]*?<\/form>/)[0];
   const inputs = [...diagnosisForm.matchAll(/<input\b[^>]*>/g)].map((match) => match[0]);
   const fields = inputs.filter((input) => /\bname="/.test(input));
-  assert.deepEqual([...new Set(fields.map((input) => input.match(/\bname="([^"]+)"/)[1]))].sort(), ["aircon", "area", "areaType", "consent", "location", "phone", "rooms", "tenure"]);
-  for (const field of fields) assert.match(field, /\brequired(?:\s|>)/);
+  assert.deepEqual([...new Set(fields.map((input) => input.match(/\bname="([^"]+)"/)[1]))].sort(), ["aircon", "area", "areaType", "consent", "homeType", "location", "phone", "rooms", "tenure"]);
+  for (const field of fields) {
+    if (/name="homeType"/.test(field)) assert.doesNotMatch(field, /\brequired(?:\s|>)/);
+    else assert.match(field, /\brequired(?:\s|>)/);
+  }
   const consent = fields.find((input) => /name="consent"/.test(input));
   assert.match(consent, /type="checkbox"/);
   assert.doesNotMatch(consent, /\bchecked(?:\s|>)/);
@@ -531,8 +534,8 @@ test("the parent and room diagnostic share GA without exposing inquiry details",
     assert.doesNotMatch(content, /googleadservices\.com/);
     const scripts = [...content.matchAll(/<script[^>]+src="([^"]+)"/g)].map((match) => match[1]);
     const expected = ["/assets/site.js", "/assets/analytics.js"];
-    if (page.route === "/") expected.push("/assets/room-check.js", "/assets/income-calculator.js");
-    if (page.route === "/reservation/") expected.push("/assets/reservation.js", "/assets/callback.js");
+    if (page.route === "/") expected.push("/assets/room-check.js", "/assets/diagnosis-prefill.js", "/assets/income-calculator.js");
+    if (page.route === "/reservation/") expected.push("/assets/diagnosis-prefill.js", "/assets/reservation.js", "/assets/callback.js");
     if (/^\/(consultation|partnership)\//.test(page.route)) expected.push("/assets/inquiry.js");
     if (/^\/resources\/(preparation-room|conversation-practice|living-cost-planner|community-session-kit)\/$/.test(page.route)) expected.push("/assets/living-lab.mjs");
     assert.deepEqual(scripts.map((src) => new URL(src, "https://hanjibung.kr").pathname), expected);

@@ -11,6 +11,19 @@
   const heading = root.querySelector("#diagnosis-title");
   const description = root.querySelector("#diagnosis-description");
   const connectionRetry = root.querySelector("[data-retry-connection]");
+  const prefill = window.hanjibungDiagnosisPrefill;
+  const draft = prefill?.read();
+  if (draft) {
+    const area = form.querySelector("#area");
+    if (!area.value) area.value = draft.area;
+    for (const name of ["areaType", "homeType"]) {
+      if (form.querySelector(`input[name="${name}"]:checked`)) continue;
+      form.querySelectorAll(`input[name="${name}"]`).forEach((input) => { input.checked = input.value === draft[name]; });
+    }
+    const selectedAreaType = form.querySelector('[name="areaType"]:checked')?.value;
+    if (selectedAreaType) area.placeholder = `집 주변 ${selectedAreaType} 이름을 입력해 주세요`;
+    form.querySelector("[data-prefill-notice]").hidden = !draft.area && !draft.homeType;
+  }
   let ready = false;
   let busy = false;
   let uncertain = false;
@@ -63,7 +76,9 @@
     requestId = ""; pendingBody = "";
     if (e.target.name === "areaType") {
       form.querySelector("#area").placeholder = `집 주변 ${e.target.value} 이름을 입력해 주세요`;
-      form.querySelector("#area").value = "";
+    }
+    if (["area", "areaType", "homeType"].includes(e.target.name)) {
+      prefill?.save({ area: form.querySelector("#area").value, areaType: form.querySelector('[name="areaType"]:checked')?.value, homeType: form.querySelector('[name="homeType"]:checked')?.value });
     }
   });
   function send(body, id) {
@@ -91,13 +106,14 @@
       if (!/^01[016789]\d{7,8}$/.test(phone)) { setError("연락받을 휴대폰 번호를 확인해 주세요."); return; }
       if (!data.get("areaType")) { setError("지역 기준을 선택해 주세요."); return; }
       requestId ||= crypto.randomUUID(); submissionStart ||= performance.now();
-      pendingBody = JSON.stringify({ requestId, inquiry: { areaType: data.get("areaType"), area: data.get("area"), location: data.get("location"), rooms: data.get("rooms"), aircon: data.get("aircon"), tenure: data.get("tenure"), phone, consent: data.get("consent") === "on", consentVersion: "2026-09-20" }, photos: [] });
+      pendingBody = JSON.stringify({ requestId, inquiry: { areaType: data.get("areaType"), area: data.get("area"), ...(data.get("homeType") ? { homeType: data.get("homeType") } : {}), location: data.get("location"), rooms: data.get("rooms"), aircon: data.get("aircon"), tenure: data.get("tenure"), phone, consent: data.get("consent") === "on", consentVersion: "2026-09-20" }, photos: [] });
     }
     const body = pendingBody;
     lock(true); event("inquiry_submit", { photo_count: 0 });
     submit.textContent = "신청 정보를 보내고 있어요"; note.textContent = "화면을 닫지 말고 잠시 기다려 주세요.";
     const result = await send(body, requestId);
     if (result.ok) {
+      prefill?.clear();
       uncertain = false; lock(false);
       event("inquiry_complete", { photo_count: 0, value: Math.min(3600, Math.round((performance.now() - submissionStart) / 1000)) });
       // Only this branch has a successful response with the exact request ID.

@@ -1,7 +1,7 @@
 import { site } from "../config/site.mjs";
 import { callbackForm } from "./callback-form.mjs";
 
-const choices = (name, values) => values.map((value) => `<label class="choice"><input type="radio" name="${name}" value="${value}" required><span>${value}</span></label>`).join("");
+const choices = (name, values, required = true) => values.map((value) => `<label class="choice"><input type="radio" name="${name}" value="${value}"${required ? " required" : ""}><span>${value}</span></label>`).join("");
 
 export function reservationPage() {
   return `<div class="reservation-app">
@@ -9,9 +9,10 @@ export function reservationPage() {
     <div class="reservation-layout">
       <section class="reservation-intro" aria-labelledby="reservation-title"><div class="reservation-intro-copy"><p class="reservation-kicker">예상 월세 무료 진단</p><h1 id="reservation-title">얼마나 받을 수 있을까요?</h1><p class="reservation-description">집 위치와 방 정보를 남겨주세요. <br>한지붕 매니저가 예상 월세와 준비사항을 안내해 드립니다.</p></div>${callbackForm()}<img class="reservation-illustration" src="/assets/figma/hero-floorplan.png" alt="남는 방 한 칸이 있는 우리 집 평면도" width="837" height="730" decoding="async"></section>
       <section class="reservation-card" aria-labelledby="diagnosis-title"><div class="reservation-card-heading"><div><h2 id="diagnosis-title" tabindex="-1">방 정보 입력</h2><p id="diagnosis-description">입력하신 내용은 월세 진단과 상담 연락에 사용합니다.</p></div><span class="required-guide"><span aria-hidden="true">*</span> 필수 입력</span></div>
-        <form class="inquiry-form"><div class="setup-notice" role="status" hidden><p>신청 접수 연결을 확인하고 있어요. 잠시 후 다시 확인해 주세요.</p><button type="button" data-retry-connection>연결 다시 확인</button></div><fieldset class="form-fields"><legend class="sr-only">무료 월세 진단 신청 정보</legend>
+        <form class="inquiry-form"><p class="prefill-notice" data-prefill-notice hidden>계산기에 입력하신 내용을 미리 채웠어요. 확인 후 나머지 정보를 입력해 주세요.</p><div class="setup-notice" role="status" hidden><p>신청 접수 연결을 확인하고 있어요. 잠시 후 다시 확인해 주세요.</p><button type="button" data-retry-connection>연결 다시 확인</button></div><fieldset class="form-fields"><legend class="sr-only">무료 월세 진단 신청 정보</legend>
           <section class="form-section" aria-labelledby="room-information-title"><div class="form-section-heading"><span aria-hidden="true">01</span><h3 id="room-information-title">집 위치와 방 정보</h3></div><div class="form-section-fields">
             <fieldset class="form-row"><legend>인근 시설 <span class="required">*</span></legend><div class="field-control"><div class="choices">${choices("areaType", ["대학교", "지하철역"])}</div><label class="sr-only" for="area">집 주변 대학교 또는 지하철역</label><input id="area" name="area" placeholder="대학교 또는 지하철역 이름" maxlength="100" required></div></fieldset>
+            <fieldset class="form-row"><legend>방 유형</legend><div class="field-control"><div class="choices home-type-choices">${choices("homeType", ["원룸", "투룸 +", "단독 주택", "아파트"], false)}</div></div></fieldset>
             <div class="field form-row"><label for="location">집 위치 <span class="required">*</span></label><div class="field-control"><input id="location" name="location" placeholder="예: 서울 노원구 공릉동" maxlength="150" required aria-describedby="location-help"><span class="help" id="location-help">시·구·동까지만 적어주세요. 상세 주소는 필요 없어요.</span></div></div>
             <fieldset class="form-row"><legend>남는 방 개수 <span class="required">*</span></legend><div class="field-control"><div class="choices">${choices("rooms", ["1개", "2개", "3개 이상"])}</div></div></fieldset>
             <fieldset class="form-row"><legend>방 안 에어컨 <span class="required">*</span></legend><div class="field-control"><div class="choices">${choices("aircon", ["있음", "없음"])}</div></div></fieldset>

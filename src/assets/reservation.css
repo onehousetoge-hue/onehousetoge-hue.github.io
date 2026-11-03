@@ -78,6 +78,8 @@
 .reservation-app .required-guide{flex:none;font-size:13px;color:var(--form-muted);padding-top:6px}
 .reservation-app .required-guide>span,.reservation-app .required{color:var(--form-blue)}
 .reservation-app .inquiry-form{margin:0;display:block}
+.reservation-app .prefill-notice{padding:12px 16px;margin-top:20px;border-radius:8px;background:#f1f6ff;color:#285bb1;font-size:14px;line-height:1.7;word-break:keep-all}
+.reservation-app .home-type-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
 .reservation-app .setup-notice{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px 16px;font-size:14px;line-height:1.7;padding:14px 16px;margin-top:20px;border:1px solid #dbe4f2;background:#f8faff;border-radius:4px;color:#53657c}
 .reservation-app [data-retry-connection]{min-height:44px;padding:4px 0;background:none;color:var(--form-blue);font-size:14px;font-weight:600;text-decoration:underline;text-underline-offset:3px}
 .reservation-app fieldset{border:0;padding:0;margin:0;min-width:0}

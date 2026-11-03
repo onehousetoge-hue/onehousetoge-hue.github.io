@@ -70,6 +70,7 @@ export default async function handler(req, res) {
       || !i || !["대학교", "지하철역"].includes(i.areaType) || !text(i.area, 100) || !text(i.location, 150)
       || !["1개", "2개", "3개 이상"].includes(i.rooms) || !["있음", "없음"].includes(i.aircon)
       || !["자가", "전세·월세"].includes(i.tenure) || !/^01[016789]\d{7,8}$/.test(i.phone)
+      || (i.homeType !== undefined && !["원룸", "투룸 +", "단독 주택", "아파트"].includes(i.homeType))
       || i.consent !== true || i.consentVersion !== "2026-09-20"
       || !Array.isArray(data.photos) || data.photos.length > 5) return reply(res, 400, fail(400, "신청 내용을 다시 확인해 주세요."));
     for (const photo of data.photos) {
@@ -80,7 +81,7 @@ export default async function handler(req, res) {
     }
     const submission = {
       requestId: data.requestId.toLowerCase(),
-      inquiry: { areaType: i.areaType, area: i.area.trim(), location: i.location.trim(), rooms: i.rooms, aircon: i.aircon, tenure: i.tenure, phone: i.phone, consent: true, consentVersion: i.consentVersion },
+      inquiry: { areaType: i.areaType, area: i.area.trim(), location: i.location.trim(), rooms: i.rooms, aircon: i.aircon, tenure: i.tenure, phone: i.phone, consent: true, consentVersion: i.consentVersion, ...(i.homeType !== undefined ? { homeType: i.homeType } : {}) },
       photos: data.photos.map((photo) => ({ name: photo.name, mime: "image/jpeg", base64: photo.base64 })),
     };
     const result = await deliver(submission);

@@ -34,7 +34,7 @@ import { fieldStories } from "../src/content/field-stories.mjs";
 import { fieldStoryCards, fieldStoryPage } from "../src/lib/field-story-page.mjs";
 import { programPage } from "../src/lib/program-page.mjs";
 import { absolute, escapeHtml, icon, layout, organizationSchema, pageHero } from "../src/lib/template.mjs";
-import { roomCheckStylesheetUrl, roomCheckScriptUrl, incomeCalculatorStylesheetUrl, incomeCalculatorScriptUrl, reservationStylesheetUrl, reservationScriptUrl } from "../src/lib/static-assets.mjs";
+import { roomCheckStylesheetUrl, roomCheckScriptUrl, incomeCalculatorStylesheetUrl, incomeCalculatorScriptUrl, diagnosisPrefillScriptUrl, reservationStylesheetUrl, reservationScriptUrl } from "../src/lib/static-assets.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const out = path.join(root, "dist");
@@ -78,8 +78,8 @@ function activityCards(items = activities) {
 
 const homeBody = landingPage();
 
-await emit("/", layout({ title: "우리 집 남는 방 예상 월세 진단", description: "한지붕 우리 집 남는 방 예상 월세 진단에서 방 정보와 지역 정보를 보내고 예상 월세와 준비사항을 안내받으세요.", path: "/", body: roomCheckPage(), bodyClass: "room-check-page", showHeader: false, showFooter: false, jsonLd: [{ "@context": "https://schema.org", "@type": "WebSite", name: site.name, alternateName: site.englishName, url: absolute("/") }, organizationSchema] }).replace("</head>", `<link rel="stylesheet" href="${roomCheckStylesheetUrl}"><link rel="stylesheet" href="${incomeCalculatorStylesheetUrl}"><script src="${roomCheckScriptUrl}" defer></script><script src="${incomeCalculatorScriptUrl}" defer></script></head>`));
-await emit("/reservation/", layout({ title: "예상 월세 무료 진단 신청", description: "우리 집 남는 방의 예상 월세와 준비사항을 무료로 안내받으세요. 집 위치와 방 정보를 남기면 한지붕 매니저가 확인 후 연락드립니다.", path: "/reservation/", body: reservationPage(), bodyClass: "reservation-page", showHeader: false, showFooter: false, jsonLd: organizationSchema }).replace("</head>", `<link rel="stylesheet" href="${reservationStylesheetUrl}"><script src="${reservationScriptUrl}" defer></script></head>`));
+await emit("/", layout({ title: "우리 집 남는 방 예상 월세 진단", description: "한지붕 우리 집 남는 방 예상 월세 진단에서 방 정보와 지역 정보를 보내고 예상 월세와 준비사항을 안내받으세요.", path: "/", body: roomCheckPage(), bodyClass: "room-check-page", showHeader: false, showFooter: false, jsonLd: [{ "@context": "https://schema.org", "@type": "WebSite", name: site.name, alternateName: site.englishName, url: absolute("/") }, organizationSchema] }).replace("</head>", `<link rel="stylesheet" href="${roomCheckStylesheetUrl}"><link rel="stylesheet" href="${incomeCalculatorStylesheetUrl}"><script src="${roomCheckScriptUrl}" defer></script><script src="${diagnosisPrefillScriptUrl}" defer></script><script src="${incomeCalculatorScriptUrl}" defer></script></head>`));
+await emit("/reservation/", layout({ title: "예상 월세 무료 진단 신청", description: "우리 집 남는 방의 예상 월세와 준비사항을 무료로 안내받으세요. 집 위치와 방 정보를 남기면 한지붕 매니저가 확인 후 연락드립니다.", path: "/reservation/", body: reservationPage(), bodyClass: "reservation-page", showHeader: false, showFooter: false, jsonLd: organizationSchema }).replace("</head>", `<link rel="stylesheet" href="${reservationStylesheetUrl}"><script src="${diagnosisPrefillScriptUrl}" defer></script><script src="${reservationScriptUrl}" defer></script></head>`));
 await emit("/overview/", layout({ title: "한지붕 소개와 공익사업", description: site.nonprofitDescription, path: "/overview/", body: homeBody, jsonLd: organizationSchema }));
 
 await emit("/about/", layout({ title: "한지붕 소개", documentTitle: aboutTitle, description: aboutDescription, path: "/about/", body: aboutBody, updatedAt: pageDates["/about/"], breadcrumbs: [{ label: "한지붕 소개", href: "/about/" }], jsonLd: organizationSchema }));
@@ -153,7 +153,7 @@ await cp(path.join(root, "src", "assets", "site.js"), path.join(out, "assets", "
 await cp(path.join(root, "src", "assets", "analytics.js"), path.join(out, "assets", "analytics.js"));
 await cp(path.join(root, "src", "assets", "room-check.css"), path.join(out, "assets", "room-check.css"));
 await cp(path.join(root, "src", "assets", "room-check.js"), path.join(out, "assets", "room-check.js"));
-for (const file of ["reservation.css", "reservation.js", "income-calculator.css", "income-calculator.js"]) await cp(path.join(root, "src", "assets", file), path.join(out, "assets", file));
+for (const file of ["reservation.css", "reservation.js", "income-calculator.css", "income-calculator.js", "diagnosis-prefill.js"]) await cp(path.join(root, "src", "assets", file), path.join(out, "assets", file));
 await cp(path.join(root, "src", "assets", "figma"), path.join(out, "assets", "figma"), { recursive: true });
 await mkdir(path.join(out, "assets", "fonts"), { recursive: true });
 await cp(path.join(root, "src", "assets", "fonts", "PretendardVariable.woff2"), path.join(out, "assets", "fonts", "PretendardVariable.woff2"));
