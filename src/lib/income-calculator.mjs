@@ -2,7 +2,7 @@ const icon = (name, size) => `<img src="/assets/figma/calculator/${name}.svg" wi
 const homeTypes = [["studio", "원룸"], ["two-room", "투룸 +"], ["house", "단독 주택"], ["apartment", "아파트"]];
 
 export function incomeCalculator() {
-  return `<aside class="income-calculator" data-income-calculator aria-label="우리 집 예상 수입 계산기">
+  return `<aside class="income-calculator" data-income-calculator aria-label="우리 집 예상 수입 계산기" hidden>
     <button class="income-launcher" type="button" data-income-open aria-expanded="true" aria-controls="income-panel">예상 수입 계산기 <span aria-hidden="true">↗</span></button>
     <section class="income-panel" id="income-panel" aria-labelledby="income-title">
       <div class="income-heading"><p class="income-eyebrow">우리 집 빈 방 얼마 받을 수 있을까</p><div class="income-title-row"><h2 id="income-title">예상 수입 계산기</h2><button class="income-close" type="button" data-income-close aria-label="예상 수입 계산기 닫기">${icon("close", 18)}</button></div></div>

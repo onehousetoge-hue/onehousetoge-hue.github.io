@@ -8,7 +8,7 @@
   const searchButton = root.querySelector("[data-income-search]");
   const area = root.querySelector("#income-area");
   const message = root.querySelector("[data-income-message]");
-  const desktop = window.matchMedia("(min-width: 1280px)");
+  const desktop = window.matchMedia("(min-width: 1800px)");
   let open = desktop.matches;
   let manuallyToggled = false;
 
@@ -30,6 +30,30 @@
     }
   });
   setOpen(open);
+
+  // Keep the first view clear, then reveal without changing the page layout.
+  const hero = document.querySelector(".host-hero");
+  let revealAt = 400;
+  let visibilityPending = false;
+  function updateVisibility() {
+    visibilityPending = false;
+    root.hidden = window.scrollY < revealAt && !root.contains(document.activeElement);
+  }
+  function queueVisibility() {
+    if (visibilityPending) return;
+    visibilityPending = true;
+    window.requestAnimationFrame(updateVisibility);
+  }
+  function updateThreshold() {
+    const heroBottom = hero ? hero.getBoundingClientRect().bottom + window.scrollY : 640;
+    revealAt = Math.max(320, Math.min(640, heroBottom - window.innerHeight * .3));
+    queueVisibility();
+  }
+  window.addEventListener("scroll", queueVisibility, { passive: true });
+  window.addEventListener("resize", updateThreshold);
+  window.addEventListener("pageshow", updateThreshold);
+  root.addEventListener("focusout", queueVisibility);
+  updateThreshold();
 
   function explainDiagnosis() {
     message.hidden = false;

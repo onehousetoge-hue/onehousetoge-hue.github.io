@@ -1,6 +1,6 @@
-.room-app .income-calculator{position:fixed;right:24px;top:clamp(132px,15vh,176px);z-index:40;width:340px;max-width:calc(100% - 32px);color:#151d25;font-family:inherit;line-height:1.5;letter-spacing:-.25px;animation:income-enter .4s ease-out both}
+.room-app .income-calculator{position:fixed;right:max(24px,calc((100vw - 1752px)/2));top:clamp(112px,18vh,176px);z-index:40;width:304px;max-width:calc(100% - 32px);color:#151d25;font-family:inherit;line-height:1.5;letter-spacing:-.25px;animation:income-enter .3s ease-out both}
 .room-app .income-calculator .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-.room-app .income-panel{display:flex;flex-direction:column;gap:16px;width:340px;max-width:100%;max-height:calc(100dvh - clamp(132px,15vh,176px) - 24px);padding:20px;border:1px solid #d2e4ff;border-radius:22px;background:#fff;box-shadow:0 12px 16px rgba(20,48,92,.1);overflow:auto;overscroll-behavior:contain}
+.room-app .income-panel{display:flex;flex-direction:column;gap:16px;width:100%;max-height:calc(100dvh - clamp(112px,18vh,176px) - 24px);padding:20px;border:1px solid #d2e4ff;border-radius:22px;background:#fff;box-shadow:0 12px 16px rgba(20,48,92,.1);overflow:auto;overscroll-behavior:contain}
 .room-app .income-heading{display:grid;gap:4px}
 .room-app .income-eyebrow{font-size:13px;font-weight:500;line-height:1.5;color:#5c6c81;padding-right:20px;word-break:keep-all}
 .room-app .income-title-row{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:28px}
@@ -37,15 +37,10 @@
 .room-app .income-calculator.is-collapsed .income-launcher{display:flex}
 .room-app:has(.site-menu.is-open) .income-calculator,.room-app:has(.nav-group[open]) .income-calculator{visibility:hidden;pointer-events:none}
 @media(min-width:1280px){
-.room-app .host-main,.room-app .host-footer{width:calc(100% - 388px)}
-.room-app .host-main .host-container,.room-app .host-footer .host-container{width:min(1040px,calc(100% - 64px))}
-.room-app .host-hero h1{font-size:clamp(26px,2.4vw,40px)}
-.room-app .hero-layout{gap:16px}
-.room-app .hero-description{font-size:18px}
-.room-app .hero-diagnosis{font-size:15px}
+.room-app .header,.room-app .host-main,.room-app .host-footer{zoom:.9}
 }
-@media(max-width:1279px){
-.room-app .income-calculator{top:auto;right:16px;bottom:calc(16px + env(safe-area-inset-bottom))}
+@media(max-width:1799px){
+.room-app .income-calculator{top:auto;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));width:340px}
 .room-app .income-panel{max-height:calc(100dvh - 100px)}
 .room-app .income-calculator:not(.is-expanded){width:auto}
 .room-app .income-calculator:not(.is-expanded) .income-panel{display:none}
