@@ -8,7 +8,7 @@
   const searchButton = root.querySelector("[data-income-search]");
   const area = root.querySelector("#income-area");
   const message = root.querySelector("[data-income-message]");
-  const desktop = window.matchMedia("(min-width: 1800px)");
+  const desktop = window.matchMedia("(min-width: 1200px)");
   let open = desktop.matches;
   let manuallyToggled = false;
 
