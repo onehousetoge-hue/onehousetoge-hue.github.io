@@ -74,7 +74,7 @@ git push origin main
 
 ## 환경변수
 
-현재 필수 환경변수는 없습니다. 온라인 문의는 `src/config/inquiries.mjs`에 설정한 공개 제출용 Apps Script URL을 사용합니다. 이 URL은 인증 비밀값이 아니며, 문의 목록을 조회하는 API는 제공하지 않습니다. 분석도구는 설치하지 않았습니다. `.env.example`은 향후 기능 검토용입니다. 실제 키나 비밀값은 저장소에 커밋하지 않습니다.
+현재 필수 환경변수는 없습니다. 온라인 문의는 `src/config/inquiries.mjs`에 설정한 공개 제출용 Apps Script URL을 사용합니다. 이 URL은 인증 비밀값이 아니며, 문의 목록을 조회하는 API는 제공하지 않습니다. GA4는 `src/config/site.mjs`의 공개 측정 ID와 `src/assets/analytics.js`로 설정합니다. UTM 운영과 확인 범위는 `TRACKING.md`에 정리되어 있습니다. `.env.example`은 향후 기능 검토용입니다. 실제 키나 비밀값은 저장소에 커밋하지 않습니다.
 
 ## 문의 처리방식
 

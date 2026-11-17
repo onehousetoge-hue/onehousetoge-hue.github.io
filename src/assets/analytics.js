@@ -11,8 +11,21 @@
     window.gtag = gtag;
     let referrerOrigin = "";
     try { referrerOrigin = new URL(document.referrer).origin; } catch { /* Direct visit. */ }
+    // Keep campaign attribution while excluding form fields, receipt IDs and
+    // fragments from the URL sent to Analytics. Do not forward arbitrary queries.
+    const pageUrl = new URL(location.origin + location.pathname);
+    const landingParams = new URL(location.search || "", pageUrl).searchParams;
+    const attributionParams = [
+      "utm_id", "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content",
+      "utm_source_platform", "utm_creative_format", "utm_marketing_tactic",
+      "gclid", "dclid", "gbraid", "wbraid", "gad_source", "gad_campaignid",
+    ];
+    for (const name of attributionParams) {
+      const value = landingParams.get(name);
+      if (value) pageUrl.searchParams.set(name, value);
+    }
     const pageContext = {
-      page_location: location.origin + location.pathname,
+      page_location: pageUrl.href,
       page_title: document.title,
       page_referrer: referrerOrigin,
     };
