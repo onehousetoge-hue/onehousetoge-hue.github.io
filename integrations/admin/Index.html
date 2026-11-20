@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ko"><head><base target="_top"><meta charset="utf-8"><meta name="robots" content="noindex,nofollow">
+<style>
+*{box-sizing:border-box}body{margin:0;color:#212329;background:#f6f6f3;font:15px/1.55 Pretendard,"Malgun Gothic",sans-serif}
+header{border-bottom:1px solid #ddded7;background:white}header div,main{max-width:1120px;margin:auto;padding:20px clamp(16px,4vw,40px)}
+header strong{color:#822c39;font-size:18px}header span{margin-left:12px;color:#5a5d61}h1{font-size:clamp(25px,4vw,36px);margin:12px 0 22px}h2{font-size:20px;margin:0 0 12px}
+nav,.controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}nav{border-bottom:1px solid #d5d7d0;margin-bottom:22px}
+button,select{font:inherit;color:inherit;border:1px solid #c4c6c0;border-radius:7px;padding:7px 12px;background:white;cursor:pointer}
+nav button{border:0;border-radius:0;background:none;border-bottom:3px solid transparent}nav button[aria-pressed=true]{color:#812b39;border-color:#812b39;font-weight:700}
+button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #275ec0;outline-offset:2px}
+button:disabled{cursor:wait;opacity:.6}a{color:#79303b}section.card{background:white;border:1px solid #ddded7;border-radius:12px;padding:clamp(14px,3vw,24px);margin:14px 0}
+.scroll{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #e5e6e0;vertical-align:top}
+th{background:#f5f5f1;white-space:nowrap;font-weight:600}td{overflow-wrap:anywhere}tr:last-child td{border:0}.note,small{color:#555b60;font-size:13px}.hint{display:block}
+.metrics{font-variant-numeric:tabular-nums}summary{cursor:pointer;color:#73303b}details p{margin:5px 0}.contact{white-space:nowrap}.compact{padding:3px 7px;font-size:13px}
+[hidden]{display:none!important}@media(max-width:620px){th,td{padding:8px}.leadtable{min-width:710px}.funnel{min-width:460px}}
+</style></head><body>
+<header><div><strong>한지붕</strong><span>관리자</span></div></header>
+<main><h1>운영 현황</h1>
+<nav aria-label="관리 메뉴"><button id="traffic-tab" aria-pressed="true">유입·전환</button><button id="lead-tab" aria-pressed="false">접수 내역</button></nav>
+<div id="traffic"><div class="controls"><label for="period">조회 기간</label><select id="period"><option value="7">최근 7일</option><option value="28" selected>최근 28일</option><option value="90">최근 90일</option></select><button id="reload">다시 조회</button></div>
+<p id="metric-status" class="note" role="status"></p>
+<section class="card"><h2>상세페이지 A/B/C 전환율</h2><div class="scroll"><table class="metrics funnel"><thead><tr><th>문구</th><th>본 사람</th><th>접수한 사람</th><th>전환율</th></tr></thead><tbody id="funnels"></tbody></table></div>
+<p class="note">선택한 기간에 해당 문구를 본 뒤 월세 진단이나 10초 상담을 접수한 사람의 비율입니다. 한 사람이 여러 번 신청해도 한 명으로 계산합니다.</p></section>
+<section class="card"><h2>페이지별 조회</h2><div class="scroll"><table class="metrics"><thead><tr><th>페이지</th><th>조회수</th><th>방문자</th></tr></thead><tbody id="pages"></tbody></table></div></section>
+<section class="card"><h2>유입 출처와 캠페인</h2><div class="scroll"><table class="metrics"><thead><tr><th>출처 / 매체</th><th>캠페인</th><th>세션</th></tr></thead><tbody id="sources"></tbody></table></div><small>세션 기준 상위 50개 · 오늘 집계는 달라질 수 있습니다.</small></section></div>
+<div id="leads" hidden><div class="controls"><label for="kind">신청 유형</label><select id="kind"><option value="diagnosis">월세 진단</option><option value="callback">10초 상담</option></select><button id="lead-reload">새로고침</button></div>
+<p id="lead-status" class="note" role="status"></p><section class="card"><h2>최근 접수</h2><div class="scroll"><table class="leadtable"><thead><tr><th>접수 시각 · 한국시간</th><th>신청 정보</th><th>연락처</th><th>유입·전환</th><th>원본</th></tr></thead><tbody id="lead-rows"></tbody></table></div></section><button id="more" hidden>이전 접수 더 보기</button></div>
+</main><script>
+const byId=id=>document.getElementById(id);
+const headlines={A:'관리비 걱정은 이제 그만!',B:'우리 집 빈 방 얼마 받을 수 있을까?',C:'혼자 계신 부모님께 드릴 수 있는 선물'};
+const routes={'/':'상세페이지','/reservation/':'월세 진단 신청','/reservation/privacy/':'개인정보 처리방침','/reservation/?consultation=quick':'10초 상담'};
+function el(tag,text){const item=document.createElement(tag);if(text!=null)item.textContent=text;return item}
+function row(tbody,cells){const tr=el('tr');for(const value of cells){const td=el('td');if(value instanceof Node)td.append(value);else td.textContent=value??'—';tr.append(td)}tbody.append(tr)}
+function empty(tbody,count,text){const tr=el('tr'),td=el('td',text);td.colSpan=count;tr.append(td);tbody.append(tr)}
+const number=n=>Number(n).toLocaleString('ko-KR');
+let trafficRequest=0,leadRequest=0,next=null,leadsLoaded=false;
+function traffic(){
+  const request=++trafficRequest;
+  ['funnels','pages','sources'].forEach(id=>byId(id).replaceChildren());
+  byId('metric-status').textContent='GA4 집계를 조회하고 있습니다.';
+  google.script.run.withFailureHandler(()=>{if(request===trafficRequest)byId('metric-status').textContent='GA4를 조회하지 못했습니다. 관리자 계정의 GA4 조회 권한을 확인해 주세요.'})
+  .withSuccessHandler(data=>{
+    if(request!==trafficRequest)return;
+    byId('metric-status').textContent=data.start+' ~ '+data.end+' · 한국시간 '+data.asOf+' 조회'+(data.limited?' · Google 집계 제한 적용':'');
+    for(const f of data.funnels){const label=el('span',f.group+' · '+headlines[f.group]);if(f.unavailable)row(byId('funnels'),[label,'조회 실패','조회 실패','—']);else row(byId('funnels'),[label,number(f.exposed),number(f.converted),f.exposed?(100*f.converted/f.exposed).toFixed(1)+'%':'—'])}
+    for(const p of data.pages)row(byId('pages'),[routes[p.pagePath]||p.pagePath,number(p.screenPageViews),number(p.totalUsers)]);
+    for(const s of data.sources)row(byId('sources'),[s.sessionSourceMedium,s.sessionCampaignName,number(s.sessions)]);
+    if(!data.pages.length)empty(byId('pages'),3,'이 기간에 집계된 페이지 조회가 없습니다.');
+    if(!data.sources.length)empty(byId('sources'),3,'이 기간에 집계된 유입이 없습니다.');
+  }).getTraffic(Number(byId('period').value));
+}
+function contactButton(kind,item){
+  const wrap=el('div');wrap.className='contact';const text=el('span',item.contact),button=el('button','보기');button.type='button';button.className='compact';wrap.append(text,' ',button);
+  button.addEventListener('click',()=>{if(button.textContent==='숨기기'){text.textContent=item.contact;button.textContent='보기';return}
+    button.disabled=true;google.script.run.withFailureHandler(()=>{button.disabled=false;button.textContent='재시도'})
+    .withSuccessHandler(value=>{button.disabled=false;text.textContent=value||'—';button.textContent='숨기기'}).getContact(kind,item.row,item.id)});
+  return wrap;
+}
+function leadRow(kind,item){
+  const origin=el('details'),summary=el('summary',item.landing?(item.variant?item.variant+'안':'문구 노출 기록 없음')+' · '+(item.source||'미확인'):'미수집');
+  origin.append(summary);if(item.landing){
+    for(const [label,value] of [['첫 방문',routes[item.landing]||item.landing],['전환 페이지',routes[item.conversion]||item.conversion],['출처 / 매체',[item.source,item.medium].filter(Boolean).join(' / ')],['캠페인',item.campaign],['캠페인 ID',item.campaignId],['소재',item.content],['키워드',item.term],['유입 도메인',item.referrer]])if(value)origin.append(el('p',label+' · '+value));
+  }else origin.append(el('p','이 접수에는 유입 정보가 저장되지 않았습니다.'));
+  const link=el('a','시트 열기');link.href=item.url;link.target='_blank';link.rel='noopener noreferrer';
+  const info=el('div',item.label||'—');info.append(el('br'),el('small',item.status));
+  row(byId('lead-rows'),[item.when,info,contactButton(kind,item),origin,link]);
+}
+function leads(append=false){
+  const request=++leadRequest,kind=byId('kind').value,tbody=byId('lead-rows');
+  if(!append){next=null;tbody.replaceChildren()}byId('more').disabled=true;byId('lead-status').textContent='접수 시트를 조회하고 있습니다.';
+  google.script.run.withFailureHandler(()=>{if(request!==leadRequest)return;byId('more').disabled=false;byId('lead-status').textContent='접수 시트를 조회하지 못했습니다. 다시 조회해 주세요.'})
+  .withSuccessHandler(data=>{if(request!==leadRequest)return;leadsLoaded=true;next=data.next;byId('more').disabled=false;byId('more').hidden=!next;
+    for(const item of data.rows)leadRow(kind,item);if(!tbody.children.length&&!next)empty(tbody,5,'표시할 접수가 없습니다.');
+    byId('lead-status').textContent='스프레드시트 원본 기준 · 최신 접수순';
+  }).listLeads(kind,next);
+}
+function tab(showLeads){byId('traffic').hidden=showLeads;byId('leads').hidden=!showLeads;byId('traffic-tab').setAttribute('aria-pressed',String(!showLeads));byId('lead-tab').setAttribute('aria-pressed',String(showLeads));if(showLeads&&!leadsLoaded)leads()}
+byId('lead-tab').onclick=()=>tab(true);byId('traffic-tab').onclick=()=>tab(false);byId('period').onchange=traffic;byId('reload').onclick=traffic;
+byId('kind').onchange=()=>leads();byId('lead-reload').onclick=()=>leads();byId('more').onclick=()=>leads(true);traffic();
+</script></body></html>
