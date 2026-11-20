@@ -77,7 +77,7 @@ test("dedicated diagnosis page preserves the existing required information and e
 
 test("the build and sitemap expose only the active pages and the error document", async () => {
   const manifest = JSON.parse(await readFile(path.join(root, "build-manifest.json"), "utf8"));
-  assert.deepEqual(manifest.pages.map(page => page.route).sort(), [...routes, "/404/", "/404.html"].sort());
+  assert.deepEqual(manifest.pages.map(page => page.route).sort(), [...routes, "/admin/", "/404/", "/404.html"].sort());
   const sitemap = await readFile(path.join(root, "sitemap.xml"), "utf8");
   assert.deepEqual([...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map(m => new URL(m[1]).pathname).sort(), [...routes].sort());
   for (const section of ["about", "activities", "consultation", "contact", "guide", "overview", "participate", "partnership", "privacy", "programs", "research", "resources", "stories", "terms", "transparency"]) {
@@ -136,7 +136,7 @@ test("public pages use the requested Hanjibung copyright credit", async () => {
   for (const page of manifest.pages) {
     const file = page.route === "/404.html" ? path.join(root, "404.html") : routeFile(page.route);
     const html = await readFile(file, "utf8");
-    assert.doesNotMatch(html, removedBrand, page.route);
+    assert.doesNotMatch(page.route === "/admin/" ? html.replace(/href="[^"]*"/g, "") : html, removedBrand, page.route);
     assert.match(html, /© 2026 hanjibung\. All rights reserved\./, page.route);
   }
 });
@@ -158,6 +158,12 @@ test("the parent and room diagnostic share GA without exposing inquiry details",
   for (const page of manifest.pages) {
     const file = page.route === "/404.html" ? path.join(root, "404.html") : routeFile(page.route);
     const content = await readFile(file, "utf8");
+    if (page.route === "/admin/") {
+      assert.match(content, /name="robots" content="noindex,nofollow"/);
+      assert.match(content, /https:\/\/accounts\.google\.com\/AccountChooser\?continue=/);
+      assert.doesNotMatch(content, /<script|data-analytics-id|spreadsheets\/d\//);
+      continue;
+    }
     assert.match(content, /data-analytics-id="G-58PJ9VG8GC"/);
     assert.doesNotMatch(content, /googleadservices\.com/);
     const scripts = [...content.matchAll(/<script[^>]+src="([^"]+)"/g)].map((match) => match[1]);
@@ -182,6 +188,8 @@ test("site chrome preserves the brand while the diagnostic home uses a text word
     } else if (page.route === "/reservation/") {
       assert.equal(imageCount, 0, page.route);
       assert.match(html, /class="reservation-app"/);
+    } else if (page.route === "/admin/") {
+      assert.match(html, /<h1>한지붕 관리자<\/h1>/);
     } else {
       assert.equal(imageCount, 2, page.route);
     }

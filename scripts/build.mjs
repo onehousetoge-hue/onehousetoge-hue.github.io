@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { pageDates } from "../src/config/page-dates.mjs";
 import { site } from "../src/config/site.mjs";
 import { privacyBody } from "../src/content/privacy.mjs";
+import { adminEntry } from "../src/lib/admin-entry.mjs";
 import { reservationPage } from "../src/lib/reservation-page.mjs";
 import { roomCheckPage } from "../src/lib/room-check-page.mjs";
 import { rentFaqSchema } from "../src/lib/rent-faq.mjs";
@@ -68,6 +69,7 @@ const notFoundHtml = layout({
 });
 await emit("/404/", notFoundHtml, { indexable: false });
 await emit("/404.html", notFoundHtml, { indexable: false });
+await emit("/admin/", adminEntry("https://script.google.com/a/macros/hometogether.kr/s/AKfycbwqQ9qzLth5TXMLzUmOKMBU8knC-f-_bDnLiK75PQUSmY2FtANssbeWhzAnl5p5vJU1/exec"), { indexable: false });
 
 const sitemapEntries = generated.filter((page) => page.indexable && page.route !== "/404.html");
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapEntries.map((page) => `  <url><loc>${absolute(page.route)}</loc><lastmod>${page.updatedAt}</lastmod></url>`).join("\n")}\n</urlset>\n`;

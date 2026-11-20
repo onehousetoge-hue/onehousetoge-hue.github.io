@@ -30,7 +30,7 @@ export function icon(name, className = "") {
   return `<svg class="icon ${className}" aria-hidden="true" viewBox="0 0 24 24">${paths[name] || paths.arrow}</svg>`;
 }
 
-export function pageHead({ title, documentTitle, description, path, type = "website", robots = "index,follow", publishedAt, updatedAt, jsonLd = [] }) {
+export function pageHead({ title, documentTitle, description, path, type = "website", robots = "index,follow", publishedAt, updatedAt, jsonLd = [], publicScripts = true }) {
   const canonical = absolute(path);
   const fullTitle = documentTitle || (title === site.name ? `${site.name} | 어르신 빈방 활용 무료상담과 세대교류` : `${title} | ${site.name}`);
   const schemas = Array.isArray(jsonLd) ? jsonLd : [jsonLd];
@@ -64,8 +64,8 @@ export function pageHead({ title, documentTitle, description, path, type = "webs
     ${publishedAt ? `<meta property="article:published_time" content="${publishedAt}">` : ""}
     ${updatedAt ? `<meta property="article:modified_time" content="${updatedAt}">` : ""}
     ${schemas.map((schema) => `<script type="application/ld+json">${JSON.stringify(schema).replaceAll("<", "\\u003c")}</script>`).join("\n")}
-    <script src="${scriptUrl}" defer></script>
-    ${policies.analyticsEnabled ? `<script src="${analyticsScriptUrl}" data-analytics-id="${site.analyticsMeasurementId}" defer></script>` : ""}`;
+    ${publicScripts ? `<script src="${scriptUrl}" defer></script>` : ""}
+    ${publicScripts && policies.analyticsEnabled ? `<script src="${analyticsScriptUrl}" data-analytics-id="${site.analyticsMeasurementId}" defer></script>` : ""}`;
 }
 
 export function diagnosisBanner() {

@@ -43,9 +43,12 @@ function traffic(){
     if(request!==trafficRequest)return;
     byId('metric-status').textContent=data.start+' ~ '+data.end+' · 한국시간 '+data.asOf+' 조회'+(data.limited?' · Google 집계 제한 적용':'');
     for(const f of data.funnels){const label=el('span',f.group+' · '+headlines[f.group]);if(f.unavailable)row(byId('funnels'),[label,'조회 실패','조회 실패','—']);else row(byId('funnels'),[label,number(f.exposed),number(f.converted),f.exposed?(100*f.converted/f.exposed).toFixed(1)+'%':'—'])}
-    for(const p of data.pages)row(byId('pages'),[routes[p.pagePath]||p.pagePath,number(p.screenPageViews),number(p.totalUsers)]);
+    const pageCounts=new Map(data.pages.map(p=>[p.pagePath,p]));
+    for(const path of ['/','/reservation/','/reservation/privacy/']){
+      const p=pageCounts.get(path),missing=data.limited?'집계 제한':'0';
+      row(byId('pages'),[routes[path],p?number(p.screenPageViews):missing,p?number(p.totalUsers):missing]);
+    }
     for(const s of data.sources)row(byId('sources'),[s.sessionSourceMedium,s.sessionCampaignName,number(s.sessions)]);
-    if(!data.pages.length)empty(byId('pages'),3,'이 기간에 집계된 페이지 조회가 없습니다.');
     if(!data.sources.length)empty(byId('sources'),3,'이 기간에 집계된 유입이 없습니다.');
   }).getTraffic(Number(byId('period').value));
 }
