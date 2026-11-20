@@ -4,7 +4,9 @@
   // The homepage and room diagnosis now run on the same origin.
   const analyticsId = document.currentScript?.dataset.analyticsId;
   if (!/^G-[A-Z0-9]{6,20}$/.test(analyticsId || "")) return;
-  if (/^[ABC]$/.test(new URL(location.href || location.origin).searchParams.get("headline_preview") || "")) return;
+  const current = new URL(location.href || location.origin);
+  if (/^[ABC]$/.test(current.searchParams.get("headline_preview") || "")) return;
+  if (current.pathname === "/reservation/" && current.searchParams.get("consultation") === "quick") return;
 
   try {
     window.dataLayer ||= [];

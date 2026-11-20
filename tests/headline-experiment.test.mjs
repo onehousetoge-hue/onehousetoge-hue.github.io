@@ -64,7 +64,7 @@ test("previews preserve normal assignment and exclude the whole preview journey 
     assert.deepEqual(page.events, []);
     assert.equal(page.link.search, "?headline_preview=" + variant);
     assert.equal(page.quickLink.href, "https://hanjibung.kr/reservation/?consultation=quick&headline_preview=" + variant + "#quick-consultation");
-    assert.equal(page.privacyLink.search, "");
+    assert.equal(page.privacyLink.search, "?headline_preview=" + variant);
     assert.equal(visit({ home: false, local, search: page.link.search }).window.hanjibungTrackHeadlineCompletion, undefined);
   }
   assert.equal(visit({ local }).heading.variant, "B");

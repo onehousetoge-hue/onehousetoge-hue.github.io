@@ -47,7 +47,9 @@ https://hanjibung.kr/?utm_source=instagram&utm_medium=social&utm_campaign=hanjib
 
 GA4의 유입경로 탐색에서 같은 기간에 각 안의 노출 이벤트와 완료 이벤트를 순서대로 지정합니다. 닫힌 유입경로의 사용자 기준 완료율을 비교하면 여러 번 방문한 사람을 한 명으로 셀 수 있습니다. 노출은 활성 탭에서 제목이 보일 때 기록하고, 완료는 접수 서버가 같은 신청 번호로 저장을 확인했을 때 기록합니다.
 
-10초 상담은 `headline_callback_a`, `headline_callback_b`, `headline_callback_c`로 구분합니다. GA4 주요 이벤트는 `diagnosis_complete`와 `callback_complete`이며 두 접수 유형 모두 금액을 설정하지 않습니다. 관리자의 A/B/C 전환율은 해당 문구를 본 뒤 두 양식 중 하나 이상을 접수한 활성 사용자 수를 그 문구를 본 활성 사용자 수로 나눕니다. 방문자 수는 기간 전체에서 구하고, 페이지 조회수에는 반복 조회를 포함합니다. 유입 표는 세션 출처·매체와 캠페인별 세션 수입니다.
+상담 신청은 `callback_complete`, 방 등록 신청은 `room_registration_complete`로 기록합니다. 제목을 실제로 본 방문자가 신청하면 `headline_callback_a/b/c` 또는 `headline_registration_a/b/c`도 기록합니다. `diagnosis_complete`와 `callback_complete`는 기존 GA4 주요 이벤트입니다. 관리자 화면은 세 양식 중 하나 이상을 접수한 활성 사용자 수를 해당 문구를 본 활성 사용자 수로 나눠 전환율을 표시합니다. 페이지 조회수에는 반복 조회가 포함됩니다. 유입 표는 세션 출처·매체와 캠페인별 세션 수를 보여줍니다.
+
+소개, 상담, 진단, 방 등록 페이지는 각 주소로 조회수를 집계합니다. `/consultation/`과 `/rooms/register/`의 신청은 기존 `상담문의` 시트에 기록합니다. 방 등록 행의 상담 주제는 `방 등록`이며, 문의 내용에 동네, 남는 방 개수, 입주 가능 시기를 함께 저장합니다. 기존 빠른 상담 링크는 캠페인 매개변수를 유지해 상담 신청 페이지로 연결합니다.
 
 홈 주소의 `?headline_preview=A`, `B`, `C`는 내부 확인용입니다. 미리보기에서 신청서로 이동해도 위 실험 이벤트는 발생하지 않습니다. 브라우저에 저장한 일반 방문자의 배정값은 그대로입니다.
 

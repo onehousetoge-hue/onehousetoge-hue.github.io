@@ -47,7 +47,7 @@
 .reservation-app .callback-form{margin:0}
 .reservation-app .callback-form fieldset{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:14px}
 .reservation-app .callback-field{min-width:0;margin-bottom:16px}
-.reservation-app .callback-field:nth-of-type(3),.reservation-app .callback-privacy,.reservation-app .callback-consent,.reservation-app .callback-status,.reservation-app .callback-submit{grid-column:1/-1}
+.reservation-app .intake-full,.reservation-app .callback-privacy,.reservation-app .callback-consent,.reservation-app .callback-status,.reservation-app .callback-submit{grid-column:1/-1}
 .reservation-app .callback-field label{display:block;margin-bottom:7px;color:#2d3948;font-size:14px;font-weight:700}
 .reservation-app .callback-field label span{font-weight:500;color:#697689}
 .reservation-app .callback-field input,.reservation-app .callback-field textarea{display:block;width:100%;min-height:48px;padding:11px 13px;border:1px solid #d3dce8;border-radius:9px;background:#fff;color:#243449;font-size:15px;line-height:1.5;box-shadow:none;resize:vertical}

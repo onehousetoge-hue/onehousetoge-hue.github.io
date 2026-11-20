@@ -3,7 +3,7 @@ var INQUIRY_SHEET_ID = '1VmJHrSyc_HinoDgLInKDyL3xQaUJlg6F28kpDKXELBk';
 var INQUIRY_VERSION = '2026-09-24';
 var INQUIRY_TABS = { consultation: '상담문의', partnership: '기관협력' };
 var INQUIRY_TOPICS = {
-  consultation: ['빈방·유휴공간 활용', '공동생활 준비', '가족과 생활규칙', '주거·복지정보', '기타 상담'],
+  consultation: ['빈방·유휴공간 활용', '공동생활 준비', '가족과 생활규칙', '주거·복지정보', '기타 상담', '방 등록'],
   partnership: ['디지털·AI 교육', '세대교류·봉사', '주거문화 안내', '실태조사 협력', '기타 기관협력']
 };
 
@@ -65,7 +65,7 @@ function doPost(e) {
     var receivedAt = Utilities.formatDate(new Date(), 'Asia/Seoul', 'yyyy-MM-dd HH:mm:ss');
     var row = [data.requestId, receivedAt].concat(values.map(cleanCell), ['동의', INQUIRY_VERSION, '접수', '', '']);
     if (data.attribution) {
-      var additional = leadCells_(data.attribution, 'callback');
+      var additional = leadCells_(data.attribution, data.topic === '방 등록' ? 'registration' : 'callback');
       if (additional.length) { ensureLeadColumns_(sheet, 13); row = row.concat(additional); }
     }
     var rowIndex = sheet.getLastRow() + 1;

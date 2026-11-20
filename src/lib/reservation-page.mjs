@@ -1,14 +1,16 @@
 import { site } from "../config/site.mjs";
-import { callbackForm } from "./callback-form.mjs";
 import { headlineExperiment } from "./static-assets.mjs";
 
 const choices = (name, values, required = true) => values.map((value) => `<label class="choice"><input type="radio" name="${name}" value="${value}"${required ? " required" : ""}><span>${value}</span></label>`).join("");
 
+export function reservationFooter() {
+  return `<footer class="reservation-footer"><div><a href="/">한지붕</a><a href="/reservation/privacy/">개인정보 처리방침</a><a href="${site.phoneHref}">문의 ${site.phone}</a></div><p>© 2026 hanjibung. All rights reserved.</p></footer>`;
+}
+
 export function reservationPage() {
   return `<div class="reservation-app">${headlineExperiment}
-    <header class="reservation-header"><div class="reservation-header-inner"><a class="reservation-brand" href="/" aria-label="한지붕 홈">한지붕</a><span class="reservation-header-label">방 등록</span><a class="reservation-about" href="/">홈으로 <span aria-hidden="true">→</span></a></div></header>
     <div class="reservation-layout">
-      <section class="reservation-intro" aria-labelledby="reservation-title"><div class="reservation-intro-copy"><p class="reservation-kicker">예상 월세 무료 진단</p><h1 id="reservation-title">얼마나 받을 수 있을까요?</h1><p class="reservation-description">집 위치와 방 정보를 남겨주세요. <br>한지붕 매니저가 예상 월세와 준비사항을 안내해 드립니다.</p></div>${callbackForm()}<img class="reservation-illustration" src="/assets/figma/hero-floorplan.png" alt="남는 방 한 칸이 있는 우리 집 평면도" width="837" height="730" decoding="async"></section>
+      <section class="reservation-intro" aria-labelledby="reservation-title"><div class="reservation-intro-copy"><p class="reservation-kicker">예상 월세 무료 진단</p><h1 id="reservation-title">얼마나 받을 수 있을까요?</h1><p class="reservation-description">집 위치와 방 정보를 남겨주세요. <br>한지붕 매니저가 예상 월세와 준비사항을 안내해 드립니다.</p></div><div class="consultation-action"><a class="consultation-trigger" href="/consultation/"><span><strong>상담 신청하기</strong><small>매니저에게 궁금한 점을 남겨 주세요.</small></span><span class="consultation-trigger-arrow" aria-hidden="true">↗</span></a></div><img class="reservation-illustration" src="/assets/figma/hero-floorplan.png" alt="남는 방 한 칸이 있는 우리 집 평면도" width="837" height="730" decoding="async"></section>
       <section class="reservation-card" aria-labelledby="diagnosis-title"><div class="reservation-card-heading"><div><h2 id="diagnosis-title" tabindex="-1">방 정보 입력</h2><p id="diagnosis-description">입력하신 내용은 월세 진단과 상담 연락에 사용합니다.</p></div><span class="required-guide"><span aria-hidden="true">*</span> 필수 입력</span></div>
         <form class="inquiry-form"><p class="prefill-notice" data-prefill-notice hidden>계산기에 입력하신 내용을 미리 채웠어요. 확인 후 나머지 정보를 입력해 주세요.</p><div class="setup-notice" role="status" hidden><p>접수 서버에 연결하지 못했어요. 다시 시도하거나 <a href="${site.phoneHref}">전화 상담(${site.phone})</a>을 이용해 주세요.</p><button type="button" data-retry-connection>연결 다시 확인</button></div><fieldset class="form-fields"><legend class="sr-only">무료 월세 진단 신청 정보</legend>
           <section class="form-section" aria-labelledby="room-information-title"><div class="form-section-heading"><span aria-hidden="true">01</span><h3 id="room-information-title">집 위치와 방 정보</h3></div><div class="form-section-fields">
@@ -24,6 +26,6 @@ export function reservationPage() {
         <div class="success" hidden><span class="success-mark" aria-hidden="true">✓</span><h3 tabindex="-1">신청해 주셔서 감사합니다</h3><p>보내주신 방 정보를 확인한 후<br>남겨주신 연락처로 안내해 드릴게요.</p><a class="primary" href="/">한지붕 홈으로</a></div>
       </section>
     </div>
-    <footer class="reservation-footer"><div><a href="/">한지붕</a><a href="/reservation/privacy/">개인정보 처리방침</a><a href="${site.phoneHref}">문의 ${site.phone}</a></div><p>© 2026 hanjibung. All rights reserved.</p></footer>
+    ${reservationFooter()}
   </div>`;
 }

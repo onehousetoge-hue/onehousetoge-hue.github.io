@@ -5,7 +5,7 @@
   // campaign starts a new visit. Only public route labels leave the browser.
   const key = "hanjibung.lead-visit.v1";
   const idleLimit = 30 * 60 * 1000;
-  const publicPaths = ["/", "/reservation/", "/reservation/privacy/"];
+  const publicPaths = ["/", "/about/", "/consultation/", "/reservation/", "/rooms/register/", "/reservation/privacy/"];
   const current = new URL(location.href);
   const route = publicPaths.includes(current.pathname) ? current.pathname : "";
   const preview = /^[ABC]$/.test(current.searchParams.get("headline_preview") || "");
@@ -21,7 +21,8 @@
     } catch { /* Direct visits have no referrer. */ }
     return "";
   }
-  if (route && !preview) {
+  const legacyConsultation = route === "/reservation/" && current.searchParams.get("consultation") === "quick";
+  if (route && !preview && !legacyConsultation) {
     const hostname = referrerHost();
     const campaign = Object.fromEntries(["source", "medium", "campaign", "id", "content", "term"]
       .map((name) => [name, campaignValue("utm_" + name)]));
@@ -55,9 +56,22 @@
         if (timedOut()) visit = newVisit();
         persist();
         const { touched, ...record } = visit;
-        return record;
+        return { ...record, conversion: route };
       },
     };
+  }
+
+  const menu = document.querySelector?.(".public-menu-small");
+  if (menu) {
+    document.addEventListener("keydown", (event) => {
+      if (menu.open && event.key === "Escape") {
+        menu.open = false;
+        menu.querySelector("summary").focus();
+      }
+    });
+    document.addEventListener("click", (event) => {
+      if (menu.open && !menu.contains(event.target)) menu.open = false;
+    });
   }
 
   // Keep reading-position jumps usable under the sticky header, including with a keyboard.

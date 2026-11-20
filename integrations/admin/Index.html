@@ -20,15 +20,15 @@ th{background:#f5f5f1;white-space:nowrap;font-weight:600}td{overflow-wrap:anywhe
 <div id="traffic"><div class="controls"><label for="period">조회 기간</label><select id="period"><option value="7">최근 7일</option><option value="28" selected>최근 28일</option><option value="90">최근 90일</option></select><button id="reload">다시 조회</button></div>
 <p id="metric-status" class="note" role="status"></p>
 <section class="card"><h2>상세페이지 A/B/C 전환율</h2><div class="scroll"><table class="metrics funnel"><thead><tr><th>문구</th><th>본 사람</th><th>접수한 사람</th><th>전환율</th></tr></thead><tbody id="funnels"></tbody></table></div>
-<p class="note">선택한 기간에 해당 문구를 본 뒤 월세 진단이나 10초 상담을 접수한 사람의 비율입니다. 한 사람이 여러 번 신청해도 한 명으로 계산합니다.</p></section>
+<p class="note">선택한 기간에 해당 문구를 본 뒤 월세 진단, 상담 또는 방 등록을 신청한 사람의 비율입니다. 한 사람이 여러 번 신청해도 한 명으로 계산합니다.</p></section>
 <section class="card"><h2>페이지별 조회</h2><div class="scroll"><table class="metrics"><thead><tr><th>페이지</th><th>조회수</th><th>방문자</th></tr></thead><tbody id="pages"></tbody></table></div></section>
 <section class="card"><h2>유입 출처와 캠페인</h2><div class="scroll"><table class="metrics"><thead><tr><th>출처 / 매체</th><th>캠페인</th><th>세션</th></tr></thead><tbody id="sources"></tbody></table></div><small>세션 기준 상위 50개 · 오늘 집계는 달라질 수 있습니다.</small></section></div>
-<div id="leads" hidden><div class="controls"><label for="kind">신청 유형</label><select id="kind"><option value="diagnosis">월세 진단</option><option value="callback">10초 상담</option></select><button id="lead-reload">새로고침</button></div>
+<div id="leads" hidden><div class="controls"><label for="kind">신청 유형</label><select id="kind"><option value="diagnosis">월세 진단</option><option value="callback">상담 · 방 등록</option></select><button id="lead-reload">새로고침</button></div>
 <p id="lead-status" class="note" role="status"></p><section class="card"><h2>최근 접수</h2><div class="scroll"><table class="leadtable"><thead><tr><th>접수 시각 · 한국시간</th><th>신청 정보</th><th>연락처</th><th>유입·전환</th><th>원본</th></tr></thead><tbody id="lead-rows"></tbody></table></div></section><button id="more" hidden>이전 접수 더 보기</button></div>
 </main><script>
 const byId=id=>document.getElementById(id);
 const headlines={A:'관리비 걱정은 이제 그만!',B:'우리 집 빈 방 얼마 받을 수 있을까?',C:'혼자 계신 부모님께 드릴 수 있는 선물'};
-const routes={'/':'상세페이지','/reservation/':'월세 진단 신청','/reservation/privacy/':'개인정보 처리방침','/reservation/?consultation=quick':'10초 상담'};
+const routes={'/':'상세페이지','/about/':'한지붕 소개','/consultation/':'상담 신청','/rooms/register/':'방 등록','/reservation/':'월세 진단 신청','/reservation/privacy/':'개인정보 처리방침','/reservation/?consultation=quick':'10초 상담'};
 function el(tag,text){const item=document.createElement(tag);if(text!=null)item.textContent=text;return item}
 function row(tbody,cells){const tr=el('tr');for(const value of cells){const td=el('td');if(value instanceof Node)td.append(value);else td.textContent=value??'—';tr.append(td)}tbody.append(tr)}
 function empty(tbody,count,text){const tr=el('tr'),td=el('td',text);td.colSpan=count;tr.append(td);tbody.append(tr)}
@@ -44,7 +44,7 @@ function traffic(){
     byId('metric-status').textContent=data.start+' ~ '+data.end+' · 한국시간 '+data.asOf+' 조회'+(data.limited?' · Google 집계 제한 적용':'');
     for(const f of data.funnels){const label=el('span',f.group+' · '+headlines[f.group]);if(f.unavailable)row(byId('funnels'),[label,'조회 실패','조회 실패','—']);else row(byId('funnels'),[label,number(f.exposed),number(f.converted),f.exposed?(100*f.converted/f.exposed).toFixed(1)+'%':'—'])}
     const pageCounts=new Map(data.pages.map(p=>[p.pagePath,p]));
-    for(const path of ['/','/reservation/','/reservation/privacy/']){
+    for(const path of ['/','/about/','/consultation/','/reservation/','/rooms/register/','/reservation/privacy/']){
       const p=pageCounts.get(path),missing=data.limited?'집계 제한':'0';
       row(byId('pages'),[routes[path],p?number(p.screenPageViews):missing,p?number(p.totalUsers):missing]);
     }

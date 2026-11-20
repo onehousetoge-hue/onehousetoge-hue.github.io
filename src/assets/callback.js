@@ -1,13 +1,14 @@
 import { validateInquiryInput, send, recordHostConsultationConversion } from "./inquiry.js";
 
-// The existing consultation contract accepts this topic, consent version and
-// receipt format. Photo diagnosis and its separate conversion remain unchanged.
-export function callbackPayload(values, requestId, consentVersion) {
+export function callbackPayload(values, requestId, consentVersion, registration = false) {
   return {
     action: "submit", kind: "consultation", requestId,
     name: String(values.name || "").trim(),
     contactMethod: "phone", contact: String(values.contact || "").trim(),
-    topic: "빈방·유휴공간 활용", message: String(values.message || "").trim(),
+    topic: registration ? "방 등록" : "빈방·유휴공간 활용",
+    message: registration
+      ? `동네: ${values.location.trim()}\n남는 방: ${values.rooms}\n입주 가능 시기: ${values.availability}`
+      : String(values.message || "").trim(),
     consent: values.consent === true, consentVersion,
     website: String(values.website || ""),
   };
@@ -19,8 +20,9 @@ export async function submitCallback(endpoint, payload) {
   const receipt = await send(endpoint, payload);
   try {
     const target = document.querySelector("script[data-analytics-id]")?.dataset.analyticsId;
-    if (/^G-[A-Z0-9]{6,20}$/.test(target || "")) window.gtag?.("event", "callback_complete", { send_to: target });
-    window.hanjibungTrackHeadlineCompletion?.(payload.attribution, "callback");
+    const registration = payload.topic === "방 등록";
+    if (/^G-[A-Z0-9]{6,20}$/.test(target || "")) window.gtag?.("event", registration ? "room_registration_complete" : "callback_complete", { send_to: target });
+    window.hanjibungTrackHeadlineCompletion?.(payload.attribution, registration ? "registration" : "callback");
   } catch { /* A verified receipt remains valid when measurement is unavailable. */ }
   await recordHostConsultationConversion(receipt, payload);
   return receipt;
@@ -31,48 +33,22 @@ if (form) {
   const fieldset = form.querySelector("fieldset");
   const button = form.querySelector("[type=submit]");
   const status = form.querySelector("[data-callback-status]");
-  const dialog = document.querySelector("[data-callback-dialog]");
-  const trigger = document.querySelector("[data-open-callback]");
-  const success = dialog?.querySelector("[data-callback-success]");
+  const success = document.querySelector("[data-callback-success]");
+  const registration = form.dataset.intake === "registration";
   if (form.dataset.endpoint) fieldset.disabled = false;
   let requestId = crypto.randomUUID(), busy = false, submitted = false;
   let attribution;
-  const quickUrl = () => {
-    const url = new URL(window.location.href);
-    url.searchParams.set("consultation", "quick");
-    return `${url.pathname}${url.search}${url.hash}`;
-  };
-  const openDialog = () => {
-    if (dialog.open) return;
-    dialog.showModal();
-    dialog.querySelector("#callback-dialog-title").focus();
-  };
-  trigger?.addEventListener("click", (event) => {
-    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-    event.preventDefault();
-    window.history.replaceState(window.history.state, "", quickUrl());
-    openDialog();
-  });
-  if (new URL(window.location.href).searchParams.get("consultation") === "quick") openDialog();
-  dialog?.querySelectorAll("[data-close-callback]").forEach((close) => {
-    close.addEventListener("click", () => { if (!busy) dialog.close(); });
-  });
-  dialog?.addEventListener("click", (event) => { if (event.target === dialog && !busy) dialog.close(); });
-  dialog?.addEventListener("cancel", (event) => { if (busy) event.preventDefault(); });
-  dialog?.addEventListener("close", () => {
-    const url = new URL(window.location.href);
-    if (url.searchParams.get("consultation") === "quick") {
-      url.searchParams.delete("consultation");
-      window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
-    }
-    trigger?.focus();
-  });
   form.addEventListener("input", () => { if (!busy) { requestId = crypto.randomUUID(); attribution = undefined; } });
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (busy || submitted || !form.dataset.endpoint) return;
     const values = { ...Object.fromEntries(new FormData(form)), consent: form.elements.consent.checked };
-    const payload = callbackPayload(values, requestId, form.dataset.consentVersion);
+    if (registration && !values.location.trim()) {
+      status.textContent = "방이 있는 동네를 입력해 주세요.";
+      form.elements.location.focus();
+      return;
+    }
+    const payload = callbackPayload(values, requestId, form.dataset.consentVersion, registration);
     const errors = validateInquiryInput(payload, "consultation");
     form.querySelectorAll("[aria-invalid]").forEach((element) => element.removeAttribute("aria-invalid"));
     if (Object.keys(errors).length) {
@@ -91,8 +67,8 @@ if (form) {
     try {
       const receipt = await submitCallback(form.dataset.endpoint, payload);
       submitted = true; form.reset();
-      button.textContent = "상담 신청 접수 완료";
-      status.textContent = `상담 신청이 접수되었습니다. 남겨주신 번호로 안내드립니다. 접수번호: ${receipt.requestId}`;
+      button.textContent = "접수 완료";
+      status.textContent = `신청이 접수되었습니다. 남겨주신 번호로 안내드립니다. 접수번호: ${receipt.requestId}`;
       if (success) {
         form.hidden = true;
         success.hidden = false;

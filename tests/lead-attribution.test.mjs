@@ -50,3 +50,18 @@ test("all web and data entry points deny missing or different Google identities 
       assert.throws(()=>vm.runInContext(call,ctx),/관리자 로그인/);
   }
 });
+
+test("new entry pages retain the original campaign and distinguish each conversion destination",()=>{
+  for(const landing of ["/about/","/consultation/","/rooms/register/"]){
+    for(const [kind,conversion] of [["diagnosis","/reservation/"],["callback","/consultation/"],["registration","/rooms/register/"]]){
+      const store=new Map();
+      navigate(landing+"?utm_source=naver&utm_medium=referral",store);
+      const data=navigate(conversion,store).snapshot();
+      const ctx=vm.createContext({data});vm.runInContext(sheets,ctx);
+      const cells=ctx.leadCells_(data,kind);
+      assert.equal(cells[0],landing);
+      assert.equal(cells[1],conversion);
+      assert.equal(cells[3],"naver");
+    }
+  }
+});

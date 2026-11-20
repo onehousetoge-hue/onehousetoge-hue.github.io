@@ -72,19 +72,22 @@ export function diagnosisBanner() {
   return `<a class="diagnosis-top-banner" href="/reservation/"><img src="/assets/figma/benefit-income.svg" width="30" height="30" alt=""><span>예상 월세 무료 진단 신청하기</span><span class="banner-arrow" aria-hidden="true">→</span></a>`;
 }
 
-export function header() {
-  return `
-    <a class="skip-link" href="#main-content">본문으로 바로가기</a>
-    <header class="site-header" data-header>
-      ${diagnosisBanner()}
-      <div class="container header-inner">
-        <a class="brand" href="/" aria-label="한지붕 HANJIBUNG 홈페이지">
-          <img class="site-brand-logo" src="/assets/hanjibung-logo-256.png" width="56" height="51" alt="">
-          <span><strong>${site.name}</strong> <small>${site.englishName}</small></span>
-        </a>
-        <a class="header-quick-action" href="/reservation/">무료 월세 진단</a>
-      </div>
-    </header>`;
+const menuItems = [
+  ["/about/", "한지붕 소개"],
+  ["/consultation/", "상담 신청하기"],
+  ["/reservation/", "우리 집 빈 방 월세 진단"],
+  ["/rooms/register/", "방 등록하기"],
+];
+
+function header(path) {
+  const links = menuItems.map(([href, label]) =>
+    `<a href="${href}"${path === href ? ' aria-current="page"' : ""}>${label}</a>`
+  ).join("");
+  return `<header class="public-header"><div class="public-header-inner">
+    <a class="public-brand" href="/" aria-label="한지붕 홈">한지붕</a>
+    <nav class="public-menu-wide" aria-label="주 메뉴">${links}</nav>
+    <details class="public-menu-small"><summary>${icon("menu")} 메뉴</summary><nav aria-label="주 메뉴">${links}</nav></details>
+  </div></header>`;
 }
 
 export function rentDiagnosisDock() {
@@ -117,7 +120,7 @@ export function pageHero({ eyebrow, title, description, meta = "" }) {
   return `<section class="page-hero"><div class="container narrow"><p class="eyebrow">${escapeHtml(eyebrow)}</p><h1>${title}</h1><p class="page-lead">${escapeHtml(description)}</p>${meta}</div></section>`;
 }
 
-export function layout({ title, documentTitle, description, path, body, breadcrumbs = [], type, robots, publishedAt, updatedAt, jsonLd = [], bodyClass = "", showHeader = true, showFooter = true }) {
+export function layout({ title, documentTitle, description, path, body, breadcrumbs = [], type, robots, publishedAt, updatedAt, jsonLd = [], bodyClass = "", showDiagnosisDock = true, showFooter = true }) {
   const breadcrumbSchema = breadcrumbs.length
     ? {
         "@context": "https://schema.org",
@@ -135,7 +138,7 @@ export function layout({ title, documentTitle, description, path, body, breadcru
     : null;
   const schemas = [...(Array.isArray(jsonLd) ? jsonLd : [jsonLd])].filter(Boolean);
   if (breadcrumbSchema) schemas.push(breadcrumbSchema);
-  return `<!doctype html><html lang="ko"><head>${pageHead({ title, documentTitle, description, path, type, robots, publishedAt, updatedAt, jsonLd: schemas })}</head><body id="page-top" class="${bodyClass}">${showHeader ? header() : '<a class="skip-link" href="#main-content">본문으로 바로가기</a>'}${breadcrumb(breadcrumbs)}<main id="main-content">${body}</main>${showFooter ? footer() : ""}${showHeader ? rentDiagnosisDock() : ""}</body></html>`;
+  return `<!doctype html><html lang="ko"><head>${pageHead({ title, documentTitle, description, path, type, robots, publishedAt, updatedAt, jsonLd: schemas })}</head><body id="page-top" class="${bodyClass}"><a class="skip-link" href="#main-content">본문으로 바로가기</a>${header(path)}${breadcrumb(breadcrumbs)}<main id="main-content">${body}</main>${showFooter ? footer() : ""}${showDiagnosisDock ? rentDiagnosisDock() : ""}</body></html>`;
 }
 
 export const organizationSchema = {

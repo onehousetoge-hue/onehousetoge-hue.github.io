@@ -85,11 +85,11 @@ function getTraffic(days) {
   const property = 'properties/' + DEPLOYMENT.property;
   const day = shift => Utilities.formatDate(new Date(Date.now()+shift*86400000),'Asia/Seoul','yyyy-MM-dd');
   const dates = [{startDate:day(1-days),endDate:day(0)}];
-  const cache = CacheService.getUserCache(), key = 'traffic-v1-' + days + '-' + day(0);
+  const cache = CacheService.getUserCache(), key = 'traffic-v2-' + days + '-' + day(0);
   const saved = cache.get(key);
   if (saved) return JSON.parse(saved);
   const host = {filter:{fieldName:'hostName', inListFilter:{values:['hanjibung.kr','www.hanjibung.kr']}}};
-  const paths = {filter:{fieldName:'pagePath',inListFilter:{values:['/','/reservation/','/reservation/privacy/']}}};
+  const paths = {filter:{fieldName:'pagePath',inListFilter:{values:['/','/about/','/consultation/','/reservation/','/rooms/register/','/reservation/privacy/']}}};
   const filter = {andGroup:{expressions:[host,paths]}};
   function report(dimensions, metrics, sort, limit) {
     return {dateRanges:dates, dimensionFilter:filter, dimensions:dimensions.map(name => ({name})),
@@ -108,7 +108,7 @@ function getTraffic(days) {
     muteHttpExceptions:true, payload:JSON.stringify({dateRanges:dates, dimensionFilter:host,
       funnel:{isOpenFunnel:false,steps:[
         {name:'Headline',filterExpression:event('headline_view_' + group)},
-        {name:'Receipt',filterExpression:{orGroup:{expressions:[event('headline_complete_' + group),event('headline_callback_' + group)]}}}
+        {name:'Receipt',filterExpression:{orGroup:{expressions:[event('headline_complete_' + group),event('headline_callback_' + group),event('headline_registration_' + group)]}}}
       ]}})
   }));
   const funnels = UrlFetchApp.fetchAll(requests).map((response,index) => {

@@ -1,0 +1,124 @@
+<!doctype html><html lang="ko"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="집주인과 대학생이 한집에서 지내도록 돕는 한지붕의 활동과 노원구 공릉동에서 시작한 빈방 활용 서비스를 소개합니다.">
+    <meta name="robots" content="index,follow">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="theme-color" content="#8f2929">
+    <title>한지붕 소개 | 한지붕</title>
+    <link rel="canonical" href="https://hanjibung.kr/about/">
+    <link rel="icon" href="/assets/hanjibung-icon-64.png" type="image/png" sizes="64x64">
+    <link rel="apple-touch-icon" href="/assets/hanjibung-icon-192.png" sizes="192x192">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="stylesheet" href="/assets/site.css?v=505db7a8bafd">
+    <meta property="og:locale" content="ko_KR">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="한지붕">
+    <meta property="og:title" content="한지붕 소개 | 한지붕">
+    <meta property="og:description" content="집주인과 대학생이 한집에서 지내도록 돕는 한지붕의 활동과 노원구 공릉동에서 시작한 빈방 활용 서비스를 소개합니다.">
+    <meta property="og:url" content="https://hanjibung.kr/about/">
+    <meta property="og:image" content="https://hanjibung.kr/assets/og-default.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="한지붕 - 남는 공간을 살피고 세대가 함께 살아갈 기준을 만듭니다">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="한지붕 소개 | 한지붕">
+    <meta name="twitter:description" content="집주인과 대학생이 한집에서 지내도록 돕는 한지붕의 활동과 노원구 공릉동에서 시작한 빈방 활용 서비스를 소개합니다.">
+    <meta name="twitter:image" content="https://hanjibung.kr/assets/og-default.png">
+
+
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"NGO","name":"한지붕","alternateName":"HANJIBUNG","url":"https://hanjibung.kr/","member":{"@type":"OrganizationRole","roleName":"대표자","member":{"@type":"Person","name":"김현수"}},"foundingDate":"2026-07-05","telephone":"010-4587-9428","email":"onehousetoge@gmail.com","description":"한지붕은 어르신의 빈방 활용 무료상담, 방 준비·청년 입주·거주 관리와 세대교류 교육·봉사를 제공하는 비영리단체입니다. 국세기본법상 법인으로 보는 단체로 승인받았으며, 주거상생 실태조사는 현재 진행 중입니다.","address":{"@type":"PostalAddress","streetAddress":"동일로 195길","addressLocality":"노원구","addressRegion":"서울특별시","addressCountry":"KR"}}</script>
+    <script src="/assets/site.js?v=28321f935f20" defer></script>
+    <script src="/assets/analytics.js?v=0311c316ad4b" data-analytics-id="G-58PJ9VG8GC" defer></script><link rel="stylesheet" href="/assets/reservation.css?v=2e65ff343885"><link rel="stylesheet" href="/assets/service-pages.css?v=8b5cdf08b9dd"></head><body id="page-top" class="reservation-page"><a class="skip-link" href="#main-content">본문으로 바로가기</a><header class="public-header"><div class="public-header-inner">
+    <a class="public-brand" href="/" aria-label="한지붕 홈">한지붕</a>
+    <nav class="public-menu-wide" aria-label="주 메뉴"><a href="/about/" aria-current="page">한지붕 소개</a><a href="/consultation/">상담 신청하기</a><a href="/reservation/">우리 집 빈 방 월세 진단</a><a href="/rooms/register/">방 등록하기</a></nav>
+    <details class="public-menu-small"><summary><svg class="icon " aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg> 메뉴</summary><nav aria-label="주 메뉴"><a href="/about/" aria-current="page">한지붕 소개</a><a href="/consultation/">상담 신청하기</a><a href="/reservation/">우리 집 빈 방 월세 진단</a><a href="/rooms/register/">방 등록하기</a></nav></details>
+  </div></header><main id="main-content"><script>(() => {
+  "use strict";
+  const heading = document.getElementById("host-title");
+  const params = new URLSearchParams(location.search);
+  if (heading && params.get("diagnosis") === "1") return;
+
+  const variants = ["A", "B", "C"];
+  const preview = params.get("headline_preview");
+  const isPreview = variants.includes(preview);
+  const storageKey = "hanjibung.host-headline.v1";
+  const storageTypes = ["localStorage", "sessionStorage"];
+  let variant = isPreview ? preview : null;
+  let assigned = false;
+
+  if (!isPreview) {
+    for (const type of storageTypes) {
+      try {
+        const saved = window[type].getItem(storageKey);
+        if (variants.includes(saved)) { variant = saved; assigned = true; break; }
+      } catch { /* Storage may be unavailable in a private browser. */ }
+    }
+    if (heading && !variant) {
+      variant = variants[Math.floor(Math.random() * variants.length)];
+      for (const type of storageTypes) {
+        try {
+          window[type].setItem(storageKey, variant);
+          assigned = true;
+          break;
+        } catch { /* Try tab storage if persistent storage is blocked. */ }
+      }
+    }
+  }
+  if (!variant && heading) return;
+
+  if (heading && variant !== "A") {
+    const template = document.getElementById(`host-title-${variant}`);
+    heading.replaceChildren(template.content.cloneNode(true));
+  }
+  if (isPreview) {
+    document.addEventListener("DOMContentLoaded", () => {
+      for (const link of document.querySelectorAll('a[href^="/"]:not([href^="//"])')) {
+        const destination = new URL(link.href);
+        if (!["/", "/about/", "/consultation/", "/reservation/", "/rooms/register/", "/reservation/privacy/"].includes(destination.pathname)) continue;
+        destination.searchParams.set("headline_preview", variant);
+        link.search = destination.search;
+      }
+    }, { once: true });
+    return;
+  }
+  if (heading && !assigned) return;
+
+  function track(step, group) {
+    try {
+      const id = document.querySelector("script[data-analytics-id]")?.dataset.analyticsId;
+      if (/^G-[A-Z0-9]{6,20}$/.test(id || "") && typeof window.gtag === "function") {
+        window.gtag("event", `headline_${step}_${group.toLowerCase()}`, { send_to: id });
+      }
+    } catch { /* Analytics must not interrupt the page or a confirmed application. */ }
+  }
+  if (heading) {
+    document.addEventListener("DOMContentLoaded", () => {
+      const recordView = () => {
+        const { top, bottom } = heading.getBoundingClientRect();
+        if (document.hidden || bottom <= 0 || top >= window.innerHeight) return;
+        document.removeEventListener("visibilitychange", recordView);
+        window.removeEventListener("scroll", recordView);
+        window.removeEventListener("resize", recordView);
+        window.hanjibungLeadVisit?.expose(variant);
+        track("view", variant);
+      };
+      document.addEventListener("visibilitychange", recordView);
+      window.addEventListener("scroll", recordView, { passive: true });
+      window.addEventListener("resize", recordView);
+      recordView();
+    }, { once: true });
+  } else {
+    window.hanjibungTrackHeadlineCompletion = (record, kind = "diagnosis") => {
+      const step = { diagnosis: "complete", callback: "callback", registration: "registration" }[kind];
+      if (step && /^[ABC]$/.test(record?.variant || "")) track(step, record.variant);
+    };
+  }
+})();</script><div class="service-about">
+    <section class="about-intro"><div class="about-copy"><h1>한지붕 소개</h1>
+      <p>남는 방이 있는 집주인과 살 곳을 찾는 대학생이 한집에서 각자의 일상을 이어갈 수 있도록 돕습니다.</p>
+      <a class="service-action" href="/consultation/">상담 신청하기 <span aria-hidden="true">→</span></a>
+    </div><img src="/assets/figma/step-management.png" width="866" height="574" alt="집주인과 학생이 지내는 집을 방문한 한지붕 매니저" decoding="async"></section>
+    <section class="about-benefits" id="goals"><h2>한지붕이 함께하는 일</h2><div class="about-benefit-grid"><article><img src="/assets/figma/benefit-income.svg" width="52" height="52" alt="" loading="lazy"><div><h3>빈방으로 생활소득</h3><p>사용하지 않던 방을 청년의 주거 공간으로 활용해, 생활비에 보탬이 되는 월세를 받아보세요.</p></div></article><article><img src="/assets/figma/benefit-youth.svg" width="52" height="52" alt="" loading="lazy"><div><h3>서로 맞는 청년과 함께</h3><p>청년의 신원과 생활습관을 미리 확인하고, 입주 전 함께 지킬 생활 규칙을 정합니다.</p></div></article><article><img src="/assets/figma/benefit-chores.svg" width="52" height="52" alt="" loading="lazy"><div><h3>식사·빨래 부담 없이</h3><p>청년의 식사나 빨래를 챙겨줄 필요 없이, 각자의 생활을 존중하며 함께 지냅니다.</p></div></article><article><img src="/assets/figma/benefit-manager.svg" width="52" height="52" alt="" loading="lazy"><div><h3>거주 중에도 함께 관리</h3><p>함께 살며 불편이나 갈등이 생기면, 한지붕이 중간에서 함께 조율합니다.</p></div></article></div></section>
+    <section class="about-local"><h2>서울 노원구 공릉동에서 시작했습니다</h2><p>한지붕은 2026년 9월 기준 55가구를 관리하고 있습니다. 우리 동네에서도 방문 지원이 가능한지 궁금하시면 상담 신청에 동네 이름을 남겨 주세요.</p><a href="/#rent-faq">집주인이 자주 묻는 질문 보기 <span aria-hidden="true">→</span></a></section>
+    <footer class="reservation-footer"><div><a href="/">한지붕</a><a href="/reservation/privacy/">개인정보 처리방침</a><a href="tel:+821045879428">문의 010-4587-9428</a></div><p>© 2026 hanjibung. All rights reserved.</p></footer></div></main></body></html>

@@ -425,3 +425,9 @@
 }
 
 @media(prefers-reduced-motion:reduce){.room-app *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+.room-app .host-about-summary { display: flex; justify-content: space-between; align-items: center; gap: 16px 24px; padding: 20px 24px; border-radius: 14px; background: #eff5ff; color: #25415d; }
+.room-app .host-about-summary p { font-size: 17px; line-height: 1.55; word-break: keep-all; }
+.room-app .host-about-summary a { flex: none; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: #185bb1; font-weight: 650; text-decoration: underline; text-underline-offset: 4px; }
+.room-app .host-hero-copy .header-faq-link { margin-top: 8px; }
+@media (max-width: 720px) { .room-app .host-about-summary { flex-wrap: wrap; gap: 4px; } }

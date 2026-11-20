@@ -65,7 +65,10 @@ for (const file of htmlFiles) {
   for (const match of html.matchAll(/<img\b([^>]*)>/g)) if (!/\balt="[^"]*"/.test(match[1])) failures.push(`${relative}: alt 없는 이미지가 있습니다.`);
   const verifiedLegacyForm = /<form[^>]*data-inquiry="(?:consultation|partnership)"[^>]*data-endpoint="https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec"/.test(html);
   const verifiedRoomForm = relative === path.join("reservation", "index.html") && /<form class="inquiry-form"/.test(html) && /src="\/assets\/reservation\.js\?v=/.test(html) && verifiedRoomEndpoint;
-  if (/<form\b/.test(html) && !verifiedLegacyForm && !verifiedRoomForm) failures.push(`${relative}: 검증된 접수 URL 없는 form이 있습니다.`);
+  const verifiedIntake = [path.join("consultation", "index.html"), path.join("rooms", "register", "index.html")].includes(relative)
+    && /<form[^>]+data-callback-form[^>]+data-endpoint="https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec"/.test(html)
+    && /src="\/assets\/callback\.js\?v=/.test(html);
+  if (/<form\b/.test(html) && !verifiedLegacyForm && !verifiedRoomForm && !verifiedIntake) failures.push(`${relative}: 검증된 접수 URL 없는 form이 있습니다.`);
   const route = relative === "index.html" ? "/" : "/" + relative.replaceAll(path.sep, "/").replace(/index\.html$/, "");
   const indexed = manifest.pages.find(page => page.route === route)?.indexable;
   if (indexed) {

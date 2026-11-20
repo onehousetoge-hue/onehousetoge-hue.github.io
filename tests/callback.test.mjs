@@ -52,23 +52,47 @@ test('callback tracks only after a matching saved receipt, and retry preserves i
   assert.equal(fetchStub.mock.callCount(),calls);
 });
 
-test('quick consultation stays on reservation and cannot interfere with diagnosis',async()=>{
-  const html=await readFile(new URL('../dist/reservation/index.html',import.meta.url),'utf8');
-  assert.equal((html.match(/data-callback-form/g)||[]).length,1);
-  assert.equal((html.match(/class="inquiry-form"/g)||[]).length,1);
-  assert.match(html,/<form class="callback-form"[^>]*>[\s\S]*?<fieldset disabled>/);
-  assert.match(html,/aria-label="사진 없이 10초만에 상담"/);
-  assert.match(html, /data-open-callback aria-haspopup="dialog"/);
-  assert.match(html, /href="\/reservation\/\?consultation=quick" data-open-callback/);
-  assert.match(html, /<dialog[^>]*data-callback-dialog[^>]*aria-labelledby="callback-dialog-title"/);
-  assert.ok(html.indexOf('data-open-callback') < html.indexOf('class="reservation-illustration"'));
-  assert.ok(html.includes(inquiries.endpoint));
-  assert.match(html,/상담 종료일로부터 최대 1년간/);
-  assert.match(html,/상담 완료 후 90일 이내/);
-  assert.doesNotMatch(html.match(/<form class="callback-form"[\s\S]*?<\/form>/)[0],/type="file"|data-inquiry=/);
-  const diagnosis=await readFile(new URL('../src/assets/reservation.js',import.meta.url),'utf8');
-  assert.doesNotMatch(html, /type="file"/);
-  assert.match(diagnosis, /photos: \[\]/);
-  assert.doesNotMatch(diagnosis, /fileInput|addPhotos|compressPhoto/);
-  assert.match(diagnosis,/hanjibungTrackDiagnosisAdsConversion/);
+test('the two intake forms have distinct fields and the existing diagnosis keeps its inputs',async()=>{
+  const page = async path => readFile(new URL('../dist/' + path + '/index.html',import.meta.url),'utf8');
+  const consultation=await page('consultation'), registration=await page('rooms/register'), diagnosis=await page('reservation');
+  for(const [html,kind] of [[consultation,'consultation'],[registration,'registration']]){
+    assert.equal((html.match(/<form\b/g)||[]).length,1);
+    assert.ok(html.includes('data-intake="'+kind+'"'));
+    assert.ok(html.includes(inquiries.endpoint));
+    assert.match(html,/<fieldset disabled>/);
+    assert.match(html,/상담 종료일로부터 최대 1년간/);
+    assert.doesNotMatch(html,/type="file"/);
+  }
+  assert.match(consultation,/<textarea[^>]+name="message"/);
+  for(const field of ['location','rooms','availability']){
+    assert.ok(registration.includes('name="'+field+'"'));
+    assert.ok(!consultation.includes('name="'+field+'"'));
+  }
+  assert.doesNotMatch(diagnosis,/data-callback-form|data-open-callback/);
+  assert.match(diagnosis,/class="inquiry-form"/);
+  assert.match(diagnosis,/href="\/consultation\/"/);
+  assert.match(diagnosis,/상담 완료 후 90일 이내/);
+  const redirect=diagnosis.match(/<script>(const legacyConsultation[\s\S]*?)<\/script>/)[1];
+  let destination;
+  vm.runInNewContext(redirect,{URL,location:{href:'https://hanjibung.kr/reservation/?consultation=quick&utm_source=naver#quick-consultation',replace:url=>{destination=url;}}});
+  assert.equal(destination,'https://hanjibung.kr/consultation/?utm_source=naver#quick-consultation');
+});
+
+test('registration accepts room details in the existing sheet contract and measures a separate confirmed event',async(t)=>{
+  const form={...values,location:'공릉동',rooms:'1개',availability:'일정 협의'};
+  const data=callbackPayload(form,id,inquiries.consentVersion,true);
+  const ctx=vm.createContext({});
+  vm.runInContext(await readFile(new URL('../integrations/inquiries/Code.gs',import.meta.url),'utf8'),ctx);
+  const normalized=ctx.validateInquiry(data);
+  assert.equal(normalized.topic,'방 등록');
+  assert.equal(normalized.message,'동네: 공릉동\n남는 방: 1개\n입주 가능 시기: 일정 협의');
+  assert.throws(()=>ctx.validateInquiry({...data,consent:false}));
+  const events=[], ads=[];
+  globalThis.document={querySelector:()=>({dataset:{analyticsId:'G-58PJ9VG8GC'}})};
+  globalThis.window={gtag:(...args)=>events.push(args),hanjibungTrackConsultationAdsConversion:key=>ads.push(key)};
+  t.after(()=>{delete globalThis.document; delete globalThis.window;});
+  t.mock.method(globalThis,'fetch',async()=>({ok:true,type:'basic',json:async()=>({ok:true,...receipt})}));
+  await submitCallback(inquiries.endpoint,data);
+  assert.deepEqual(events,[['event','room_registration_complete',{send_to:'G-58PJ9VG8GC'}]]);
+  assert.deepEqual(ads,[]);
 });

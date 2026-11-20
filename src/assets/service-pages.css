@@ -1,0 +1,41 @@
+.service-about, .service-intake { color: #1c2e43; font-family: Pretendard, "Malgun Gothic", sans-serif; word-break: keep-all; overflow-wrap: anywhere; }
+.service-about :is(h1,h2,h3,p) { margin: 0; }
+.about-intro, .about-benefits, .about-local, .intake-layout { width: min(1000px, calc(100% - 64px)); margin-inline: auto; }
+.about-intro { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 40px; padding-block: 64px; }
+.about-intro img { width: 100%; height: auto; }
+.about-copy h1, .reservation-app .intake-intro h1 { font-size: clamp(32px, 4vw, 48px); line-height: 1.2; letter-spacing: -.055em; }
+.about-copy p, .reservation-app .intake-intro p { margin-top: 20px; max-width: 34ch; font-size: 19px; line-height: 1.7; color: #41546b; }
+.service-action { display: inline-flex; align-items: center; gap: 24px; min-height: 48px; margin-top: 28px; padding: 10px 20px; border-radius: 9px; background: #215fc0; color: #fff; text-decoration: none; font-size: 16px; font-weight: 650; }
+.about-benefits { padding-block: 32px 56px; border-top: 1px solid #dbe5ee; }
+.about-benefits h2, .about-local h2 { font-size: clamp(24px, 3vw, 32px); line-height: 1.4; letter-spacing: -.04em; }
+.about-benefit-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; margin-top: 24px; }
+.about-benefit-grid article { display: flex; align-items: flex-start; gap: 18px; padding: 24px; border-radius: 16px; background: #f3f7fc; }
+.about-benefit-grid h3 { font-size: 21px; letter-spacing: -.035em; }
+.about-benefit-grid p, .about-local p { margin-top: 8px; color: #475870; font-size: 17px; line-height: 1.65; }
+.about-local { margin-bottom: 64px; }
+.about-local a, .reservation-app .intake-related, .reservation-app .callback-success a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 8px; color: #1759aa; text-decoration: underline; text-underline-offset: 4px; font-size: 16px; font-weight: 650; }
+.intake-layout { display: grid; grid-template-columns: minmax(0,.76fr) minmax(0,1.24fr); align-items: start; gap: clamp(32px,7vw,92px); padding-block: clamp(36px,6vw,84px); }
+.intake-intro img { display: block; width: min(100%,260px); height: auto; margin-top: 20px; }
+.intake-card { padding: clamp(22px,3vw,36px); border: 1px solid #dbe3ed; border-radius: 19px; background: #fff; }
+.reservation-app .intake-card h2 { margin: 0 0 24px; font-size: 24px; line-height: 1.4; letter-spacing: -.04em; }
+.service-intake .callback-field label { font-size: 16px; }
+.service-intake .callback-field :is(input,textarea,select) { box-sizing: border-box; width: 100%; min-height: 50px; padding: 11px 13px; border: 1px solid #b9c7d9; border-radius: 8px; background: white; color: #233a53; font: inherit; }
+.service-intake .callback-field textarea { min-height: 115px; }
+.service-intake .callback-field p, .service-intake .callback-privacy p { color: #4d6077; font-size: 14px; }
+.service-intake .callback-privacy summary, .service-intake .callback-consent { min-height: 44px; font-size: 15px; }
+.service-intake .callback-consent { align-items: center; margin-bottom: 8px; }
+.service-about .reservation-footer { border-top: 1px solid #dbe3ed; padding: 24px 0; color: #53677c; font-size: 14px; width: min(1000px, calc(100% - 64px)); margin: auto; }
+.service-about .reservation-footer div { display: flex; flex-wrap: wrap; gap: 12px 24px; }
+.service-about .reservation-footer a { color: inherit; }
+@media(max-width:720px) {
+  .about-intro,.about-benefits,.about-local,.intake-layout { width: calc(100% - 40px); }
+  .about-intro,.intake-layout { grid-template-columns: minmax(0,1fr); gap: 26px; padding-block: 36px; }
+  .about-intro img { width: min(100%,350px); margin: auto; }
+  .about-benefit-grid { grid-template-columns: 1fr; }
+  .about-benefit-grid article { padding: 18px; }
+  .reservation-app .intake-intro p { max-width: none; margin-top: 12px; font-size: 17px; }
+  .intake-intro img { display: none; }
+  .intake-card { padding: 20px 16px; }
+  .service-intake .callback-form fieldset { grid-template-columns: 1fr; }
+  .service-about .reservation-footer { width: calc(100% - 40px); }
+}

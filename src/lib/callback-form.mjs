@@ -1,23 +1,40 @@
 import { inquiries } from "../config/inquiries.mjs";
+import { site } from "../config/site.mjs";
 import { escapeHtml } from "./template.mjs";
-import { callbackScriptUrl } from "./static-assets.mjs";
+import { callbackScriptUrl, headlineExperiment } from "./static-assets.mjs";
+import { reservationFooter } from "./reservation-page.mjs";
 
-export function callbackForm() {
-  return `<div class="consultation-action">
-    <a class="consultation-trigger" href="/reservation/?consultation=quick" data-open-callback aria-haspopup="dialog" aria-controls="callback-dialog" aria-label="사진 없이 10초만에 상담"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16v11H10l-5 3v-3H4z"/><path d="M8 9.5h8M8 12.5h5"/></svg><span><strong><em>사진 없이</em>10초만에 상담</strong><small>궁금한 점부터 편하게 물어보세요</small></span><span class="consultation-trigger-arrow" aria-hidden="true">↗</span></a>
-    <dialog class="callback-dialog" id="callback-dialog" data-callback-dialog aria-labelledby="callback-dialog-title" aria-describedby="callback-dialog-description">
-      <div class="callback-dialog-head"><span class="callback-eyebrow">사진 없이 간단하게</span><button class="callback-close" type="button" data-close-callback aria-label="상담 신청 창 닫기">×</button><h2 id="callback-dialog-title" tabindex="-1">10초 만에 상담 신청</h2><p id="callback-dialog-description">이름과 연락처, 궁금한 점만 남겨주세요.<br>한지붕 매니저가 확인 후 연락드립니다.</p></div>
-      <div class="callback-dialog-body"><form class="callback-form" data-callback-form data-endpoint="${escapeHtml(inquiries.endpoint)}" data-consent-version="${escapeHtml(inquiries.consentVersion)}" novalidate>
-        <fieldset disabled><legend class="sr-only">사진 없는 빈방 활용 상담 신청</legend>
-          <div class="callback-field"><label for="callback-name">이름 <span>(필수)</span></label><input id="callback-name" name="name" autocomplete="name" maxlength="60" required></div>
-          <div class="callback-field"><label for="callback-contact">연락받을 전화번호 <span>(필수)</span></label><input id="callback-contact" name="contact" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="010-0000-0000" required></div>
-          <div class="callback-field"><label for="callback-message">궁금한 점 <span>(필수, 5자 이상)</span></label><textarea id="callback-message" name="message" rows="3" minlength="5" maxlength="1000" placeholder="예: 부모님 집의 남는 방을 활용할 수 있을지 궁금해요." required></textarea><p>상세 주소·민감정보는 적지 마세요.</p></div>
+export function intakePage(registration = false) {
+  const title = registration ? "방 등록하기" : "상담 신청하기";
+  const action = registration ? "방 등록 신청하기" : "상담 신청하기";
+  const success = registration ? "방 등록 신청을 받았습니다" : "상담 신청을 받았습니다";
+  const description = registration
+    ? "학생에게 내어줄 방의 정보를 남겨 주세요. 매니저가 연락드려 방 상태와 입주 조건을 확인합니다."
+    : "빈방을 어떻게 활용할지, 대학생과 함께 지내면 어떨지 궁금한 점을 남겨 주세요. 한지붕 매니저가 연락드립니다.";
+  const purpose = registration ? "방 등록 신청 확인과 입주 준비 상담" : "문의 확인과 상담 답변";
+  const fields = registration ? "이름, 전화번호, 동네, 남는 방 개수, 입주 가능 시기" : "이름, 전화번호, 궁금한 점";
+  return `<div class="reservation-app service-intake">${headlineExperiment}<div class="intake-layout">
+    <section class="intake-intro"><h1>${title}</h1><p>${description}</p>
+      <img src="/assets/figma/${registration ? "step-preparation.png" : "step-management.png"}" width="${registration ? 634 : 866}" height="${registration ? 488 : 574}" alt="" decoding="async">
+      <a class="intake-related" href="/reservation/">예상 월세 먼저 알아보기 <span aria-hidden="true">→</span></a>
+    </section>
+    <section${registration ? "" : ' id="quick-consultation"'} class="intake-card" aria-labelledby="intake-title"><h2 id="intake-title">${registration ? "등록할 방 정보" : "상담받을 내용"}</h2>
+      <form class="callback-form" data-callback-form data-intake="${registration ? "registration" : "consultation"}" data-endpoint="${escapeHtml(inquiries.endpoint)}" data-consent-version="${escapeHtml(inquiries.consentVersion)}">
+        <fieldset disabled><legend class="sr-only">${title} 필수 정보</legend>
+          ${registration ? `<div class="callback-field intake-full"><label for="room-area">방이 있는 동네</label><input id="room-area" name="location" required maxlength="100" placeholder="예: 서울 노원구 공릉동" aria-describedby="room-area-help"><p id="room-area-help">시·구·동까지만 입력해 주세요.</p></div>
+          <div class="callback-field"><label for="room-count">남는 방 개수</label><select id="room-count" name="rooms" required><option value="">선택해 주세요</option><option>1개</option><option>2개</option><option>3개 이상</option></select></div>
+          <div class="callback-field"><label for="move-in">입주 가능 시기</label><select id="move-in" name="availability" required><option value="">선택해 주세요</option><option>바로 가능</option><option>1개월 이내</option><option>일정 협의</option></select></div>` : ""}
+          <div class="callback-field"><label for="callback-name">이름</label><input id="callback-name" name="name" autocomplete="name" maxlength="60" required></div>
+          <div class="callback-field"><label for="callback-contact">연락받을 전화번호</label><input id="callback-contact" name="contact" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" required placeholder="010-0000-0000"></div>
+          ${registration ? "" : `<div class="callback-field intake-full"><label for="callback-message">궁금한 점</label><textarea id="callback-message" name="message" rows="4" minlength="5" maxlength="1000" required aria-describedby="message-help" placeholder="예: 부모님 집의 빈방에 학생이 지내려면 무엇을 준비해야 할까요?"></textarea><p id="message-help">상세 주소와 민감정보는 빼고 5자 이상 적어 주세요.</p></div>`}
           <div hidden aria-hidden="true"><label>자동입력 방지<input name="website" tabindex="-1" autocomplete="off"></label></div>
-          <details class="callback-privacy"><summary>개인정보 수집·이용 안내</summary><p>수집 주체: 한지붕. 항목: 이름, 전화번호, 문의유형, 문의내용과 동의·접수 기록. 목적: 문의 확인과 상담 답변. 보유기간: 상담 종료일로부터 최대 1년간 보관 후 삭제. 동의를 거부할 수 있으며, 거부하면 온라인 상담을 접수할 수 없습니다. <a href="/reservation/privacy/">개인정보 처리방침</a></p></details>
+          <details class="callback-privacy"><summary>개인정보 수집·이용 안내</summary><p>한지붕은 다음 목적으로 신청 정보를 수집합니다. ${purpose}. 수집 항목은 ${fields} 및 접수·동의 기록입니다. 상담 종료일로부터 최대 1년간 보관한 뒤 삭제합니다. 필수 동의를 거부하면 온라인 신청이 어렵습니다. <a href="/reservation/privacy/">개인정보 처리방침</a></p></details>
           <label class="callback-consent"><input name="consent" type="checkbox" required><span>[필수] 개인정보 수집·이용에 동의합니다.</span></label>
-          <p class="callback-status" data-callback-status role="status" aria-live="polite" tabindex="-1"></p><button class="callback-submit" type="submit">무료상담 신청하기 <span aria-hidden="true">→</span></button>
+          <p class="callback-status" data-callback-status role="status" aria-live="polite" tabindex="-1"></p>
+          <button class="callback-submit" type="submit">${action} <span aria-hidden="true">→</span></button>
         </fieldset>
-      </form><div class="callback-success" data-callback-success hidden><span aria-hidden="true">✓</span><h3 tabindex="-1">상담 신청이 접수됐어요</h3><p>남겨주신 번호로 안내드릴게요.</p><p class="callback-receipt" data-callback-receipt></p><button type="button" data-close-callback>창 닫기</button></div><noscript><p>온라인 신청에는 자바스크립트가 필요합니다. <a href="tel:+821045879428">전화 문의</a>를 이용해 주세요.</p></noscript></div>
-    </dialog><script type="module" src="${callbackScriptUrl}"></script>
-  </div>`;
+      </form>
+      <div class="callback-success" data-callback-success hidden><span aria-hidden="true">✓</span><h3 tabindex="-1">${success}</h3><p>남겨 주신 번호로 매니저가 연락드립니다.</p><p class="callback-receipt" data-callback-receipt></p><a href="/">한지붕 홈으로</a></div>
+      <noscript><p>온라인 신청에는 자바스크립트가 필요합니다. <a href="${site.phoneHref}">전화로 문의하기</a></p></noscript>
+    </section></div>${reservationFooter()}<script type="module" src="${callbackScriptUrl}"></script></div>`;
 }

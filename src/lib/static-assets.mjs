@@ -21,3 +21,5 @@ export const diagnosisPrefillScriptUrl = assetUrl("diagnosis-prefill.js");
 
 export const reservationStylesheetUrl = assetUrl("reservation.css");
 export const reservationScriptUrl = assetUrl("reservation.js");
+
+export const serviceStylesheetUrl = assetUrl("service-pages.css");

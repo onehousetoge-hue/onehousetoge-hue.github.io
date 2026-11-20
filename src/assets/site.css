@@ -1395,3 +1395,28 @@ body:has(> .rent-diagnosis-dock) { padding-bottom: 104px; }
   .rent-diagnosis-dock { display: none !important; }
   body:has(> .rent-diagnosis-dock) { padding-bottom: 0; }
 }
+
+/* Primary navigation for the public site. */
+.public-header { position: relative; z-index: 55; border-bottom: 1px solid #e3e9ef; background: #fff; color: #223348; font: 600 16px/1.45 Pretendard, "Malgun Gothic", sans-serif; }
+.public-header-inner { width: min(1080px, calc(100% - 64px)); min-height: 72px; margin-inline: auto; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.public-header a { text-decoration: none; }
+.public-header .public-brand { display: inline-flex; align-items: center; min-height: 48px; color: #185fc2; font-size: 28px; font-weight: 800; letter-spacing: -.065em; }
+.public-menu-wide { display: flex; align-items: center; gap: clamp(14px, 2.3vw, 34px); }
+.public-header nav a { display: flex; align-items: center; min-height: 48px; color: #354356; }
+.public-header nav a:is(:hover,[aria-current]) { color: #1455aa; text-decoration: underline; text-underline-offset: 5px; }
+.public-header .public-menu-wide a:last-child { min-height: 44px; padding: 0 20px; border-radius: 9px; background: #215fc0; color: #fff; }
+.public-header :is(a,summary):focus-visible { outline: 3px solid #185bb1; outline-offset: 2px; }
+.public-menu-small { display: none; }
+@media (max-width: 720px) {
+  .public-header-inner { min-height: 64px; width: calc(100% - 40px); }
+  .public-header .public-brand { font-size: 25px; }
+  .public-menu-wide { display: none; }
+  .public-menu-small { display: block; }
+  .public-menu-small summary { display: flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 6px; list-style: none; cursor: pointer; }
+  .public-menu-small summary::-webkit-details-marker { display: none; }
+  .public-menu-small .icon { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  .public-menu-small nav { position: absolute; top: 100%; inset-inline: 0; display: grid; padding: 8px 20px 14px; background: #fff; border-block: 1px solid #e0e7ef; box-shadow: 0 12px 18px #17345114; }
+  .public-menu-small a { padding: 4px 12px; }
+  .public-menu-small a[aria-current] { background: #eff5ff; border-radius: 7px; }
+}
+@media print { .public-header { display: none; } }

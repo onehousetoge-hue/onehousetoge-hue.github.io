@@ -6,12 +6,14 @@ import { site } from "../src/config/site.mjs";
 import { privacyBody } from "../src/content/privacy.mjs";
 import { adminEntry } from "../src/lib/admin-entry.mjs";
 import { reservationPage } from "../src/lib/reservation-page.mjs";
+import { aboutPage } from "../src/lib/about-page.mjs";
+import { intakePage } from "../src/lib/callback-form.mjs";
 import { roomCheckPage } from "../src/lib/room-check-page.mjs";
 import { rentFaqSchema } from "../src/lib/rent-faq.mjs";
 import { absolute, layout, organizationSchema } from "../src/lib/template.mjs";
 import {
   roomCheckStylesheetUrl, roomCheckScriptUrl, incomeCalculatorStylesheetUrl, incomeCalculatorScriptUrl,
-  diagnosisPrefillScriptUrl, reservationStylesheetUrl, reservationScriptUrl,
+  diagnosisPrefillScriptUrl, reservationStylesheetUrl, reservationScriptUrl, serviceStylesheetUrl, headlineExperiment,
 } from "../src/lib/static-assets.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -42,7 +44,7 @@ await emit("/", layout({
   path: "/",
   body: roomCheckPage(),
   bodyClass: "room-check-page",
-  showHeader: false,
+  showDiagnosisDock: false,
   showFooter: false,
   jsonLd: [
     { "@context": "https://schema.org", "@type": "WebSite", name: site.name, alternateName: site.englishName, url: absolute("/") },
@@ -50,12 +52,21 @@ await emit("/", layout({
     rentFaqSchema,
   ],
 }).replace("</head>", `<link rel="stylesheet" href="${roomCheckStylesheetUrl}"><link rel="stylesheet" href="${incomeCalculatorStylesheetUrl}"><script src="${roomCheckScriptUrl}" defer></script><script src="${diagnosisPrefillScriptUrl}" defer></script><script src="${incomeCalculatorScriptUrl}" defer></script></head>`));
-await emit("/reservation/", layout({ title: "예상 월세 무료 진단 신청", description: "우리 집 남는 방의 예상 월세와 준비사항을 무료로 안내받으세요. 집 위치와 방 정보를 남기면 한지붕 매니저가 확인 후 연락드립니다.", path: "/reservation/", body: reservationPage(), bodyClass: "reservation-page", showHeader: false, showFooter: false, jsonLd: organizationSchema }).replace("</head>", `<link rel="stylesheet" href="${reservationStylesheetUrl}"><script src="${diagnosisPrefillScriptUrl}" defer></script><script src="${reservationScriptUrl}" defer></script></head>`));
+await emit("/reservation/", layout({ title: "예상 월세 무료 진단 신청", description: "우리 집 남는 방의 예상 월세와 준비사항을 무료로 안내받으세요. 집 위치와 방 정보를 남기면 한지붕 매니저가 확인 후 연락드립니다.", path: "/reservation/", body: reservationPage(), bodyClass: "reservation-page", showDiagnosisDock: false, showFooter: false, jsonLd: organizationSchema }).replace('<meta charset="UTF-8">', '<meta charset="UTF-8"><script>const legacyConsultation = new URL(location.href); if (legacyConsultation.searchParams.get("consultation") === "quick") { legacyConsultation.pathname = "/consultation/"; legacyConsultation.searchParams.delete("consultation"); location.replace(legacyConsultation.href); }</script>').replace("</head>", `<link rel="stylesheet" href="${reservationStylesheetUrl}"><script src="${diagnosisPrefillScriptUrl}" defer></script><script src="${reservationScriptUrl}" defer></script></head>`));
+for (const [route, title, description, body] of [
+  ["/about/", "한지붕 소개", "집주인과 대학생이 한집에서 지내도록 돕는 한지붕의 활동과 노원구 공릉동에서 시작한 빈방 활용 서비스를 소개합니다.", headlineExperiment + aboutPage()],
+  ["/consultation/", "상담 신청하기", "빈방 활용이나 대학생과의 공동생활에 대해 궁금한 점을 한지붕 매니저에게 남겨 주세요. 이름과 연락처, 질문을 보내면 매니저가 답변합니다.", intakePage()],
+  ["/rooms/register/", "방 등록하기", "학생에게 내어줄 방의 동네, 남는 방 개수와 입주 가능 시기를 등록해 주세요. 한지붕 매니저가 연락해 입주 준비를 함께 확인합니다.", intakePage(true)],
+]) {
+  await emit(route, layout({ title, description, path: route, body, bodyClass: "reservation-page", showDiagnosisDock: false, showFooter: false, jsonLd: organizationSchema })
+    .replace("</head>", `<link rel="stylesheet" href="${reservationStylesheetUrl}"><link rel="stylesheet" href="${serviceStylesheetUrl}"></head>`));
+}
+
 await emit("/reservation/privacy/", layout({
   title: "개인정보 처리방침",
   description: "한지붕 방 진단과 빠른 상담 신청에 적용되는 개인정보 처리방침입니다.",
   path: "/reservation/privacy/",
-  body: privacyBody,
+  body: headlineExperiment + privacyBody,
   breadcrumbs: [{ label: "개인정보 처리방침", href: "/reservation/privacy/" }],
   jsonLd: organizationSchema,
 }));
@@ -81,7 +92,7 @@ await writeFile(path.join(out, ".nojekyll"), "", "utf8");
 await mkdir(path.join(out, "assets"), { recursive: true });
 const assets = [
   "site.css", "site.js", "analytics.js", "room-check.css", "room-check.js",
-  "reservation.css", "reservation.js", "diagnosis-prefill.js", "income-calculator.css",
+  "reservation.css", "service-pages.css", "reservation.js", "diagnosis-prefill.js", "income-calculator.css",
   "income-calculator.js", "callback.js", "inquiry.js", "figma", "fonts", "og-default.png",
   "hanjibung-logo.png", "hanjibung-logo-256.png", "hanjibung-icon-64.png", "hanjibung-icon-192.png",
 ];

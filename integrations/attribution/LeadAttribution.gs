@@ -3,7 +3,7 @@ const LEAD_COLUMNS = ['첫 방문 페이지', '전환 페이지', '상세페이�
   'UTM 캠페인', 'UTM ID', 'UTM 콘텐츠', 'UTM 키워드', '외부 유입 도메인'];
 
 function leadCells_(input, kind) {
-  if (!input || !['/', '/reservation/', '/reservation/privacy/'].includes(input.landing)) return [];
+  if (!input || !['/', '/about/', '/consultation/', '/reservation/', '/rooms/register/', '/reservation/privacy/'].includes(input.landing)) return [];
   function plain(value) {
     if (typeof value !== 'string' || value.length > 100) return '';
     const text = value.trim();
@@ -11,7 +11,10 @@ function leadCells_(input, kind) {
   }
   const host = typeof input.referrer === 'string' && input.referrer.length <= 180 &&
     /^(?:[a-z0-9-]+\.)+[a-z0-9-]+$/i.test(input.referrer) ? input.referrer.toLowerCase() : '';
-  return [input.landing, kind === 'callback' ? '/reservation/?consultation=quick' : '/reservation/',
+  var conversion = '/reservation/';
+  if (kind === 'registration') conversion = '/rooms/register/';
+  if (kind === 'callback') conversion = input.conversion === '/consultation/' ? '/consultation/' : '/reservation/?consultation=quick';
+  return [input.landing, conversion,
     /^[ABC]$/.test(input.variant || '') ? input.variant : '', plain(input.source), plain(input.medium),
     plain(input.campaign), plain(input.id), plain(input.content), plain(input.term), host];
 }

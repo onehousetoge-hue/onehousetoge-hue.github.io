@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import { escapeHtml } from "../src/lib/template.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "dist");
-const routes = ["/", "/reservation/", "/reservation/privacy/"];
+const routes = ["/", "/about/", "/consultation/", "/reservation/", "/rooms/register/", "/reservation/privacy/"];
 const routeFile = (route) => route === "/" ? path.join(root, "index.html") : path.join(root, route.replace(/^\//, ""), "index.html");
 
 test("homepage links to the dedicated diagnosis page without the retired organization menu", async () => {
@@ -30,7 +30,7 @@ test("rent FAQ answers and their structured data match in the final section befo
   const html = await readFile(routeFile("/"), "utf8");
   const section = html.match(/<section class="rent-faq"[^>]+>([\s\S]*?)<\/section>\s*<\/div>\s*<footer class="host-footer"/);
   assert.ok(section, "FAQ is server-rendered immediately before the footer");
-  assert.match(html, /<header class="header">[\s\S]*?href="#rent-faq">자주 묻는 질문<\/a><\/div><\/header>/);
+  assert.match(html, /<a class="header-faq-link" href="#rent-faq">자주 묻는 질문<\/a>/);
   const schemas = [...html.matchAll(/<script type="application\/ld\+json">([^<]+)<\/script>/g)].map(match => JSON.parse(match[1]));
   const faqs = schemas.filter(schema => schema["@type"] === "FAQPage");
   assert.equal(faqs.length, 1);
@@ -65,7 +65,7 @@ test("dedicated diagnosis page preserves the existing required information and e
   assert.match(html, /class="reservation-app"/);
   assert.match(html, /<link rel="canonical" href="https:\/\/hanjibung\.kr\/reservation\/">/);
   assert.equal((html.match(/<h1\b/g) || []).length, 1);
-  assert.equal((html.match(/<form\b/g) || []).length, 2);
+  assert.equal((html.match(/<form\b/g) || []).length, 1);
   assert.doesNotMatch(html, /<iframe|data-open-inquiry/);
   const diagnosisForm = html.match(/<form class="inquiry-form"[\s\S]*?<\/form>/)[0];
   const inputs = [...diagnosisForm.matchAll(/<input\b[^>]*>/g)].map((match) => match[0]);
@@ -91,7 +91,7 @@ test("the build and sitemap expose only the active pages and the error document"
   assert.deepEqual(manifest.pages.map(page => page.route).sort(), [...routes, "/admin/", "/404/", "/404.html"].sort());
   const sitemap = await readFile(path.join(root, "sitemap.xml"), "utf8");
   assert.deepEqual([...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map(m => new URL(m[1]).pathname).sort(), [...routes].sort());
-  for (const section of ["about", "activities", "consultation", "contact", "guide", "overview", "participate", "partnership", "privacy", "programs", "research", "resources", "stories", "terms", "transparency"]) {
+  for (const section of ["activities", "contact", "guide", "overview", "participate", "partnership", "privacy", "programs", "research", "resources", "stories", "terms", "transparency"]) {
     await assert.rejects(stat(path.join(root, section)), { code: "ENOENT" });
   }
   for (const route of [...routes, "/404/"]) {
@@ -180,31 +180,29 @@ test("the parent and room diagnostic share GA without exposing inquiry details",
     const scripts = [...content.matchAll(/<script[^>]+src="([^"]+)"/g)].map((match) => match[1]);
     const expected = ["/assets/site.js", "/assets/analytics.js"];
     if (page.route === "/") expected.push("/assets/room-check.js", "/assets/diagnosis-prefill.js", "/assets/income-calculator.js");
-    if (page.route === "/reservation/") expected.push("/assets/diagnosis-prefill.js", "/assets/reservation.js", "/assets/callback.js");
+    if (page.route === "/reservation/") expected.push("/assets/diagnosis-prefill.js", "/assets/reservation.js");
+    if (["/consultation/", "/rooms/register/"].includes(page.route)) expected.push("/assets/callback.js");
     assert.deepEqual(scripts.map((src) => new URL(src, "https://hanjibung.kr").pathname), expected);
   }
 });
 
-test("site chrome preserves the brand while the diagnostic home uses a text wordmark", async () => {
-  const manifest = JSON.parse(await readFile(path.join(root, "build-manifest.json"), "utf8"));
-  for (const page of manifest.pages) {
-    const file = page.route === "/404.html" ? path.join(root, "404.html") : routeFile(page.route);
-    const html = await readFile(file, "utf8");
-    const imageCount = (html.match(/<img[^>]+src="\/assets\/hanjibung-logo-256\.png"/g) || []).length;
-    if (page.route === "/") {
-      assert.equal(imageCount, 0, page.route);
-      assert.match(html, /class="brand-wordmark">한지붕<\/span>/);
-      assert.match(html, /class="host-footer"/);
-      assert.match(html, /class="income-reservation" href="\/reservation\/"/);
-    } else if (page.route === "/reservation/") {
-      assert.equal(imageCount, 0, page.route);
-      assert.match(html, /class="reservation-app"/);
-    } else if (page.route === "/admin/") {
-      assert.match(html, /<h1>한지붕 관리자<\/h1>/);
-    } else {
-      assert.equal(imageCount, 2, page.route);
+test("all public pages have the four requested destinations in desktop and mobile menus", async () => {
+  const menu = [
+    ["/about/", "한지붕 소개"], ["/consultation/", "상담 신청하기"],
+    ["/reservation/", "우리 집 빈 방 월세 진단"], ["/rooms/register/", "방 등록하기"],
+  ];
+  for (const route of [...routes, "/404/"]) {
+    const html = await readFile(routeFile(route), "utf8");
+    const header = html.match(/<header class="public-header">([\s\S]*?)<\/header>/)[1];
+    assert.match(header, /<a class="public-brand" href="\/" aria-label="한지붕 홈">한지붕<\/a>/);
+    const navs = [...header.matchAll(/<nav[^>]*>(.*?)<\/nav>/g)];
+    assert.equal(navs.length, 2);
+    for (const [, nav] of navs) {
+      const links = [...nav.matchAll(/<a href="([^"]+)"( aria-current="page")?>(.*?)<\/a>/g)];
+      assert.deepEqual(links.map(([, href, , title]) => [href, title]), menu);
+      assert.deepEqual(links.filter(([, , active]) => active).map(([, href]) => href), menu.some(([href]) => href === route) ? [route] : []);
     }
-    assert.ok(html.includes('href="/assets/hanjibung-icon-64.png"'), page.route);
+    assert.ok(html.includes('href="/assets/hanjibung-icon-64.png"'), route);
   }
   const logo = await readFile(path.join(root, "assets", "hanjibung-logo-256.png"));
   assert.equal(logo[25], 6); // PNG RGBA, with an actual alpha channel.

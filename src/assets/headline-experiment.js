@@ -37,10 +37,10 @@
     heading.replaceChildren(template.content.cloneNode(true));
   }
   if (isPreview) {
-    if (heading) document.addEventListener("DOMContentLoaded", () => {
-      for (const link of document.querySelectorAll('a[href^="/reservation/"]')) {
+    document.addEventListener("DOMContentLoaded", () => {
+      for (const link of document.querySelectorAll('a[href^="/"]:not([href^="//"])')) {
         const destination = new URL(link.href);
-        if (destination.pathname !== "/reservation/") continue;
+        if (!["/", "/about/", "/consultation/", "/reservation/", "/rooms/register/", "/reservation/privacy/"].includes(destination.pathname)) continue;
         destination.searchParams.set("headline_preview", variant);
         link.search = destination.search;
       }
@@ -75,7 +75,8 @@
     }, { once: true });
   } else {
     window.hanjibungTrackHeadlineCompletion = (record, kind = "diagnosis") => {
-      if (/^[ABC]$/.test(record?.variant || "")) track(kind === "callback" ? "callback" : "complete", record.variant);
+      const step = { diagnosis: "complete", callback: "callback", registration: "registration" }[kind];
+      if (step && /^[ABC]$/.test(record?.variant || "")) track(step, record.variant);
     };
   }
 })();

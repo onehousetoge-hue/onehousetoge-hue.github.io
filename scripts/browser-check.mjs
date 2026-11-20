@@ -49,14 +49,17 @@ for (const width of [320, 390, 1440]) {
 }
 browser("set", "viewport", "390", "844");
 openPage("/");
-assert.equal(evaluate("Boolean(document.querySelector('.nav-toggle, [data-menu-button]'))"), false);
-openPage("/reservation/");
-browser("click", "[data-open-callback]");
-assert.equal(evaluate("document.querySelector('[data-callback-dialog]').open"), true);
+browser("click", ".public-menu-small summary");
+assert.equal(evaluate("document.querySelector('.public-menu-small').open"), true);
 browser("press", "Escape");
-assert.equal(evaluate("document.querySelector('[data-callback-dialog]').open"), false);
+assert.equal(evaluate("document.querySelector('.public-menu-small').open"), false);
+for (const [route, type] of [["/consultation/", "consultation"], ["/rooms/register/", "registration"]]) {
+  openPage(route);
+  assert.equal(evaluate("document.querySelector('[data-callback-form]').dataset.intake"), type);
+  assert.equal(evaluate("document.querySelector('[data-callback-form] fieldset').disabled"), false);
+}
 const statuses = [];
-for (const route of ["/", "/reservation/", "/reservation/privacy/", "/about/", "/contact/", "/privacy/", "/thanks/consultation/", "/thanks/partnership/", "/daily-word.html", "/fortune.html", "/meeting.html", "/does-not-exist/"]) {
+for (const route of [...routes, "/contact/", "/privacy/", "/thanks/consultation/", "/thanks/partnership/", "/daily-word.html", "/fortune.html", "/meeting.html", "/does-not-exist/"]) {
   const response = await fetch(`${base}${route}`);
   const expected = routes.includes(route) ? 200 : 404;
   assert.equal(response.status, expected, route);
@@ -66,5 +69,5 @@ for (const route of ["/", "/reservation/", "/reservation/privacy/", "/about/", "
 }
 const errors = browser("errors");
 assert.deepEqual(errors.errors, [], "Browser errors detected");
-await writeFile(path.join(output, "results.json"), JSON.stringify({ checkedAt: new Date().toISOString(), base, results, statuses, errors, functionality: "retired menu, quick consultation, active routes and 404 responses" }, null, 2));
+await writeFile(path.join(output, "results.json"), JSON.stringify({ checkedAt: new Date().toISOString(), base, results, statuses, errors, functionality: "public menu, standalone consultation and room registration, active routes and 404 responses" }, null, 2));
 console.log(`Browser QA passed: ${results.length} viewport checks; ${routes.length} axe checks; interactions and status codes.`);

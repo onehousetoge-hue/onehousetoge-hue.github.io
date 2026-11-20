@@ -10,7 +10,7 @@
     <link rel="icon" href="/assets/hanjibung-icon-64.png" type="image/png" sizes="64x64">
     <link rel="apple-touch-icon" href="/assets/hanjibung-icon-192.png" sizes="192x192">
     <link rel="manifest" href="/site.webmanifest">
-    <link rel="stylesheet" href="/assets/site.css?v=0cf89a7eaf90">
+    <link rel="stylesheet" href="/assets/site.css?v=505db7a8bafd">
     <meta property="og:locale" content="ko_KR">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="한지붕">
@@ -29,22 +29,97 @@
 
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"NGO","name":"한지붕","alternateName":"HANJIBUNG","url":"https://hanjibung.kr/","member":{"@type":"OrganizationRole","roleName":"대표자","member":{"@type":"Person","name":"김현수"}},"foundingDate":"2026-07-05","telephone":"010-4587-9428","email":"onehousetoge@gmail.com","description":"한지붕은 어르신의 빈방 활용 무료상담, 방 준비·청년 입주·거주 관리와 세대교류 교육·봉사를 제공하는 비영리단체입니다. 국세기본법상 법인으로 보는 단체로 승인받았으며, 주거상생 실태조사는 현재 진행 중입니다.","address":{"@type":"PostalAddress","streetAddress":"동일로 195길","addressLocality":"노원구","addressRegion":"서울특별시","addressCountry":"KR"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"홈","item":"https://hanjibung.kr/"},{"@type":"ListItem","position":2,"name":"개인정보 처리방침","item":"https://hanjibung.kr/reservation/privacy/"}]}</script>
-    <script src="/assets/site.js?v=22bb81d77b8e" defer></script>
-    <script src="/assets/analytics.js?v=16d9f1fe1ad3" data-analytics-id="G-58PJ9VG8GC" defer></script></head><body id="page-top" class="">
-    <a class="skip-link" href="#main-content">본문으로 바로가기</a>
-    <header class="site-header" data-header>
-      <a class="diagnosis-top-banner" href="/reservation/"><img src="/assets/figma/benefit-income.svg" width="30" height="30" alt=""><span>예상 월세 무료 진단 신청하기</span><span class="banner-arrow" aria-hidden="true">→</span></a>
-      <div class="container header-inner">
-        <a class="brand" href="/" aria-label="한지붕 HANJIBUNG 홈페이지">
-          <img class="site-brand-logo" src="/assets/hanjibung-logo-256.png" width="56" height="51" alt="">
-          <span><strong>한지붕</strong> <small>HANJIBUNG</small></span>
-        </a>
-        <a class="header-quick-action" href="/reservation/">무료 월세 진단</a>
-      </div>
-    </header><nav class="breadcrumb container" aria-label="현재 위치"><ol><li><a href="/">홈</a></li><li><span aria-current="page">개인정보 처리방침</span></li></ol></nav><main id="main-content"><section class="page-hero"><div class="container narrow"><p class="eyebrow">개인정보 처리방침</p><h1>필요한 정보만 받고,<br>처리방식을 분명히 알립니다.</h1><p class="page-lead">한지붕 웹사이트, 방 진단과 전화·이메일 문의 과정에서의 개인정보 처리 원칙입니다.</p><div class="page-meta"><span>시행일 2026년 9월 23일</span><span>마지막 수정일 2026년 11월 21일</span></div></div></section><section class="section"><div class="container content-layout"><article class="prose">
+    <script src="/assets/site.js?v=28321f935f20" defer></script>
+    <script src="/assets/analytics.js?v=0311c316ad4b" data-analytics-id="G-58PJ9VG8GC" defer></script></head><body id="page-top" class=""><a class="skip-link" href="#main-content">본문으로 바로가기</a><header class="public-header"><div class="public-header-inner">
+    <a class="public-brand" href="/" aria-label="한지붕 홈">한지붕</a>
+    <nav class="public-menu-wide" aria-label="주 메뉴"><a href="/about/">한지붕 소개</a><a href="/consultation/">상담 신청하기</a><a href="/reservation/">우리 집 빈 방 월세 진단</a><a href="/rooms/register/">방 등록하기</a></nav>
+    <details class="public-menu-small"><summary><svg class="icon " aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg> 메뉴</summary><nav aria-label="주 메뉴"><a href="/about/">한지붕 소개</a><a href="/consultation/">상담 신청하기</a><a href="/reservation/">우리 집 빈 방 월세 진단</a><a href="/rooms/register/">방 등록하기</a></nav></details>
+  </div></header><nav class="breadcrumb container" aria-label="현재 위치"><ol><li><a href="/">홈</a></li><li><span aria-current="page">개인정보 처리방침</span></li></ol></nav><main id="main-content"><script>(() => {
+  "use strict";
+  const heading = document.getElementById("host-title");
+  const params = new URLSearchParams(location.search);
+  if (heading && params.get("diagnosis") === "1") return;
+
+  const variants = ["A", "B", "C"];
+  const preview = params.get("headline_preview");
+  const isPreview = variants.includes(preview);
+  const storageKey = "hanjibung.host-headline.v1";
+  const storageTypes = ["localStorage", "sessionStorage"];
+  let variant = isPreview ? preview : null;
+  let assigned = false;
+
+  if (!isPreview) {
+    for (const type of storageTypes) {
+      try {
+        const saved = window[type].getItem(storageKey);
+        if (variants.includes(saved)) { variant = saved; assigned = true; break; }
+      } catch { /* Storage may be unavailable in a private browser. */ }
+    }
+    if (heading && !variant) {
+      variant = variants[Math.floor(Math.random() * variants.length)];
+      for (const type of storageTypes) {
+        try {
+          window[type].setItem(storageKey, variant);
+          assigned = true;
+          break;
+        } catch { /* Try tab storage if persistent storage is blocked. */ }
+      }
+    }
+  }
+  if (!variant && heading) return;
+
+  if (heading && variant !== "A") {
+    const template = document.getElementById(`host-title-${variant}`);
+    heading.replaceChildren(template.content.cloneNode(true));
+  }
+  if (isPreview) {
+    document.addEventListener("DOMContentLoaded", () => {
+      for (const link of document.querySelectorAll('a[href^="/"]:not([href^="//"])')) {
+        const destination = new URL(link.href);
+        if (!["/", "/about/", "/consultation/", "/reservation/", "/rooms/register/", "/reservation/privacy/"].includes(destination.pathname)) continue;
+        destination.searchParams.set("headline_preview", variant);
+        link.search = destination.search;
+      }
+    }, { once: true });
+    return;
+  }
+  if (heading && !assigned) return;
+
+  function track(step, group) {
+    try {
+      const id = document.querySelector("script[data-analytics-id]")?.dataset.analyticsId;
+      if (/^G-[A-Z0-9]{6,20}$/.test(id || "") && typeof window.gtag === "function") {
+        window.gtag("event", `headline_${step}_${group.toLowerCase()}`, { send_to: id });
+      }
+    } catch { /* Analytics must not interrupt the page or a confirmed application. */ }
+  }
+  if (heading) {
+    document.addEventListener("DOMContentLoaded", () => {
+      const recordView = () => {
+        const { top, bottom } = heading.getBoundingClientRect();
+        if (document.hidden || bottom <= 0 || top >= window.innerHeight) return;
+        document.removeEventListener("visibilitychange", recordView);
+        window.removeEventListener("scroll", recordView);
+        window.removeEventListener("resize", recordView);
+        window.hanjibungLeadVisit?.expose(variant);
+        track("view", variant);
+      };
+      document.addEventListener("visibilitychange", recordView);
+      window.addEventListener("scroll", recordView, { passive: true });
+      window.addEventListener("resize", recordView);
+      recordView();
+    }, { once: true });
+  } else {
+    window.hanjibungTrackHeadlineCompletion = (record, kind = "diagnosis") => {
+      const step = { diagnosis: "complete", callback: "callback", registration: "registration" }[kind];
+      if (step && /^[ABC]$/.test(record?.variant || "")) track(step, record.variant);
+    };
+  }
+})();</script><section class="page-hero"><div class="container narrow"><p class="eyebrow">개인정보 처리방침</p><h1>필요한 정보만 받고,<br>처리방식을 분명히 알립니다.</h1><p class="page-lead">한지붕 웹사이트, 방 진단과 전화·이메일 문의 과정에서의 개인정보 처리 원칙입니다.</p><div class="page-meta"><span>시행일 2026년 9월 23일</span><span>마지막 수정일 2026년 11월 21일</span></div></div></section><section class="section"><div class="container content-layout"><article class="prose">
   <h2>1. 현재 웹사이트에서 수집하는 정보</h2>
-  <p>예약 페이지의 빠른 상담 신청에서 이름, 전화번호, 문의유형, 문의내용, 개인정보 동의 여부·동의문 버전·접수시각·접수번호를 처리합니다. 목적은 문의 확인과 상담 답변입니다. 필수 동의를 거부할 수 있으며 거부하면 온라인 상담을 신청할 수 없습니다. 회원가입과 결제 기능은 없습니다.</p>
+  <p>상담 신청 페이지(기존 빠른 상담 포함)에서 이름, 전화번호, 문의유형, 문의내용, 개인정보 동의 여부·동의문 버전·접수시각·접수번호를 처리합니다. 목적은 문의 확인과 상담 답변입니다. 필수 동의를 거부할 수 있으며 거부하면 온라인 상담을 신청할 수 없습니다. 회원가입과 결제 기능은 없습니다.</p>
   <p>예약 페이지의 방 진단에서는 제출 시 지역(시·군·구 및 동네 수준, 상세주소는 받지 않음), 인근 대학교·지하철역, 남는 방 개수·에어컨 유무·주택 형태와 선택한 방 유형, 월세 결과를 받을 전화번호와 진단 결과·상담에 필요한 접수정보를 처리합니다. 방 진단에서 사진 첨부를 받지 않습니다. 빠른 상담 신청에서도 사진을 요구하지 않습니다.</p>
+  <p>방 등록 신청에서는 이름, 전화번호, 방이 있는 동네, 남는 방 개수, 입주 가능 시기와 접수·동의 기록을 받습니다. 매니저가 방 등록을 확인하고 입주 준비 상담을 진행하는 데 사용합니다. 상담문의와 같은 비공개 Google Sheets에 방 등록 유형으로 저장하며, 상담 종료일로부터 최대 1년간 보관한 뒤 삭제합니다.</p>
   <h2>2. 전화·이메일 문의 시 처리하는 정보</h2>
   <p>이용자가 전화나 이메일로 자발적으로 문의하는 경우 이름, 연락 가능한 전화번호 또는 이메일, 시·군·구 수준의 지역, 문의유형, 문의내용과 선택적으로 선호 연락시간을 처리할 수 있습니다. 일반 초기 문의에서는 주민등록번호, 신분증, 계좌번호, 상세주소, 집 사진, 가족의 실명과 연락처, 건강정보, 범죄경력, 재산정보, 종교와 정치성향을 요구하지 않습니다.</p>
   <h2>3. 처리 목적</h2>
@@ -72,7 +147,7 @@
   <h2>11. 개인정보 문의</h2>
   <p>대표자 김현수 · 전화 <a href="tel:+821045879428">010-4587-9428</a> · 이메일 <a href="mailto:onehousetoge@gmail.com">onehousetoge@gmail.com</a></p>
   <h2>12. 변경이력</h2>
-  <p>2026년 11월 21일에 첫 화면 문구의 브라우저 저장과 문구별 방문·진단 신청 완료 측정을 안내했습니다.</p>
+  <p>2026년 11월 21일에 상담 신청과 방 등록 전용 페이지의 수집 항목 및 보관기간을 반영했습니다. 같은 날 첫 화면 문구의 브라우저 저장과 문구별 방문·진단 신청 완료 측정을 안내했습니다.</p>
   <p>2026년 11월 20일에 안내 메뉴와 기존 무료상담·기관협력 페이지를 종료하고 처리방침을 예약 페이지 하위로 옮겼습니다. 현재 운영하는 빠른 상담과 방 진단의 접수 방식을 반영했습니다.</p>
   <p>2026년 11월 17일: 방문 분석에서 UTM 유입 정보와 Google 광고 클릭 식별자를 처리하는 범위를 안내했습니다. 문의 입력값을 분석에 보내지 않는 원칙과 기존 쿠키 보관기간·광고 동의 설정은 유지합니다.</p>
   <p>2026년 11월 3일: 계산기의 지역·방 유형을 신청서에 이어서 입력하는 세션 저장과 선택한 방 유형의 접수 처리를 안내했습니다.</p>
