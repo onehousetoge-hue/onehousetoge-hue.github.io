@@ -24,6 +24,7 @@ export async function send(endpoint, payload) {
   const response = await fetch(endpoint, {method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload),redirect:'follow',credentials:'omit',referrerPolicy:'no-referrer',signal:AbortSignal.timeout(55000)});
   if (!response.ok || response.type === 'opaque') throw new Error('UNAVAILABLE');
   const result = await response.json();
+  if (payload.roomPhoto && result.ok && result.roomPhotoSaved !== true) throw new Error('UNAVAILABLE');
   if (!result.ok || result.requestId !== payload.requestId || result.kind !== payload.kind || !/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(result.receivedAt || '')) throw new Error(result.code || 'UNAVAILABLE');
   return {requestId:result.requestId, kind:result.kind, receivedAt:result.receivedAt};
 }

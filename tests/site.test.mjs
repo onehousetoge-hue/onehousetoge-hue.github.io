@@ -181,7 +181,8 @@ test("the parent and room diagnostic share GA without exposing inquiry details",
     const expected = ["/assets/site.js", "/assets/analytics.js"];
     if (page.route === "/") expected.push("/assets/room-check.js", "/assets/diagnosis-prefill.js", "/assets/income-calculator.js");
     if (page.route === "/reservation/") expected.push("/assets/diagnosis-prefill.js", "/assets/reservation.js");
-    if (["/consultation/", "/rooms/register/"].includes(page.route)) expected.push("/assets/callback.js");
+    if (page.route === "/consultation/") expected.push("/assets/callback.js");
+    if (page.route === "/rooms/register/") expected.push("/assets/room-registration.js");
     assert.deepEqual(scripts.map((src) => new URL(src, "https://hanjibung.kr").pathname), expected);
   }
 });

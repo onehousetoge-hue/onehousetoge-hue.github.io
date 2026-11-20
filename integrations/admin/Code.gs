@@ -72,6 +72,25 @@ function getContact(kind, row, id) {
   if (!data[0].values || data[0].values[0][0] !== id) throw new Error('접수 내역이 변경됐습니다. 목록을 새로 열어 주세요.');
   return String(data[1].values && data[1].values[0][0] || '');
 }
+function getInquiryDetail(row, id) {
+  authorize_();
+  if (!Number.isSafeInteger(row) || row < 2 || row > 10000000 || !/^[\da-f]{8}-[\da-f-]{27}$/i.test(id || '')) throw new Error('접수번호를 확인해 주세요.');
+  const c = config_('callback');
+  const ranges = [['A','A'],['G','H']].map(([a,b]) => range_(c,a,b,row,row));
+  const data = Sheets.Spreadsheets.Values.batchGet(c.book,{ranges}).valueRanges;
+  if (data[0].values?.[0]?.[0] !== id) throw new Error('접수 내역이 변경됐습니다. 목록을 새로 열어 주세요.');
+  const [topic, message] = data[1].values?.[0] || [];
+  let photo = '';
+  if (topic === '방 등록') {
+    const tab = Sheets.Spreadsheets.get(c.book,{fields:'sheets(properties(sheetId,gridProperties(columnCount)))'}).sheets.find(s => s.properties.sheetId === c.gid);
+    if (tab && tab.properties.gridProperties.columnCount >= 24) {
+      const values = Sheets.Spreadsheets.Values.batchGet(c.book,{ranges:[range_(c,'X','X',1,1),range_(c,'X','X',row,row)]}).valueRanges;
+      const stored = String(values[1].values?.[0]?.[0] || '');
+      if (values[0].values?.[0]?.[0] === '방 등록 사진 (관리자 미리보기)' && stored.length <= 44000 && /^data:image\/jpeg;base64,\/9j\//.test(stored)) photo = stored;
+    }
+  }
+  return {topic:topic || '',message:message || '',photo};
+}
 function table_(response) {
   const columns = (response.dimensionHeaders || []).concat(response.metricHeaders || []).map(h => h.name);
   return (response.rows || []).map(row => {

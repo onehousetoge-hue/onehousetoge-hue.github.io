@@ -48,7 +48,10 @@ for (const file of htmlFiles) {
   if (!/<meta property="og:title"/.test(html) || !/<meta name="twitter:card"/.test(html)) failures.push(`${relative}: 공유 메타데이터가 없습니다.`);
   if (!/<html lang="ko">/.test(html)) failures.push(`${relative}: lang=ko가 없습니다.`);
   if (html.includes("http://")) failures.push(`${relative}: 안전하지 않은 http:// 링크가 있습니다.`);
-  for (const term of banned) if (html.toLowerCase().includes(term.toLowerCase())) failures.push(`${relative}: 금지 문자열 '${term}'이 있습니다.`);
+  for (const term of banned) {
+    const found = term === "임시" ? /임시(?!저장)/.test(html) : html.toLowerCase().includes(term.toLowerCase());
+    if (found) failures.push(`${relative}: 금지 문자열 '${term}'이 있습니다.`);
+  }
   for (const match of html.matchAll(/<a[^>]+href="([^"]+)"/g)) {
     const href = match[1];
     if (/^(mailto:|tel:|https?:)/.test(href)) continue;
@@ -67,7 +70,7 @@ for (const file of htmlFiles) {
   const verifiedRoomForm = relative === path.join("reservation", "index.html") && /<form class="inquiry-form"/.test(html) && /src="\/assets\/reservation\.js\?v=/.test(html) && verifiedRoomEndpoint;
   const verifiedIntake = [path.join("consultation", "index.html"), path.join("rooms", "register", "index.html")].includes(relative)
     && /<form[^>]+data-callback-form[^>]+data-endpoint="https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec"/.test(html)
-    && /src="\/assets\/callback\.js\?v=/.test(html);
+    && (relative === path.join("rooms","register","index.html") ? /src="\/assets\/room-registration\.js\?v=/ : /src="\/assets\/callback\.js\?v=/).test(html);
   if (/<form\b/.test(html) && !verifiedLegacyForm && !verifiedRoomForm && !verifiedIntake) failures.push(`${relative}: 검증된 접수 URL 없는 form이 있습니다.`);
   const route = relative === "index.html" ? "/" : "/" + relative.replaceAll(path.sep, "/").replace(/index\.html$/, "");
   const indexed = manifest.pages.find(page => page.route === route)?.indexable;

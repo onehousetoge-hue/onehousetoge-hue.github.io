@@ -31,13 +31,35 @@ test('client validation gives actionable errors without sending an inquiry',()=>
 });
 function server({failWrite=false}={}) {
   const rows=[['접수번호']]; let flush=0; const props={};
-  const sheet={getLastRow:()=>rows.length,getRange:(row,col,height,width)=>{
+  const sheet={getMaxColumns:()=>26,getLastRow:()=>rows.length,getRange:(row,col,height=1,width=1)=>{
     if(typeof row==='string') return {createTextFinder:id=>({matchEntireCell(){return this;},findNext(){const index=rows.findIndex(value=>value[0]===id);return index<0?null:{getRow:()=>index+1};}})};
-    const range={getValue:()=>rows[row-1]?.[col-1]||'',getDisplayValue:()=>rows[row-1]?.[col-1]||'',getDisplayValues:()=>[rows[row-1]||[]],setNumberFormat:()=>range,setValues:values=>{if(failWrite) throw new Error('storage failed');rows[row-1]=values[0];return range;}};return range;
+    function getValues(){return Array.from({length:height},(_,i)=>Array.from({length:width},(_,j)=>rows[row+i-1]?.[col+j-1]||''));}
+    const range={getValue:()=>getValues()[0][0],getDisplayValue:()=>getValues()[0][0],getValues,getDisplayValues:getValues,
+      isBlank:()=>getValues().flat().every(v=>v===''),setNumberFormat:()=>range,setWrapStrategy:()=>range,setFontWeight:()=>range,
+      setValue:value=>range.setValues([[value]]),setValues:values=>{if(failWrite) throw new Error('storage failed');
+        for(const [i,entry] of values.entries()){rows[row+i-1]||=[];entry.forEach((v,j)=>{rows[row+i-1][col+j-1]=v;});}return range;}};return range;
   }};
   const context=vm.createContext({ContentService:{MimeType:{JSON:'json'},createTextOutput:text=>({setMimeType:()=>JSON.parse(text)})},SpreadsheetApp:{openById:()=>({getSheetByName:()=>sheet}),flush:()=>flush++},LockService:{getScriptLock:()=>({tryLock:()=>true,hasLock:()=>true,releaseLock(){}})},PropertiesService:{getScriptProperties:()=>({getProperty:key=>props[key],setProperties:value=>Object.assign(props,value)})},Utilities:{formatDate:(_date,_zone,format)=>format==='yyyy-MM-dd'?'2026-09-24':'2026-09-24 12:00:00'}});
+  context.Utilities.base64Decode = value => [...Buffer.from(value,'base64')];
+  context.SpreadsheetApp.WrapStrategy = {CLIP:'CLIP'};
   vm.runInContext(code,context);return {context,rows,flush:()=>flush,post:payload=>context.doPost({postData:{contents:JSON.stringify(payload)}})};
 }
+test('a room photo is saved with the confirmed lead and attribution, and only the receipt is public',async()=>{
+  const s=server();
+  vm.runInContext(await readFile(new URL('../integrations/attribution/LeadAttribution.gs',import.meta.url),'utf8'),s.context);
+  const photo='data:image/jpeg;base64,'+Buffer.from([255,216,255,224,0,16,255,217]).toString('base64');
+  const registration={...valid,topic:'방 등록',consentVersion:inquiries.registrationVersion,roomPhoto:photo,
+    attribution:{landing:'/about/',conversion:'/rooms/register/',variant:'B',source:'naver'}};
+  const receipt=s.post(registration);
+  assert.equal(receipt.ok,true);assert.equal(receipt.roomPhotoSaved,true);assert.ok(!JSON.stringify(receipt).includes(photo));
+  assert.equal(s.rows[1][23],photo);assert.equal(s.rows[1][13],'/about/');assert.equal(s.rows[1][14],'/rooms/register/');
+  assert.equal(s.rows[1][9],inquiries.registrationVersion);assert.equal(s.rows.length,2);
+  assert.deepEqual(s.post(registration),receipt);assert.equal(s.rows.length,2);
+  assert.equal(s.post({...registration,roomPhoto:undefined}).code,'CONFLICT');
+  for(const bad of [{topic:'기타 상담'},{consentVersion:valid.consentVersion},{roomPhoto:'https://outside.invalid/file'},{roomPhoto:'data:image/jpeg;base64,/9j/AAAA'}]) assert.equal(s.post({...registration,...bad}).code,'INVALID');
+  const lookup=s.post({action:'status',kind:'consultation',requestId:valid.requestId});
+  assert.deepEqual(Object.keys(lookup).sort(),['kind','ok','receivedAt','requestId']);
+});
 test('backend and frontend share topics and consent version',()=>{const {context}=server();assert.deepEqual(JSON.parse(JSON.stringify(context.INQUIRY_TOPICS)),inquiries.topics);assert.equal(context.INQUIRY_VERSION,inquiries.consentVersion);});
 test('successful receipt is returned only after storage and flush',()=>{const s=server(),r=s.post(valid);assert.equal(r.ok,true);assert.equal(s.rows.length,2);assert.equal(s.flush(),1);assert.deepEqual(Object.keys(r).sort(),['kind','ok','receivedAt','requestId']);});
 test('same request ID is idempotent, changed content cannot silently reuse it',()=>{const s=server();s.post(valid);assert.equal(s.post(valid).ok,true);assert.equal(s.rows.length,2);assert.equal(s.post({...valid,message:'다른 문의 내용입니다.'}).code,'CONFLICT');});

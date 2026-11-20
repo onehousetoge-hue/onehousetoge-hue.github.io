@@ -4,11 +4,27 @@ import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 import { callbackPayload, submitCallback } from '../src/assets/callback.js';
 import { inquiries } from '../src/config/inquiries.mjs';
+import { extractRoom } from '../src/assets/room-description.js';
 
 const id = 'aa111111-2222-4333-8444-555555555555';
 const values = {name:'오프라인 시험',contact:'010-0000-0000',message:'사진 없이 먼저 빈방 활용 상담을 받고 싶습니다.',consent:true,website:''};
 const payload = callbackPayload(values, id, inquiries.consentVersion);
 const receipt = {requestId:id,kind:'consultation',receivedAt:'2026-10-09 12:00:00'};
+
+test('a host can describe, correct and review a room using a real sentence or a short follow-up',()=>{
+  assert.deepEqual(extractRoom('노원구 공릉동 아파트 방 두 개, 12월 1일부터. 월세 45만원, 관리비 5만원, 보증금 500만원. 방 6평에 2층이에요.'),{
+    location:'노원구 공릉동',rooms:'2개',availability:'12월 1일부터',rent:'45만원',deposit:'500만원',fee:'5만원',homeType:'아파트',area:'6평',floor:'2층'
+  });
+  assert.deepEqual(extractRoom('월세는 45만 원 말고 38만 원으로 바꿔줘'),{rent:'38만 원'});
+  assert.deepEqual(extractRoom('3개 이상','rooms'),{rooms:'3개 이상'});
+  assert.equal(extractRoom('방 두 개 중 하나만 빌려요').rooms,'1개');
+  assert.equal(extractRoom('일정은 서로 상의해서 정해요','availability').availability,'일정 협의');
+  assert.equal(extractRoom('바로 가능하지 않아요','availability').availability,undefined);
+  assert.equal(extractRoom('월세 50').rent,undefined);
+  assert.deepEqual(extractRoom('공릉동 010-0000-0000'),{});
+  assert.equal(extractRoom('월세는 아직 잘 모르겠어요','availability').availability,undefined);
+  assert.equal(extractRoom('다가구주택이고 가구도 있어요').location,undefined);
+});
 
 test('callback is compatible with the existing server and requires real consent and contact',async()=>{
   const code = await readFile(new URL('../integrations/inquiries/Code.gs',import.meta.url),'utf8');
@@ -61,7 +77,8 @@ test('the two intake forms have distinct fields and the existing diagnosis keeps
     assert.ok(html.includes(inquiries.endpoint));
     assert.match(html,/<fieldset disabled>/);
     assert.match(html,/상담 종료일로부터 최대 1년간/);
-    assert.doesNotMatch(html,/type="file"/);
+    if(kind==="consultation") assert.doesNotMatch(html,/type="file"/);
+    else assert.match(html,/<input[^>]+type="file"[^>]+accept="image\/jpeg,image\/png,image\/webp"/);
   }
   assert.match(consultation,/<textarea[^>]+name="message"/);
   for(const field of ['location','rooms','availability']){

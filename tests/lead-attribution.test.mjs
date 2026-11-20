@@ -46,7 +46,7 @@ test("all web and data entry points deny missing or different Google identities 
   for(const email of ["","another@example.org"]){
     const ctx=vm.createContext({DEPLOYMENT:{admin:"authorized@example.org"},Session:{getActiveUser:()=>({getEmail:()=>email})}});
     vm.runInContext(admin,ctx);
-    for(const call of ["doGet()","getTraffic(28)","listLeads('diagnosis',null)","getContact('callback',2,'bad')"])
+    for(const call of ["doGet()","getTraffic(28)","listLeads('diagnosis',null)","getContact('callback',2,'bad')","getInquiryDetail(2,'bad')"])
       assert.throws(()=>vm.runInContext(call,ctx),/관리자 로그인/);
   }
 });

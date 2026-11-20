@@ -23,3 +23,5 @@ export const reservationStylesheetUrl = assetUrl("reservation.css");
 export const reservationScriptUrl = assetUrl("reservation.js");
 
 export const serviceStylesheetUrl = assetUrl("service-pages.css");
+export const registrationScriptUrl = assetUrl("room-registration.js");
+export const registrationStylesheetUrl = assetUrl("room-registration.css");

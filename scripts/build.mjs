@@ -8,12 +8,13 @@ import { adminEntry } from "../src/lib/admin-entry.mjs";
 import { reservationPage } from "../src/lib/reservation-page.mjs";
 import { aboutPage } from "../src/lib/about-page.mjs";
 import { intakePage } from "../src/lib/callback-form.mjs";
+import { roomRegistrationPage } from "../src/lib/room-registration-page.mjs";
 import { roomCheckPage } from "../src/lib/room-check-page.mjs";
 import { rentFaqSchema } from "../src/lib/rent-faq.mjs";
 import { absolute, layout, organizationSchema } from "../src/lib/template.mjs";
 import {
   roomCheckStylesheetUrl, roomCheckScriptUrl, incomeCalculatorStylesheetUrl, incomeCalculatorScriptUrl,
-  diagnosisPrefillScriptUrl, reservationStylesheetUrl, reservationScriptUrl, serviceStylesheetUrl, headlineExperiment,
+  diagnosisPrefillScriptUrl, reservationStylesheetUrl, reservationScriptUrl, serviceStylesheetUrl, registrationStylesheetUrl, headlineExperiment,
 } from "../src/lib/static-assets.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -56,10 +57,10 @@ await emit("/reservation/", layout({ title: "예상 월세 무료 진단 신청"
 for (const [route, title, description, body] of [
   ["/about/", "한지붕 소개", "집주인과 대학생이 한집에서 지내도록 돕는 한지붕의 활동과 노원구 공릉동에서 시작한 빈방 활용 서비스를 소개합니다.", headlineExperiment + aboutPage()],
   ["/consultation/", "상담 신청하기", "빈방 활용이나 대학생과의 공동생활에 대해 궁금한 점을 한지붕 매니저에게 남겨 주세요. 이름과 연락처, 질문을 보내면 매니저가 답변합니다.", intakePage()],
-  ["/rooms/register/", "방 등록하기", "학생에게 내어줄 방의 동네, 남는 방 개수와 입주 가능 시기를 등록해 주세요. 한지붕 매니저가 연락해 입주 준비를 함께 확인합니다.", intakePage(true)],
+  ["/rooms/register/", "방 등록하기", "동네와 방 개수, 입주 가능 시기를 한 문장으로 알려주세요. 방 조건과 선택한 사진을 확인한 뒤 한지붕 매니저에게 등록을 신청할 수 있습니다.", roomRegistrationPage()],
 ]) {
   await emit(route, layout({ title, description, path: route, body, bodyClass: "reservation-page", showDiagnosisDock: false, showFooter: false, jsonLd: organizationSchema })
-    .replace("</head>", `<link rel="stylesheet" href="${reservationStylesheetUrl}"><link rel="stylesheet" href="${serviceStylesheetUrl}"></head>`));
+    .replace("</head>", route === "/rooms/register/" ? `<link rel="stylesheet" href="${registrationStylesheetUrl}"></head>` : `<link rel="stylesheet" href="${reservationStylesheetUrl}"><link rel="stylesheet" href="${serviceStylesheetUrl}"></head>`));
 }
 
 await emit("/reservation/privacy/", layout({
@@ -93,7 +94,7 @@ await mkdir(path.join(out, "assets"), { recursive: true });
 const assets = [
   "site.css", "site.js", "analytics.js", "room-check.css", "room-check.js",
   "reservation.css", "service-pages.css", "reservation.js", "diagnosis-prefill.js", "income-calculator.css",
-  "income-calculator.js", "callback.js", "inquiry.js", "figma", "fonts", "og-default.png",
+  "income-calculator.js", "callback.js", "inquiry.js", "room-registration.js", "room-description.js", "room-registration.css", "figma", "fonts", "og-default.png",
   "hanjibung-logo.png", "hanjibung-logo-256.png", "hanjibung-icon-64.png", "hanjibung-icon-192.png",
 ];
 for (const asset of assets) {

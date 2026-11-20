@@ -7,6 +7,7 @@ const files = [
   "src/config/inquiries.mjs", "src/config/page-dates.mjs", "src/assets/inquiry.js",
   "integrations/inquiries/Code.gs", "scripts/crawl.mjs", "src/config/site.mjs",
   "src/lib/static-assets.mjs", "src/lib/room-check-page.mjs", "src/lib/reservation-page.mjs",
+  "src/lib/room-registration-page.mjs", "src/assets/room-description.js", "src/assets/room-registration.js", "src/assets/room-registration.css",
   "src/lib/about-page.mjs", "src/assets/service-pages.css", "src/lib/rent-faq.mjs", "src/assets/headline-experiment.js",
   "src/assets/room-check.js", "src/assets/reservation.js", "src/lib/income-calculator.mjs",
   "src/assets/income-calculator.js", "src/assets/income-calculator.css", "src/assets/diagnosis-prefill.js",

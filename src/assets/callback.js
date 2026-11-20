@@ -1,13 +1,15 @@
 import { validateInquiryInput, send, recordHostConsultationConversion } from "./inquiry.js";
 
 export function callbackPayload(values, requestId, consentVersion, registration = false) {
+  const optional = [["rent","희망 월세"],["deposit","보증금"],["fee","관리비"],["homeType","주택 유형"],["area","방 면적"],["floor","층수"]];
   return {
     action: "submit", kind: "consultation", requestId,
     name: String(values.name || "").trim(),
     contactMethod: "phone", contact: String(values.contact || "").trim(),
     topic: registration ? "방 등록" : "빈방·유휴공간 활용",
     message: registration
-      ? `동네: ${values.location.trim()}\n남는 방: ${values.rooms}\n입주 가능 시기: ${values.availability}`
+      ? [`동네: ${values.location.trim()}`, `남는 방: ${values.rooms}`, `입주 가능 시기: ${values.availability}`,
+          ...optional.filter(([key]) => values[key]).map(([key,label]) => label + ": " + values[key])].join("\n")
       : String(values.message || "").trim(),
     consent: values.consent === true, consentVersion,
     website: String(values.website || ""),
@@ -28,13 +30,12 @@ export async function submitCallback(endpoint, payload) {
   return receipt;
 }
 
-const form = typeof document === "undefined" ? null : document.querySelector("[data-callback-form]");
+const form = typeof document === "undefined" ? null : document.querySelector("[data-callback-form]:not([data-room-registration])");
 if (form) {
   const fieldset = form.querySelector("fieldset");
   const button = form.querySelector("[type=submit]");
   const status = form.querySelector("[data-callback-status]");
   const success = document.querySelector("[data-callback-success]");
-  const registration = form.dataset.intake === "registration";
   if (form.dataset.endpoint) fieldset.disabled = false;
   let requestId = crypto.randomUUID(), busy = false, submitted = false;
   let attribution;
@@ -43,12 +44,7 @@ if (form) {
     event.preventDefault();
     if (busy || submitted || !form.dataset.endpoint) return;
     const values = { ...Object.fromEntries(new FormData(form)), consent: form.elements.consent.checked };
-    if (registration && !values.location.trim()) {
-      status.textContent = "방이 있는 동네를 입력해 주세요.";
-      form.elements.location.focus();
-      return;
-    }
-    const payload = callbackPayload(values, requestId, form.dataset.consentVersion, registration);
+    const payload = callbackPayload(values, requestId, form.dataset.consentVersion);
     const errors = validateInquiryInput(payload, "consultation");
     form.querySelectorAll("[aria-invalid]").forEach((element) => element.removeAttribute("aria-invalid"));
     if (Object.keys(errors).length) {

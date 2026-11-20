@@ -66,6 +66,21 @@ function leadRow(kind,item){
   }else origin.append(el('p','이 접수에는 유입 정보가 저장되지 않았습니다.'));
   const link=el('a','시트 열기');link.href=item.url;link.target='_blank';link.rel='noopener noreferrer';
   const info=el('div',item.label||'—');info.append(el('br'),el('small',item.status));
+  if(kind==='callback'){
+    const details=el('details'),toggle=el('summary','신청 내용'),body=el('div');
+    let loading=false;
+    details.append(toggle,body);info.append(details);
+    details.addEventListener('toggle',()=>{
+      if(!details.open||loading||body.dataset.loaded)return;
+      loading=true;body.textContent='조회 중…';
+      google.script.run.withFailureHandler(()=>{loading=false;body.textContent='조회하지 못했습니다. 닫았다가 다시 열어 주세요.'})
+        .withSuccessHandler(data=>{
+          loading=false;body.dataset.loaded='true';const message=el('p',data.message);message.style.whiteSpace='pre-line';
+          body.replaceChildren(el('strong',data.topic),message);
+          if(data.photo){const image=el('img');image.alt='신청자가 첨부한 방 사진';image.style.cssText='display:block;width:220px;max-width:100%;height:auto';image.src=data.photo;body.append(image);}
+        }).getInquiryDetail(item.row,item.id);
+    });
+  }
   row(byId('lead-rows'),[item.when,info,contactButton(kind,item),origin,link]);
 }
 function leads(append=false){
