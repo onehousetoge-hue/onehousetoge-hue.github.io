@@ -106,14 +106,15 @@ function init(form) {
     const applied = [];
     for (const [key, value] of Object.entries(patch)) {
       if (badRoomField(key, value) || value.length > input(key).maxLength) continue;
-      input(key).value = value; input(key).setCustomValidity(""); applied.push(roomFields[key] + " " + value);
+      input(key).value = value; input(key).setCustomValidity(""); applied.push(roomFields[key]);
     }
     invalidate(); notify(""); refresh();
     const next = firstMissing();
     if (!applied.length) {
       bubble("어떤 항목인지 확인이 필요해요. " + (questions[next] || "‘월세 40만 원’처럼 항목과 값을 함께 적거나 ‘직접 입력’을 눌러 주세요."));
     } else {
-      bubble("미리보기에 반영했어요. " + applied.join(" · ") + ". " + (questions[next] || "내용을 확인하고 다음 단계에서 신청해 주세요."));
+      const note = applied.length === 1 ? applied[0] + " 항목을 반영했어요. " : "알려 주신 방 정보를 정리했어요. ";
+      bubble(note + (questions[next] || "미리보기를 확인하고 다음 단계로 넘어가 주세요."));
     }
   }
   function validateRoom(includeMissing) {
