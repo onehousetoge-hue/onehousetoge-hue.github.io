@@ -68,7 +68,7 @@ test("dedicated diagnosis page preserves the existing required information and e
   assert.match(consent, /type="checkbox"/);
   assert.doesNotMatch(consent, /\bchecked(?:\s|>)/);
   assert.doesNotMatch(diagnosisForm, /type="file"|id="photos"|room-photos-title|사진 첨부/);
-  assert.match(diagnosisForm, /<span aria-hidden="true">02<\/span><h3 id="room-contact-title">월세 결과 받을 연락처<\/h3>/);
+  assert.match(diagnosisForm, /<span aria-hidden="true">02<\/span><h3 id="room-contact-title">월세 진단 결과 받을 연락처<\/h3>/);
   for (const text of ["집 위치와 방 정보를 남겨주세요.", "90일", 'href="/reservation/privacy/"']) assert.ok(html.includes(text), text);
   const submit = diagnosisForm.match(/<button\b[^>]*type="submit"[^>]*>/)?.[0];
   assert.match(submit, /\bdisabled(?:\s|>)/);
