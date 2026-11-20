@@ -125,3 +125,21 @@ test("room API rejects unrecognized home types before upstream delivery", async 
     assert.equal(calls, 0);
   } finally { globalThis.fetch = previous; }
 });
+
+test("room API signs only allowed attribution alongside the inquiry and preserves the original request ID", async (t) => {
+  const envelopes = [];
+  t.mock.method(globalThis, "fetch", async (_url, options) => {
+    const body = JSON.parse(JSON.parse(options.body).payload);
+    envelopes.push(body);
+    return { ok: true, json: async () => ({ ok: true, requestId: body.requestId }) };
+  });
+  const body = {...valid(), photos: [], attribution:{landing:"/",variant:"C",source:"naver",
+    medium:"cpc",campaign:"winter",term:"방",referrer:"search.naver.com",email:"ignored",gclid:"ignored"}};
+  for (let attempt=0; attempt<2; attempt++) {
+    const res=response(); await handler(request(body),res); assert.equal(res.body.requestId,body.requestId);
+  }
+  assert.deepEqual(envelopes[0].attribution,{landing:"/",variant:"C",source:"naver",medium:"cpc",
+    campaign:"winter",term:"방",referrer:"search.naver.com"});
+  assert.deepEqual(envelopes[1].attribution,envelopes[0].attribution);
+  assert.deepEqual(envelopes[1].inquiry,body.inquiry);
+});

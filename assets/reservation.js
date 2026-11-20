@@ -123,6 +123,7 @@
       prefill?.clear();
       uncertain = false; lock(false);
       event("inquiry_complete", { photo_count: 0, value: Math.min(3600, Math.round((performance.now() - submissionStart) / 1000)) });
+      event("diagnosis_complete");
       window.hanjibungTrackHeadlineCompletion?.(JSON.parse(body).attribution);
       // Only this branch has a successful response with the exact request ID.
       // Ad measurement must not interrupt the saved submission's success UI.
