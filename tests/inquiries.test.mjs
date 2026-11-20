@@ -4,7 +4,6 @@ import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 import { inquiries } from '../src/config/inquiries.mjs';
 import { validateInquiryInput, send } from '../src/assets/inquiry.js';
-import { consultationRecords, validateConsultationRecord } from '../src/content/consultation-records.mjs';
 const code = await readFile(new URL('../integrations/inquiries/Code.gs',import.meta.url),'utf8');
 const valid = {action:'submit',kind:'consultation',requestId:'11111111-2222-4333-8444-555555555555',name:'접수 시험',contactMethod:'email',contact:'qa@hanjibung.invalid',organization:'',topic:'기타 상담',message:'연결 검증용 비개인 시험 내용입니다.',consent:true,consentVersion:'2026-09-24',website:''};
 test('client transport rejects errors, timeouts, malformed and mismatched receipts without real network',async(t)=>{
@@ -30,15 +29,6 @@ test('client validation gives actionable errors without sending an inquiry',()=>
   assert.ok(validateInquiryInput(valid,'partnership').organization);
   assert.deepEqual(validateInquiryInput({...valid,organization:'시험 기관'},'partnership'),{});
 });
-test('inquiry errors have a keyboard summary and adjacent field descriptions',async()=>{
-  for(const kind of ['consultation','partnership']) {
-    const html=await readFile(new URL(`../dist/${kind}/index.html`,import.meta.url),'utf8');
-    assert.match(html,/data-form-errors role="alert" tabindex="-1" hidden/);
-    assert.ok(html.indexOf('class="inquiry-channels"')<html.indexOf('id="inquiry-form"'));
-    for(const name of ['name','contact','topic','message','consent']) assert.ok(html.includes(`id="error-${name}"`));
-    assert.match(html,/data-message-count/);
-  }
-});
 function server({failWrite=false}={}) {
   const rows=[['접수번호']]; let flush=0; const props={};
   const sheet={getLastRow:()=>rows.length,getRange:(row,col,height,width)=>{
@@ -56,16 +46,4 @@ test('server rejects missing consent, invalid contacts, payload abuse and automa
 test('potential resident ID input is rejected, formulas are escaped',()=>{const s=server();assert.equal(s.post({...valid,message:'900101-1234567'}).code,'SENSITIVE');assert.equal(s.context.cleanCell('=IMPORTXML()'),"'=IMPORTXML()");assert.equal(s.context.cleanCell('+123'),"'+123");});
 test('receipt lookups disclose no contact data and unknown IDs fail',()=>{const s=server();assert.equal(s.post({action:'status',kind:valid.kind,requestId:valid.requestId}).code,'NOT_FOUND');s.post(valid);const result=s.post({action:'status',kind:valid.kind,requestId:valid.requestId});assert.equal(result.ok,true);assert.ok(!JSON.stringify(result).includes(valid.contact));});
 test('partnership requires institution name',()=>{const s=server();assert.equal(s.post({...valid,kind:'partnership',topic:'기타 기관협력'}).ok,false);assert.equal(s.post({...valid,kind:'partnership',topic:'기타 기관협력',organization:'시험 기관'}).ok,true);});
-test('only substantive existing activity records can generate pages',()=>{for(const record of consultationRecords) validateConsultationRecord(record);assert.throws(()=>validateConsultationRecord({...consultationRecords[0],questions:[]}));assert.throws(()=>validateConsultationRecord({...consultationRecords[0],publishedAt:''}));});
-test('forms preserve contact choice, privacy consent, actual endpoint and completion noindex',async()=>{
-  for(const kind of ['consultation','partnership']) {
-    const html=await readFile(new URL(`../dist/${kind}/index.html`,import.meta.url),'utf8');
-    assert.ok(html.includes(inquiries.endpoint));for(const name of ['name','contactMethod','contact','topic','message','consent']) assert.ok(html.includes(`name="${name}"`));
-    assert.match(html, /<fieldset disabled>/, 'no-JS cannot post contact fields to the static host');
-    assert.match(html,/상담 종료일로부터 최대 1년간/);assert.doesNotMatch(html,/<input[^>]*type="file"/);
-    const complete=await readFile(new URL(`../dist/${kind}/complete/index.html`,import.meta.url),'utf8');assert.match(complete,/noindex,follow/);assert.match(complete,/접수가 확인된 상태가 아닙니다/);
-    const sitemap=await readFile(new URL('../dist/sitemap.xml',import.meta.url),'utf8');assert.ok(sitemap.includes(`/${kind}/</loc>`));assert.ok(!sitemap.includes(`/${kind}/complete/`));
-  }
-});
 test('completion checks backend and stores only receipt metadata',async()=>{const js=await readFile(new URL('../src/assets/inquiry.js',import.meta.url),'utf8');assert.match(js,/action:'status'/);assert.match(js,/response.type === 'opaque'/);assert.doesNotMatch(js,/mode:\s*['"]no-cors|gtag\(|dataLayer|localStorage/);assert.match(js,/sessionStorage.setItem\(receiptKey\(kind\),JSON.stringify\(receipt\)\)/);assert.match(js,/invalid\.scrollIntoView\(\{block:'center'/);});
-test('independent activity pages preserve all questions, guidance and follow-up',async()=>{for(const record of consultationRecords){const html=await readFile(new URL(`../dist${record.href}index.html`,import.meta.url),'utf8');for(const fact of [record.date,record.area,record.participants,...record.questions,...record.guidance,...record.followup]) assert.ok(html.includes(fact),fact);assert.match(html,/"@type":"Article"/);}});

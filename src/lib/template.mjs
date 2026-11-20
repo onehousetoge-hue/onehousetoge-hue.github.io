@@ -1,4 +1,4 @@
-import { navigation, policies, site } from "../config/site.mjs";
+import { policies, site } from "../config/site.mjs";
 import { analyticsScriptUrl, stylesheetUrl, scriptUrl } from "./static-assets.mjs";
 
 const escapeHtml = (value = "") =>
@@ -72,15 +72,10 @@ export function diagnosisBanner() {
   return `<a class="diagnosis-top-banner" href="/reservation/"><img src="/assets/figma/benefit-income.svg" width="30" height="30" alt=""><span>예상 월세 무료 진단 신청하기</span><span class="banner-arrow" aria-hidden="true">→</span></a>`;
 }
 
-export function header(currentPath = "/") {
-  const links = navigation
-    .map((group) => `<details class="nav-group"><summary>${escapeHtml(group.label)}</summary><div class="nav-group-menu">${group.links
-      .map(([label, href]) => `<a href="${href}"${currentPath.startsWith(href) || (href === "/resources/" && currentPath.startsWith("/guide/")) ? ' aria-current="page"' : ""}>${escapeHtml(label)}</a>`)
-      .join("")}</div></details>`)
-    .join("");
+export function header() {
   return `
     <a class="skip-link" href="#main-content">본문으로 바로가기</a>
-    <header class="site-header" data-header data-consolidated-menu>
+    <header class="site-header" data-header>
       ${diagnosisBanner()}
       <div class="container header-inner">
         <a class="brand" href="/" aria-label="한지붕 HANJIBUNG 홈페이지">
@@ -88,13 +83,6 @@ export function header(currentPath = "/") {
           <span><strong>${site.name}</strong> <small>${site.englishName}</small></span>
         </a>
         <a class="header-quick-action" href="/reservation/">무료 월세 진단</a>
-        <button class="menu-button" type="button" aria-expanded="false" aria-controls="primary-navigation" data-menu-button>
-          <span class="menu-open-icon">${icon("menu")}</span><span class="menu-close-icon">${icon("close")}</span><span class="menu-label" aria-hidden="true" data-menu-label>메뉴</span><span class="visually-hidden">전체 메뉴 열기</span>
-        </button>
-        <nav class="primary-navigation" id="primary-navigation" aria-label="주요 메뉴" data-navigation>
-          <div class="nav-links">${links}</div>
-          <a class="button button-small" href="/reservation/">예상 월세 무료 진단 받기</a>
-        </nav>
       </div>
     </header>`;
 }
@@ -112,7 +100,7 @@ export function footer() {
           <p>${site.footerDescription}</p>
         </div>
         <div class="footer-contact"><h2>단체 정보</h2><dl><div><dt>고유번호</dt><dd>${site.registrationNumber}</dd></div><div><dt>대표자</dt><dd>${site.representative}</dd></div><div><dt>소재지</dt><dd>${site.address}</dd></div><div><dt>전화</dt><dd><a href="${site.phoneHref}">${site.phone}</a></dd></div><div><dt>이메일</dt><dd><a href="${site.emailHref}">${site.email}</a></dd></div></dl></div>
-        <div class="footer-links"><h2>안내</h2><a href="/consultation/">무료상담 문의</a><a href="/partnership/">기관협력 문의</a><a href="/participate/">참여·기관협력</a><a href="/contact/">전화·이메일 문의</a><a href="/privacy/">개인정보 처리방침</a><a href="/terms/">이용안내</a><a href="/transparency/">운영·투명성</a></div>
+        <div class="footer-links"><h2>안내</h2><a href="/reservation/privacy/">개인정보 처리방침</a></div>
       </div>
       <div class="container footer-bottom"><span>© 2026 hanjibung. All rights reserved.</span><span>${site.legalType}</span><a class="back-to-top" href="#page-top">맨 위로 돌아가기</a></div>
     </footer>`;
@@ -147,7 +135,7 @@ export function layout({ title, documentTitle, description, path, body, breadcru
     : null;
   const schemas = [...(Array.isArray(jsonLd) ? jsonLd : [jsonLd])].filter(Boolean);
   if (breadcrumbSchema) schemas.push(breadcrumbSchema);
-  return `<!doctype html><html lang="ko"><head>${pageHead({ title, documentTitle, description, path, type, robots, publishedAt, updatedAt, jsonLd: schemas })}</head><body id="page-top" class="${bodyClass}">${showHeader ? header(path) : '<a class="skip-link" href="#main-content">본문으로 바로가기</a>'}${breadcrumb(breadcrumbs)}<main id="main-content">${body}</main>${showFooter ? footer() : ""}${showHeader ? rentDiagnosisDock() : ""}</body></html>`;
+  return `<!doctype html><html lang="ko"><head>${pageHead({ title, documentTitle, description, path, type, robots, publishedAt, updatedAt, jsonLd: schemas })}</head><body id="page-top" class="${bodyClass}">${showHeader ? header() : '<a class="skip-link" href="#main-content">본문으로 바로가기</a>'}${breadcrumb(breadcrumbs)}<main id="main-content">${body}</main>${showFooter ? footer() : ""}${showHeader ? rentDiagnosisDock() : ""}</body></html>`;
 }
 
 export const organizationSchema = {

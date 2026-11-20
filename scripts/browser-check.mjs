@@ -43,71 +43,22 @@ for (const width of [320, 390, 1440]) {
       item.accessibility = audit;
       assert.equal(audit.violations.length, 0, `Axe violations ${route}: ${JSON.stringify(audit.violations)}`);
     }
-    if (["/", "/programs/senior-home-consulting/", "/activities/field-records/", "/contact/", "/resources/family-checklist/", "/resources/private-common-space/"].includes(route)) {
-      const name = route === "/" ? "home" : route.split("/").filter(Boolean).at(-1);
-      browser("screenshot", path.join(output, `${name}-${width}.png`));
-    }
     results.push(item);
     console.log(`${width}px ${route}: layout${width === 390 ? " + axe" : ""} passed`);
   }
 }
 browser("set", "viewport", "390", "844");
-openPage("/resources/conflict-prevention/");
-browser("snapshot", "-i");
-browser("fill", "#conflict-fact", "검증용 메모: 생활시간을 함께 확인하기");
-// Check the exact keyboard interaction, including unchanged adjacent checkboxes.
-assert.deepEqual(evaluate("[...document.querySelectorAll('[data-local-check]')].map(input=>input.checked)"), [false, false, false, false]);
-browser("focus", "#conflict-check-0");
-browser("press", "Space");
-assert.deepEqual(evaluate("[...document.querySelectorAll('[data-local-check]')].map(input=>input.checked)"), [true, false, false, false]);
-assert.equal(evaluate("document.querySelector('[data-check-progress]').textContent"), "1 / 4개 확인");
-assert.equal(evaluate("document.querySelector('[data-print-answer]').textContent"), "검증용 메모: 생활시간을 함께 확인하기");
-assert.equal(evaluate("localStorage.length + sessionStorage.length"), 0);
-browser("click", "summary");
-assert.equal(evaluate("document.querySelector('.resource-details').open"), true);
-browser("press", "Enter");
-assert.equal(evaluate("document.querySelector('.resource-details').open"), false);
-evaluate("window.__printCalls=0;window.print=()=>{window.__printCalls++;window.dispatchEvent(new Event('beforeprint'));}; true");
-browser("click", "[data-print]");
-assert.equal(evaluate("window.__printCalls"), 1);
-assert.equal(evaluate("document.querySelector('.resource-details').open"), true);
-evaluate("window.dispatchEvent(new Event('afterprint')); true");
-assert.equal(evaluate("document.querySelector('.resource-details').open"), false);
-browser("click", "[data-menu-button]");
-assert.equal(evaluate("document.querySelector('main').inert"), true);
-browser("focus", "[data-navigation] > .button");
-browser("press", "Tab");
-assert.equal(evaluate("document.activeElement.hasAttribute('data-menu-button')"), true);
-browser("press", "Shift+Tab");
-assert.equal(evaluate("document.activeElement===document.querySelector('[data-navigation] > a')"), true);
+openPage("/");
+assert.equal(evaluate("Boolean(document.querySelector('.nav-toggle, [data-menu-button]'))"), false);
+openPage("/reservation/");
+browser("click", "[data-open-callback]");
+assert.equal(evaluate("document.querySelector('[data-callback-dialog]').open"), true);
 browser("press", "Escape");
-assert.equal(evaluate("document.activeElement.hasAttribute('data-menu-button')"), true);
-assert.equal(evaluate("document.querySelector('main').inert"), false);
-openPage("/programs/senior-home-consulting/");
-browser("snapshot", "-i");
-browser("focus", ".faq summary");
-browser("press", "Enter");
-assert.equal(evaluate("document.querySelector('.faq details').open"), true);
-openPage("/contact/");
-const contacts = evaluate("[...document.querySelectorAll('.contact-card a')].map(a=>a.getAttribute('href'))");
-assert.deepEqual(contacts, ["tel:+821045879428", "mailto:onehousetoge@gmail.com"]);
-browser("snapshot", "-i");
-evaluate("window.__copied=[];Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async value=>{window.__copied.push(value);}}});true");
-browser("focus", "[data-copy-contact=email]");
-browser("press", "Enter");
-assert.deepEqual(evaluate("window.__copied"), ["onehousetoge@gmail.com"]);
-assert.match(evaluate("document.querySelector('#copy-email-status').textContent"), /직접 전송/);
-browser("click", "[data-copy-contact=phone]");
-assert.deepEqual(evaluate("window.__copied"), ["onehousetoge@gmail.com", "010-4587-9428"]);
-evaluate("navigator.clipboard.writeText=async()=>{throw new Error('denied for test')};true");
-browser("click", "[data-copy-contact=email]");
-assert.match(evaluate("document.querySelector('#copy-email-status').textContent"), /복사가 허용되지 않았습니다/);
-assert.equal(evaluate("document.querySelector('[data-copy-contact=email]').disabled"), false);
-assert.equal(evaluate("localStorage.length + sessionStorage.length"), 0);
+assert.equal(evaluate("document.querySelector('[data-callback-dialog]').open"), false);
 const statuses = [];
-for (const route of ["/", "/contact/", "/thanks/consultation/", "/thanks/partnership/", "/daily-word.html", "/fortune.html", "/meeting.html", "/does-not-exist/"]) {
+for (const route of ["/", "/reservation/", "/reservation/privacy/", "/about/", "/contact/", "/privacy/", "/thanks/consultation/", "/thanks/partnership/", "/daily-word.html", "/fortune.html", "/meeting.html", "/does-not-exist/"]) {
   const response = await fetch(`${base}${route}`);
-  const expected = ["/", "/contact/"].includes(route) ? 200 : 404;
+  const expected = routes.includes(route) ? 200 : 404;
   assert.equal(response.status, expected, route);
   const html = await response.text();
   if (expected === 404) assert.ok(html.includes('name="robots" content="noindex,nofollow"'));
@@ -115,5 +66,5 @@ for (const route of ["/", "/contact/", "/thanks/consultation/", "/thanks/partner
 }
 const errors = browser("errors");
 assert.deepEqual(errors.errors, [], "Browser errors detected");
-await writeFile(path.join(output, "results.json"), JSON.stringify({ checkedAt: new Date().toISOString(), base, results, statuses, contacts, errors, functionality: "memo, checklist, print callback + mirrors, details, menu focus trap, Escape, FAQ keyboard, copy success/denied + keyboard", limitations: "전화 발신·이메일 전송을 실행하지 않음. 인쇄 대화상자와 클립보드 쓰기 호출은 대체함; 실제 종이 출력·OS 클립보드 기록은 확인하지 않음." }, null, 2));
+await writeFile(path.join(output, "results.json"), JSON.stringify({ checkedAt: new Date().toISOString(), base, results, statuses, errors, functionality: "retired menu, quick consultation, active routes and 404 responses" }, null, 2));
 console.log(`Browser QA passed: ${results.length} viewport checks; ${routes.length} axe checks; interactions and status codes.`);
