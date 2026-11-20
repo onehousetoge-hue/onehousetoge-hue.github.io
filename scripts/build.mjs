@@ -38,7 +38,7 @@ async function emit(route, html, { indexable = true, updatedAt = pageDates[route
 
 await emit("/", layout({
   title: "우리 집 남는 방 예상 월세 진단",
-  description: "한지붕 우리 집 남는 방 예상 월세 진단에서 방 정보와 지역 정보를 보내고 예상 월세와 준비사항을 안내받으세요.",
+  description: "우리 집 빈방의 예상 월세를 무료로 진단받으세요. 관리비는 어떻게 나눌지, 어떤 대학생이 입주하는지, 함께 살 때의 규칙은 어떻게 정하는지 한지붕이 집주인의 질문에 답합니다.",
   path: "/",
   body: roomCheckPage(),
   bodyClass: "room-check-page",

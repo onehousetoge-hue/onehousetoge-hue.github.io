@@ -107,65 +107,209 @@
 .room-app .host-consultation h2 span{color:#579cff}
 .room-app .host-consultation .consultation-link{display:inline-flex;align-items:center;justify-content:center;min-width:300px;min-height:58px;padding:15px 36px;border-radius:999px;background:transparent;color:#fff;border:1px solid #fff;font-size:17px;font-weight:700}
 .room-app .host-consultation .consultation-link:hover{background:#ffffff12}
-.room-app .host-faq{padding:88px 0;background:white}
-.room-app .host-faq h2{font-size:40px;line-height:1.4;letter-spacing:-.96px;margin-top:8px}
-.room-app .mobile-break{display:none}
-.room-app .host-faq-list{display:grid;gap:20px;margin-top:36px}
-.room-app .host-faq-card{padding:32px;border-radius:28px;border:1px solid var(--host-line);background:#fafbfc}
-.room-app .host-faq-card h3{font-size:25px;line-height:1.3;margin-bottom:20px;letter-spacing:-.28px}
-.room-app .host-faq-card>p{font-size:18px;line-height:1.65;color:#626c7c;letter-spacing:-.22px;word-break:keep-all}
-.room-app .host-faq-card>p+p{margin-top:16px}
-.room-app .host-faq-card .faq-lead{color:#151d25;font-weight:700}
-.room-app .host-faq-card>a{display:inline-flex;align-items:center;gap:10px;min-height:44px;margin-top:16px;font-size:18px;font-weight:600;color:#227dff}
-.room-app .host-faq-card a:hover{text-decoration:underline;text-underline-offset:4px}
-.room-app .tax-notice{padding:16px 20px;margin-top:20px;border:1px solid #c2dbff;border-radius:16px;background:#edf5ff;color:#0048ad;font-size:17px;line-height:1.65}
-.room-app .host-faq-card .tax-source{font-size:16px;color:#626c7c;margin-top:20px;line-height:1.8}
-.room-app .tax-source a{color:#1965c4;text-decoration:underline;text-underline-offset:3px;display:inline-block;min-height:30px}
 .room-app .rent-faq {
-  padding: clamp(48px, 6vw, 80px) 0;
-  background: #f6f9fc;
+  --faq-blue: #185bb1;
+  --faq-line: #dbe3ec;
+  padding-block: clamp(56px, 7vw, 104px);
+  background: #fff;
 }
-.room-app .rent-faq h2 {
-  font-size: clamp(29px, 3.2vw, 40px);
-  line-height: 1.35;
-  letter-spacing: -.04em;
+.room-app .header-faq-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 50px;
+  color: #274360;
+  font-size: 16px;
+  font-weight: 600;
 }
-.room-app .rent-faq-list {
-  margin-top: clamp(24px, 3vw, 36px);
-  border-top: 2px solid var(--host-ink);
+.room-app .header-faq-link::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  margin: 0 2px 4px 0;
+  border: solid currentColor;
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(45deg);
 }
-.room-app .rent-faq-item {
+.room-app .header-faq-link:hover { color: var(--host-blue); text-decoration: underline; }
+.room-app .rent-faq > .host-container { container-type: inline-size; }
+.room-app .rent-faq-layout,
+.room-app .rent-faq-groups { display: grid; gap: 44px; }
+.room-app .rent-faq-index h2 {
+  color: #152941;
+  font-size: clamp(32px, 5cqi, 44px);
+  font-weight: 750;
+  line-height: 1.2;
+  letter-spacing: -.055em;
+}
+.room-app .rent-faq-index h2 span {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--faq-blue);
+  font-size: 17px;
+  font-weight: 650;
+  letter-spacing: -.025em;
+}
+.room-app .rent-faq-nav {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
-  gap: 12px clamp(24px, 4vw, 56px);
-  padding: clamp(22px, 3vw, 32px) 0;
-  border-bottom: 1px solid #ced7e0;
-  scroll-margin-top: 24px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 24px;
 }
-.room-app .rent-faq-item h3 {
-  font-size: clamp(20px, 2vw, 24px);
+.room-app .rent-faq-nav a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  min-height: 50px;
+  padding: 10px 14px;
+  border: 1px solid var(--faq-line);
+  border-radius: 10px;
+  background: #f5f8fc;
+  color: #274360;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.45;
+  word-break: keep-all;
+}
+.room-app .rent-faq-nav .icon {
+  flex: none;
+  width: 15px;
+  height: 15px;
+  color: var(--faq-blue);
+  transform: rotate(45deg);
+}
+.room-app .rent-faq-group h3 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  scroll-margin-block-start: 20px;
+  color: #1d324a;
+  font-size: clamp(23px, 3.2cqi, 28px);
+  line-height: 1.35;
+  letter-spacing: -.045em;
+}
+.room-app .rent-faq-symbol {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: #eaf2fe;
+  color: var(--faq-blue);
+}
+.room-app .rent-faq-symbol .icon { width: 21px; height: 21px; }
+.room-app .rent-faq-group h3:target .rent-faq-symbol { background: var(--faq-blue); color: white; }
+.room-app .rent-faq-list {
+  border: 1px solid var(--faq-line);
+  border-radius: 16px;
+}
+.room-app .rent-faq-item + .rent-faq-item { border-top: 1px solid var(--faq-line); }
+.room-app .rent-faq-item:first-child { border-radius: 15px 15px 0 0; }
+.room-app .rent-faq-item:last-child { border-radius: 0 0 15px 15px; }
+.room-app .rent-faq-item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 60px;
+  padding: 16px clamp(16px, 2.7cqi, 26px);
+  border-radius: inherit;
+  list-style: none;
+  cursor: pointer;
+}
+.room-app .rent-faq-item summary::-webkit-details-marker { display: none; }
+.room-app .rent-faq-item summary::after {
+  content: "";
+  flex: none;
+  width: 10px;
+  height: 10px;
+  margin: 0 3px 4px;
+  border: solid #5b6f86;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.room-app .rent-faq-item h4 {
+  margin: 0;
+  color: var(--host-ink);
+  font-size: clamp(18px, 2.4cqi, 21px);
+  font-weight: 650;
   line-height: 1.5;
+  letter-spacing: -.03em;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
-.room-app .rent-faq-item p {
-  color: #414d60;
-  font-size: 18px;
+.room-app .rent-faq-item[open] { background: #f0f6ff; }
+.room-app .rent-faq-item[open] h4 { color: #174e93; }
+.room-app .rent-faq-item[open] summary::after {
+  margin-block: 5px 0;
+  border-color: var(--faq-blue);
+  transform: rotate(225deg);
+}
+.room-app .rent-faq-answer {
+  padding: 0 clamp(16px, 2.7cqi, 26px) 20px;
+  scroll-margin-block-start: 116px;
+  color: #3c5066;
+  font-size: clamp(17px, 2.1cqi, 19px);
   line-height: 1.75;
   word-break: keep-all;
   overflow-wrap: anywhere;
 }
-.room-app .rent-faq-item a {
+.room-app .rent-faq-answer p + p { margin-top: 12px; }
+.room-app .rent-faq-links { display: flex; flex-wrap: wrap; column-gap: 20px; margin-top: 8px; }
+.room-app .rent-faq-links a, .room-app .rent-faq-contact {
   display: inline-flex;
   align-items: center;
-  min-height: 44px;
-  margin-top: 4px;
-  color: #155bb0;
-  font-weight: 600;
+  gap: 8px;
+  min-height: 50px;
+  color: var(--faq-blue);
+  font-size: 16px;
+  font-weight: 650;
   text-decoration: underline;
   text-underline-offset: 4px;
 }
-@media (max-width: 760px) {
-  .room-app .rent-faq-item { grid-template-columns: minmax(0, 1fr); }
-  .room-app .rent-faq-item p { font-size: 17px; }
+.room-app .rent-faq-contact { justify-self: start; }
+.room-app .rent-faq-contact .icon { width: 18px; height: 18px; }
+.room-app .rent-faq :is(a, summary):focus-visible { outline: 3px solid var(--faq-blue); outline-offset: 2px; }
+@media (hover: hover) {
+  .room-app .rent-faq-nav a:hover { color: #123f7a; background: #e0edff; }
+  .room-app .rent-faq-item:not([open]) summary:hover { background: #f5f8fc; }
+}
+@container (min-width: 760px) {
+  .room-app .rent-faq-layout {
+    grid-template-columns: minmax(235px, .85fr) minmax(0, 2fr);
+    align-items: start;
+    gap: clamp(32px, 5cqi, 64px);
+  }
+  .room-app .rent-faq-index {
+    position: sticky;
+    top: 24px;
+    padding: clamp(22px, 2.7cqi, 32px);
+    border-radius: 20px;
+    background: #edf4ff;
+  }
+  .room-app .rent-faq-index h2 { font-size: clamp(30px, 3.7cqi, 40px); }
+  .room-app .rent-faq-nav { grid-template-columns: 1fr; gap: 0; margin-top: 28px; }
+  .room-app .rent-faq-nav a {
+    min-height: 54px;
+    padding-inline: 4px;
+    border: 0;
+    border-top: 1px solid #cfdeef;
+    border-radius: 0;
+    background: transparent;
+    font-size: 18px;
+  }
+  .room-app .rent-faq-groups { gap: 48px; }
+}
+@media (max-width: 380px) {
+  .room-app .rent-faq-nav a { padding-inline: 10px; }
+}
+/* Leave room for the fixed desktop calculator as the content rail widens. */
+@media (min-width: 1200px) {
+  .room-app .rent-faq { padding-inline-end: clamp(0px, calc((1760px - 100vw) / .9), 344px); }
+  .room-app .rent-faq > .host-container { width: min(1080px, calc(100% - 88px)); }
 }
 .room-app .host-footer{display:block;max-width:none;margin:0;padding:48px 0 156px;background:#f6f9fc;border:0;font-size:16px;color:#8b95a5;line-height:1.5}
 .room-app .footer-contact{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-bottom:24px}
@@ -200,14 +344,12 @@
 .room-app .process-pill>span{flex-basis:100%}
 .room-app .management-list>div{flex-wrap:wrap;gap:5px 10px}
 .room-app .management-list dd{flex-basis:100%;margin-left:38px}
-.room-app .host-process h2,.room-app .operations-heading h2,.room-app .host-faq h2{font-size:38px}
+.room-app .host-process h2,.room-app .operations-heading h2{font-size:38px}
 .room-app .operations-heading>p:last-child{font-size:22px}
 .room-app .review-grid{gap:14px;margin-top:144px}
 .room-app .host-review{padding:24px}
 .room-app .host-review h3{font-size:20px}
 .room-app .host-review blockquote p{font-size:15px}
-.room-app .host-faq-card{padding:32px}
-.room-app .host-faq-card>p,.room-app .host-faq-card>a{font-size:18px}
 .room-app .host-consultation h2{font-size:40px}
 }
 @media(max-width:650px){
@@ -265,16 +407,6 @@
 .room-app .host-consultation p{font-size:17px}
 .room-app .host-consultation h2{font-size:29px;line-height:1.55;margin:12px 0 26px;letter-spacing:-.7px}
 .room-app .host-consultation .consultation-link{min-width:0;width:100%;max-width:300px}
-.room-app .host-faq{padding:64px 0}
-.room-app .host-faq h2{font-size:30px;line-height:1.4;margin-top:12px;letter-spacing:-.6px}
-.room-app .mobile-break{display:block}
-.room-app .host-faq-list{margin-top:28px;gap:16px}
-.room-app .host-faq-card{padding:26px 22px;border-radius:22px}
-.room-app .host-faq-card h3{font-size:23px;line-height:1.4;margin-bottom:16px}
-.room-app .host-faq-card>p{font-size:17px;line-height:1.75}
-.room-app .host-faq-card>a{font-size:17px;line-height:1.5}
-.room-app .tax-notice{padding:14px;font-size:15px;line-height:1.75;border-radius:12px}
-.room-app .host-faq-card .tax-source{font-size:13px}
 .room-app .host-footer{padding:36px 0 calc(140px + env(safe-area-inset-bottom));font-size:14px}
 .room-app .footer-contact{flex-direction:column;gap:20px;margin-bottom:20px}
 .room-app .footer-contact a{display:flex;align-items:center;min-height:32px}

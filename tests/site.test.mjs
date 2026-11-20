@@ -30,22 +30,33 @@ test("rent FAQ answers and their structured data match in the final section befo
   const html = await readFile(routeFile("/"), "utf8");
   const section = html.match(/<section class="rent-faq"[^>]+>([\s\S]*?)<\/section>\s*<\/div>\s*<footer class="host-footer"/);
   assert.ok(section, "FAQ is server-rendered immediately before the footer");
+  assert.match(html, /<header class="header">[\s\S]*?href="#rent-faq">자주 묻는 질문<\/a><\/div><\/header>/);
   const schemas = [...html.matchAll(/<script type="application\/ld\+json">([^<]+)<\/script>/g)].map(match => JSON.parse(match[1]));
   const faqs = schemas.filter(schema => schema["@type"] === "FAQPage");
   assert.equal(faqs.length, 1);
   const faq = faqs[0];
   assert.equal(faq["@id"], "https://hanjibung.kr/#rent-faq");
-  assert.ok(section[1].includes(`<h2 id="rent-faq-title">${escapeHtml(faq.name)}</h2>`));
-  const articles = [...section[1].matchAll(/<article class="rent-faq-item" id="([^"]+)">([\s\S]*?)<\/article>/g)];
-  assert.ok(articles.length > 0);
-  assert.equal(articles.length, faq.mainEntity.length);
-  for (const [index, [, id, content]] of articles.entries()) {
+  const heading = section[1].match(/<h2 id="rent-faq-title">(.+?)<\/h2>/)[1].replace(/<[^>]+>/g, "");
+  assert.equal(heading, faq.name);
+  const nav = section[1].match(/<nav class="rent-faq-nav"[^>]*>([\s\S]*?)<\/nav>/)[1];
+  const jumps = [...nav.matchAll(/href="#([^"]+)"/g)].map(match => match[1]);
+  const groups = [...section[1].matchAll(/<h3 id="([^"]+)">/g)].map(match => match[1]);
+  assert.deepEqual(jumps, groups);
+  assert.equal(new Set(groups).size, 4);
+  const items = [...section[1].matchAll(/<details class="rent-faq-item"( open)?>([\s\S]*?)<\/details>/g)];
+  assert.ok(items.length > 9, "the combined FAQ covers more than the two earlier lists");
+  assert.equal(items.filter(match => match[1]).length, 1);
+  assert.equal(items.length, faq.mainEntity.length);
+  assert.equal(new Set(faq.mainEntity.map(q => q["@id"])).size, items.length);
+  for (const [index, [, , content]] of items.entries()) {
     const question = faq.mainEntity[index];
+    const id = content.match(/<div class="rent-faq-answer" id="([^"]+)">/)[1];
     assert.equal(question["@id"], `https://hanjibung.kr/#${id}`);
     assert.equal(question["@type"], "Question");
     assert.equal(question.acceptedAnswer["@type"], "Answer");
-    assert.ok(content.includes(`<h3>${escapeHtml(question.name)}</h3>`));
-    assert.ok(content.includes(`<p>${escapeHtml(question.acceptedAnswer.text)}</p>`));
+    assert.ok(content.includes(`<summary><h4>${escapeHtml(question.name)}</h4></summary>`));
+    const paragraphs = [...content.matchAll(/<p>([^<]+)<\/p>/g)].map(match => match[1]);
+    assert.equal(paragraphs.join("\n\n"), escapeHtml(question.acceptedAnswer.text));
   }
 });
 
