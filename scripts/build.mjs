@@ -6,6 +6,7 @@ import { site } from "../src/config/site.mjs";
 import { privacyBody } from "../src/content/privacy.mjs";
 import { reservationPage } from "../src/lib/reservation-page.mjs";
 import { roomCheckPage } from "../src/lib/room-check-page.mjs";
+import { rentFaqSchema } from "../src/lib/rent-faq.mjs";
 import { absolute, layout, organizationSchema } from "../src/lib/template.mjs";
 import {
   roomCheckStylesheetUrl, roomCheckScriptUrl, incomeCalculatorStylesheetUrl, incomeCalculatorScriptUrl,
@@ -34,7 +35,20 @@ async function emit(route, html, { indexable = true, updatedAt = pageDates[route
   generated.push({ route, file, indexable, updatedAt });
 }
 
-await emit("/", layout({ title: "우리 집 남는 방 예상 월세 진단", description: "한지붕 우리 집 남는 방 예상 월세 진단에서 방 정보와 지역 정보를 보내고 예상 월세와 준비사항을 안내받으세요.", path: "/", body: roomCheckPage(), bodyClass: "room-check-page", showHeader: false, showFooter: false, jsonLd: [{ "@context": "https://schema.org", "@type": "WebSite", name: site.name, alternateName: site.englishName, url: absolute("/") }, organizationSchema] }).replace("</head>", `<link rel="stylesheet" href="${roomCheckStylesheetUrl}"><link rel="stylesheet" href="${incomeCalculatorStylesheetUrl}"><script src="${roomCheckScriptUrl}" defer></script><script src="${diagnosisPrefillScriptUrl}" defer></script><script src="${incomeCalculatorScriptUrl}" defer></script></head>`));
+await emit("/", layout({
+  title: "우리 집 남는 방 예상 월세 진단",
+  description: "한지붕 우리 집 남는 방 예상 월세 진단에서 방 정보와 지역 정보를 보내고 예상 월세와 준비사항을 안내받으세요.",
+  path: "/",
+  body: roomCheckPage(),
+  bodyClass: "room-check-page",
+  showHeader: false,
+  showFooter: false,
+  jsonLd: [
+    { "@context": "https://schema.org", "@type": "WebSite", name: site.name, alternateName: site.englishName, url: absolute("/") },
+    organizationSchema,
+    rentFaqSchema,
+  ],
+}).replace("</head>", `<link rel="stylesheet" href="${roomCheckStylesheetUrl}"><link rel="stylesheet" href="${incomeCalculatorStylesheetUrl}"><script src="${roomCheckScriptUrl}" defer></script><script src="${diagnosisPrefillScriptUrl}" defer></script><script src="${incomeCalculatorScriptUrl}" defer></script></head>`));
 await emit("/reservation/", layout({ title: "예상 월세 무료 진단 신청", description: "우리 집 남는 방의 예상 월세와 준비사항을 무료로 안내받으세요. 집 위치와 방 정보를 남기면 한지붕 매니저가 확인 후 연락드립니다.", path: "/reservation/", body: reservationPage(), bodyClass: "reservation-page", showHeader: false, showFooter: false, jsonLd: organizationSchema }).replace("</head>", `<link rel="stylesheet" href="${reservationStylesheetUrl}"><script src="${diagnosisPrefillScriptUrl}" defer></script><script src="${reservationScriptUrl}" defer></script></head>`));
 await emit("/reservation/privacy/", layout({
   title: "개인정보 처리방침",

@@ -1,6 +1,7 @@
 import { site } from "../config/site.mjs";
 import { diagnosisBanner } from "./template.mjs";
 import { incomeCalculator } from "./income-calculator.mjs";
+import { rentFaqSection } from "./rent-faq.mjs";
 
 const art = (file, alt, width, height, eager = false) => `<img src="/assets/figma/${file}" alt="${alt}" width="${width}" height="${height}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">`;
 const benefits = [
@@ -34,6 +35,7 @@ export function roomCheckPage() {
         <article class="host-faq-card"><h3>세금은 어떻게 되나요?</h3><p class="faq-lead">1주택이고 기준시가 12억 원 이하면 월세 소득은 비과세입니다.</p><p>부부 합산 보유주택이 1채이고, 그 국내 주택의 기준시가가 12억 원 이하라면, 방 일부를 임대해 받는 월세는 과세되지 않습니다. 배우자 명의 주택도 합산하므로 집값뿐 아니라 보유 주택 수를 함께 확인해야 합니다.</p><p>과세 대상 주택임대 수입이 연간 2,000만 원 이하면 분리과세를 선택할 수 있습니다. 기준시가는 실거래가나 호가가 아니라 세법상 금액입니다.</p><div class="tax-notice">과세되는 임대소득은 건강보험료 산정에 반영될 수 있고, 기초연금은 별도의 소득인정액 기준을 적용합니다. 개인별 과세·신고 여부는 국세청 또는 세무전문가에게 확인해 주세요.</div><p class="tax-source">국세청 안내 · 2026.10.09 확인<br><a href="https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=7682&amp;mi=2251" target="_blank" rel="noopener noreferrer">주택임대소득 과세 대상 ↗</a> · <a href="https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=7686&amp;mi=2255" target="_blank" rel="noopener noreferrer">종합·분리과세 선택 ↗</a></p></article>
         <article class="host-faq-card"><h3>문제가 생기면 누가 해결하나요?</h3><p class="faq-lead">혼자 감당하지 않으셔도 됩니다.</p><p>불편한 상황이 생기면 한지붕에 알려주세요. 언제 무슨 일이 있었는지와 입주 전에 정한 생활규칙을 확인하고, 양쪽 이야기를 들어 조율을 지원합니다.</p><p>가구나 시설이 손상되면 정상적인 사용에 따른 노후화와 고의·과실에 따른 손상을 구분해 책임 범위를 확인합니다. 입주 전 방과 가구 상태를 사진으로 남겨두시면 확인이 쉽습니다.</p><p>문제가 반복되거나 계약 유지가 어려우면 계약 내용과 관계 법령에 따른 후속 절차를 안내합니다.</p></article>
       </div></div></section>
+      ${rentFaqSection()}
     </div>
     <footer class="host-footer"><div class="host-container"><div class="footer-contact"><div><a href="mailto:contact@hanjibung.kr">E-mail : contact@hanjibung.kr</a><a href="${site.phoneHref}">Tel : ${site.phone}</a></div><p>© 2026 hanjibung. All rights reserved.</p></div><p class="footer-legal">${site.legalType} · 고유번호 ${site.registrationNumber} · 대표 ${site.representative}</p><p class="footer-legal">${site.address} <a href="/reservation/privacy/">개인정보 처리방침</a></p></div></footer>
     ${incomeCalculator()}</div>`;

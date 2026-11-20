@@ -3,6 +3,7 @@ import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
+import { escapeHtml } from "../src/lib/template.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "dist");
 const routes = ["/", "/reservation/", "/reservation/privacy/"];
@@ -23,6 +24,29 @@ test("homepage links to the dedicated diagnosis page without the retired organiz
   assert.doesNotMatch(room, /<footer class="site-footer"/);
   assert.doesNotMatch(room, /한지붕 알아보기|class="nav-toggle"|id="site-menu"|href="\/resources\//);
   assert.match(room, /href="\/reservation\/privacy\/"/);
+});
+
+test("rent FAQ answers and their structured data match in the final section before the footer", async () => {
+  const html = await readFile(routeFile("/"), "utf8");
+  const section = html.match(/<section class="rent-faq"[^>]+>([\s\S]*?)<\/section>\s*<\/div>\s*<footer class="host-footer"/);
+  assert.ok(section, "FAQ is server-rendered immediately before the footer");
+  const schemas = [...html.matchAll(/<script type="application\/ld\+json">([^<]+)<\/script>/g)].map(match => JSON.parse(match[1]));
+  const faqs = schemas.filter(schema => schema["@type"] === "FAQPage");
+  assert.equal(faqs.length, 1);
+  const faq = faqs[0];
+  assert.equal(faq["@id"], "https://hanjibung.kr/#rent-faq");
+  assert.ok(section[1].includes(`<h2 id="rent-faq-title">${escapeHtml(faq.name)}</h2>`));
+  const articles = [...section[1].matchAll(/<article class="rent-faq-item" id="([^"]+)">([\s\S]*?)<\/article>/g)];
+  assert.ok(articles.length > 0);
+  assert.equal(articles.length, faq.mainEntity.length);
+  for (const [index, [, id, content]] of articles.entries()) {
+    const question = faq.mainEntity[index];
+    assert.equal(question["@id"], `https://hanjibung.kr/#${id}`);
+    assert.equal(question["@type"], "Question");
+    assert.equal(question.acceptedAnswer["@type"], "Answer");
+    assert.ok(content.includes(`<h3>${escapeHtml(question.name)}</h3>`));
+    assert.ok(content.includes(`<p>${escapeHtml(question.acceptedAnswer.text)}</p>`));
+  }
 });
 
 test("dedicated diagnosis page preserves the existing required information and explicit consent", async () => {
