@@ -30,7 +30,7 @@
       }
     }
   }
-  if (!variant) return;
+  if (!variant && heading) return;
 
   if (heading && variant !== "A") {
     const template = document.getElementById(`host-title-${variant}`);
@@ -47,13 +47,13 @@
     }, { once: true });
     return;
   }
-  if (!assigned) return;
+  if (heading && !assigned) return;
 
-  function track(step) {
+  function track(step, group) {
     try {
       const id = document.querySelector("script[data-analytics-id]")?.dataset.analyticsId;
       if (/^G-[A-Z0-9]{6,20}$/.test(id || "") && typeof window.gtag === "function") {
-        window.gtag("event", `headline_${step}_${variant.toLowerCase()}`, { send_to: id });
+        window.gtag("event", `headline_${step}_${group.toLowerCase()}`, { send_to: id });
       }
     } catch { /* Analytics must not interrupt the page or a confirmed application. */ }
   }
@@ -65,7 +65,8 @@
         document.removeEventListener("visibilitychange", recordView);
         window.removeEventListener("scroll", recordView);
         window.removeEventListener("resize", recordView);
-        track("view");
+        window.hanjibungLeadVisit?.expose(variant);
+        track("view", variant);
       };
       document.addEventListener("visibilitychange", recordView);
       window.addEventListener("scroll", recordView, { passive: true });
@@ -73,6 +74,8 @@
       recordView();
     }, { once: true });
   } else {
-    window.hanjibungTrackHeadlineCompletion = () => track("complete");
+    window.hanjibungTrackHeadlineCompletion = (record, kind = "diagnosis") => {
+      if (/^[ABC]$/.test(record?.variant || "")) track(kind === "callback" ? "callback" : "complete", record.variant);
+    };
   }
 })();

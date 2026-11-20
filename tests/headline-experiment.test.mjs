@@ -50,7 +50,7 @@ test("three equal ranges choose the headline once and keep it across visits and 
     assert.equal(visit({ random: (random + 0.5) % 1, local }).heading.variant, variant);
     const form = visit({ home: false, local });
     assert.equal(form.events.length, 0);
-    form.window.hanjibungTrackHeadlineCompletion();
+    form.window.hanjibungTrackHeadlineCompletion({ variant });
     assert.deepEqual(form.events, [["event", "headline_complete_" + variant.toLowerCase(), ["send_to", measurementId]]]);
   }
 });
@@ -71,7 +71,9 @@ test("previews preserve normal assignment and exclude the whole preview journey 
   const fresh = storage();
   visit({ local: fresh, search: "?headline_preview=C" });
   visit({ local: fresh, search: "?diagnosis=1" });
-  assert.equal(visit({ home: false, local: fresh }).window.hanjibungTrackHeadlineCompletion, undefined);
+  const directForm = visit({ home: false, local: fresh });
+  directForm.window.hanjibungTrackHeadlineCompletion({});
+  assert.deepEqual(directForm.events, []);
   assert.equal(visit({ local: fresh, search: "?headline_preview=unknown", random: 0.4 }).heading.variant, "B");
 });
 

@@ -37,7 +37,8 @@ function validateInquiry(input) {
   if (/\b\d{6}[- ]?[1-8]\d{6}\b/.test(message)) throw new Error('SENSITIVE');
   return { action: 'submit', kind: kind, requestId: input.requestId, name: name,
     contactMethod: input.contactMethod, contact: contact,
-    organization: kind === 'partnership' ? text('organization', 1, 100) : '', topic: input.topic, message: message };
+    organization: kind === 'partnership' ? text('organization', 1, 100) : '', topic: input.topic, message: message,
+    attribution: kind === 'consultation' ? input.attribution : undefined };
 }
 function doPost(e) {
   var lock;
@@ -63,8 +64,12 @@ function doPost(e) {
     if (count >= 100) throw new Error('BUSY');
     var receivedAt = Utilities.formatDate(new Date(), 'Asia/Seoul', 'yyyy-MM-dd HH:mm:ss');
     var row = [data.requestId, receivedAt].concat(values.map(cleanCell), ['동의', INQUIRY_VERSION, '접수', '', '']);
+    if (data.attribution) {
+      var additional = leadCells_(data.attribution, 'callback');
+      if (additional.length) { ensureLeadColumns_(sheet, 13); row = row.concat(additional); }
+    }
     var rowIndex = sheet.getLastRow() + 1;
-    sheet.getRange(rowIndex, 1, 1, 13).setNumberFormat('@').setValues([row]);
+    sheet.getRange(rowIndex, 1, 1, row.length).setNumberFormat('@').setValues([row]);
     SpreadsheetApp.flush();
     if (sheet.getRange(rowIndex, 1).getDisplayValue() !== data.requestId) throw new Error('UNAVAILABLE');
     props.setProperties({ dailyDate: day, dailyCount: String(count + 1) });

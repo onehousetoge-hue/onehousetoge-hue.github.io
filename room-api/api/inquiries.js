@@ -84,6 +84,13 @@ export default async function handler(req, res) {
       inquiry: { areaType: i.areaType, area: i.area.trim(), location: i.location.trim(), rooms: i.rooms, aircon: i.aircon, tenure: i.tenure, phone: i.phone, consent: true, consentVersion: i.consentVersion, ...(i.homeType !== undefined ? { homeType: i.homeType } : {}) },
       photos: data.photos.map((photo) => ({ name: photo.name, mime: "image/jpeg", base64: photo.base64 })),
     };
+    const visit = data.attribution;
+    if (visit && ["/", "/reservation/", "/reservation/privacy/"].includes(visit.landing)) {
+      const fields = ["landing", "variant", "source", "medium", "campaign", "id", "content", "term", "referrer"];
+      submission.attribution = Object.fromEntries(fields.filter((field) =>
+        typeof visit[field] === "string" && visit[field].length <= (field === "referrer" ? 180 : 100))
+        .map((field) => [field, visit[field]]));
+    }
     const result = await deliver(submission);
     return reply(res, result.ok ? 200 : result.status, result);
   } catch (e) {

@@ -113,7 +113,7 @@
       if (!/^01[016789]\d{7,8}$/.test(phone)) { setError("연락받을 휴대폰 번호를 확인해 주세요."); return; }
       if (!data.get("areaType")) { setError("지역 기준을 선택해 주세요."); return; }
       requestId ||= crypto.randomUUID(); submissionStart ||= performance.now();
-      pendingBody = JSON.stringify({ requestId, inquiry: { areaType: data.get("areaType"), area: data.get("area"), ...(data.get("homeType") ? { homeType: data.get("homeType") } : {}), location: data.get("location"), rooms: data.get("rooms"), aircon: data.get("aircon"), tenure: data.get("tenure"), phone, consent: data.get("consent") === "on", consentVersion: "2026-09-20" }, photos: [] });
+      pendingBody = JSON.stringify({ requestId, attribution: window.hanjibungLeadVisit?.snapshot(), inquiry: { areaType: data.get("areaType"), area: data.get("area"), ...(data.get("homeType") ? { homeType: data.get("homeType") } : {}), location: data.get("location"), rooms: data.get("rooms"), aircon: data.get("aircon"), tenure: data.get("tenure"), phone, consent: data.get("consent") === "on", consentVersion: "2026-09-20" }, photos: [] });
     }
     const body = pendingBody;
     lock(true); event("inquiry_submit", { photo_count: 0 });
@@ -123,7 +123,7 @@
       prefill?.clear();
       uncertain = false; lock(false);
       event("inquiry_complete", { photo_count: 0, value: Math.min(3600, Math.round((performance.now() - submissionStart) / 1000)) });
-      window.hanjibungTrackHeadlineCompletion?.();
+      window.hanjibungTrackHeadlineCompletion?.(JSON.parse(body).attribution);
       // Only this branch has a successful response with the exact request ID.
       // Ad measurement must not interrupt the saved submission's success UI.
       try {

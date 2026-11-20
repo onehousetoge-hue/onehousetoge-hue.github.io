@@ -17,6 +17,11 @@ export async function submitCallback(endpoint, payload) {
   const errors = validateInquiryInput(payload, "consultation");
   if (Object.keys(errors).length) throw new Error(Object.values(errors)[0]);
   const receipt = await send(endpoint, payload);
+  try {
+    const target = document.querySelector("script[data-analytics-id]")?.dataset.analyticsId;
+    if (/^G-[A-Z0-9]{6,20}$/.test(target || "")) window.gtag?.("event", "callback_complete", { send_to: target });
+    window.hanjibungTrackHeadlineCompletion?.(payload.attribution, "callback");
+  } catch { /* A verified receipt remains valid when measurement is unavailable. */ }
   await recordHostConsultationConversion(receipt, payload);
   return receipt;
 }
@@ -31,6 +36,7 @@ if (form) {
   const success = dialog?.querySelector("[data-callback-success]");
   if (form.dataset.endpoint) fieldset.disabled = false;
   let requestId = crypto.randomUUID(), busy = false, submitted = false;
+  let attribution;
   const quickUrl = () => {
     const url = new URL(window.location.href);
     url.searchParams.set("consultation", "quick");
@@ -61,7 +67,7 @@ if (form) {
     }
     trigger?.focus();
   });
-  form.addEventListener("input", () => { if (!busy) requestId = crypto.randomUUID(); });
+  form.addEventListener("input", () => { if (!busy) { requestId = crypto.randomUUID(); attribution = undefined; } });
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (busy || submitted || !form.dataset.endpoint) return;
@@ -77,6 +83,8 @@ if (form) {
       invalid?.focus();
       return;
     }
+    attribution ||= window.hanjibungLeadVisit?.snapshot();
+    if (attribution) payload.attribution = attribution;
     busy = true; fieldset.disabled = true; form.setAttribute("aria-busy", "true");
     button.textContent = "접수 확인 중…";
     status.textContent = "문의 내용을 저장하고 있습니다. 잠시만 기다려 주세요.";

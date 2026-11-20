@@ -4,6 +4,7 @@
   // The homepage and room diagnosis now run on the same origin.
   const analyticsId = document.currentScript?.dataset.analyticsId;
   if (!/^G-[A-Z0-9]{6,20}$/.test(analyticsId || "")) return;
+  if (/^[ABC]$/.test(new URL(location.href || location.origin).searchParams.get("headline_preview") || "")) return;
 
   try {
     window.dataLayer ||= [];
@@ -22,7 +23,7 @@
     ];
     for (const name of attributionParams) {
       const value = landingParams.get(name);
-      if (value) pageUrl.searchParams.set(name, value);
+      if (value && value.length <= 300 && !/[\u0000-\u001f<>@]|01[016789][ -]?\d{3,4}[ -]?\d{4}|\d{6}-[1-8]\d{6}/.test(value)) pageUrl.searchParams.set(name, value);
     }
     const pageContext = {
       page_location: pageUrl.href,
