@@ -47,7 +47,7 @@ function calculator(env) {
   return { area, types, cta };
 }
 
-async function reservation(env, initial = {}) {
+async function reservation(env, initial = {}, checkReadiness = async () => ({ ok: true, json: async () => ({ ready: true }) })) {
   const controls = [];
   const textFields = Object.fromEntries(["area", "location", "phone"].map((name) => {
     const input = element({ name, value: initial[name] || "" });
@@ -74,8 +74,8 @@ async function reservation(env, initial = {}) {
   const sent = [];
   Object.assign(env.context, {
     document: { querySelector: (selector) => selector === ".reservation-app" ? root : null },
-    fetch: async (_url, options) => { assert.equal(options.method, undefined); return { ok: true, json: async () => ({ ready: true }) }; },
-    AbortSignal: { timeout: () => undefined },
+    fetch: (url, options) => { assert.equal(options.method, undefined); return checkReadiness(url, options); },
+    AbortController, setTimeout, clearTimeout,
     crypto: { randomUUID: () => "7baffc1d-aef8-423c-ad43-70ae1fbd873b" },
     performance: { now: () => 100 },
     FormData: class {
@@ -108,8 +108,25 @@ async function reservation(env, initial = {}) {
     select("rooms", "2개"); select("aircon", "있음"); select("tenure", "전세·월세");
     consent.checked = true;
   }
-  return { form, nodes, controls, textFields, consent, sent, select, completeRequiredFields };
+  return { form, nodes, controls, textFields, consent, sent, select, completeRequiredFields, retry: rootNodes.get("[data-retry-connection]") };
 }
+
+test("a failed connection can be retried without sending or clearing room details", async () => {
+  let online = false;
+  const page = await reservation(environment(), {}, async () => online
+    ? { ok: true, json: async () => ({ ready: true }) }
+    : { ok: false, status: 404 });
+  assert.equal(page.nodes.get(".setup-notice").hidden, false);
+  assert.equal(page.nodes.get(".submit").disabled, true);
+  page.completeRequiredFields();
+  online = true;
+  await page.retry.emit("click");
+  assert.equal(page.nodes.get(".setup-notice").hidden, true);
+  assert.equal(page.nodes.get(".submit").disabled, false);
+  assert.equal(page.textFields.area.value, "공릉역");
+  assert.equal(page.consent.checked, true);
+  assert.equal(page.sent.length, 0);
+});
 
 test("calculator input carries into the reservation without inventing other answers", async () => {
   const env = environment();

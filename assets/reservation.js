@@ -50,17 +50,24 @@
     form.setAttribute("aria-busy", String(locked));
   };
   async function checkConnection() {
-    setup.hidden = true;
-    if (connectionRetry) connectionRetry.disabled = true;
+    if (connectionRetry) {
+      connectionRetry.disabled = true;
+      connectionRetry.textContent = "연결 확인 중…";
+    }
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
     try {
-      const response = await fetch(endpoint, { cache: "no-store", signal: AbortSignal.timeout(8000) });
-      const data = await response.json();
-      ready = response.ok && data.ready === true;
+      const response = await fetch(endpoint, { cache: "no-store", signal: controller.signal });
+      ready = response.ok && (await response.json()).ready === true;
     } catch { ready = false; }
+    finally { clearTimeout(timeout); }
     submit.disabled = busy || !ready;
-    if (!busy) submit.textContent = ready ? "진단 신청하기 →" : "신청 접수 준비 중";
+    if (!busy) submit.textContent = ready ? "진단 신청하기 →" : "접수 연결이 필요해요";
     setup.hidden = ready;
-    if (connectionRetry) connectionRetry.disabled = false;
+    if (connectionRetry) {
+      connectionRetry.disabled = false;
+      connectionRetry.textContent = "연결 다시 확인";
+    }
   }
   connectionRetry?.addEventListener("click", checkConnection);
   event("inquiry_open");

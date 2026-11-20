@@ -2,6 +2,9 @@
   "name": "hanjibung-room-api",
   "private": true,
   "type": "module",
+  "scripts": {
+    "postinstall": "node scripts/verify-connection.mjs"
+  },
   "engines": {
     "node": "24.x"
   }
