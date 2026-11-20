@@ -7,6 +7,8 @@ function assetUrl(file) {
 }
 
 // Build-time content versions: browsers fetch changed assets after deployment.
+// Run the short assignment code as the heading is parsed so it applies before paint.
+export const headlineExperiment = `<script>${readFileSync(new URL("../assets/headline-experiment.js", import.meta.url), "utf8").trim()}</script>`;
 export const stylesheetUrl = assetUrl("site.css");
 export const scriptUrl = assetUrl("site.js");
 export const analyticsScriptUrl = assetUrl("analytics.js");

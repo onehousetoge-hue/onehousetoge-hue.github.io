@@ -2,6 +2,7 @@ import { site } from "../config/site.mjs";
 import { diagnosisBanner } from "./template.mjs";
 import { incomeCalculator } from "./income-calculator.mjs";
 import { rentFaqSection } from "./rent-faq.mjs";
+import { headlineExperiment } from "./static-assets.mjs";
 
 const art = (file, alt, width, height, eager = false) => `<img src="/assets/figma/${file}" alt="${alt}" width="${width}" height="${height}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">`;
 const benefits = [
@@ -20,7 +21,11 @@ export function roomCheckPage() {
   return `<div class="room-app">${diagnosisBanner()}
     <header class="header"><div class="header-inner"><a class="brand" href="/" aria-label="한지붕 홈"><span class="brand-wordmark">한지붕</span></a></div></header>
     <div class="host-main">
-      <section class="host-hero" aria-labelledby="host-title"><div class="host-container hero-layout"><div class="host-hero-copy"><h1 id="host-title">비어 있는 <strong>방 한 칸,</strong><br><strong>검증된 청년</strong>으로 안심하고,<br><strong>매달 생활비</strong>로 여유롭게.</h1><p class="hero-description">방 준비부터 청년 입주, 거주 중 관리까지<br>한지붕이 함께합니다.</p><a class="host-primary hero-diagnosis" href="/reservation/">우리 집 예상 월세 무료 진단 받기 ${art("arrow-cta.svg", "", 8, 12)}</a></div><div class="hero-floorplan">${art("hero-floorplan.png", "남는 방 한 칸을 월세 생활비로 활용하는 주택 평면도", 837, 730, true)}</div></div></section>
+      <section class="host-hero" aria-labelledby="host-title"><div class="host-container hero-layout"><div class="host-hero-copy"><h1 id="host-title">관리비 걱정은 <strong>이제 그만!</strong></h1>
+        <template id="host-title-B">우리 집 빈 방 <strong>얼마 받을 수 있을까?</strong></template>
+        <template id="host-title-C">혼자 계신 부모님께 <strong>드릴 수 있는 선물</strong></template>
+        ${headlineExperiment}
+        <p class="hero-description">방 준비부터 청년 입주, 거주 중 관리까지<br>한지붕이 함께합니다.</p><a class="host-primary hero-diagnosis" href="/reservation/">우리 집 예상 월세 무료 진단 받기 ${art("arrow-cta.svg", "", 8, 12)}</a></div><div class="hero-floorplan">${art("hero-floorplan.png", "남는 방 한 칸을 월세 생활비로 활용하는 주택 평면도", 837, 730, true)}</div></div></section>
       <section class="host-benefits" id="goals" aria-labelledby="benefit-title"><div class="host-container"><p class="host-kicker">한지붕의 목표</p><div class="benefit-heading"><h2 id="benefit-title">우리 집 <strong>남는 방을</strong><br>한지붕과 함께 <strong>안전하게</strong><br>검증된 <strong>대학생에게 임대</strong></h2>${art("goal-illustration.svg", "", 404, 124)}</div><div class="benefit-grid">${benefits.map(([file, title, text]) => `<article class="benefit-card">${art(file, "", 81, 81)}<div><h3>${title}</h3><p>${text}</p></div></article>`).join("")}</div></div></section>
       <section class="host-process" id="process" aria-labelledby="process-title"><div class="host-container"><h2 id="process-title">진행 방법</h2><div class="process-rows">
         <article class="process-row"><div class="process-copy"><h3>빈방 준비,<br>매니저에게 맡기세요</h3><p>준비 범위와 비용은 집주인과 함께 정하고,<br>정리·청소부터 가구 배치와 점검까지 도와드려요.</p><ol class="preparation-list"><li>${art("prepare-plan.png", "", 46, 46)}<strong>준비 계획</strong><small>범위·비용<br>함께 결정</small></li><li>${art("prepare-cleaning.png", "", 46, 46)}<strong>정리·청소</strong><small>일정·진행<br>꼼꼼히 관리</small></li><li>${art("prepare-furniture.png", "", 46, 46)}<strong>가구 준비</strong><small>가구 마련과<br>배치까지</small></li><li>${art("prepare-check.svg", "", 46, 46)}<strong>최종 점검</strong><small>가구·시설<br>마지막 확인</small></li></ol></div><div class="process-art preparation">${art("step-preparation.png", "빈방 점검 전과 정리·가구 배치를 마친 점검 후 비교", 634, 488)}<span class="art-label before">점검 전</span><span class="art-label after">점검 후</span></div></article>

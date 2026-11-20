@@ -1,10 +1,11 @@
 import { site } from "../config/site.mjs";
 import { callbackForm } from "./callback-form.mjs";
+import { headlineExperiment } from "./static-assets.mjs";
 
 const choices = (name, values, required = true) => values.map((value) => `<label class="choice"><input type="radio" name="${name}" value="${value}"${required ? " required" : ""}><span>${value}</span></label>`).join("");
 
 export function reservationPage() {
-  return `<div class="reservation-app">
+  return `<div class="reservation-app">${headlineExperiment}
     <header class="reservation-header"><div class="reservation-header-inner"><a class="reservation-brand" href="/" aria-label="한지붕 홈">한지붕</a><span class="reservation-header-label">방 등록</span><a class="reservation-about" href="/">홈으로 <span aria-hidden="true">→</span></a></div></header>
     <div class="reservation-layout">
       <section class="reservation-intro" aria-labelledby="reservation-title"><div class="reservation-intro-copy"><p class="reservation-kicker">예상 월세 무료 진단</p><h1 id="reservation-title">얼마나 받을 수 있을까요?</h1><p class="reservation-description">집 위치와 방 정보를 남겨주세요. <br>한지붕 매니저가 예상 월세와 준비사항을 안내해 드립니다.</p></div>${callbackForm()}<img class="reservation-illustration" src="/assets/figma/hero-floorplan.png" alt="남는 방 한 칸이 있는 우리 집 평면도" width="837" height="730" decoding="async"></section>

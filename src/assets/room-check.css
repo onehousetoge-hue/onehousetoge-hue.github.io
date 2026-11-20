@@ -22,8 +22,8 @@
 .room-app .host-hero{padding:78px 0 88px;background:#fff}
 .room-app .hero-layout{display:grid;grid-template-columns:1.06fr 1fr;gap:24px;align-items:center}
 .room-app .host-hero-copy{min-height:390px;display:flex;flex-direction:column;align-items:flex-start;position:relative;z-index:1}
-.room-app .host-hero h1{font-size:clamp(32px,3.3vw,44px);font-weight:300;line-height:1.4;letter-spacing:-1.14px;white-space:nowrap}
-.room-app .host-hero h1 strong{font-weight:700}
+.room-app .host-hero h1{max-width:100%;font-size:clamp(32px,3.3vw,44px);font-weight:300;line-height:1.4;letter-spacing:-1.14px}
+.room-app .host-hero h1 strong{display:block;font-weight:700}
 .room-app .hero-description{margin-top:24px;color:#788597;font-size:20px;line-height:1.5;font-weight:650;letter-spacing:-.48px}
 .room-app .host-primary{display:inline-flex;align-items:center;justify-content:center;gap:16px;min-height:54px;background:var(--host-blue);color:#fff;border-radius:12px;padding:14px 20px;font-size:17px;font-weight:700;letter-spacing:-.4px}
 .room-app .host-primary:hover{background:#1466df}
