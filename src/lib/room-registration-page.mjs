@@ -18,16 +18,17 @@ export function roomRegistrationPage() {
   return `<div class="room-registration">${headlineExperiment}<div class="rr-wrap">
     <header class="rr-intro"><div><h1>방 등록하기</h1><p>학생에게 내어줄 방을 소개해 주세요. 한지붕 매니저가 확인하고 연락드릴게요.</p></div>
       <img src="/assets/about-home-640.webp" width="640" height="360" alt="" decoding="async"></header>
-    <form class="rr-card" novalidate data-callback-form data-room-registration data-intake="registration" data-endpoint="${inquiries.endpoint}" data-consent-version="${inquiries.registrationVersion}">
+    <form class="rr-card" novalidate data-callback-form data-room-registration data-intake="registration" data-endpoint="${inquiries.endpoint}" data-assistant="${inquiries.roomAssistant}" data-consent-version="${inquiries.registrationVersion}">
       <ol class="rr-steps" aria-label="방 등록 진행 단계"><li aria-current="step"><span>1</span>방 이야기</li><li><span>2</span>조건·사진</li><li><span>3</span>주소·연락처</li></ol>
       <fieldset disabled><legend class="sr-only">방 등록 신청</legend>
         <fieldset class="rr-panel rr-chat" data-panel="chat"><legend class="sr-only">방 이야기</legend>
-          <div class="rr-heading"><div class="rr-guide"><span class="rr-avatar">${icon("home")}</span><h2 tabindex="-1">한지붕 도우미</h2></div><button type="button" class="rr-text" data-edit>직접 입력</button></div>
+          <div class="rr-heading"><div class="rr-guide"><span class="rr-avatar">${icon("home")}</span><h2 tabindex="-1">한지붕 AI 도우미</h2></div><button type="button" class="rr-text" data-edit>직접 입력</button></div>
           <div class="rr-thread"><button type="button" class="rr-history" aria-controls="rr-history-log" aria-expanded="false" hidden>이전 대화 보기</button>
-            <div class="rr-log" id="rr-history-log" role="log" aria-label="방 등록 대화" aria-live="polite" aria-relevant="additions" tabindex="0"><p class="rr-bot">반가워요! ${roomQuestions.location}</p></div>
+            <div class="rr-log" id="rr-history-log" role="log" aria-label="방 등록 대화" aria-live="polite" aria-relevant="additions" tabindex="0"><p class="rr-bot">${roomQuestions.location} 방 개수와 입주 시기도 한 번에 말씀해 주셔도 돼요.</p></div>
             <div class="rr-choices" aria-label="빠른 답변"></div>
             <button type="button" class="rr-primary" data-chat-next hidden>방 조건과 사진 확인하기 ${icon("arrow")}</button></div>
-          <div class="rr-composer"><label class="sr-only" for="room-chat-line">도우미에게 답하기</label><textarea id="room-chat-line" rows="2" maxlength="500" placeholder="예: 노원구 공릉동"></textarea><button type="button" class="rr-send" data-send aria-label="답변 보내기">${icon("arrow")}</button></div>
+          <p class="rr-ai-note" id="rr-ai-note">보낸 문장은 Cloudflare에서 Google Gemma가 읽어요. 이름·상세주소·연락처는 마지막 단계에 입력해 주세요. <a href="/reservation/privacy/#room-ai">AI 이용 안내</a></p>
+          <div class="rr-composer"><label class="sr-only" for="room-chat-line">AI에게 방 설명 보내기</label><textarea id="room-chat-line" rows="2" maxlength="500" aria-describedby="rr-ai-note" placeholder="예: 노원구 공릉동"></textarea><button type="button" class="rr-send" data-send aria-label="AI로 보내기">보내기 ${icon("arrow")}</button></div>
         </fieldset>
         <fieldset class="rr-panel" data-panel="details" hidden disabled><legend class="sr-only">방 조건과 사진</legend>
           <div class="rr-heading"><h2 tabindex="-1">방 조건을 확인해 주세요</h2><button type="button" class="rr-text" data-chat-back>대화로 돌아가기</button></div>

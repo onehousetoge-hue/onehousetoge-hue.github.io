@@ -54,13 +54,16 @@
 .rr-choices:not(:empty) { margin-top: 9px; }
 .rr-choices button { min-height: 44px; padding: 6px 15px; border-radius: 22px; border: 1px solid #a0b9d6; color: #20578f; background: #fff; font-weight: 650; }
 .rr-choices button:hover { background: #e5effd; border-color: var(--rr-blue); }
-.rr-composer { display: grid; grid-template-columns: minmax(0,1fr) 44px; gap: 10px; align-items: end; margin-top: 14px; padding: 9px; border: 1px solid #879db4; border-radius: 15px; background: #fff; }
+.rr-ai-note { margin: 12px 0 6px; color: var(--rr-muted); font-size: 14px; line-height: 1.55; }
+.rr-ai-note a { color: #20578f; text-decoration: underline; white-space: nowrap; }
+.rr-composer { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px; align-items: end; padding: 8px; border: 1px solid #879db4; border-radius: 15px; background: #fff; }
 .rr-composer:focus-within { outline: 2px solid var(--rr-blue); outline-offset: 1px; }
 .rr-composer textarea { width: 100%; min-height: 44px; height: 49px; resize: vertical; padding: 7px; border: 0; border-radius: 6px; background: transparent; color: var(--rr-ink); line-height: 1.4; }
 .rr-wrap .rr-composer textarea:focus-visible { outline: 0; }
 .rr-wrap :is(textarea,input)::placeholder { color: #526880; opacity: 1; }
 .rr-send, .rr-primary { display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-height: 46px; border: 0; border-radius: 10px; background: var(--rr-blue); color: #fff; font-weight: 700 !important; }
-.rr-send { width: 44px; height: 44px; min-height: 44px; padding: 0; }
+.rr-send { min-height: 44px; padding: 0 12px; gap: 4px; white-space: nowrap; }
+.rr-send:disabled, .rr-choices button:disabled { opacity: .65; }
 .rr-send .icon { transform: rotate(-90deg); }
 .rr-primary { width: 100%; padding: 12px 18px; }
 .rr-thread .rr-primary { margin-top: 12px; }

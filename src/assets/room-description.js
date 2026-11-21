@@ -1,4 +1,4 @@
-// The form only sends the fields the host reviews. The original conversation stays in memory.
+// The final registration contains the host's reviewed fields, never the chat transcript.
 export const roomFields = Object.freeze({
   location: "동네", rooms: "남는 방", availability: "입주 가능 시기",
   rent: "희망 월세", deposit: "보증금", fee: "관리비", homeType: "주택 유형", area: "방 면적", floor: "층수",
@@ -49,7 +49,7 @@ function numberOfRooms(text, focused) {
   return n >= 1 && n <= 10 ? String(n) + "개" + (/개\s*이상/.test(text) ? " 이상" : "") : "";
 }
 const moveInTime = /(?<!\d)(?:20\d{2}[-./]\d{1,2}[-./]\d{1,2}|(?:20\d{2}년\s*)?\d{1,2}\s*월(?:\s*(?:\d{1,2}\s*일|초순?|중순|말))?|(?:다다음|다음|이번)\s*(?:달|주)|내달|내년|올해|한\s*달\s*(?:후|이내|뒤)|\d+\s*(?:주|개월)\s*(?:후|이내|뒤))(?:\s*(?:초순?|중순|말))?(?:\s*(?:부터|이후))?/g;
-function validMoveInDate(value) {
+export function validMoveInDate(value) {
   const date = value.match(/^(?:(\d{4})년\s*)?(\d{1,2})\s*월(?:\s*(\d{1,2})\s*일)?/) ||
     value.match(/^(\d{4})[-./](\d{1,2})[-./](\d{1,2})/);
   if (!date) return true;
@@ -106,6 +106,12 @@ export function detailedLocation(text) {
   const buildingNumber = /[가-힣\d·.]+(?:대로|로|길|읍|면|동|리)\s*(?:산\s*)?\d+(?:-\d+)?(?!\d)(?!\s*(?:개|칸|실|층|평|월|년|주|일|만|천|원|분|번\s*출구))(?=[\s,.!?()]|번지|번길|에|이|예요|입니다|이고|번|$)/;
   const apartmentOrLot = /\d+(?:-\d+)?\s*번지|\d+\s*동\s*\d+|\d+\s*호(?:실)?(?!선)|(?:아파트|빌라|오피스텔)\s*\d+\s*동/;
   return buildingNumber.test(value) || apartmentOrLot.test(value);
+}
+// Applied on both sides of the optional AI request, before contacting the model.
+export function roomChatPrivate(text) {
+  const value = String(text).normalize("NFKC");
+  return privateText(value) || detailedLocation(value) ||
+    /(?:전화\s*번호|연락처|제\s*이름|이름은|성함은|주민\s*번호|카톡\s*(?:아이디|ID)|계좌\s*번호|상세\s*주소|동[·.]?호수)|(?:공일공|영일공)[\s영공일이삼사오육칠팔구-]{4,}|(?:https?:\/\/|www\.)\S+/i.test(value);
 }
 export function visitAddressError(text) {
   const value = String(text || "").normalize("NFKC").trim();

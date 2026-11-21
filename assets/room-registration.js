@@ -1,4 +1,4 @@
-import { detailedLocation, extractRoom, privateText, requiredFields, roomFields, roomQuestions, visitAddressError } from "./room-description.js?v=9ee1efe38093";
+import { detailedLocation, extractRoom, privateText, requiredFields, roomChatPrivate, roomFields, roomQuestions, visitAddressError } from "./room-description.js?v=984f468326d0";
 import { callbackPayload, submitCallback } from "./callback.js?v=1c79e8eae2b2";
 import { validateInquiryInput } from "./inquiry.js";
 
@@ -47,6 +47,8 @@ function init(form) {
   const panels = [...form.querySelectorAll("[data-panel]")], steps = [...form.querySelectorAll(".rr-steps li")];
   const status = find("[data-status]"), reviewButton = find("[data-review]"), chatNext = find("[data-chat-next]");
   const fileInput = find("#rr-photo"), photoPreview = find("[data-photo-preview]"), erase = find("[data-erase]");
+  const send = find("[data-send]");
+  let pendingTurn;
   let stage = "chat", finishReply, lastQuestion, editedInDetails = false;
   log.addEventListener("scroll", () => log.toggleAttribute("data-scrolled", log.scrollTop > 3), { passive: true });
   historyButton.onclick = () => {
@@ -122,7 +124,7 @@ function init(form) {
       const button = document.createElement("button");
       button.type = "button"; button.textContent = value;
       button.addEventListener("click", () => {
-        addText(value);
+        addText(value, true);
         if (!form.contains(document.activeElement)) (choices.querySelector("button") || chatNext).focus();
       });
       choices.append(button);
@@ -132,7 +134,18 @@ function init(form) {
     lastQuestion = firstMissing();
     bubble(note + (roomQuestions[lastQuestion] || "방 이야기가 모였어요. 이제 조건을 확인하고 원하면 사진 한 장도 더해 주세요."));
   }
+  function markPending(controller) {
+    pendingTurn = controller;
+    const pending = Boolean(controller);
+    composer.readOnly = pending; send.disabled = pending; chatNext.disabled = pending;
+    find("[data-save]").disabled = pending;
+    for (const choice of find(".rr-choices").children) choice.disabled = pending;
+    log.setAttribute("aria-busy", String(pending));
+  }
   function showStage(name) {
+    if (pendingTurn) {
+      pendingTurn.abort(); markPending(null);
+    }
     finishReply?.(); stage = name; notify("");
     for (const [index, panel] of panels.entries()) {
       const active = panel.dataset.panel === name;
@@ -152,12 +165,13 @@ function init(form) {
     showStage("details");
     if (edit || firstMissing()) { editor.open = true; input(firstMissing() || "location").focus(); }
   }
-  function addText(raw) {
+  async function addText(raw, quickChoice = false) {
+    if (pendingTurn || stage !== "chat") return;
     const text = raw.trim();
     if (!text) { composer.focus(); return; }
-    if (privateText(text) || detailedLocation(text)) {
+    if (roomChatPrivate(text)) {
       composer.value = ""; notify("");
-      ask("주소와 연락처는 마지막 단계에서 받을게요. ");
+      ask("개인정보가 있을 수 있어 이 문장은 보내지 않았어요. ");
       composer.focus(); return;
     }
     if (/^(?:일단\s*)?(?:임시\s*저장|저장)(?:해\s*(?:줘|주세요|둘래|둘게))?[.! ]*$/.test(text)) {
@@ -167,19 +181,53 @@ function init(form) {
       composer.value = ""; openDetails(); return;
     }
     const missing = firstMissing();
-    const patch = extractRoom(text, missing, input("availability").value);
+    const local = () => extractRoom(text, missing, input("availability").value);
+    let patch, aiReply = "", notice = "";
+    if (quickChoice) {
+      patch = local();
+    } else {
+      const controller = new AbortController();
+      markPending(controller); notify("AI가 방 설명을 읽고 있어요.");
+      const timeout = setTimeout(() => controller.abort(), 18000);
+      let cancelled = false;
+      try {
+        const response = await fetch(form.dataset.assistant, {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          credentials: "omit", referrerPolicy: "no-referrer", signal: controller.signal,
+          body: JSON.stringify({ message: text, focus: missing || "" }),
+        });
+        if (response.status === 422) {
+          if (pendingTurn !== controller) return;
+          composer.value = ""; notify(""); ask("개인정보가 있을 수 있어 이 문장은 AI에 전달하지 않았어요. "); return;
+        }
+        if (!response.ok) throw Error(response.status === 429 ? "LIMIT" : "UNAVAILABLE");
+        const result = await response.json();
+        if (result.source !== "llm" || !result.fields || typeof result.fields !== "object" || Array.isArray(result.fields)) throw Error("FORMAT");
+        patch = result.fields; aiReply = typeof result.reply === "string" ? result.reply : "";
+        if (input("availability").value && !Object.hasOwn(patch, "availability") && local().availability === "") patch.availability = "";
+      } catch (error) {
+        patch = local();
+        notice = (error.message === "LIMIT" ? "AI 이용 한도에 도달했어요." : "지금은 AI에 연결할 수 없어요.") + " 기본 입력으로 이어가거나 ‘직접 입력’을 선택해 주세요.";
+      } finally {
+        clearTimeout(timeout);
+        cancelled = pendingTurn !== controller;
+        if (!cancelled) markPending(null);
+      }
+      if (cancelled) return;
+    }
     const answers = [];
     for (const [key, value] of Object.entries(patch)) {
+      if (!Object.hasOwn(roomFields, key) || typeof value !== "string") continue;
       if ((value && badRoomField(key, value)) || value.length > input(key).maxLength) continue;
       input(key).value = value; input(key).setCustomValidity("");
       answers.push((requiredFields.includes(key) && value ? "" : roomFields[key] + " ") + (value || "다시 정하기"));
     }
     if (!answers.length) {
-      notify(""); composer.focus(); composer.select();
-      bubble(missing ? "조금만 더 알려주세요. " + roomQuestions[missing] + " (" + hints[missing] + ")" : "수정할 조건을 ‘월세 40만 원’처럼 알려주시거나 방 조건을 직접 수정해 주세요.");
+      notify(notice); composer.focus(); composer.select();
+      bubble(aiReply || (missing ? "조금만 더 알려주세요. " + roomQuestions[missing] + " (" + hints[missing] + ")" : "수정할 조건을 ‘월세 40만 원’처럼 알려주시거나 방 조건을 직접 수정해 주세요."));
       return;
     }
-    composer.value = ""; invalidate(); notify(""); refresh();
+    composer.value = ""; invalidate(); notify(notice); refresh();
     bubble(answers.join(" · "), true);
     const next = firstMissing();
     const reply = missing === "location" && next === "rooms" ? "좋아요. " : missing === "rooms" && next === "availability" ? "방 개수도 적었어요. " : "";
@@ -256,7 +304,7 @@ function init(form) {
   find("[data-edit]").onclick = () => openDetails(true);
   chatNext.onclick = () => openDetails();
   find("[data-chat-back]").onclick = () => { if (validateRoom(false)) showStage("chat"); };
-  find("[data-send]").onclick = () => addText(composer.value);
+  send.onclick = () => addText(composer.value);
   composer.addEventListener("keydown", e => {
     if (e.key === "Enter" && !e.shiftKey && !e.isComposing && e.keyCode !== 229) { e.preventDefault(); addText(composer.value); }
   });

@@ -29,7 +29,7 @@
 
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"NGO","name":"한지붕","alternateName":"HANJIBUNG","url":"https://hanjibung.kr/","member":{"@type":"OrganizationRole","roleName":"대표자","member":{"@type":"Person","name":"김현수"}},"foundingDate":"2026-07-05","telephone":"010-4587-9428","email":"contact@hanjibung.kr","description":"한지붕은 어르신의 빈방 활용 무료상담, 방 준비·청년 입주·거주 관리와 세대교류 교육·봉사를 제공하는 비영리단체입니다. 국세기본법상 법인으로 보는 단체로 승인받았으며, 주거상생 실태조사는 현재 진행 중입니다.","address":{"@type":"PostalAddress","streetAddress":"동일로 195길","addressLocality":"노원구","addressRegion":"서울특별시","addressCountry":"KR"}}</script>
     <script src="/assets/site.js?v=1fc5c2c8e48e" defer></script>
-    <script src="/assets/analytics.js?v=e161fd3bb9f2" data-analytics-id="G-58PJ9VG8GC" defer></script><link rel="stylesheet" href="/assets/room-registration.css?v=7bfa8be84d6b"></head><body id="page-top" class="reservation-page"><a class="skip-link" href="#main-content">본문으로 바로가기</a><header class="public-header"><div class="public-header-inner">
+    <script src="/assets/analytics.js?v=e161fd3bb9f2" data-analytics-id="G-58PJ9VG8GC" defer></script><link rel="stylesheet" href="/assets/room-registration.css?v=fa0f5c454ee4"></head><body id="page-top" class="reservation-page"><a class="skip-link" href="#main-content">본문으로 바로가기</a><header class="public-header"><div class="public-header-inner">
     <a class="public-brand" href="/" aria-label="한지붕 홈">한지붕</a>
     <nav class="public-menu-wide" aria-label="주 메뉴"><a href="/about/">한지붕 소개</a><a href="/consultation/">상담 신청하기</a><a href="/reservation/">우리 집 빈 방 월세 진단</a><a href="/rooms/register/" aria-current="page">방 등록하기</a></nav>
     <details class="public-menu-small"><summary><svg class="icon " aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg> 메뉴</summary><nav aria-label="주 메뉴"><a href="/about/">한지붕 소개</a><a href="/consultation/">상담 신청하기</a><a href="/reservation/">우리 집 빈 방 월세 진단</a><a href="/rooms/register/" aria-current="page">방 등록하기</a></nav></details>
@@ -117,16 +117,17 @@
 })();</script><div class="rr-wrap">
     <header class="rr-intro"><div><h1>방 등록하기</h1><p>학생에게 내어줄 방을 소개해 주세요. 한지붕 매니저가 확인하고 연락드릴게요.</p></div>
       <img src="/assets/about-home-640.webp" width="640" height="360" alt="" decoding="async"></header>
-    <form class="rr-card" novalidate data-callback-form data-room-registration data-intake="registration" data-endpoint="https://script.google.com/macros/s/AKfycbwtKlavAORmnOhxRQWAcPmbf6QeM8pz-WT50ehz_0gztxPLHfd_aE3X2uppJJe3so8o/exec" data-consent-version="2026-11-21">
+    <form class="rr-card" novalidate data-callback-form data-room-registration data-intake="registration" data-endpoint="https://script.google.com/macros/s/AKfycbwtKlavAORmnOhxRQWAcPmbf6QeM8pz-WT50ehz_0gztxPLHfd_aE3X2uppJJe3so8o/exec" data-assistant="https://hanjibung-room-assistant.hometo-kr.workers.dev/interpret" data-consent-version="2026-11-21">
       <ol class="rr-steps" aria-label="방 등록 진행 단계"><li aria-current="step"><span>1</span>방 이야기</li><li><span>2</span>조건·사진</li><li><span>3</span>주소·연락처</li></ol>
       <fieldset disabled><legend class="sr-only">방 등록 신청</legend>
         <fieldset class="rr-panel rr-chat" data-panel="chat"><legend class="sr-only">방 이야기</legend>
-          <div class="rr-heading"><div class="rr-guide"><span class="rr-avatar"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h13V10M9.5 20v-6h5v6"/></svg></span><h2 tabindex="-1">한지붕 도우미</h2></div><button type="button" class="rr-text" data-edit>직접 입력</button></div>
+          <div class="rr-heading"><div class="rr-guide"><span class="rr-avatar"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h13V10M9.5 20v-6h5v6"/></svg></span><h2 tabindex="-1">한지붕 AI 도우미</h2></div><button type="button" class="rr-text" data-edit>직접 입력</button></div>
           <div class="rr-thread"><button type="button" class="rr-history" aria-controls="rr-history-log" aria-expanded="false" hidden>이전 대화 보기</button>
-            <div class="rr-log" id="rr-history-log" role="log" aria-label="방 등록 대화" aria-live="polite" aria-relevant="additions" tabindex="0"><p class="rr-bot">반가워요! 방이 있는 동네나 가까운 역은 어디인가요?</p></div>
+            <div class="rr-log" id="rr-history-log" role="log" aria-label="방 등록 대화" aria-live="polite" aria-relevant="additions" tabindex="0"><p class="rr-bot">방이 있는 동네나 가까운 역은 어디인가요? 방 개수와 입주 시기도 한 번에 말씀해 주셔도 돼요.</p></div>
             <div class="rr-choices" aria-label="빠른 답변"></div>
             <button type="button" class="rr-primary" data-chat-next hidden>방 조건과 사진 확인하기 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h14M14 7l5 5-5 5"/></svg></button></div>
-          <div class="rr-composer"><label class="sr-only" for="room-chat-line">도우미에게 답하기</label><textarea id="room-chat-line" rows="2" maxlength="500" placeholder="예: 노원구 공릉동"></textarea><button type="button" class="rr-send" data-send aria-label="답변 보내기"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h14M14 7l5 5-5 5"/></svg></button></div>
+          <p class="rr-ai-note" id="rr-ai-note">보낸 문장은 Cloudflare에서 Google Gemma가 읽어요. 이름·상세주소·연락처는 마지막 단계에 입력해 주세요. <a href="/reservation/privacy/#room-ai">AI 이용 안내</a></p>
+          <div class="rr-composer"><label class="sr-only" for="room-chat-line">AI에게 방 설명 보내기</label><textarea id="room-chat-line" rows="2" maxlength="500" aria-describedby="rr-ai-note" placeholder="예: 노원구 공릉동"></textarea><button type="button" class="rr-send" data-send aria-label="AI로 보내기">보내기 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h14M14 7l5 5-5 5"/></svg></button></div>
         </fieldset>
         <fieldset class="rr-panel" data-panel="details" hidden disabled><legend class="sr-only">방 조건과 사진</legend>
           <div class="rr-heading"><h2 tabindex="-1">방 조건을 확인해 주세요</h2><button type="button" class="rr-text" data-chat-back>대화로 돌아가기</button></div>
@@ -153,4 +154,4 @@
     </form>
     <section class="rr-done rr-card" data-success hidden><span class="rr-avatar"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12.5 4 4L19 7.5"/></svg></span><h2 tabindex="-1">방 등록 신청을 받았습니다</h2><p>한지붕 매니저가 남겨 주신 번호로 연락드릴게요.</p><p data-receipt></p><a href="/">한지붕 홈으로</a></section>
     <noscript><p>온라인 신청에는 자바스크립트가 필요합니다. <a href="tel:+821045879428">전화로 방 등록 문의하기</a></p></noscript>
-  </div><footer class="reservation-footer"><div><a href="/">한지붕</a><a href="/reservation/privacy/">개인정보 처리방침</a><a href="tel:+821045879428">문의 010-4587-9428</a></div><p>© 2026 hanjibung. All rights reserved.</p></footer><script type="module" src="/assets/room-registration.js?v=9795a0c5e880"></script></div></main></body></html>
+  </div><footer class="reservation-footer"><div><a href="/">한지붕</a><a href="/reservation/privacy/">개인정보 처리방침</a><a href="tel:+821045879428">문의 010-4587-9428</a></div><p>© 2026 hanjibung. All rights reserved.</p></footer><script type="module" src="/assets/room-registration.js?v=e6d4e23b6caf"></script></div></main></body></html>

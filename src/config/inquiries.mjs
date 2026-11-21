@@ -1,6 +1,7 @@
 // Public deployment URL only. No spreadsheet credentials or access tokens belong here.
 export const inquiries = Object.freeze({
   endpoint: "https://script.google.com/macros/s/AKfycbwtKlavAORmnOhxRQWAcPmbf6QeM8pz-WT50ehz_0gztxPLHfd_aE3X2uppJJe3so8o/exec",
+  roomAssistant: "https://hanjibung-room-assistant.hometo-kr.workers.dev/interpret",
   consentVersion: "2026-09-24",
   registrationVersion: "2026-11-21",
   topics: {
