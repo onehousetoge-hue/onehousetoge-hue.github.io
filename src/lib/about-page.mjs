@@ -38,10 +38,6 @@ export function aboutPage() {
         <p class="about-metric-value"><strong>55</strong>가구</p>
         <p class="about-metric-date"><time datetime="2026-09">2026년 9월</time> 기준</p>
       </div>
-      <figure class="about-field">
-        <img src="/assets/about-hagye.webp" width="720" height="518" loading="lazy" decoding="async" alt="산책길을 따라 나란히 걸으며 대화하는 두 사람">
-        <figcaption>노원구 하계동 · 주민 상담 현장</figcaption>
-      </figure>
     </section>
 
     <section class="about-support" id="goals" aria-labelledby="about-support-title">

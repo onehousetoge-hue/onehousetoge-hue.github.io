@@ -68,7 +68,7 @@
 
 .about-record {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, .69fr) minmax(0, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(22px, 4vw, 62px);
   align-items: center;
   padding-block: clamp(44px, 5vw, 72px);
@@ -81,9 +81,6 @@
 .about-metric-value { display: flex; align-items: baseline; gap: 6px; color: var(--about-blue); font-size: clamp(22px, 2.3vw, 30px); font-weight: 700; line-height: 1.2; letter-spacing: -.05em; }
 .about-metric-value strong { font-size: clamp(70px, 7.2vw, 98px); font-weight: 720; letter-spacing: -.065em; font-variant-numeric: lining-nums tabular-nums; }
 .about-metric-date { color: var(--about-muted); font-size: 14px; line-height: 1.6; }
-.about-field { position: relative; isolation: isolate; overflow: hidden; aspect-ratio: 1.62; border-radius: 14px; background: #294456; }
-.about-field img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 23%; }
-.about-field figcaption { position: absolute; inset: auto 0 0; padding: 30px 16px 11px; background: linear-gradient(transparent, #0a1828db); color: #fff; font-size: 14px; font-weight: 600; line-height: 1.5; }
 
 .about-support { border-block: 1px solid #e4ecf4; background: #f2f6fa; }
 .about-support-layout { display: grid; grid-template-columns: minmax(0, .75fr) minmax(0, 1.25fr); align-items: start; gap: clamp(24px, 6vw, 84px); padding-block: clamp(46px, 5.5vw, 80px); }
@@ -111,7 +108,6 @@
   .about-model { width: min(100%, 520px); gap: 10px; justify-self: center; }
   .about-record { grid-template-columns: 1fr auto; gap: 24px; }
   .about-metric { padding-left: 24px; }
-  .about-field { grid-column: 1 / -1; width: 100%; aspect-ratio: 2.8; }
   .about-support-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
   .about-support-copy { display: flex; align-items: end; justify-content: space-between; gap: 14px; }
   .about-support .about-inline { margin: 0; }
@@ -133,7 +129,6 @@
   .about-metric-value { font-size: 19px; gap: 3px; }
   .about-metric-value strong { font-size: clamp(52px, 13vw, 65px); }
   .service-about .about-record-copy > p:last-child { grid-area: 3 / 1 / 4 / -1; max-width: none; margin: -5px 0 0; font-size: 16px; }
-  .about-field { aspect-ratio: 1.9; }
   .about-support-layout { gap: 18px; padding-block: 36px; }
   .about-support-copy { display: block; }
   .about-support .about-inline { margin-top: 6px; }
