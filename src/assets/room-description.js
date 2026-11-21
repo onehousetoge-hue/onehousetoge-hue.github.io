@@ -172,9 +172,14 @@ export function completeRoomTurn(text, focused, previousAvailability, confirmed)
   const local = extractRoom(text, focused, previousAvailability);
   if (local.availability === "" && !Object.hasOwn(confirmed, "availability")) return { ...confirmed, availability: "" };
   if (/(?:인지|말고|아니|않|못|없|안\s+|안(?:받|되|돼|된|될|나|맞)|어렵|어려|힘들|불가|모르|미정|혹시|거나|또는|아직|고민|예를\s*들|예시|쯤일|생각\s*중)/.test(text)) return confirmed;
-  // An amount may describe a different field, and room size can describe the whole home.
-  // Deterministic supplements cover the three required facts and named charges only.
+  // A size or floor can describe the whole building rather than the offered room.
   const supplement = {};
+  if (local.homeType && !Object.hasOwn(confirmed, "homeType")) {
+    const afterType = text.split(local.homeType);
+    if (afterType.length === 2 && /^(?:에\s*(?:빈\s*|남는\s*)?방|(?:예요|이에요|입니다)[.!\s]*$)/.test(afterType[1])) {
+      supplement.homeType = local.homeType;
+    }
+  }
   for (const key of [...requiredFields, ...Object.keys(moneyLabels)]) {
     if (!local[key] || Object.hasOwn(confirmed, key)) continue;
     if (key === "availability" && !/입주|이사|들어오|가능|부터/.test(text)) continue;

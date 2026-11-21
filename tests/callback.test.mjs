@@ -44,6 +44,9 @@ test('selecting a room condition accepts short corrections and cannot overwrite 
 });
 
 test('an incomplete model response can keep clear facts without reviving rejected or hypothetical offers',()=>{
+  const details = {location:'공릉동',rooms:'1개',availability:'다음 달',rent:'40만 원'};
+  assert.deepEqual(completeRoomTurn('공릉동 아파트에 방 한 개가 있어요. 다음 달 입주 가능하고 월세는 40만 원이에요.','location','',details),{...details,homeType:'아파트'});
+  assert.equal(completeRoomTurn('아파트 옆에 방 한 개가 있어요','location','',{}).homeType,undefined);
   assert.deepEqual(completeRoomTurn('공릉동에 방 한 개, 다음 달부터, 월세 40만 원','location','',{rooms:'1개'}),{
     location:'공릉동',rooms:'1개',availability:'다음 달부터',rent:'40만 원',
   });

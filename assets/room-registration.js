@@ -1,4 +1,4 @@
-import { completeRoomTurn, correctionPatch, detailedLocation, extractRoom, privateText, requiredFields, roomChatPrivate, roomFields, roomQuestions, visitAddressError } from "./room-description.js?v=d3942e9e7642";
+import { completeRoomTurn, correctionPatch, detailedLocation, extractRoom, privateText, requiredFields, roomChatPrivate, roomFields, roomQuestions, visitAddressError } from "./room-description.js?v=85fb3867a6f6";
 import { callbackPayload, submitCallback } from "./callback.js?v=1c79e8eae2b2";
 import { validateInquiryInput } from "./inquiry.js";
 
