@@ -13,37 +13,42 @@ export function aboutPage() {
       <div class="about-wrap about-cover-layout">
         <div class="about-cover-copy">
           <p class="about-kicker">한지붕 소개</p>
-          <h1 id="about-title">우리 집 빈방이<br><em>대학생의 방이 됩니다.</em></h1>
-          <p class="about-lead">남는 방이 있는 집주인과 살 곳을 찾는 대학생을 연결합니다. 방 준비부터 입주 후 생활까지 한지붕 매니저가 함께합니다.</p>
+          <h1 id="about-title">MBC가 만난<br><em>어르신과 대학생</em></h1>
+          <p class="about-lead">빈방을 내어준 어르신과 대학생은 한집에서 어떻게 지낼까요? MBC 뉴스데스크가 두 세대의 일상을 담았습니다. 김현수 대표도 방송에서 집주인과 학생이 서로의 신원을 확인하는 이유를 이야기합니다.</p>
           <div class="about-actions">
-            <a class="about-button" href="/consultation/">상담 신청하기 <span aria-hidden="true">→</span></a>
-            <a class="about-inline" href="#goals">한집살이 알아보기 <span class="about-down" aria-hidden="true">→</span></a>
+            <a class="about-inline" href="https://imnews.imbc.com/replay/2026/nwdesk/article/6851406_37004.html">MBC 기사 읽기 <span aria-hidden="true">↗</span></a>
+            <a class="about-inline" href="#about-record-title">한지붕이 하는 일 <span aria-hidden="true">↓</span></a>
           </div>
         </div>
-        <figure class="about-model">
-          <img src="/assets/about-home-640.webp" srcset="/assets/about-home-640.webp 640w, /assets/about-home-800.webp 800w, /assets/about-home-1200.webp 1200w" sizes="(max-width: 800px) min(calc(100vw - 40px), 520px), (max-width: 1144px) 49vw, 550px" width="1200" height="675" alt="양쪽에 개인 방이 있고 가운데에 주방과 식탁이 있는 집 모형" fetchpriority="high" decoding="async">
-          <figcaption>각자의 방과 함께 쓰는 주방을 보여주는 공간 예시</figcaption>
-        </figure>
+        <a class="about-broadcast" href="https://www.youtube.com/watch?v=DdCxyz9kNs4" aria-label="MBC 뉴스데스크 현장 36.5 보도 영상 보기 (유튜브)">
+          <img src="https://i.ytimg.com/vi/DdCxyz9kNs4/maxresdefault.jpg" srcset="https://i.ytimg.com/vi/DdCxyz9kNs4/mqdefault.jpg 320w, https://i.ytimg.com/vi/DdCxyz9kNs4/maxresdefault.jpg 1280w" sizes="(max-width: 800px) min(660px, calc(100vw - 40px)), (max-width: 1144px) 49vw, 550px" width="1280" height="720" alt="" referrerpolicy="no-referrer" fetchpriority="high" decoding="async">
+          <span class="about-broadcast-caption"><span><strong>MBC 뉴스데스크 · 현장 36.5</strong><time datetime="2026-09-12">2026년 9월 12일 방송</time></span><span class="about-watch">영상 보기</span></span>
+        </a>
       </div>
     </section>
 
     <section class="about-wrap about-record" aria-labelledby="about-record-title">
       <div class="about-record-copy">
-        <p class="about-kicker">서울 노원구</p>
-        <h2 id="about-record-title">공릉동에서<br>시작했습니다.</h2>
-        <p>동네 주민을 만나 빈방 활용과 대학생과의 공동생활에 대해 상담합니다.</p>
+        <p class="about-kicker">서울 노원구 공릉동</p>
+        <h2 id="about-record-title">살던 집의 빈방을<br>대학생의 방으로</h2>
+        <p>한지붕은 공릉동에서 시작한 비영리단체입니다. 집주인은 익숙한 동네에서 지내며 빈방으로 월세를 받고, 대학생은 학교 근처에 자기 방을 마련합니다. 한지붕 매니저는 두 사람이 만나기 전부터 방을 살피고 입주 후 생활까지 함께 조율합니다.</p>
       </div>
       <div class="about-metric">
         <p class="about-metric-label">한지붕이 관리하는 가구</p>
         <p class="about-metric-value"><strong>55</strong>가구</p>
         <p class="about-metric-date"><time datetime="2026-09">2026년 9월</time> 기준</p>
       </div>
+      <dl class="about-history">
+        <div><dt><time datetime="2026-07-05">2026. 7. 5.</time></dt><dd>한지붕 창립총회</dd></div>
+        <div><dt><time datetime="2026-07-09">2026. 7. 9.</time></dt><dd>단체 고유번호 발급</dd></div>
+      </dl>
     </section>
 
     <section class="about-support" id="goals" aria-labelledby="about-support-title">
       <div class="about-wrap about-support-layout">
         <div class="about-support-copy">
           <h2 id="about-support-title">한집에서<br>어떻게 지낼까요?</h2>
+          <figure class="about-model"><img src="/assets/about-home-640.webp" srcset="/assets/about-home-640.webp 640w, /assets/about-home-800.webp 800w" sizes="(max-width: 800px) min(340px, 100vw - 40px), 370px" width="1200" height="675" alt="양쪽 개인 방 사이에 식탁과 주방이 놓인 집 모형" loading="lazy" decoding="async"><figcaption>개인 방과 공용 주방 배치 예시</figcaption></figure>
           <a class="about-inline" href="/#rent-faq">집주인이 자주 묻는 질문 <span aria-hidden="true">→</span></a>
         </div>
         <ul class="about-benefit-list">${benefits.map(([file, title, detail]) => `

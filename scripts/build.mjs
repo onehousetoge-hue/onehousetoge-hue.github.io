@@ -41,7 +41,7 @@ async function emit(route, html, { indexable = true, updatedAt = pageDates[route
 
 await emit("/", layout({
   title: "우리 집 남는 방 예상 월세 진단",
-  description: "우리 집 빈방의 예상 월세를 무료로 진단받으세요. 관리비는 어떻게 나눌지, 어떤 대학생이 입주하는지, 함께 살 때의 규칙은 어떻게 정하는지 한지붕이 집주인의 질문에 답합니다.",
+  description: "지금 사는 집의 빈방을 대학생에게 빌려줄 때 받을 월세를 무료로 진단하세요. 한지붕의 방 준비·학생 소개 절차와 집주인이 자주 묻는 월세 정산, 공실, 계약, 세금 질문을 확인할 수 있습니다.",
   path: "/",
   body: roomCheckPage(),
   bodyClass: "room-check-page",
@@ -55,7 +55,7 @@ await emit("/", layout({
 }).replace("</head>", `${legacyEntryScript}<link rel="stylesheet" href="${roomCheckStylesheetUrl}"><link rel="stylesheet" href="${incomeCalculatorStylesheetUrl}"><script src="${diagnosisPrefillScriptUrl}" defer></script><script src="${incomeCalculatorScriptUrl}" defer></script><script src="${rentFaqSearchUrl}" defer></script></head>`));
 await emit("/reservation/", layout({ title: "예상 월세 무료 진단 신청", description: "우리 집 남는 방의 예상 월세와 준비사항을 무료로 안내받으세요. 집 위치와 방 정보를 남기면 한지붕 매니저가 확인 후 연락드립니다.", path: "/reservation/", body: reservationPage(), bodyClass: "reservation-page", showDiagnosisDock: false, showFooter: false, jsonLd: organizationSchema }).replace("</head>", `${legacyEntryScript}<link rel="stylesheet" href="${reservationStylesheetUrl}"><script src="${diagnosisPrefillScriptUrl}" defer></script><script src="${reservationScriptUrl}" defer></script></head>`));
 for (const [route, title, description, body, styles] of [
-  ["/about/", "한지붕 소개", "집주인과 대학생이 한집에서 지내도록 돕는 한지붕의 활동과 노원구 공릉동에서 시작한 빈방 활용 서비스를 소개합니다.", headlineExperiment + aboutPage(), [aboutStylesheetUrl]],
+  ["/about/", "한지붕 소개", "MBC 뉴스데스크가 취재한 어르신과 대학생의 한집살이와 김현수 대표의 인터뷰를 보세요. 노원구 공릉동에서 시작한 한지붕이 방 준비부터 입주 후 생활까지 어떻게 돕는지 소개합니다.", headlineExperiment + aboutPage(), [aboutStylesheetUrl]],
   ["/consultation/", "상담 신청하기", "빈방 활용이나 대학생과의 공동생활에 대해 궁금한 점을 한지붕 매니저에게 남겨 주세요. 이름과 연락처, 질문을 보내면 매니저가 답변합니다.", intakePage(), [reservationStylesheetUrl, serviceStylesheetUrl]],
   ["/rooms/register/", "방 등록하기", "한지붕 도우미에게 동네, 방 개수, 입주 시기를 알려주세요. 방 조건과 사진을 확인하고 방문할 주소와 연락처를 남기면 매니저가 등록 내용을 확인합니다.", roomRegistrationPage(), [registrationStylesheetUrl]],
 ]) {

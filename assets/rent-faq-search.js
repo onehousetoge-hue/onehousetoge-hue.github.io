@@ -7,6 +7,7 @@
   const clear = search.querySelector("button");
   const status = search.querySelector('[role="status"]');
   const topics = faq.querySelector(".rent-faq-nav");
+  const picks = faq.querySelector(".rent-faq-picks");
   const empty = faq.querySelector(".rent-faq-empty");
 
   function words(text) {
@@ -49,6 +50,7 @@
       openedForSearch = single;
     }
     topics.hidden = Boolean(query);
+    if (picks) picks.hidden = Boolean(query);
     empty.hidden = matches.length !== 0;
     clear.hidden = input.value.length === 0;
     const message = (query ? "검색 결과 " : "전체 ") + matches.length + "개";
@@ -61,6 +63,22 @@
     input.focus();
   }
 
+  function revealAnswer(hash) {
+    const answer = document.getElementById(hash.slice(1));
+    if (!answer?.classList.contains("rent-faq-answer")) return;
+    if (input.value) {
+      input.value = "";
+      update();
+    }
+    answer.closest("details").open = true;
+  }
+
+  picks?.addEventListener("click", event => {
+    const link = event.target.closest("a");
+    if (link) revealAnswer(link.hash);
+  });
+  window.addEventListener("hashchange", () => revealAnswer(location.hash));
+
   input.addEventListener("input", event => { if (!event.isComposing) update(); });
   input.addEventListener("compositionend", update);
   input.addEventListener("keydown", event => {
@@ -72,5 +90,6 @@
   clear.addEventListener("click", reset);
   empty.querySelector("button").addEventListener("click", reset);
   update();
+  revealAnswer(location.hash);
   search.hidden = false;
 })();

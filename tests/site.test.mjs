@@ -45,9 +45,12 @@ test("rent FAQ answers and their structured data match in the final section befo
   const jumps = [...nav.matchAll(/href="#([^"]+)"/g)].map(match => match[1]);
   const groups = [...section[1].matchAll(/<h3 id="([^"]+)">/g)].map(match => match[1]);
   assert.deepEqual(jumps, groups);
-  assert.equal(new Set(groups).size, 4);
+  assert.deepEqual(groups, ["faq-costs", "faq-application", "faq-move-in", "faq-living", "faq-tax"]);
   const items = [...section[1].matchAll(/<details class="rent-faq-item"( open)?>([\s\S]*?)<\/details>/g)];
-  assert.ok(items.length > 9, "the combined FAQ covers more than the two earlier lists");
+  const picks = section[1].match(/<nav class="rent-faq-picks"[^>]*>([\s\S]*?)<\/nav>/)[1];
+  const featured = [...picks.matchAll(/href="#([^"]+)"/g)].map(match => match[1]);
+  assert.deepEqual(featured, ["faq-student-matching", "faq-rental-tax", "faq-manager-support"]);
+  for (const id of featured) assert.ok(faq.mainEntity.some(question => question["@id"].endsWith("#" + id)));
   assert.equal(items.filter(match => match[1]).length, 1);
   assert.equal(items.length, faq.mainEntity.length);
   assert.equal(new Set(faq.mainEntity.map(q => q["@id"])).size, items.length);
@@ -61,6 +64,16 @@ test("rent FAQ answers and their structured data match in the final section befo
     const paragraphs = [...content.matchAll(/<p>([^<]+)<\/p>/g)].map(match => match[1]);
     assert.equal(paragraphs.join("\n\n"), escapeHtml(question.acceptedAnswer.text));
   }
+});
+
+test("the about page leads with the original MBC report and its official video", async () => {
+  const html = await readFile(routeFile("/about/"), "utf8");
+  const cover = html.match(/<section class="about-cover"[\s\S]*?<\/section>/)[0];
+  assert.match(cover, /<h1 id="about-title">MBC/);
+  assert.match(cover, /https:\/\/imnews\.imbc\.com\/replay\/2026\/nwdesk\/article\/6851406_37004\.html/);
+  assert.match(cover, /href="https:\/\/www\.youtube\.com\/watch\?v=DdCxyz9kNs4"/);
+  assert.match(cover, /datetime="2026-09-12"/);
+  assert.doesNotMatch(cover, /<iframe|<video/);
 });
 
 test("dedicated diagnosis page preserves the existing required information and explicit consent", async () => {
