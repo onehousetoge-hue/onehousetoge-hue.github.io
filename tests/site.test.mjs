@@ -84,6 +84,7 @@ test("dedicated diagnosis page preserves the existing required information and e
   assert.equal((html.match(/<form\b/g) || []).length, 1);
   assert.doesNotMatch(html, /<iframe|data-open-inquiry/);
   const diagnosisForm = html.match(/<form class="inquiry-form"[\s\S]*?<\/form>/)[0];
+  assert.doesNotMatch(diagnosisForm, /data-prefill-notice|미리 채웠어요/);
   const inputs = [...diagnosisForm.matchAll(/<input\b[^>]*>/g)].map((match) => match[0]);
   const fields = inputs.filter((input) => /\bname="/.test(input));
   assert.deepEqual([...new Set(fields.map((input) => input.match(/\bname="([^"]+)"/)[1]))].sort(), ["aircon", "area", "areaType", "consent", "homeType", "location", "phone", "rooms", "tenure"]);

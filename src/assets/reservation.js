@@ -22,7 +22,6 @@
     }
     const selectedAreaType = form.querySelector('[name="areaType"]:checked')?.value;
     if (selectedAreaType) area.placeholder = `집 주변 ${selectedAreaType} 이름을 입력해 주세요`;
-    form.querySelector("[data-prefill-notice]").hidden = !draft.area && !draft.homeType;
   }
   let ready = false;
   let busy = false;

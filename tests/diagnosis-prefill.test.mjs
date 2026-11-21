@@ -59,7 +59,7 @@ async function reservation(env, initial = {}, checkReadiness = async () => ({ ok
   const consent = element({ name: "consent", value: "on", type: "checkbox" });
   controls.push(consent);
   const nodes = new Map(Object.entries(textFields).map(([name, input]) => [`#${name}`, input]));
-  for (const selector of [".submit", ".submit-note", ".error", ".setup-notice", ".privacy-toggle", ".privacy", "[data-prefill-notice]"]) nodes.set(selector, element({ hidden: selector === "[data-prefill-notice]" }));
+  for (const selector of [".submit", ".submit-note", ".error", ".setup-notice", ".privacy-toggle", ".privacy"]) nodes.set(selector, element());
   function matching(selector) {
     const name = selector.match(/\[name="([^"]+)"\]/)?.[1];
     return controls.filter((input) => input.name === name && (!selector.endsWith(":checked") || input.checked));
@@ -141,7 +141,6 @@ test("calculator input carries into the reservation without inventing other answ
   assert.equal(secondPage.textFields.area.value, "서울대입구역");
   assert.equal(secondPage.controls.find((input) => input.name === "areaType" && input.checked)?.value, "지하철역");
   assert.equal(secondPage.controls.find((input) => input.name === "homeType" && input.checked)?.value, "아파트");
-  assert.equal(secondPage.nodes.get("[data-prefill-notice]").hidden, false);
   assert.equal(secondPage.textFields.location.value, "");
   assert.equal(secondPage.textFields.phone.value, "");
   assert.equal(secondPage.consent.checked, false);
