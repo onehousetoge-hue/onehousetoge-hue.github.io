@@ -28,6 +28,7 @@ export const reservationScriptUrl = assetUrl("reservation.js");
 export const aboutStylesheetUrl = assetUrl("about.css");
 export const serviceStylesheetUrl = assetUrl("service-pages.css");
 export const registrationSource = assetText("room-registration.js")
-  .replace('"./room-description.js"', JSON.stringify(assetUrl("room-description.js").replace("/assets/", "./")));
+  .replace('"./room-description.js"', JSON.stringify(assetUrl("room-description.js").replace("/assets/", "./")))
+  .replace('"./callback.js"', JSON.stringify(callbackScriptUrl.replace("/assets/", "./")));
 export const registrationScriptUrl = assetUrl("room-registration.js", registrationSource);
 export const registrationStylesheetUrl = assetUrl("room-registration.css");

@@ -1,16 +1,25 @@
 import { validateInquiryInput, send, recordHostConsultationConversion } from "./inquiry.js";
 
 export function callbackPayload(values, requestId, consentVersion, registration = false) {
-  const optional = [["rent","희망 월세"],["deposit","보증금"],["fee","관리비"],["homeType","주택 유형"],["area","방 면적"],["floor","층수"]];
+  let message = String(values.message || "").trim();
+  if (registration) {
+    const lines = [`동네: ${values.location.trim()}`, `남는 방: ${values.rooms}`, `입주 가능 시기: ${values.availability}`];
+    const optional = [["rent","희망 월세"],["deposit","보증금"],["fee","관리비"],["homeType","주택 유형"],["area","방 면적"],["floor","층수"]];
+    for (const [key, label] of optional) {
+      if (values[key]) lines.push(label + ": " + values[key]);
+    }
+    if (values.address?.trim()) {
+      lines.push("방문할 상세주소: " + values.address.trim());
+      if (values.consent === true) lines.push("주소·연락처 이용 동의: 방 등록 확인 및 방문 일정 조율");
+    }
+    message = lines.join("\n");
+  }
   return {
     action: "submit", kind: "consultation", requestId,
     name: String(values.name || "").trim(),
     contactMethod: "phone", contact: String(values.contact || "").trim(),
     topic: registration ? "방 등록" : "빈방·유휴공간 활용",
-    message: registration
-      ? [`동네: ${values.location.trim()}`, `남는 방: ${values.rooms}`, `입주 가능 시기: ${values.availability}`,
-          ...optional.filter(([key]) => values[key]).map(([key,label]) => label + ": " + values[key])].join("\n")
-      : String(values.message || "").trim(),
+    message,
     consent: values.consent === true, consentVersion,
     website: String(values.website || ""),
   };

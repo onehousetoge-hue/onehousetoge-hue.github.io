@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 import { callbackPayload, submitCallback } from '../src/assets/callback.js';
 import { inquiries } from '../src/config/inquiries.mjs';
-import { extractRoom } from '../src/assets/room-description.js';
+import { detailedLocation, extractRoom, privateText, visitAddressError } from '../src/assets/room-description.js';
 
 const id = 'aa111111-2222-4333-8444-555555555555';
 const values = {name:'오프라인 시험',contact:'010-0000-0000',message:'사진 없이 먼저 빈방 활용 상담을 받고 싶습니다.',consent:true,website:''};
@@ -41,6 +41,22 @@ test('a rejected or unrelated date is not offered as an available move-in date',
   assert.equal(answer('2027-02-29'), undefined);
   assert.equal(answer('2028.02.29'), '2028.02.29');
   assert.equal(answer('다음 달부터 가능하고 월세는 40만 원이에요'), '다음 달부터');
+});
+
+test('addresses and contact details belong to the private confirmation step',()=>{
+  for(const detail of ['시험길 17', '시험길 17이에요', '시험동 산 10-2', '108동 302호', '301호']) {
+    assert.ok(detailedLocation(detail), detail);
+    assert.deepEqual(extractRoom(detail, 'location'), {});
+  }
+  for(const phone of ['010-0000-0000','02-000-0000','+82 10 0000 0000','０１０－００００－００００']) {
+    assert.ok(privateText(phone));
+    assert.deepEqual(extractRoom('공릉동 '+phone), {});
+    assert.ok(visitAddressError(phone));
+  }
+  for(const text of ['공릉동 12월 입주 가능', '공릉동 2개', '7호선 공릉역 2번 출구', '3층']) assert.equal(detailedLocation(text),false,text);
+  assert.equal(extractRoom('공릉역 2번 출구').location,'공릉역');
+  for(const text of ['', '공릉동','서울 노원구 상계1동','공릉역 2번 출구']) assert.ok(visitAddressError(text));
+  for(const text of ['시험길 17', '시험동 산 10-2', '시험아파트 108동 302호']) assert.equal(visitAddressError(text),'');
 });
 
 test('callback is compatible with the existing server and requires real consent and contact',async()=>{

@@ -4,6 +4,11 @@ export const roomFields = Object.freeze({
   rent: "희망 월세", deposit: "보증금", fee: "관리비", homeType: "주택 유형", area: "방 면적", floor: "층수",
 });
 export const requiredFields = ["location", "rooms", "availability"];
+export const roomQuestions = {
+  location: "방이 있는 동네나 가까운 역은 어디인가요?",
+  rooms: "학생에게 내어줄 방은 몇 개인가요?",
+  availability: "언제부터 입주할 수 있나요?",
+};
 
 // A small, on-device character n-gram classifier for colloquial move-in replies.
 // Amounts, dates, and addresses are extracted separately and never predicted.
@@ -31,7 +36,7 @@ function moveInIntent(text) {
 
 const geoWord = "(?:[가-힣]{1,9}(?:[1-9](?:·[1-9])?)?(?:특별자치시|특별시|광역시|시|군|구|읍|면|동|리|역)|(?:경기|강원|제주)도|(?:경상|충청|전라)[남북]도|(?:강원|전북|제주)특별자치도|서울|부산|대구|인천|광주|대전|울산|세종|제주|여의도|김포|홍대|판교)";
 const geography = new RegExp("(?<![가-힣0-9])(" + geoWord + "(?:\\s+" + geoWord + "){0,3})(?=에서|에는|근처|인근|이에|이예|이고|인데|이랑|에|의|은|는|이야|입니다|예요|이요|이구|[\\s,.!?·]|$)", "g");
-const notPlaces = new Set(["관리", "거리", "자리", "처리", "수리", "정리", "미리", "우리", "아무리", "리모델링", "혹시", "즉시", "당시", "상시", "다시", "표시", "임시", "가구", "다가구", "공동", "거주면", "되면", "하면"]);
+const notPlaces = new Set(["관리", "거리", "자리", "처리", "수리", "정리", "미리", "우리", "아무리", "리모델링", "혹시", "즉시", "당시", "상시", "다시", "표시", "임시", "가구", "다가구", "공동", "거주면", "되면", "하면", "출구", "입구"]);
 const roomNumbers = { 한: 1, 하나: 1, 일: 1, 두: 2, 둘: 2, 이: 2, 세: 3, 셋: 3, 삼: 3, 네: 4, 넷: 4, 사: 4, 다섯: 5, 여섯: 6 };
 function numberOfRooms(text, focused) {
   const count = "(\\d{1,2}|하나|다섯|여섯|한|두|둘|세|셋|네|넷)";
@@ -94,11 +99,24 @@ function money(text, label) {
   return /\d/.test(value) && !value.endsWith("원") ? value + " 원" : value;
 }
 export function privateText(text) {
-  return /(?:01[016789][\s.-]?\d{3,4}[\s.-]?\d{4}|\b\d{6}[- ]?[1-8]\d{6}\b|[\w.+-]+@[\w.-]+\.[a-z]{2,})/i.test(text);
+  return /(?<!\d)(?:0(?:2|1[016789]|[3-6][1-5]|70)|\+82[-.\s]?(?:\(0\))?(?:2|1[016789]|[3-6][1-5]|70))[-.\s)]?\d{3,4}[-.\s]?\d{4}(?!\d)|\b\d{6}[- ]?[1-8]\d{6}\b|[\w.+-]+@[\w.-]+\.[a-z]{2,}/i.test(String(text).normalize("NFKC"));
+}
+export function detailedLocation(text) {
+  const value = String(text).normalize("NFKC");
+  const buildingNumber = /[가-힣\d·.]+(?:대로|로|길|읍|면|동|리)\s*(?:산\s*)?\d+(?:-\d+)?(?!\d)(?!\s*(?:개|칸|실|층|평|월|년|주|일|만|천|원|분|번\s*출구))(?=[\s,.!?()]|번지|번길|에|이|예요|입니다|이고|번|$)/;
+  const apartmentOrLot = /\d+(?:-\d+)?\s*번지|\d+\s*동\s*\d+|\d+\s*호(?:실)?(?!선)|(?:아파트|빌라|오피스텔)\s*\d+\s*동/;
+  return buildingNumber.test(value) || apartmentOrLot.test(value);
+}
+export function visitAddressError(text) {
+  const value = String(text || "").normalize("NFKC").trim();
+  if (privateText(value)) return "주소 칸에는 방문할 주소를 적고, 전화번호는 연락처 칸에 적어주세요.";
+  const withoutDistrict = value.replace(/\d+\s*(?:동|가|리|호선|번\s*출구|층)/g, "");
+  if (value.length < 4 || value.length > 180 || !/\d/.test(withoutDistrict) || !/[가-힣a-z]/i.test(value)) return "도로명과 건물번호 또는 지번이 포함된 주소를 적어주세요.";
+  return "";
 }
 export function extractRoom(text, focused = "", previousAvailability = "") {
   const clean = String(text).normalize("NFKC").slice(0, 500).trim();
-  if (!clean || privateText(clean)) return {};
+  if (!clean || privateText(clean) || detailedLocation(clean)) return {};
   const patch = {};
   const places = [...clean.matchAll(geography)].map(hit => hit[1].trim().split(/\s+/).filter(w => !notPlaces.has(w)).join(" ")).filter(Boolean);
   if (places.length) patch.location = places[places.length - 1];

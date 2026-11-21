@@ -57,7 +57,7 @@ await emit("/reservation/", layout({ title: "예상 월세 무료 진단 신청"
 for (const [route, title, description, body, styles] of [
   ["/about/", "한지붕 소개", "집주인과 대학생이 한집에서 지내도록 돕는 한지붕의 활동과 노원구 공릉동에서 시작한 빈방 활용 서비스를 소개합니다.", headlineExperiment + aboutPage(), [aboutStylesheetUrl]],
   ["/consultation/", "상담 신청하기", "빈방 활용이나 대학생과의 공동생활에 대해 궁금한 점을 한지붕 매니저에게 남겨 주세요. 이름과 연락처, 질문을 보내면 매니저가 답변합니다.", intakePage(), [reservationStylesheetUrl, serviceStylesheetUrl]],
-  ["/rooms/register/", "방 등록하기", "동네와 방 개수, 입주 가능 시기를 한 문장으로 알려주세요. 방 조건과 선택한 사진을 확인한 뒤 한지붕 매니저에게 등록을 신청할 수 있습니다.", roomRegistrationPage(), [registrationStylesheetUrl]],
+  ["/rooms/register/", "방 등록하기", "한지붕 도우미에게 동네, 방 개수, 입주 시기를 알려주세요. 방 조건과 사진을 확인하고 방문할 주소와 연락처를 남기면 매니저가 등록 내용을 확인합니다.", roomRegistrationPage(), [registrationStylesheetUrl]],
 ]) {
   const stylesheetLinks = styles.map((href) => `<link rel="stylesheet" href="${href}">`).join("");
   await emit(route, layout({ title, description, path: route, body, bodyClass: "reservation-page", showDiagnosisDock: false, showFooter: false, jsonLd: organizationSchema })

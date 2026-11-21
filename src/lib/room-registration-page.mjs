@@ -1,6 +1,7 @@
 import { inquiries } from "../config/inquiries.mjs";
 import { site } from "../config/site.mjs";
-import { roomFields } from "../assets/room-description.js";
+import { roomFields, roomQuestions } from "../assets/room-description.js";
+import { icon } from "./template.mjs";
 import { headlineExperiment, registrationScriptUrl } from "./static-assets.mjs";
 import { reservationFooter } from "./reservation-page.mjs";
 
@@ -15,35 +16,42 @@ function editor([name, placeholder, length], index) {
 }
 export function roomRegistrationPage() {
   return `<div class="room-registration">${headlineExperiment}<div class="rr-wrap">
-    <header class="rr-intro"><h1>방 등록하기</h1><p>학생에게 내어줄 방을 편하게 설명해 주세요. 한지붕 매니저가 등록 내용을 확인하고 연락드립니다.</p></header>
-    <form data-callback-form data-room-registration data-intake="registration" data-endpoint="${inquiries.endpoint}" data-consent-version="${inquiries.registrationVersion}">
+    <header class="rr-intro"><div><h1>방 등록하기</h1><p>학생에게 내어줄 방을 소개해 주세요. 한지붕 매니저가 확인하고 연락드릴게요.</p></div>
+      <img src="/assets/about-home-640.webp" width="640" height="360" alt="" decoding="async"></header>
+    <form class="rr-card" novalidate data-callback-form data-room-registration data-intake="registration" data-endpoint="${inquiries.endpoint}" data-consent-version="${inquiries.registrationVersion}">
+      <ol class="rr-steps" aria-label="방 등록 진행 단계"><li aria-current="step"><span>1</span>방 이야기</li><li><span>2</span>조건·사진</li><li><span>3</span>주소·연락처</li></ol>
       <fieldset disabled><legend class="sr-only">방 등록 신청</legend>
-        <div class="rr-workspace"><section class="rr-chat rr-card" aria-labelledby="rr-chat-title">
-          <header class="rr-card-head"><h2 id="rr-chat-title">방 등록 도우미</h2><button type="button" class="rr-text" data-edit>직접 입력</button></header>
-          <div class="rr-chat-body"><div class="rr-log" role="log" aria-label="방 등록 대화" aria-live="polite" aria-relevant="additions" tabindex="0"><p class="rr-bot">어느 동네에 방이 몇 개 비어 있나요? 입주할 수 있는 시기도 함께 알려주세요.</p></div>
-          <div class="rr-choices" aria-label="빠른 답변"></div>
-          <label class="sr-only" for="room-chat-line">방 설명 또는 수정할 내용</label><textarea id="room-chat-line" rows="3" maxlength="500" placeholder="예: 공릉동에 방 한 칸 있어요. 다음 달부터 입주할 수 있고 월세는 40만 원이에요."></textarea>
-          <div class="rr-composer-foot"><small>상세주소와 연락처는 대화에서 빼주세요.</small><button type="button" class="rr-send" data-send>보내기</button></div></div>
-        </section>
-        <section class="rr-summary rr-card" aria-labelledby="rr-summary-title"><header class="rr-card-head"><h2 id="rr-summary-title">등록 내용 미리보기</h2><span class="rr-stage" data-progress>필수 0/3</span></header>
-          <div class="rr-summary-body"><dl class="rr-facts" data-facts></dl>
-          <details class="rr-editor"><summary>내용 직접 수정</summary><div class="rr-edit-grid">${fields.map(editor).join("")}</div></details>
-          <div class="rr-photo"><label class="rr-photo-label" for="rr-photo">방 사진 한 장 <small>선택</small></label><input id="rr-photo" type="file" accept="image/jpeg,image/png,image/webp"><p>얼굴이나 주소가 보이지 않는 방 사진을 골라 주세요.</p><div data-photo-preview hidden><img alt="첨부할 방 사진"><button type="button" class="rr-text" data-remove-photo>사진 빼기</button></div></div>
-          <div class="rr-secondary"><button type="button" class="rr-text" data-save>기기에 임시저장</button><button type="button" class="rr-text" data-erase hidden>임시저장 삭제</button></div>
-          <button type="button" class="rr-primary" data-review>이 내용으로 다음 단계 <span aria-hidden="true">→</span></button></div>
-        </section></div>
-        <section class="rr-contact rr-card" aria-labelledby="rr-contact-title" hidden><header class="rr-card-head"><h2 id="rr-contact-title" tabindex="-1">연락받을 분</h2><button type="button" class="rr-text" data-back>방 정보 수정</button></header>
-          <fieldset disabled><legend class="sr-only">연락처와 신청 확인</legend>
-            <dl class="rr-facts" data-review-facts></dl><div class="rr-contact-grid"><label>이름<input name="name" autocomplete="name" maxlength="60" required></label><label>연락받을 전화번호<input name="contact" type="tel" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="010-0000-0000" required></label></div>
-            <div hidden><label>자동입력 방지<input name="website" autocomplete="off" tabindex="-1"></label></div>
-            <details class="rr-privacy"><summary>개인정보 수집·이용 안내</summary><p>한지붕은 방 등록 및 연락을 위해 이름, 전화번호, 동네, 방 개수, 입주 시기, 선택한 방 조건·사진과 동의 기록을 받습니다. 상담 종료일로부터 최대 1년간 보관한 뒤 삭제합니다. 필수 동의를 거부하면 온라인 신청이 어렵습니다. <a href="/reservation/privacy/">개인정보 처리방침</a></p></details>
-            <label class="rr-consent"><input name="consent" type="checkbox" required> [필수] 개인정보 수집·이용에 동의합니다.</label>
-            <button class="rr-primary" type="submit">방 등록 신청하기</button>
-          </fieldset></section>
+        <fieldset class="rr-panel rr-chat" data-panel="chat"><legend class="sr-only">방 이야기</legend>
+          <div class="rr-heading"><div class="rr-guide"><span class="rr-avatar">${icon("home")}</span><h2 tabindex="-1">한지붕 도우미</h2></div><button type="button" class="rr-text" data-edit>직접 입력</button></div>
+          <div class="rr-thread"><div class="rr-log" role="log" aria-label="방 등록 대화" aria-live="polite" aria-relevant="additions" tabindex="0"><p class="rr-bot">반가워요! ${roomQuestions.location}</p></div>
+            <div class="rr-choices" aria-label="빠른 답변"></div>
+            <button type="button" class="rr-primary" data-chat-next hidden>방 조건과 사진 확인하기 ${icon("arrow")}</button></div>
+          <div class="rr-composer"><label class="sr-only" for="room-chat-line">도우미에게 답하기</label><textarea id="room-chat-line" rows="2" maxlength="500" placeholder="예: 노원구 공릉동"></textarea><button type="button" class="rr-send" data-send aria-label="답변 보내기">${icon("arrow")}</button></div>
+        </fieldset>
+        <fieldset class="rr-panel" data-panel="details" hidden disabled><legend class="sr-only">방 조건과 사진</legend>
+          <div class="rr-heading"><h2 tabindex="-1">방 조건을 확인해 주세요</h2><button type="button" class="rr-text" data-chat-back>대화로 돌아가기</button></div>
+          <dl class="rr-facts" data-facts></dl>
+          <details class="rr-editor"><summary>방 조건 입력·수정</summary><div class="rr-edit-grid">${fields.map(editor).join("")}</div></details>
+          <div class="rr-photo"><label class="rr-photo-label" for="rr-photo">방 사진 한 장 <small>선택</small></label><p id="rr-photo-hint">방 안이 잘 보이는 사진을 골라주세요.</p><input id="rr-photo" type="file" accept="image/jpeg,image/png,image/webp" aria-describedby="rr-photo-hint"><div data-photo-preview hidden><img alt="첨부할 방 사진"><button type="button" class="rr-text" data-remove-photo>사진 빼기</button></div></div>
+          <button type="button" class="rr-primary" data-review>주소·연락처 입력하기 ${icon("arrow")}</button>
+        </fieldset>
+        <fieldset class="rr-panel rr-contact" data-panel="contact" hidden disabled><legend class="sr-only">주소와 연락처</legend>
+          <div class="rr-heading"><h2 tabindex="-1">방문 주소와 연락처</h2><button type="button" class="rr-text" data-back>조건 다시 보기</button></div>
+          <p class="rr-explain">매니저가 등록 내용을 확인하고 방문 일정을 상의할 때 사용해요.</p>
+          <div class="rr-contact-grid">
+            <label class="rr-address">방문할 상세주소<input name="address" autocomplete="street-address" maxlength="180" aria-describedby="rr-address-hint" required><small id="rr-address-hint">도로명과 건물번호 또는 지번을 적어주세요. 동·호수가 있으면 함께 적어주세요.</small></label>
+            <label>이름<input name="name" autocomplete="name" maxlength="60" required></label><label>연락받을 전화번호<input name="contact" type="tel" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="010-0000-0000" required></label>
+          </div>
+          <div hidden><label>자동입력 방지<input name="website" autocomplete="off" tabindex="-1"></label></div>
+          <details class="rr-privacy"><summary>${icon("shield")} 개인정보 수집·이용 안내</summary><p>한지붕은 방 등록 확인과 방문 일정 조율을 위해 이름, 전화번호, 방문할 상세주소, 동네, 방 개수, 입주 시기, 선택한 방 조건·사진과 동의 기록을 받습니다. 상담 종료일로부터 최대 1년간 보관한 뒤 삭제합니다. 필수 동의를 거부하면 온라인 신청이 어렵습니다. <a href="/reservation/privacy/">개인정보 처리방침</a></p></details>
+          <label class="rr-consent"><input name="consent" type="checkbox" required> [필수] 개인정보 수집·이용에 동의합니다.</label>
+          <button class="rr-primary" type="submit">방 등록 신청하기 ${icon("arrow")}</button>
+        </fieldset>
+        <div class="rr-secondary" data-draft-tools hidden><button type="button" class="rr-text" data-save>기기에 임시저장</button><button type="button" class="rr-text" data-erase hidden>임시저장 삭제</button></div>
         <p class="rr-status" role="status" data-status aria-live="polite" tabindex="-1"></p>
       </fieldset>
     </form>
-    <section class="rr-done rr-card" data-success hidden><h2 tabindex="-1">방 등록 신청을 받았습니다</h2><p>한지붕 매니저가 남겨 주신 번호로 연락드립니다.</p><p data-receipt></p><a href="/">한지붕 홈으로</a></section>
+    <section class="rr-done rr-card" data-success hidden><span class="rr-avatar">${icon("check")}</span><h2 tabindex="-1">방 등록 신청을 받았습니다</h2><p>한지붕 매니저가 남겨 주신 번호로 연락드릴게요.</p><p data-receipt></p><a href="/">한지붕 홈으로</a></section>
     <noscript><p>온라인 신청에는 자바스크립트가 필요합니다. <a href="${site.phoneHref}">전화로 방 등록 문의하기</a></p></noscript>
   </div>${reservationFooter()}<script type="module" src="${registrationScriptUrl}"></script></div>`;
 }

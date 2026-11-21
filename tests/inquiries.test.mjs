@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 import { inquiries } from '../src/config/inquiries.mjs';
 import { validateInquiryInput, send } from '../src/assets/inquiry.js';
+import { callbackPayload } from '../src/assets/callback.js';
 const code = await readFile(new URL('../integrations/inquiries/Code.gs',import.meta.url),'utf8');
 const valid = {action:'submit',kind:'consultation',requestId:'11111111-2222-4333-8444-555555555555',name:'접수 시험',contactMethod:'email',contact:'qa@hanjibung.invalid',organization:'',topic:'기타 상담',message:'연결 검증용 비개인 시험 내용입니다.',consent:true,consentVersion:'2026-09-24',website:''};
 test('client transport rejects errors, timeouts, malformed and mismatched receipts without real network',async(t)=>{
@@ -61,6 +62,31 @@ test('a room photo is saved with the confirmed lead and attribution, and only th
   assert.deepEqual(Object.keys(lookup).sort(),['kind','ok','receivedAt','requestId']);
 });
 test('backend and frontend share topics and consent version',()=>{const {context}=server();assert.deepEqual(JSON.parse(JSON.stringify(context.INQUIRY_TOPICS)),inquiries.topics);assert.equal(context.INQUIRY_VERSION,inquiries.consentVersion);});
+test('private registration address and phone reach the existing admin detail in one row', async()=>{
+  const s = server();
+  const address = '테스트길 17 시험동 301호', phone = '010-0000-0000';
+  const registration = callbackPayload({location:'시험동',rooms:'2개',availability:'일정 협의',address,contact:phone,name:'오프라인 확인',consent:true},valid.requestId,inquiries.registrationVersion,true);
+  const receipt = s.post(registration);
+  assert.equal(receipt.ok, true);
+  assert.deepEqual(s.post(registration), receipt);
+  assert.equal(s.rows.length, 2);
+  assert.equal(s.rows[1][4], phone);
+  assert.ok(s.rows[1][7].includes('방문할 상세주소: '+address));
+  assert.equal(s.post({...registration,message:registration.message.replace('301호','302호')}).code,'CONFLICT');
+  assert.deepEqual(Object.keys(s.post({action:'status',kind:'consultation',requestId:valid.requestId})).sort(),['kind','ok','receivedAt','requestId']);
+  const admin = vm.createContext({
+    DEPLOYMENT:{admin:'operator',callback:{book:'test',gid:1}},
+    Session:{getActiveUser:()=>({getEmail:()=> 'operator'})},
+    Sheets:{Spreadsheets:{
+      get:()=>({sheets:[{properties:{sheetId:1,gridProperties:{columnCount:13}}}]}),
+      Values:{batchGet:()=>({valueRanges:[{values:[[s.rows[1][0]]]},{values:[[s.rows[1][6],s.rows[1][7]]]}]})},
+    }},
+  });
+  vm.runInContext(await readFile(new URL('../integrations/admin/Code.gs',import.meta.url),'utf8'),admin);
+  assert.ok(admin.getInquiryDetail(2,valid.requestId).message.includes(address));
+  admin.Session.getActiveUser=()=>({getEmail:()=>''});
+  assert.throws(()=>admin.getInquiryDetail(2,valid.requestId),/관리자/);
+});
 test('successful receipt is returned only after storage and flush',()=>{const s=server(),r=s.post(valid);assert.equal(r.ok,true);assert.equal(s.rows.length,2);assert.equal(s.flush(),1);assert.deepEqual(Object.keys(r).sort(),['kind','ok','receivedAt','requestId']);});
 test('same request ID is idempotent, changed content cannot silently reuse it',()=>{const s=server();s.post(valid);assert.equal(s.post(valid).ok,true);assert.equal(s.rows.length,2);assert.equal(s.post({...valid,message:'다른 문의 내용입니다.'}).code,'CONFLICT');});
 test('storage failures do not return success',()=>{const s=server({failWrite:true});assert.equal(s.post(valid).ok,false);assert.equal(s.rows.length,1);});
