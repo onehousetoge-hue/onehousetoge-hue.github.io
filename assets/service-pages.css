@@ -1,36 +1,14 @@
-.service-about, .service-intake { color: #1c2e43; font-family: "Hanjibung Site Text",Pretendard, "Malgun Gothic", sans-serif; word-break: keep-all; overflow-wrap: anywhere; }
-.service-about :is(h1,h2,h3,p) { margin: 0; }
-.about-intro, .about-benefits, .about-local { width: min(1000px, calc(100% - 64px)); margin-inline: auto; }
-.about-intro { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 40px; padding-block: 64px; }
-.about-intro img { width: 100%; height: auto; }
-.about-copy h1 { font-size: clamp(32px, 4vw, 48px); line-height: 1.2; letter-spacing: -.055em; }
-.about-copy p { margin-top: 20px; max-width: 34ch; font-size: 19px; line-height: 1.7; color: #41546b; }
-.service-action { display: inline-flex; align-items: center; gap: 24px; min-height: 48px; margin-top: 28px; padding: 10px 20px; border-radius: 9px; background: #215fc0; color: #fff; text-decoration: none; font-size: 16px; font-weight: 650; }
-.about-benefits { padding-block: 32px 56px; border-top: 1px solid #dbe5ee; }
-.about-benefits h2, .about-local h2 { font-size: clamp(24px, 3vw, 32px); line-height: 1.4; letter-spacing: -.04em; }
-.about-benefit-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; margin-top: 24px; }
-.about-benefit-grid article { display: flex; align-items: flex-start; gap: 18px; padding: 24px; border-radius: 16px; background: #f3f7fc; }
-.about-benefit-grid h3 { font-size: 21px; letter-spacing: -.035em; }
-.about-benefit-grid p, .about-local p { margin-top: 8px; color: #475870; font-size: 17px; line-height: 1.65; }
-.about-local { margin-bottom: 64px; }
-.about-local a, .reservation-app .callback-success a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 8px; color: #1759aa; text-decoration: underline; text-underline-offset: 4px; font-size: 16px; font-weight: 650; }
-.service-about .reservation-footer { border-top: 1px solid #dbe3ed; padding: 24px 0; color: #53677c; font-size: 14px; width: min(1000px, calc(100% - 64px)); margin: auto; }
-.service-about .reservation-footer div { display: flex; flex-wrap: wrap; gap: 12px 24px; }
-.service-about .reservation-footer a { color: inherit; }
-@media(max-width:720px) {
-  .about-intro,.about-benefits,.about-local { width: calc(100% - 40px); }
-  .about-intro { grid-template-columns: minmax(0,1fr); gap: 26px; padding-block: 36px; }
-  .about-intro img { width: min(100%,350px); margin: auto; }
-  .about-benefit-grid { grid-template-columns: 1fr; }
-  .about-benefit-grid article { padding: 18px; }
-  .service-about .reservation-footer { width: calc(100% - 40px); }
-}
+.reservation-app .callback-success a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 8px; color: #1759aa; text-decoration: underline; text-underline-offset: 4px; font-size: 16px; font-weight: 650; }
 
 .service-intake {
   --intake-navy: #173853;
   --intake-line: #d7e1ea;
   display: flow-root;
   background: #f4f7fa;
+  color: #1c2e43;
+  font-family: "Hanjibung Site Text", Pretendard, "Malgun Gothic", sans-serif;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 .intake-layout {
   display: grid;

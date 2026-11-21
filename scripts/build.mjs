@@ -14,7 +14,7 @@ import { rentFaqSchema } from "../src/lib/rent-faq.mjs";
 import { absolute, layout, organizationSchema } from "../src/lib/template.mjs";
 import {
   assetText, roomCheckStylesheetUrl, rentFaqSearchUrl, legacyEntryScript, incomeCalculatorStylesheetUrl, incomeCalculatorScriptUrl,
-  diagnosisPrefillScriptUrl, reservationStylesheetUrl, reservationScriptUrl, serviceStylesheetUrl, registrationStylesheetUrl, registrationSource, headlineExperiment,
+  diagnosisPrefillScriptUrl, reservationStylesheetUrl, reservationScriptUrl, aboutStylesheetUrl, serviceStylesheetUrl, registrationStylesheetUrl, registrationSource, headlineExperiment,
 } from "../src/lib/static-assets.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -54,13 +54,14 @@ await emit("/", layout({
   ],
 }).replace("</head>", `${legacyEntryScript}<link rel="stylesheet" href="${roomCheckStylesheetUrl}"><link rel="stylesheet" href="${incomeCalculatorStylesheetUrl}"><script src="${diagnosisPrefillScriptUrl}" defer></script><script src="${incomeCalculatorScriptUrl}" defer></script><script src="${rentFaqSearchUrl}" defer></script></head>`));
 await emit("/reservation/", layout({ title: "예상 월세 무료 진단 신청", description: "우리 집 남는 방의 예상 월세와 준비사항을 무료로 안내받으세요. 집 위치와 방 정보를 남기면 한지붕 매니저가 확인 후 연락드립니다.", path: "/reservation/", body: reservationPage(), bodyClass: "reservation-page", showDiagnosisDock: false, showFooter: false, jsonLd: organizationSchema }).replace("</head>", `${legacyEntryScript}<link rel="stylesheet" href="${reservationStylesheetUrl}"><script src="${diagnosisPrefillScriptUrl}" defer></script><script src="${reservationScriptUrl}" defer></script></head>`));
-for (const [route, title, description, body] of [
-  ["/about/", "한지붕 소개", "집주인과 대학생이 한집에서 지내도록 돕는 한지붕의 활동과 노원구 공릉동에서 시작한 빈방 활용 서비스를 소개합니다.", headlineExperiment + aboutPage()],
-  ["/consultation/", "상담 신청하기", "빈방 활용이나 대학생과의 공동생활에 대해 궁금한 점을 한지붕 매니저에게 남겨 주세요. 이름과 연락처, 질문을 보내면 매니저가 답변합니다.", intakePage()],
-  ["/rooms/register/", "방 등록하기", "동네와 방 개수, 입주 가능 시기를 한 문장으로 알려주세요. 방 조건과 선택한 사진을 확인한 뒤 한지붕 매니저에게 등록을 신청할 수 있습니다.", roomRegistrationPage()],
+for (const [route, title, description, body, styles] of [
+  ["/about/", "한지붕 소개", "집주인과 대학생이 한집에서 지내도록 돕는 한지붕의 활동과 노원구 공릉동에서 시작한 빈방 활용 서비스를 소개합니다.", headlineExperiment + aboutPage(), [aboutStylesheetUrl]],
+  ["/consultation/", "상담 신청하기", "빈방 활용이나 대학생과의 공동생활에 대해 궁금한 점을 한지붕 매니저에게 남겨 주세요. 이름과 연락처, 질문을 보내면 매니저가 답변합니다.", intakePage(), [reservationStylesheetUrl, serviceStylesheetUrl]],
+  ["/rooms/register/", "방 등록하기", "동네와 방 개수, 입주 가능 시기를 한 문장으로 알려주세요. 방 조건과 선택한 사진을 확인한 뒤 한지붕 매니저에게 등록을 신청할 수 있습니다.", roomRegistrationPage(), [registrationStylesheetUrl]],
 ]) {
+  const stylesheetLinks = styles.map((href) => `<link rel="stylesheet" href="${href}">`).join("");
   await emit(route, layout({ title, description, path: route, body, bodyClass: "reservation-page", showDiagnosisDock: false, showFooter: false, jsonLd: organizationSchema })
-    .replace("</head>", route === "/rooms/register/" ? `<link rel="stylesheet" href="${registrationStylesheetUrl}"></head>` : `<link rel="stylesheet" href="${reservationStylesheetUrl}"><link rel="stylesheet" href="${serviceStylesheetUrl}"></head>`));
+    .replace("</head>", `${stylesheetLinks}</head>`));
 }
 
 await emit("/reservation/privacy/", layout({
@@ -93,7 +94,8 @@ await writeFile(path.join(out, ".nojekyll"), "", "utf8");
 await mkdir(path.join(out, "assets"), { recursive: true });
 const assets = [
   "site.css", "site.js", "analytics.js", "room-check.css", "room-check.js", "rent-faq-search.js",
-  "reservation.css", "service-pages.css", "reservation.js", "diagnosis-prefill.js", "income-calculator.css",
+  "reservation.css", "service-pages.css", "about.css", "reservation.js", "diagnosis-prefill.js", "income-calculator.css",
+  "about-home-640.webp", "about-home-800.webp", "about-home-1200.webp", "about-hagye.webp",
   "income-calculator.js", "callback.js", "inquiry.js", "room-description.js", "room-registration.css", "consultation-walk.webp", "figma", "fonts", "og-default.png",
   "hanjibung-logo.png", "hanjibung-logo-256.png", "hanjibung-icon-64.png", "hanjibung-icon-192.png",
 ];
