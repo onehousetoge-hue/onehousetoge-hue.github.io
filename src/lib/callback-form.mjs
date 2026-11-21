@@ -6,15 +6,14 @@ import { reservationFooter } from "./reservation-page.mjs";
 
 export function intakePage() {
   const title = "상담 신청하기";
-  const description = "빈방을 어떻게 활용할지, 대학생과 함께 지내면 어떨지 궁금한 점을 남겨 주세요. 한지붕 매니저가 연락드립니다.";
+  const description = "빈방을 어떻게 활용할지, 대학생과 함께 지내면 어떨지 궁금한 점을 남겨 주세요.";
   const purpose = "문의 확인과 상담 답변";
   const fields = "이름, 전화번호, 궁금한 점";
   return `<div class="reservation-app service-intake">${headlineExperiment}<div class="intake-layout">
-    <section class="intake-intro"><h1>${title}</h1><p>${description}</p>
-      <img src="/assets/figma/step-management.png" width="866" height="574" alt="" decoding="async">
-      <a class="intake-related" href="/reservation/">예상 월세 먼저 알아보기 <span aria-hidden="true">→</span></a>
-    </section>
-    <section id="quick-consultation" class="intake-card" aria-labelledby="intake-title"><h2 id="intake-title">상담받을 내용</h2>
+    <header class="intake-intro"><h1>${title}</h1><p>${description} <span>한지붕 매니저가 연락드립니다.</span></p></header>
+    <div class="intake-photo"><img src="/assets/consultation-walk.webp" width="640" height="853" alt="상담 현장에서 함께 걸으며 이야기하는 두 사람" decoding="async"></div>
+    <section id="quick-consultation" class="intake-card" aria-labelledby="intake-title">
+      <div class="intake-card-heading"><h2 id="intake-title">상담받을 내용</h2><span>모두 필수</span></div>
       <form class="callback-form" data-callback-form data-intake="consultation" data-endpoint="${escapeHtml(inquiries.endpoint)}" data-consent-version="${escapeHtml(inquiries.consentVersion)}">
         <fieldset disabled><legend class="sr-only">${title} 필수 정보</legend>
           <div class="callback-field"><label for="callback-name">이름</label><input id="callback-name" name="name" autocomplete="name" maxlength="60" required></div>
@@ -29,5 +28,6 @@ export function intakePage() {
       </form>
       <div class="callback-success" data-callback-success hidden><span aria-hidden="true">✓</span><h3 tabindex="-1">상담 신청을 받았습니다</h3><p>남겨 주신 번호로 매니저가 연락드립니다.</p><p class="callback-receipt" data-callback-receipt></p><a href="/">한지붕 홈으로</a></div>
       <noscript><p>온라인 신청에는 자바스크립트가 필요합니다. <a href="${site.phoneHref}">전화로 문의하기</a></p></noscript>
+      <a class="intake-related" href="/reservation/">예상 월세 먼저 알아보기 <span aria-hidden="true">→</span></a>
     </section></div>${reservationFooter()}<script type="module" src="${callbackScriptUrl}"></script></div>`;
 }

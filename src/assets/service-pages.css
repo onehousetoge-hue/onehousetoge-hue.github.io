@@ -1,10 +1,10 @@
 .service-about, .service-intake { color: #1c2e43; font-family: "Hanjibung Site Text",Pretendard, "Malgun Gothic", sans-serif; word-break: keep-all; overflow-wrap: anywhere; }
 .service-about :is(h1,h2,h3,p) { margin: 0; }
-.about-intro, .about-benefits, .about-local, .intake-layout { width: min(1000px, calc(100% - 64px)); margin-inline: auto; }
+.about-intro, .about-benefits, .about-local { width: min(1000px, calc(100% - 64px)); margin-inline: auto; }
 .about-intro { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 40px; padding-block: 64px; }
 .about-intro img { width: 100%; height: auto; }
-.about-copy h1, .reservation-app .intake-intro h1 { font-size: clamp(32px, 4vw, 48px); line-height: 1.2; letter-spacing: -.055em; }
-.about-copy p, .reservation-app .intake-intro p { margin-top: 20px; max-width: 34ch; font-size: 19px; line-height: 1.7; color: #41546b; }
+.about-copy h1 { font-size: clamp(32px, 4vw, 48px); line-height: 1.2; letter-spacing: -.055em; }
+.about-copy p { margin-top: 20px; max-width: 34ch; font-size: 19px; line-height: 1.7; color: #41546b; }
 .service-action { display: inline-flex; align-items: center; gap: 24px; min-height: 48px; margin-top: 28px; padding: 10px 20px; border-radius: 9px; background: #215fc0; color: #fff; text-decoration: none; font-size: 16px; font-weight: 650; }
 .about-benefits { padding-block: 32px 56px; border-top: 1px solid #dbe5ee; }
 .about-benefits h2, .about-local h2 { font-size: clamp(24px, 3vw, 32px); line-height: 1.4; letter-spacing: -.04em; }
@@ -13,29 +13,128 @@
 .about-benefit-grid h3 { font-size: 21px; letter-spacing: -.035em; }
 .about-benefit-grid p, .about-local p { margin-top: 8px; color: #475870; font-size: 17px; line-height: 1.65; }
 .about-local { margin-bottom: 64px; }
-.about-local a, .reservation-app .intake-related, .reservation-app .callback-success a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 8px; color: #1759aa; text-decoration: underline; text-underline-offset: 4px; font-size: 16px; font-weight: 650; }
-.intake-layout { display: grid; grid-template-columns: minmax(0,.76fr) minmax(0,1.24fr); align-items: start; gap: clamp(32px,7vw,92px); padding-block: clamp(36px,6vw,84px); }
-.intake-intro img { display: block; width: min(100%,260px); height: auto; margin-top: 20px; }
-.intake-card { padding: clamp(22px,3vw,36px); border: 1px solid #dbe3ed; border-radius: 19px; background: #fff; }
-.reservation-app .intake-card h2 { margin: 0 0 24px; font-size: 24px; line-height: 1.4; letter-spacing: -.04em; }
-.service-intake .callback-field label { font-size: 16px; }
-.service-intake .callback-field :is(input,textarea,select) { box-sizing: border-box; width: 100%; min-height: 50px; padding: 11px 13px; border: 1px solid #b9c7d9; border-radius: 8px; background: white; color: #233a53; font: inherit; }
-.service-intake .callback-field textarea { min-height: 115px; }
-.service-intake .callback-field p, .service-intake .callback-privacy p { color: #4d6077; font-size: 14px; }
-.service-intake .callback-privacy summary, .service-intake .callback-consent { min-height: 44px; font-size: 15px; }
-.service-intake .callback-consent { align-items: center; margin-bottom: 8px; }
+.about-local a, .reservation-app .callback-success a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 8px; color: #1759aa; text-decoration: underline; text-underline-offset: 4px; font-size: 16px; font-weight: 650; }
 .service-about .reservation-footer { border-top: 1px solid #dbe3ed; padding: 24px 0; color: #53677c; font-size: 14px; width: min(1000px, calc(100% - 64px)); margin: auto; }
 .service-about .reservation-footer div { display: flex; flex-wrap: wrap; gap: 12px 24px; }
 .service-about .reservation-footer a { color: inherit; }
 @media(max-width:720px) {
-  .about-intro,.about-benefits,.about-local,.intake-layout { width: calc(100% - 40px); }
-  .about-intro,.intake-layout { grid-template-columns: minmax(0,1fr); gap: 26px; padding-block: 36px; }
+  .about-intro,.about-benefits,.about-local { width: calc(100% - 40px); }
+  .about-intro { grid-template-columns: minmax(0,1fr); gap: 26px; padding-block: 36px; }
   .about-intro img { width: min(100%,350px); margin: auto; }
   .about-benefit-grid { grid-template-columns: 1fr; }
   .about-benefit-grid article { padding: 18px; }
-  .reservation-app .intake-intro p { max-width: none; margin-top: 12px; font-size: 17px; }
-  .intake-intro img { display: none; }
-  .intake-card { padding: 20px 16px; }
-  .service-intake .callback-form fieldset { grid-template-columns: 1fr; }
   .service-about .reservation-footer { width: calc(100% - 40px); }
+}
+
+.service-intake {
+  --intake-navy: #173853;
+  --intake-line: #d7e1ea;
+  display: flow-root;
+  background: #f4f7fa;
+}
+.intake-layout {
+  display: grid;
+  grid-template: "intro form" auto "photo form" minmax(235px, 1fr) / minmax(0, .82fr) minmax(0, 1.18fr);
+  width: min(1080px, calc(100% - 64px));
+  margin: clamp(30px, 4vw, 60px) auto;
+  overflow: clip;
+  isolation: isolate;
+  border: 1px solid var(--intake-line);
+  border-radius: 22px;
+  background: var(--intake-navy);
+  box-shadow: 0 12px 36px -26px #243e5d66;
+}
+.intake-intro { grid-area: intro; padding: clamp(28px, 3.6vw, 46px); color: #fff; }
+.service-intake .intake-intro h1 {
+  color: #fff;
+  font-size: clamp(36px, 3.7vw, 50px);
+  font-weight: 750;
+  line-height: 1.2;
+  letter-spacing: -.055em;
+}
+.service-intake .intake-intro p { margin-top: 18px; color: #e4eff7; font-size: 18px; line-height: 1.65; text-wrap: balance; }
+.intake-intro p span { display: block; }
+.intake-photo { position: relative; grid-area: photo; min-width: 0; }
+.intake-photo img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; }
+.intake-card {
+  grid-area: form;
+  min-width: 0;
+  padding: clamp(26px, 3.5vw, 44px) clamp(24px, 4vw, 48px) 20px;
+  scroll-margin-block-start: 20px;
+  background: #fff;
+}
+.intake-card-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 22px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--intake-line);
+}
+.service-intake .intake-card h2 { color: #172d44; font-size: clamp(22px, 2.2vw, 28px); line-height: 1.35; letter-spacing: -.045em; }
+.intake-card-heading > span { flex: none; color: #54687b; font-size: 14px; }
+.intake-card:has(.callback-form[hidden]) .intake-card-heading > span { display: none; }
+.service-intake .callback-field label { color: #263b50; font-size: 16px; }
+.service-intake .callback-field :is(input, textarea) {
+  min-height: 50px;
+  border: 1px solid #8294a7;
+  border-radius: 9px;
+  background: #fff;
+  color: #20364c;
+  font-size: 16px;
+}
+.service-intake .callback-field textarea { min-height: 110px; }
+.service-intake .callback-field :is(input, textarea)::placeholder { color: #586b7e; }
+.service-intake .callback-field :is(input, textarea):focus-visible { outline: 2px solid #215fc0; outline-offset: 1px; }
+.service-intake .callback-field [aria-invalid="true"] { border-color: #a12d30; }
+.service-intake .callback-field p, .service-intake .callback-privacy p { color: #4d6074; font-size: 14px; }
+.service-intake .callback-privacy { margin: 0; padding: 0; border-top: 1px solid var(--intake-line); border-radius: 0; background: #fff; }
+.service-intake .callback-privacy summary { justify-content: space-between; gap: 12px; min-height: 44px; color: #304961; font-size: 15px; text-decoration: none; }
+.service-intake .callback-privacy summary::after { content: ""; width: 8px; height: 8px; margin: 0 4px 4px; border: solid currentColor; border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); }
+.service-intake .callback-privacy[open] summary::after { transform: rotate(225deg); margin-block: 4px 0; }
+.service-intake .callback-consent { min-height: 44px; align-items: center; margin-bottom: 10px; color: #30465d; font-size: 15px; }
+.service-intake .callback-submit { min-height: 54px; border-radius: 11px; background: #205fc3; font-size: 17px; }
+.service-intake .intake-related {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 44px;
+  margin: 8px auto 0;
+  color: #315879;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.service-intake .reservation-footer { width: min(1080px, calc(100% - 64px)); border-color: var(--intake-line); color: #52677c; }
+@media (max-width: 800px) {
+  .intake-layout {
+    grid-template: "intro" auto "form" auto / minmax(0, 1fr);
+    width: min(640px, calc(100% - 32px));
+    margin-block: 22px 32px;
+    border-radius: 18px;
+  }
+  .intake-photo { grid-area: intro; justify-self: end; width: 48%; }
+  .intake-photo img { object-position: 58% 20%; }
+  .intake-intro {
+    z-index: 1;
+    padding: 26px 24px;
+    background: linear-gradient(90deg, #173853 52%, rgb(23 56 83 / 97%) 60%, rgb(23 56 83 / 85%) 70%, rgb(23 56 83 / 12%) 92%, transparent);
+  }
+  .service-intake .intake-intro :is(h1, p) { max-width: 70%; }
+  .service-intake .intake-intro h1 { font-size: clamp(29px, 5.5vw, 38px); }
+  .service-intake .intake-intro p { margin-top: 10px; font-size: 16px; line-height: 1.55; }
+  .intake-card { padding: 26px 24px 14px; }
+  .service-intake .reservation-footer { width: min(640px, calc(100% - 32px)); }
+}
+@media (max-width: 480px) {
+  .intake-layout { width: calc(100% - 24px); margin-block: 14px 26px; border-radius: 16px; }
+  .intake-intro { padding: 20px 16px; }
+  .intake-card { padding: 21px 16px 12px; }
+  .intake-card-heading { margin-bottom: 16px; padding-bottom: 12px; }
+  .service-intake .callback-form fieldset { display: grid; grid-template-columns: minmax(0, 1fr); }
 }

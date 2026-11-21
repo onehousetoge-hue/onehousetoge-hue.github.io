@@ -94,7 +94,7 @@ await mkdir(path.join(out, "assets"), { recursive: true });
 const assets = [
   "site.css", "site.js", "analytics.js", "room-check.css", "room-check.js", "rent-faq-search.js",
   "reservation.css", "service-pages.css", "reservation.js", "diagnosis-prefill.js", "income-calculator.css",
-  "income-calculator.js", "callback.js", "inquiry.js", "room-description.js", "room-registration.css", "figma", "fonts", "og-default.png",
+  "income-calculator.js", "callback.js", "inquiry.js", "room-description.js", "room-registration.css", "consultation-walk.webp", "figma", "fonts", "og-default.png",
   "hanjibung-logo.png", "hanjibung-logo-256.png", "hanjibung-icon-64.png", "hanjibung-icon-192.png",
 ];
 for (const asset of assets) {
