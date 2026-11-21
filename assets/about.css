@@ -17,7 +17,7 @@
 .about-cover {
   position: relative;
   isolation: isolate;
-  background: radial-gradient(ellipse at 89% 80%, #427ed3, transparent 57%), linear-gradient(110deg, #152f72 0%, #1c47a5 53%, #2862bf 100%);
+  background: radial-gradient(ellipse at 89% 80%, #336bb8, transparent 57%), linear-gradient(110deg, #152f72 0%, #1c47a5 53%, #2862bf 100%);
   color: #fff;
 }
 .about-cover::before {
@@ -64,7 +64,7 @@
 .about-down { display: inline-grid; place-items: center; width: 1.15em; height: 1.15em; transform: rotate(90deg); }
 .about-model { display: grid; align-content: center; justify-items: center; gap: 14px; min-width: 0; }
 .about-model img { display: block; width: 100%; height: auto; filter: drop-shadow(0 15px 14px #0a235c47); }
-.about-model figcaption { color: #e4f2ff; text-align: center; font-size: 14px; font-weight: 500; line-height: 1.55; }
+.about-model figcaption { color: #fff; text-align: center; font-size: 14px; font-weight: 500; line-height: 1.55; }
 
 .about-record {
   display: grid;
