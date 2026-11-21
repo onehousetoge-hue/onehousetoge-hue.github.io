@@ -118,7 +118,7 @@ test('the two intake forms have distinct fields and the existing diagnosis keeps
     assert.ok(registration.includes('name="'+field+'"'));
     assert.ok(!consultation.includes('name="'+field+'"'));
   }
-  assert.doesNotMatch(diagnosis,/data-callback-form|data-open-callback/);
+  assert.doesNotMatch(diagnosis,/data-callback-form|data-open-callback|consultation-trigger/);
   assert.match(diagnosis,/class="inquiry-form"/);
   assert.match(diagnosis,/href="\/consultation\/"/);
   assert.match(diagnosis,/상담 완료 후 90일 이내/);

@@ -16,23 +16,12 @@
 .reservation-app .reservation-header-label{font-size:15px;color:#525a65;border-left:1px solid #d9dde3;padding-left:20px;line-height:20px}
 .reservation-app .reservation-about{display:inline-flex;align-items:center;gap:9px;min-height:44px;margin-left:auto;font-size:14px;color:var(--form-muted)}
 .reservation-app .reservation-about:hover{color:var(--form-blue)}
-.reservation-app .reservation-layout{display:grid;grid-template-columns:245px minmax(0,1fr) 170px;align-items:start;gap:40px;width:min(1040px,calc(100% - 80px));margin-inline:auto;padding:72px 0 100px}
+.reservation-app .reservation-layout{display:grid;grid-template-columns:245px minmax(0,1fr);align-items:start;gap:40px;width:min(1040px,calc(100% - 80px));margin-inline:auto;padding:72px 0 100px}
 .reservation-app .reservation-intro{min-width:0;align-self:stretch;padding-top:4px}
 .reservation-app .reservation-illustration{display:block;width:100%;height:auto;margin-top:30px;object-fit:contain}
 .reservation-app .reservation-kicker{font-size:14px;font-weight:600;color:var(--form-blue);margin-bottom:12px}
 .reservation-app .reservation-intro h1{font-size:34px;line-height:1.4;font-weight:700;letter-spacing:-1.2px}
 .reservation-app .reservation-description{font-size:16px;line-height:1.8;color:var(--form-muted);margin-top:18px}
-.reservation-app .consultation-action{position:fixed;top:clamp(152px,28vh,260px);left:calc(50% + 350px);z-index:3;width:170px;margin:0}
-.reservation-app .consultation-trigger{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:12px;width:100%;min-height:164px;padding:18px 17px 16px;border:1px solid #cbdcf4;border-radius:18px;background:#f8fbff;color:#183764;text-align:left;box-shadow:0 12px 28px #315f9a1c;transition:background .2s,border-color .2s,transform .2s,box-shadow .2s}
-.reservation-app .consultation-trigger::after{content:"";position:absolute;top:43px;left:-7px;width:12px;height:12px;background:#f8fbff;border-left:1px solid #cbdcf4;border-bottom:1px solid #cbdcf4;transform:rotate(45deg);transition:background .2s,border-color .2s}
-.reservation-app .consultation-trigger:hover{background:#eff6ff;border-color:#9fc1ee;transform:translateY(-3px);box-shadow:0 16px 32px #315f9a29}
-.reservation-app .consultation-trigger:hover::after{background:#eff6ff;border-color:#9fc1ee}
-.reservation-app .consultation-trigger svg{flex:none;width:38px;height:38px;padding:8px;border-radius:12px;background:#e1edff;color:#2464d6;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-.reservation-app .consultation-trigger span:nth-of-type(1){display:grid;gap:6px;min-width:0}
-.reservation-app .consultation-trigger strong{font-size:18px;font-weight:750;line-height:1.35;word-break:keep-all}
-.reservation-app .consultation-trigger strong em{display:block;margin-bottom:3px;color:#2b68c7;font-size:12px;font-style:normal;font-weight:700;line-height:1.4}
-.reservation-app .consultation-trigger small{font-size:12px;font-weight:500;line-height:1.45;color:#657b9b;word-break:keep-all}
-.reservation-app .consultation-trigger-arrow{position:absolute;top:16px;right:14px;color:#2464d6;font-size:17px;line-height:1}
 .reservation-app .callback-dialog{position:fixed;inset:0;width:min(480px,calc(100% - 32px));max-width:none;max-height:min(92dvh,740px);padding:0;margin:auto;border:0;border-radius:20px;background:#fff;color:var(--form-ink);box-shadow:0 24px 80px #101c3047;overflow:auto}
 .reservation-app .callback-dialog::backdrop{background:#14243d91;backdrop-filter:blur(3px)}
 .reservation-app .callback-dialog-head{position:relative;padding:25px 28px 23px;border-bottom:1px solid #e7edf5;background:#f7faff}
@@ -131,10 +120,7 @@
 .reservation-app .reservation-header-inner{width:min(760px,calc(100% - 64px))}
 .reservation-app .reservation-layout{grid-template-columns:minmax(0,1fr);gap:40px;width:min(760px,calc(100% - 64px))}
 .reservation-app .reservation-intro{display:grid;grid-template-columns:minmax(0,1fr) 220px;align-items:center;gap:12px 32px;padding-top:0}
-.reservation-app .reservation-intro-copy{grid-column:1;grid-row:1}
-.reservation-app .consultation-action{grid-column:2;grid-row:1/span 2;position:static;width:220px;margin:0}
-.reservation-app .consultation-trigger{min-height:166px}
-.reservation-app .reservation-illustration{grid-column:1;grid-row:2;width:240px;margin-top:12px}
+.reservation-app .reservation-illustration{margin-top:0}
 .reservation-app .reservation-footer{width:min(760px,calc(100% - 64px))}
 }
 @media(max-width:650px){
@@ -146,9 +132,6 @@
 .reservation-app .reservation-layout,.reservation-app .reservation-footer{width:calc(100% - 40px)}
 .reservation-app .reservation-layout{padding:34px 0 52px;gap:30px}
 .reservation-app .reservation-intro{display:block;align-self:start}
-.reservation-app .consultation-action{width:min(250px,100%);margin:22px 0 12px auto}
-.reservation-app .consultation-trigger{min-height:0;padding:15px 18px 15px 16px;gap:8px}
-.reservation-app .consultation-trigger svg{width:34px;height:34px;padding:7px}
 .reservation-app .reservation-illustration{width:180px;margin:16px auto 0}
 .reservation-app .reservation-kicker{font-size:13px;margin-bottom:10px}
 .reservation-app .reservation-intro h1{font-size:28px;line-height:1.4;letter-spacing:-1px}
