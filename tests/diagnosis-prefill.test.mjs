@@ -31,23 +31,55 @@ function element(options = {}) {
   };
 }
 
-function calculator(env) {
+function calculator(env, landmarks = []) {
   const area = element({ name: "area" });
   const types = ["studio", "two-room", "house", "apartment"].map((value) => element({ name: "homeType", value, type: "radio" }));
-  const cta = element();
+  const cta = element({ clicks: 0, click() { this.clicks++; this.emit("click"); } });
   const nodes = new Map([["#income-area", area], [".income-reservation", cta]]);
   for (const selector of ["#income-panel", "[data-income-open]", "[data-income-close]", "[data-income-search]", "[data-income-message]"]) nodes.set(selector, element());
   const root = element({
-    contains: () => false,
+    contains: (node) => node === area || node === cta,
     querySelector: (selector) => selector === '[name="homeType"]:checked' ? types.find((input) => input.checked) : nodes.get(selector),
     querySelectorAll: () => types,
   });
-  env.context.document = { querySelector: (selector) => selector === "[data-income-calculator]" ? root : null, addEventListener() {} };
+  env.context.document = {
+    querySelector: (selector) => selector === "[data-income-calculator]" ? root : null,
+    querySelectorAll: (selector) => landmarks.filter(item => selector.includes(item.selector)),
+    addEventListener() {},
+  };
   vm.runInContext(source["income-calculator"], env.context);
-  return { area, types, cta };
+  return { root, area, types, cta, next: nodes.get("[data-income-search]"), message: nodes.get("[data-income-message]") };
 }
 
-async function reservation(env, initial = {}, checkReadiness = async () => ({ ok: true, json: async () => ({ ready: true }) })) {
+test("the floating calculator clears the footer and inline CTA without taking focus away", async () => {
+  const env = environment();
+  const inline = { selector: ".host-intro-estimate-button" }, footer = { selector: ".host-footer" };
+  const observed = [];
+  let intersect;
+  env.context.IntersectionObserver = env.window.IntersectionObserver = class {
+    constructor(callback) { intersect = callback; }
+    observe(target) { observed.push(target); }
+  };
+  env.context.queueMicrotask = queueMicrotask;
+  const { root, area } = calculator(env, [inline, footer]);
+  assert.deepEqual(observed, [inline, footer]);
+  intersect([{ target: footer, isIntersecting: true }]);
+  assert.equal(root.hidden, true);
+  intersect([{ target: footer, isIntersecting: false }, { target: inline, isIntersecting: true }]);
+  assert.equal(root.hidden, true);
+  intersect([{ target: inline, isIntersecting: false }]);
+  assert.equal(root.hidden, false);
+  env.context.document.activeElement = area;
+  intersect([{ target: footer, isIntersecting: true }]);
+  assert.equal(root.hidden, false);
+  env.context.document.activeElement = null;
+  root.emit("focusout", { relatedTarget: null });
+  await Promise.resolve();
+  assert.equal(root.hidden, true);
+});
+
+async function reservation(env, initial = {}, checkReadiness = async () => ({ ok: true, json: async () => ({ ready: true }) }),
+  respond = (payload) => ({ status: 200, text: JSON.stringify({ ok: true, requestId: payload.requestId }) })) {
   const controls = [];
   const textFields = Object.fromEntries(["area", "location", "phone"].map((name) => {
     const input = element({ name, value: initial[name] || "" });
@@ -88,8 +120,9 @@ async function reservation(env, initial = {}, checkReadiness = async () => ({ ok
       send(body) {
         const payload = JSON.parse(body);
         sent.push(payload);
-        this.status = 200;
-        this.responseText = JSON.stringify({ ok: true, requestId: payload.requestId });
+        const result = respond(payload, sent.length);
+        this.status = result.status;
+        this.responseText = result.text;
         this.onload();
       }
     },
@@ -216,4 +249,73 @@ test("prefill does not replace answers already restored by the browser", async (
   assert.equal(page.textFields.area.value, "서울과학기술대학교");
   assert.equal(page.controls.find((input) => input.name === "areaType" && input.checked)?.value, "대학교");
   assert.equal(page.controls.find((input) => input.name === "homeType" && input.checked)?.value, "단독 주택");
+});
+
+test("the calculator submits a named facility on Enter or its arrow, but waits for Korean composition and invalid text", () => {
+  const env = environment();
+  const page = calculator(env);
+  page.area.value = "4·19민주묘지역";
+  page.area.emit("keydown", { key: "Enter", isComposing: true });
+  assert.equal(page.cta.clicks, 0);
+  page.area.emit("keydown", { key: "Enter" });
+  assert.equal(page.cta.clicks, 1);
+  assert.equal(env.prefill.read().area, "4·19민주묘지역");
+  page.area.value = "1102";
+  page.next.emit("click");
+  assert.equal(page.cta.clicks, 1);
+  assert.equal(page.message.hidden, false);
+  page.area.value = "KTX광명역";
+  page.next.emit("click");
+  assert.equal(page.cta.clicks, 2);
+  assert.equal(env.prefill.read().area, "KTX광명역");
+});
+
+test("facility type follows the same name across pages without attaching to an unrelated restored station", async () => {
+  const env = environment();
+  env.prefill.save({ area: "서울과기대", areaType: "대학교" });
+  calculator(env).cta.click();
+  assert.equal(env.prefill.read().areaType, "대학교");
+  const page = await reservation(environment(env.store), { area: "서울대입구역" });
+  assert.equal(page.controls.some(input => input.name === "areaType" && input.checked), false);
+});
+
+test("diagnosis excludes numeric-only places and private details while preserving numbered neighborhoods and station exits", async () => {
+  const env = environment();
+  for (const name of ["   ", "742", "010-0000-0000", "공릉역 test@example.org", "공릉동 100-2", "시험길 7, 201호"]) {
+    env.prefill.save({area:name, homeType:"apartment"});
+    assert.equal(env.prefill.read().area, "");
+    assert.ok(!JSON.stringify([...env.store.values.values()]).includes(name));
+  }
+  const page = await reservation(env);
+  page.completeRequiredFields();
+  for (const [field, value] of [["area","124"],["location","   "],["location","시험로 73"],["phone","010a0000b0000"]]) {
+    const input = page.textFields[field], previous = input.value;
+    input.value = value; await page.form.emit("submit"); input.value = previous;
+    assert.equal(page.sent.length, 0);
+    assert.equal(page.nodes.get(".error").hidden, false);
+  }
+  page.textFields.area.value = "4·19민주묘지역 1번 출구";
+  page.textFields.location.value = "서울 상계3·4동";
+  page.textFields.phone.value = "+８２ (０)１０-００００-００００";
+  await page.form.emit("submit");
+  assert.equal(page.sent[0].inquiry.phone, "01000000000");
+  assert.equal(page.sent[0].inquiry.location, "서울 상계3·4동");
+  assert.equal(page.sent[0].inquiry.area, "4·19민주묘지역 1번 출구");
+});
+
+test("ambiguous success responses freeze the original request until its own receipt arrives", async () => {
+  for (const text of ["", JSON.stringify({ok:true, requestId:"a-different-receipt"})]) {
+    const page = await reservation(environment(), {}, undefined, (payload, attempt) => ({
+      status:200, text:attempt === 1 ? text : JSON.stringify({ok:true, requestId:payload.requestId}),
+    }));
+    page.completeRequiredFields();
+    await page.form.emit("submit");
+    assert.equal(page.form.hidden, false);
+    assert.equal(page.textFields.phone.disabled, true);
+    assert.equal(page.nodes.get(".submit").disabled, false);
+    assert.equal(page.nodes.get(".submit").textContent, "접수 결과 다시 확인");
+    await page.form.emit("submit");
+    assert.deepEqual(page.sent[1], page.sent[0]);
+    assert.equal(page.form.hidden, true);
+  }
 });

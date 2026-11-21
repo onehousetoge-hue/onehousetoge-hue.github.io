@@ -1,5 +1,5 @@
-import { completeRoomTurn, correctionPatch, detailedLocation, extractRoom, privateText, requiredFields, roomChatPrivate, roomFields, roomQuestions, visitAddressError } from "./room-description.js";
-import { callbackPayload, submitCallback } from "./callback.js";
+import { completeRoomTurn, correctionPatch, extractRoom, offlineRoomTurn, requiredFields, roomChatPrivate, roomFields, roomQuestions, visitAddressError } from "./room-description.js";
+import { callbackAttempt, callbackPayload, submitCallback } from "./callback.js";
 import { validateInquiryInput } from "./inquiry.js";
 
 const draftKey = "hanjibung.room-draft.v1";
@@ -13,7 +13,7 @@ const hints = {
 const options = { rooms: ["1개", "2개", "3개 이상"], availability: ["바로 가능", "다음 달", "일정 협의"] };
 function badRoomField(name, value) {
   if (requiredFields.includes(name) && !value) return "필수 항목을 입력해 주세요.";
-  if (privateText(value) || detailedLocation(value)) return "상세주소와 연락처는 마지막 단계의 전용 칸에 적어주세요.";
+  if (roomChatPrivate(value)) return "상세주소와 연락처는 마지막 단계의 전용 칸에 적어주세요.";
   if (name === "location" && (/\d+\s*(?:번지|호실|호|층)|(?:로|길|동)\s*\d+(?:[-\s]|$)|\d+\s*동\s*\d+/.test(value))) return "동네나 역 이름까지만 입력해 주세요.";
   if (name === "rooms" && !/^(?:[1-9]|10)\s*(?:개|칸)?(?:\s*이상)?$/.test(value)) return "내어줄 방 개수를 1~10개 사이로 적어 주세요.";
   return "";
@@ -63,9 +63,8 @@ function init(form) {
     historyButton.textContent = expanded ? "이전 대화 접기" : "이전 대화 보기";
     log.scrollTop = expanded ? 0 : log.scrollHeight;
   };
-  let photo = "", photoGeneration = 0, resizing = false, busy = false, complete = false, requestId, attribution;
+  let photo = "", photoGeneration = 0, resizing = false, busy = false, complete = false, attempt;
   function fields() { return Object.fromEntries(entries.map(([key]) => [key, input(key).value.trim()])); }
-  function invalidate() { requestId = undefined; attribution = undefined; }
   function firstMissing() { return requiredFields.find(key => badRoomField(key, input(key).value.trim())); }
   function notify(text) { status.textContent = text; }
   function bubble(text, human = false) {
@@ -191,10 +190,9 @@ function init(form) {
     }
     const missing = firstMissing(), focus = correction || missing || "";
     const previousAvailability = input("availability").value;
-    const local = () => extractRoom(text, focus, previousAvailability);
     let patch, aiReply = "", notice = "";
     if (quickChoice) {
-      patch = local();
+      patch = extractRoom(text, focus, previousAvailability);
     } else {
       const controller = new AbortController();
       markPending(controller); notify("AI가 방 설명을 읽고 있어요.");
@@ -216,7 +214,7 @@ function init(form) {
         patch = correction ? result.fields : completeRoomTurn(text, focus, previousAvailability, result.fields);
         aiReply = typeof result.reply === "string" ? result.reply : "";
       } catch (error) {
-        patch = local();
+        patch = offlineRoomTurn(text, focus, previousAvailability);
         notice = (error.message === "LIMIT" ? "AI 이용 한도에 도달했어요." : "AI에 연결할 수 없어요.") + " 기기에서 방 조건을 정리하거나 ‘직접 입력’으로 계속할 수 있어요.";
       } finally {
         clearTimeout(timeout);
@@ -244,7 +242,7 @@ function init(form) {
     const wasCorrection = Boolean(correction);
     correction = undefined;
     if (Object.keys(before).length) previousTurn = before;
-    composer.value = ""; invalidate(); notify(notice); refresh();
+    composer.value = ""; notify(notice); refresh();
     bubble(text, true);
     ask(wasCorrection ? "수정한 조건을 반영했어요. " : "");
   }
@@ -267,7 +265,6 @@ function init(form) {
   function removePhoto() {
     photoGeneration++; resizing = false; photo = ""; fileInput.value = ""; photoPreview.hidden = true;
     photoPreview.querySelector("img").removeAttribute("src"); reviewButton.disabled = false;
-    invalidate();
   }
   fileInput.addEventListener("change", async () => {
     const file = fileInput.files[0];
@@ -277,7 +274,7 @@ function init(form) {
     try {
       const jpeg = await smallPhoto(file);
       if (sequence !== photoGeneration) return;
-      photo = jpeg; photoPreview.querySelector("img").src = jpeg; photoPreview.hidden = false; invalidate(); notify("");
+      photo = jpeg; photoPreview.querySelector("img").src = jpeg; photoPreview.hidden = false; notify("");
     } catch (err) {
       if (sequence !== photoGeneration) return;
       fileInput.value = ""; notify(err.message + (photo ? " 이전 사진은 유지됩니다." : ""));
@@ -333,7 +330,7 @@ function init(form) {
       input(key).value = value; input(key).setCustomValidity("");
     }
     previousTurn = undefined; correction = undefined;
-    invalidate(); refresh(); notify(""); ask("방금 반영한 내용을 되돌렸어요. "); composer.focus();
+    refresh(); notify(""); ask("방금 반영한 내용을 되돌렸어요. "); composer.focus();
   };
   find("[data-edit]").onclick = () => openDetails(true);
   chatNext.onclick = () => openDetails();
@@ -344,7 +341,6 @@ function init(form) {
   });
   form.addEventListener("input", e => {
     if (e.target === composer || e.target === fileInput || busy) return;
-    invalidate();
     e.target.setCustomValidity("");
     if (Object.hasOwn(roomFields, e.target.name)) {
       previousTurn = undefined;
@@ -362,20 +358,18 @@ function init(form) {
     address.setCustomValidity(visitAddressError(address.value));
     if (!form.reportValidity()) return;
     const values = { ...fields(), address:address.value, name:input("name").value, contact:input("contact").value, website:input("website").value, consent:input("consent").checked };
-    requestId ||= crypto.randomUUID();
-    const payload = callbackPayload(values, requestId, form.dataset.consentVersion, true);
+    const payload = callbackPayload(values, undefined, form.dataset.consentVersion, true);
     if (photo) payload.roomPhoto = photo;
     const errors = validateInquiryInput(payload, "consultation");
     if (Object.keys(errors).length) {
       notify(Object.values(errors)[0]); input(Object.keys(errors)[0])?.focus(); return;
     }
-    attribution ||= window.hanjibungLeadVisit?.snapshot();
-    if (attribution) payload.attribution = attribution;
+    attempt = callbackAttempt(payload, attempt);
     busy = true; form.setAttribute("aria-busy","true"); form.querySelector("fieldset").disabled = true;
     notify("방 등록 신청을 저장하고 있어요.");
     try {
-      const receipt = await submitCallback(form.dataset.endpoint, payload);
-      complete = true;
+      const receipt = await submitCallback(form.dataset.endpoint, attempt);
+      complete = true; attempt = undefined;
       try { localStorage.removeItem(draftKey); } catch { /* Optional device storage. */ }
       form.reset(); removePhoto(); log.replaceChildren(); form.hidden = true;
       const success = document.querySelector("[data-success]");

@@ -98,13 +98,45 @@ function table_(response) {
     return Object.fromEntries(columns.map((key,index) => [key,items[index]]));
   });
 }
+function funnelCounts_(report) {
+  function counts(data) {
+    const stepIndex = (data?.dimensionHeaders || []).findIndex(h => h.name === 'funnelStepName');
+    const headers = data?.metricHeaders || [];
+    // GA4 can repeat metric headers while supplying only the first block of values.
+    let usersIndex = headers.findIndex(h => h.name === 'activeUsers');
+    if (usersIndex < 0) usersIndex = headers.findIndex(h => h.name === 'funnelStepActiveUsers');
+    if (stepIndex < 0 || usersIndex < 0) return null;
+    const stepRows = step => (data.rows || []).filter(row =>
+      (row.dimensionValues?.[stepIndex]?.value || '').replace(/^\d+\.\s*/, '') === step);
+    function count(rows, index) {
+      if (rows.length !== 1 || index < 0) return null;
+      const raw = rows[0].metricValues?.[index]?.value;
+      if (!/^\d+$/.test(String(raw))) return null;
+      const value = Number(raw);
+      return Number.isSafeInteger(value) ? value : null;
+    }
+    const first = stepRows('Headline'), last = stepRows('Receipt');
+    return {exposed:count(first,usersIndex), converted:count(last,usersIndex), receiptMissing:!last.length,
+      abandoned:count(first,headers.findIndex(h => h.name === 'funnelStepAbandonments'))};
+  }
+  const visual = counts(report?.funnelVisualization), table = counts(report?.funnelTable);
+  if (!visual && !table) return {unavailable:true};
+  const exposed = visual?.exposed ?? table?.exposed ?? null;
+  let converted = visual?.converted ?? table?.converted ?? null;
+  // In this closed two-step funnel everyone who did not abandon Headline reached Receipt.
+  if (converted === null && table?.receiptMissing && (!visual || visual.receiptMissing) &&
+      exposed !== null && table.exposed === exposed && table.abandoned !== null && table.abandoned <= exposed) {
+    converted = exposed - table.abandoned;
+  }
+  return {exposed,converted};
+}
 function getTraffic(days) {
   authorize_();
   if (![7,28,90].includes(days)) throw new Error('조회 기간을 확인해 주세요.');
   const property = 'properties/' + DEPLOYMENT.property;
   const day = shift => Utilities.formatDate(new Date(Date.now()+shift*86400000),'Asia/Seoul','yyyy-MM-dd');
   const dates = [{startDate:day(1-days),endDate:day(0)}];
-  const cache = CacheService.getUserCache(), key = 'traffic-v2-' + days + '-' + day(0);
+  const cache = CacheService.getUserCache(), key = 'traffic-v3-' + days + '-' + day(0);
   const saved = cache.get(key);
   if (saved) return JSON.parse(saved);
   const host = {filter:{fieldName:'hostName', inListFilter:{values:['hanjibung.kr','www.hanjibung.kr']}}};
@@ -133,14 +165,8 @@ function getTraffic(days) {
   const funnels = UrlFetchApp.fetchAll(requests).map((response,index) => {
     const group = groups[index].toUpperCase();
     if (response.getResponseCode() !== 200) return {group,unavailable:true};
-    const data = JSON.parse(response.getContentText()).funnelTable;
-    if (!data) return {group,unavailable:true};
-    const rows = table_(data);
-    function users(step) {
-      const row = rows.find(x => x.funnelStepName === step || x.funnelStepName.endsWith('. '+step));
-      return row ? row.activeUsers : 0;
-    }
-    return {group,exposed:users('Headline'),converted:users('Receipt')};
+    try { return {group,...funnelCounts_(JSON.parse(response.getContentText()))}; }
+    catch { return {group,unavailable:true}; }
   });
   const result = {start:dates[0].startDate,end:dates[0].endDate,
     asOf:Utilities.formatDate(new Date(),'Asia/Seoul','yyyy-MM-dd HH:mm'), pages:table_(reports[0]),

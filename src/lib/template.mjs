@@ -44,6 +44,11 @@ export function pageHead({ title, documentTitle, description, path, type = "webs
     <meta name="theme-color" content="#8f2929">
     <title>${escapeHtml(fullTitle)}</title>
     <link rel="canonical" href="${canonical}">
+    ${publicScripts && robots === "index,follow" ? `<script data-directory-entry>
+      if (location.pathname === ${JSON.stringify(path + "index.html")}) {
+        history.replaceState(history.state, "", ${JSON.stringify(path)} + location.search + location.hash);
+      }
+    </script>` : ""}
     <link rel="icon" href="/assets/hanjibung-icon-64.png" type="image/png" sizes="64x64">
     <link rel="apple-touch-icon" href="/assets/hanjibung-icon-192.png" sizes="192x192">
     <link rel="manifest" href="/site.webmanifest">

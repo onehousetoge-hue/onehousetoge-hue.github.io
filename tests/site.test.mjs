@@ -138,6 +138,25 @@ test("the build and sitemap expose only the active pages and the error document"
   assert.ok((await stat(path.join(root, "assets/inquiry.js"))).isFile(), "Quick callback still imports this module");
 });
 
+test("public index-file links use the directory before attribution and preserve the campaign and fragment", async () => {
+  const { runInNewContext } = await import("node:vm");
+  for (const route of routes) {
+    const html = await readFile(routeFile(route), "utf8");
+    const script = html.match(/<script data-directory-entry>([\s\S]*?)<\/script>/)[1];
+    assert.ok(html.indexOf(script) < html.indexOf("data-analytics-id"));
+    const state = { visit: 1 };
+    const writes = [];
+    const history = { state, replaceState: (...args) => writes.push(args) };
+    const location = new URL(route + "index.html?utm_source=naver#section", "https://hanjibung.kr");
+    runInNewContext(script, { location, history });
+    assert.deepEqual(writes, [[state, "", route + "?utm_source=naver#section"]]);
+    location.pathname = route;
+    runInNewContext(script, { location, history });
+    assert.equal(writes.length, 1);
+  }
+  assert.doesNotMatch(await readFile(path.join(root, "404.html"), "utf8"), /data-directory-entry/);
+});
+
 test("existing diagnosis bookmarks redirect to the new form without losing other query parameters", async () => {
   const { runInNewContext } = await import("node:vm");
   const html = await readFile(routeFile("/"), "utf8");

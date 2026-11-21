@@ -7,6 +7,11 @@
     <meta name="theme-color" content="#8f2929">
     <title>우리 집 남는 방 예상 월세 진단 | 한지붕</title>
     <link rel="canonical" href="https://hanjibung.kr/">
+    <script data-directory-entry>
+      if (location.pathname === "/index.html") {
+        history.replaceState(history.state, "", "/" + location.search + location.hash);
+      }
+    </script>
     <link rel="icon" href="/assets/hanjibung-icon-64.png" type="image/png" sizes="64x64">
     <link rel="apple-touch-icon" href="/assets/hanjibung-icon-192.png" sizes="192x192">
     <link rel="manifest" href="/site.webmanifest">
@@ -57,7 +62,7 @@
     } catch { /* A direct visit or blocked storage still redirects. */ }
   }
   window.location.replace(target.href);
-})();</script><link rel="stylesheet" href="/assets/room-check.css?v=4918feeb4923"><link rel="stylesheet" href="/assets/income-calculator.css?v=8f7e2635a9df"><script src="/assets/diagnosis-prefill.js?v=f54c77dc0b30" defer></script><script src="/assets/income-calculator.js?v=465ce02a6577" defer></script><script src="/assets/rent-faq-search.js?v=728b1f85e4b5" defer></script></head><body id="page-top" class="room-check-page"><a class="skip-link" href="#main-content">본문으로 바로가기</a><a class="diagnosis-top-banner" href="/rooms/register/"><img src="/assets/figma/benefit-income.svg" width="30" height="30" alt=""><span>우리 집 빈방 등록하기</span><span class="banner-arrow" aria-hidden="true">→</span></a><header class="public-header"><div class="public-header-inner">
+})();</script><link rel="stylesheet" href="/assets/room-check.css?v=4918feeb4923"><link rel="stylesheet" href="/assets/income-calculator.css?v=8f7e2635a9df"><script src="/assets/diagnosis-prefill.js?v=c4f48c72bdce" defer></script><script src="/assets/income-calculator.js?v=e0b6bc3804ff" defer></script><script src="/assets/rent-faq-search.js?v=728b1f85e4b5" defer></script></head><body id="page-top" class="room-check-page"><a class="skip-link" href="#main-content">본문으로 바로가기</a><a class="diagnosis-top-banner" href="/rooms/register/"><img src="/assets/figma/benefit-income.svg" width="30" height="30" alt=""><span>우리 집 빈방 등록하기</span><span class="banner-arrow" aria-hidden="true">→</span></a><header class="public-header"><div class="public-header-inner">
     <a class="public-brand" href="/" aria-label="한지붕 홈">한지붕</a>
     <nav class="public-menu-wide" aria-label="주 메뉴"><a href="/about/">한지붕 소개</a><a href="/how-it-works/">한지붕 활용 방법</a><a href="/consultation/">상담 신청하기</a><a href="/reservation/">우리 집 빈 방 월세 진단</a><a href="/rooms/register/">방 등록하기</a></nav>
     <details class="public-menu-small"><summary><svg class="icon " aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg> 메뉴</summary><nav aria-label="주 메뉴"><a href="/about/">한지붕 소개</a><a href="/how-it-works/">한지붕 활용 방법</a><a href="/consultation/">상담 신청하기</a><a href="/reservation/">우리 집 빈 방 월세 진단</a><a href="/rooms/register/">방 등록하기</a></nav></details>
@@ -578,8 +583,8 @@
     <button class="income-launcher" type="button" data-income-open aria-expanded="true" aria-controls="income-panel">빈방 예상 월세 알아보기 <span aria-hidden="true">→</span></button>
     <section class="income-panel" id="income-panel" aria-labelledby="income-title">
       <div class="income-heading"><div class="income-title-row"><h2 id="income-title">예상 수입 계산기</h2><button class="income-close" type="button" data-income-close aria-label="예상 수입 계산기 닫기"><img src="/assets/figma/calculator/close.svg" width="18" height="18" alt="" aria-hidden="true"></button></div></div>
-      <div class="income-form" data-income-form role="search" aria-label="예상 월세 지역 입력">
-        <div class="income-search-field"><label for="income-area">근처 대학교나 지하철역을 검색해 주세요</label><div class="income-search"><input id="income-area" name="area" type="search" maxlength="100" autocomplete="off" placeholder="대학교나 지하철역을 검색하세요" aria-describedby="income-message"><button type="button" data-income-search aria-label="주변 지역 검색"><img src="/assets/figma/calculator/search.svg" width="22" height="22" alt="" aria-hidden="true"></button></div></div>
+      <div class="income-form" data-income-form>
+        <div class="income-search-field"><label for="income-area">근처 대학교나 지하철역 이름</label><div class="income-search"><input id="income-area" name="area" type="text" enterkeyhint="go" maxlength="100" autocomplete="off" placeholder="예: 공릉역" aria-describedby="income-message"><button type="button" data-income-search aria-label="입력한 시설로 월세 진단 신청서 열기"><span aria-hidden="true">→</span></button></div></div>
         <fieldset class="income-home-types"><legend>방 유형을 선택해 주세요.</legend><label class="income-home-option"><input type="radio" name="homeType" value="studio"><span class="income-home-label"><img src="/assets/figma/calculator/studio.svg" width="16" height="16" alt="" aria-hidden="true"><span>원룸</span></span><span class="income-radio" aria-hidden="true"><img src="/assets/figma/calculator/radio.svg" width="18" height="18" alt="" aria-hidden="true"></span></label><label class="income-home-option"><input type="radio" name="homeType" value="two-room"><span class="income-home-label"><img src="/assets/figma/calculator/two-room.svg" width="16" height="16" alt="" aria-hidden="true"><span>투룸 +</span></span><span class="income-radio" aria-hidden="true"><img src="/assets/figma/calculator/radio.svg" width="18" height="18" alt="" aria-hidden="true"></span></label><label class="income-home-option"><input type="radio" name="homeType" value="house"><span class="income-home-label"><img src="/assets/figma/calculator/house.svg" width="16" height="16" alt="" aria-hidden="true"><span>단독 주택</span></span><span class="income-radio" aria-hidden="true"><img src="/assets/figma/calculator/radio.svg" width="18" height="18" alt="" aria-hidden="true"></span></label><label class="income-home-option"><input type="radio" name="homeType" value="apartment"><span class="income-home-label"><img src="/assets/figma/calculator/apartment.svg" width="16" height="16" alt="" aria-hidden="true"><span>아파트</span></span><span class="income-radio" aria-hidden="true"><img src="/assets/figma/calculator/radio.svg" width="18" height="18" alt="" aria-hidden="true"></span></label></fieldset>
       </div>
       <p class="income-message" id="income-message" data-income-message role="status" aria-live="polite" hidden></p>

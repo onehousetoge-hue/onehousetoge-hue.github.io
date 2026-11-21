@@ -1,5 +1,13 @@
 import { validateInquiryInput, send, recordHostConsultationConversion } from "./inquiry.js";
 
+function contactNumber(value) {
+  const raw = String(value || "").trim();
+  const normalized = raw.normalize("NFKC").replace(/^\+82[\s.()-]*(?:0[\s.()-]*)?/, "0");
+  const digits = normalized.replace(/[\s.()-]/g, "");
+  // Keep familiar domestic formatting when already accepted by the intake sheet.
+  return /^0\d{8,10}$/.test(digits) && !/^0\d{8,10}$/.test(raw.replace(/[ -]/g, "")) ? digits : raw;
+}
+
 export function callbackPayload(values, requestId, consentVersion, registration = false) {
   let message = String(values.message || "").trim();
   if (registration) {
@@ -17,12 +25,23 @@ export function callbackPayload(values, requestId, consentVersion, registration 
   return {
     action: "submit", kind: "consultation", requestId,
     name: String(values.name || "").trim(),
-    contactMethod: "phone", contact: String(values.contact || "").trim(),
+    contactMethod: "phone", contact: contactNumber(values.contact),
     topic: registration ? "방 등록" : "빈방·유휴공간 활용",
     message,
     consent: values.consent === true, consentVersion,
     website: String(values.website || ""),
   };
+}
+
+// Keep the unconfirmed payload only in memory. Compare the actual submission so
+// visiting an earlier step or editing and undoing a field cannot duplicate a lead.
+export function callbackAttempt(payload, prior) {
+  if (prior && prior.roomPhoto === payload.roomPhoto &&
+      Object.entries(payload).every(([key, value]) => key === "requestId" || value === prior[key])) return prior;
+  const attempt = { ...payload, requestId: crypto.randomUUID() };
+  const attribution = globalThis.window?.hanjibungLeadVisit?.snapshot();
+  if (attribution) attempt.attribution = attribution;
+  return attempt;
 }
 
 export async function submitCallback(endpoint, payload) {
@@ -46,14 +65,12 @@ if (form) {
   const status = form.querySelector("[data-callback-status]");
   const success = document.querySelector("[data-callback-success]");
   if (form.dataset.endpoint) fieldset.disabled = false;
-  let requestId = crypto.randomUUID(), busy = false, submitted = false;
-  let attribution;
-  form.addEventListener("input", () => { if (!busy) { requestId = crypto.randomUUID(); attribution = undefined; } });
+  let attempt, busy = false, submitted = false;
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (busy || submitted || !form.dataset.endpoint) return;
     const values = { ...Object.fromEntries(new FormData(form)), consent: form.elements.consent.checked };
-    const payload = callbackPayload(values, requestId, form.dataset.consentVersion);
+    const payload = callbackPayload(values, undefined, form.dataset.consentVersion);
     const errors = validateInquiryInput(payload, "consultation");
     form.querySelectorAll("[aria-invalid]").forEach((element) => element.removeAttribute("aria-invalid"));
     if (Object.keys(errors).length) {
@@ -64,14 +81,13 @@ if (form) {
       invalid?.focus();
       return;
     }
-    attribution ||= window.hanjibungLeadVisit?.snapshot();
-    if (attribution) payload.attribution = attribution;
+    attempt = callbackAttempt(payload, attempt);
     busy = true; fieldset.disabled = true; form.setAttribute("aria-busy", "true");
     button.textContent = "접수 확인 중…";
     status.textContent = "문의 내용을 저장하고 있습니다. 잠시만 기다려 주세요.";
     try {
-      const receipt = await submitCallback(form.dataset.endpoint, payload);
-      submitted = true; form.reset();
+      const receipt = await submitCallback(form.dataset.endpoint, attempt);
+      submitted = true; attempt = undefined; form.reset();
       button.textContent = "접수 완료";
       status.textContent = `신청이 접수되었습니다. 남겨주신 번호로 안내드립니다. 접수번호: ${receipt.requestId}`;
       if (success) {

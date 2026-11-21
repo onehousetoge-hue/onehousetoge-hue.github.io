@@ -7,6 +7,48 @@ const source = (file) => readFileSync(new URL(file, import.meta.url), "utf8");
 const site = source("../src/assets/site.js");
 const sheets = source("../integrations/attribution/LeadAttribution.gs");
 const admin = source("../integrations/admin/Code.gs");
+test("GA4 funnel visualization resolves named steps, accepts reported zero, and preserves missing counts", () => {
+  const scope = vm.createContext({});
+  vm.runInContext(admin, scope);
+  const step = (label, value) => ({dimensionValues:[{value:label}],metricValues:[{value}]});
+  function read(rows, metricHeaders = [{name:"activeUsers",type:"TYPE_INTEGER"}]) {
+    return JSON.parse(JSON.stringify(scope.funnelCounts_({funnelVisualization:{
+      dimensionHeaders:[{name:"funnelStepName"}], metricHeaders, rows,
+    }})));
+  }
+  assert.deepEqual(read([step("2. Receipt","0"),step("1. Headline","31")]), {exposed:31,converted:0});
+  assert.deepEqual(read([step("1. Headline","31")], [{name:"funnelStepActiveUsers",type:"TYPE_INTEGER"}]), {exposed:31,converted:null});
+  assert.deepEqual(read([]), {exposed:null,converted:null});
+  assert.deepEqual(read([step("1. Headline",""),step("2. Receipt","NaN")]), {exposed:null,converted:null});
+  assert.deepEqual(read([step("1. Headline","5"),step("1. Headline","7")]), {exposed:null,converted:null});
+  assert.deepEqual(read([], []), {unavailable:true});
+  assert.deepEqual(read([step("1. Headline","8")],[{name:"sessions",type:"TYPE_INTEGER"}]), {unavailable:true});
+});
+
+test("GA4's duplicate headers and absent Receipt row preserve the observed closed-funnel counts", () => {
+  const scope = vm.createContext({});
+  vm.runInContext(admin, scope);
+  function subreport(headers, rows) {
+    return {
+      dimensionHeaders:[{name:"funnelStepName"}],
+      metricHeaders:[...headers, ...headers].map(name => ({name,type:"TYPE_INTEGER"})),
+      rows: rows.map(([label, ...values]) => ({
+        dimensionValues:[{value:label}], metricValues:values.map(value => ({value:String(value)})),
+      })),
+    };
+  }
+  const tableHeaders = ["activeUsers","funnelStepCompletionRate","funnelStepAbandonments","funnelStepAbandonmentRate"];
+  function read(visualRows, tableRows) {
+    const report = {funnelVisualization:subreport(["activeUsers"],visualRows),funnelTable:subreport(tableHeaders,tableRows)};
+    return JSON.parse(JSON.stringify(scope.funnelCounts_(report)));
+  }
+  assert.deepEqual(read([["1. Headline",1]],[["1. Headline",1,0,1,1]]), {exposed:1,converted:0});
+  assert.deepEqual(read([["1. Headline",5]],[["1. Headline",5,.4,3,.6]]), {exposed:5,converted:2});
+  assert.deepEqual(read([],[]), {exposed:null,converted:null});
+  assert.deepEqual(read([["1. Headline",5]],[["1. Headline",5,0]]), {exposed:5,converted:null});
+  assert.deepEqual(read([["1. Headline",5]],[["1. Headline",9,0,3,0]]), {exposed:5,converted:null});
+  assert.deepEqual(read([["1. Headline",5]],[["1. Headline",5,0,6,0]]), {exposed:5,converted:null});
+});
 function navigate(path, storage, referrer = "", type = "navigate") {
   const location = new URL(path, "https://hanjibung.kr");
   const window = { sessionStorage: { getItem:key=>storage.get(key), setItem:(key,val)=>storage.set(key,val), removeItem:key=>storage.delete(key) },

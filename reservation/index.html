@@ -7,6 +7,11 @@
     <meta name="theme-color" content="#8f2929">
     <title>예상 월세 무료 진단 신청 | 한지붕</title>
     <link rel="canonical" href="https://hanjibung.kr/reservation/">
+    <script data-directory-entry>
+      if (location.pathname === "/reservation/index.html") {
+        history.replaceState(history.state, "", "/reservation/" + location.search + location.hash);
+      }
+    </script>
     <link rel="icon" href="/assets/hanjibung-icon-64.png" type="image/png" sizes="64x64">
     <link rel="apple-touch-icon" href="/assets/hanjibung-icon-192.png" sizes="192x192">
     <link rel="manifest" href="/site.webmanifest">
@@ -55,7 +60,7 @@
     } catch { /* A direct visit or blocked storage still redirects. */ }
   }
   window.location.replace(target.href);
-})();</script><link rel="stylesheet" href="/assets/reservation.css?v=126699ed13e3"><script src="/assets/diagnosis-prefill.js?v=f54c77dc0b30" defer></script><script src="/assets/reservation.js?v=b26bdfe7dd73" defer></script></head><body id="page-top" class="reservation-page"><a class="skip-link" href="#main-content">본문으로 바로가기</a><header class="public-header"><div class="public-header-inner">
+})();</script><link rel="stylesheet" href="/assets/reservation.css?v=126699ed13e3"><script src="/assets/diagnosis-prefill.js?v=c4f48c72bdce" defer></script><script src="/assets/reservation.js?v=e25f42b42d00" defer></script></head><body id="page-top" class="reservation-page"><a class="skip-link" href="#main-content">본문으로 바로가기</a><header class="public-header"><div class="public-header-inner">
     <a class="public-brand" href="/" aria-label="한지붕 홈">한지붕</a>
     <nav class="public-menu-wide" aria-label="주 메뉴"><a href="/about/">한지붕 소개</a><a href="/how-it-works/">한지붕 활용 방법</a><a href="/consultation/">상담 신청하기</a><a href="/reservation/" aria-current="page">우리 집 빈 방 월세 진단</a><a href="/rooms/register/">방 등록하기</a></nav>
     <details class="public-menu-small"><summary><svg class="icon " aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg> 메뉴</summary><nav aria-label="주 메뉴"><a href="/about/">한지붕 소개</a><a href="/how-it-works/">한지붕 활용 방법</a><a href="/consultation/">상담 신청하기</a><a href="/reservation/" aria-current="page">우리 집 빈 방 월세 진단</a><a href="/rooms/register/">방 등록하기</a></nav></details>
@@ -160,7 +165,7 @@
             <fieldset class="form-row"><legend>방 안 에어컨 <span class="required">*</span></legend><div class="field-control"><div class="choices"><label class="choice"><input type="radio" name="aircon" value="있음" required><span>있음</span></label><label class="choice"><input type="radio" name="aircon" value="없음" required><span>없음</span></label></div></div></fieldset>
             <fieldset class="form-row"><legend>주택 형태 <span class="required">*</span></legend><div class="field-control"><div class="choices"><label class="choice"><input type="radio" name="tenure" value="자가" required><span>자가</span></label><label class="choice"><input type="radio" name="tenure" value="전세·월세" required><span>전세·월세</span></label></div></div></fieldset>
           </div></section>
-          <section class="form-section" aria-labelledby="room-contact-title"><div class="form-section-heading"><span aria-hidden="true">02</span><h3 id="room-contact-title">월세 진단 결과 받을 연락처</h3></div><div class="field form-row"><label for="phone">휴대폰 번호 <span class="required">*</span></label><div class="field-control"><input id="phone" name="phone" autocomplete="tel" type="tel" inputmode="tel" placeholder="010-0000-0000" maxlength="15" required><span class="help">진단 결과를 안내받으실 번호를 입력해 주세요.</span></div></div><div class="consent-area"><div class="consent"><label><input type="checkbox" name="consent" required><span>개인정보 수집·이용 동의 <strong>(필수)</strong></span></label><button type="button" class="privacy-toggle" aria-expanded="false" aria-controls="diagnosis-privacy">내용 보기</button></div><div class="privacy" id="diagnosis-privacy" hidden><strong>개인정보 수집·이용 안내</strong><p>수집 주체: 한지붕<br>목적: 남는 방 진단 및 상담 연락<br>항목: 집 위치(시·구·동), 인근 대학교·역, 방 정보, 연락처<br>보유 기간: 상담 완료 후 90일 이내 파기<br>동의를 거부할 수 있으며, 거부 시 진단 신청이 어렵습니다.</p><p><a href="/reservation/privacy/">개인정보 처리방침</a></p></div></div></section>
+          <section class="form-section" aria-labelledby="room-contact-title"><div class="form-section-heading"><span aria-hidden="true">02</span><h3 id="room-contact-title">월세 진단 결과 받을 연락처</h3></div><div class="field form-row"><label for="phone">휴대폰 번호 <span class="required">*</span></label><div class="field-control"><input id="phone" name="phone" autocomplete="tel" type="tel" inputmode="tel" placeholder="010-0000-0000" maxlength="24" required><span class="help">진단 결과를 안내받으실 번호를 입력해 주세요.</span></div></div><div class="consent-area"><div class="consent"><label><input type="checkbox" name="consent" required><span>개인정보 수집·이용 동의 <strong>(필수)</strong></span></label><button type="button" class="privacy-toggle" aria-expanded="false" aria-controls="diagnosis-privacy">내용 보기</button></div><div class="privacy" id="diagnosis-privacy" hidden><strong>개인정보 수집·이용 안내</strong><p>수집 주체: 한지붕<br>목적: 남는 방 진단 및 상담 연락<br>항목: 집 위치(시·구·동), 인근 대학교·역, 방 정보, 연락처<br>보유 기간: 상담 완료 후 90일 이내 파기<br>동의를 거부할 수 있으며, 거부 시 진단 신청이 어렵습니다.</p><p><a href="/reservation/privacy/">개인정보 처리방침</a></p></div></div></section>
         </fieldset><div class="reservation-actions"><p class="error" role="alert" hidden></p><button class="primary submit" type="submit" disabled>신청 접수 준비 중</button><p class="submit-note" role="status" aria-live="polite">매니저가 확인 후 안내하는 진단 서비스입니다.</p></div></form>
         <div class="success" hidden><span class="success-mark" aria-hidden="true">✓</span><h3 tabindex="-1">신청해 주셔서 감사합니다</h3><p>보내주신 방 정보를 확인한 후<br>남겨주신 연락처로 안내해 드릴게요.</p><a class="primary" href="/">한지붕 홈으로</a></div>
       </section>

@@ -107,11 +107,11 @@ export function correctionPatch(text, field, proposed = {}, previousAvailability
   if (!requiredFields.includes(field) && /^(?:비우기|지우기|삭제|(?:지워|빼|삭제해)\s*(?:줘|주세요|요)?)[.!]?$/.test(clean)) return { [field]: "" };
   if (/[?？]|(?:까요|나요|을까|일까)[.!]?$/.test(clean)) return {};
   const replacement = clean.split(/말고|아니라|아니고/).at(-1).trim();
-  if (!replacement || (field !== "availability" && /아니에요|아닙니다|않아|불가능|어려워/.test(replacement))) return {};
+  if (!replacement || (field !== "availability" && /아니에요|아닙니다|않아|불가능|어려워|수\s*없|못\s*(?:내|빌)/.test(replacement))) return {};
   const local = extractRoom(replacement, field, previousAvailability);
   if (Object.hasOwn(moneyLabels, field)) {
     const label = moneyLabels[field];
-    if (Object.entries(moneyLabels).some(([key, pattern]) => key !== field && new RegExp(pattern).test(clean)) && !new RegExp(label).test(clean)) return {};
+    if (Object.entries(moneyLabels).some(([key, pattern]) => key !== field && new RegExp(pattern).test(clean)) && !new RegExp(label).test(replacement)) return {};
     const standalone = replacement.match(new RegExp("^(" + amount + ")(?:으로|로|이요|요|이에요|예요|입니다)?[.!]?$"));
     if (standalone) return { [field]: money(roomFields[field] + " " + standalone[1], label) };
     if (!/(?:원|천|만|억|무료|없|포함|협의|미정|안\s*받)/.test(replacement)) return {};
@@ -187,4 +187,17 @@ export function completeRoomTurn(text, focused, previousAvailability, confirmed)
     supplement[key] = local[key];
   }
   return { ...supplement, ...confirmed };
+}
+
+export function offlineRoomTurn(text, focused, previousAvailability) {
+  if (/[?？]|(?:까요|나요|일까|혹시|만약|라면|다면|거나|또는|생각\s*중)/.test(text)) return {};
+  const local = extractRoom(text, focused, previousAvailability);
+  if (!/(?:말고|아니|않|못|없|안\s*(?:받|되|돼|된|될|나|맞|내|빌)|어렵|어려|힘들|불가)/.test(text)) return local;
+  const accepted = {};
+  if (Object.hasOwn(local, "availability")) accepted.availability = local.availability;
+  for (const [key, value] of Object.entries(local)) {
+    if (/말고|아니라|아니고/.test(text)) Object.assign(accepted, correctionPatch(text, key, {}, previousAvailability));
+    else if (value === "없음" && !/아니|않|못/.test(text)) accepted[key] = value;
+  }
+  return accepted;
 }

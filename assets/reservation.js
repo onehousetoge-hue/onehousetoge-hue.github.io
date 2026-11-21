@@ -17,6 +17,7 @@
     const area = form.querySelector("#area");
     if (!area.value) area.value = draft.area;
     for (const name of ["areaType", "homeType"]) {
+      if (name === "areaType" && area.value.trim() !== draft.area) continue;
       if (form.querySelector(`input[name="${name}"]:checked`)) continue;
       form.querySelectorAll(`input[name="${name}"]`).forEach((input) => { input.checked = input.value === draft[name]; });
     }
@@ -30,6 +31,7 @@
   let pendingBody = "";
   let started = false;
   let submissionStart = 0;
+  const unknownReceipt = "접수 결과를 확인하지 못했어요. 다시 확인해 주세요.";
   const endpoint = "https://hanjibung-room-api.vercel.app/api/inquiries";
   const analyticsId = document.querySelector("script[data-analytics-id]")?.dataset.analyticsId;
   const event = (name, params = {}) => {
@@ -93,11 +95,11 @@
       xhr.open("POST", endpoint); xhr.setRequestHeader("Content-Type", "application/json"); xhr.timeout = 300000;
       xhr.upload.onprogress = (e) => { note.textContent = e.lengthComputable ? `${Math.min(100, Math.round(e.loaded / e.total * 100))}% 전송` : "신청 정보를 보내고 있어요."; };
       xhr.upload.onload = () => { note.textContent = "접수 결과를 확인하고 있어요."; };
-      xhr.onerror = xhr.ontimeout = () => resolve({ ok: false, uncertain: true, message: "접수 결과를 확인하지 못했어요. 다시 확인해 주세요." });
+      xhr.onerror = xhr.ontimeout = xhr.onabort = () => resolve({ ok: false, uncertain: true, message: unknownReceipt });
       xhr.onload = () => {
         let result; try { result = JSON.parse(xhr.responseText); } catch { result = null; }
-        if (xhr.status >= 200 && xhr.status < 300 && result?.ok && result.requestId === id) resolve({ ok: true, requestId: result.requestId });
-        else resolve({ ok: false, uncertain: result?.uncertain === true || xhr.status >= 500, message: result?.message || "접수 결과를 확인하지 못했어요. 다시 확인해 주세요." });
+        if (xhr.status >= 200 && xhr.status < 300 && result?.ok === true && result.requestId === id) resolve({ ok: true, requestId: result.requestId });
+        else resolve({ ok: false, uncertain: result?.uncertain === true || xhr.status < 400 || xhr.status >= 500, message: result?.message || unknownReceipt });
       };
       xhr.send(body);
     });
@@ -108,16 +110,20 @@
     if (!uncertain) {
       if (!form.reportValidity()) return;
       const data = new FormData(form);
-      const phone = String(data.get("phone") || "").replace(/\D/g, "");
-      if (!/^01[016789]\d{7,8}$/.test(phone)) { setError("연락받을 휴대폰 번호를 확인해 주세요."); return; }
+      const place = (key) => prefill ? prefill.placeName(data.get(key)) : String(data.get(key) || "").trim();
+      const area = place("area"), location = place("location");
+      if (!area) { setError("근처 대학교나 지하철역 이름을 확인해 주세요."); form.querySelector("#area").focus(); return; }
+      if (!location) { setError("집이 있는 시·구·동 이름을 확인해 주세요."); form.querySelector("#location").focus(); return; }
+      const phone = String(data.get("phone") || "").normalize("NFKC").replace(/[\s().-]/g, "").replace(/^\+820?/, "0");
+      if (!/^01[016789]\d{7,8}$/.test(phone)) { setError("연락받을 휴대폰 번호를 확인해 주세요."); form.querySelector("#phone").focus(); return; }
       if (!data.get("areaType")) { setError("지역 기준을 선택해 주세요."); return; }
       requestId ||= crypto.randomUUID(); submissionStart ||= performance.now();
-      pendingBody = JSON.stringify({ requestId, attribution: window.hanjibungLeadVisit?.snapshot(), inquiry: { areaType: data.get("areaType"), area: data.get("area"), ...(data.get("homeType") ? { homeType: data.get("homeType") } : {}), location: data.get("location"), rooms: data.get("rooms"), aircon: data.get("aircon"), tenure: data.get("tenure"), phone, consent: data.get("consent") === "on", consentVersion: "2026-09-20" }, photos: [] });
+      pendingBody = JSON.stringify({ requestId, attribution: window.hanjibungLeadVisit?.snapshot(), inquiry: { areaType: data.get("areaType"), area, ...(data.get("homeType") ? { homeType: data.get("homeType") } : {}), location, rooms: data.get("rooms"), aircon: data.get("aircon"), tenure: data.get("tenure"), phone, consent: data.get("consent") === "on", consentVersion: "2026-09-20" }, photos: [] });
     }
     const body = pendingBody;
     lock(true); event("inquiry_submit", { photo_count: 0 });
     submit.textContent = "신청 정보를 보내고 있어요"; note.textContent = "화면을 닫지 말고 잠시 기다려 주세요.";
-    const result = await send(body, requestId);
+    const result = await send(body, requestId).catch(() => ({ ok: false, uncertain: true, message: unknownReceipt }));
     if (result.ok) {
       prefill?.clear();
       uncertain = false; lock(false);

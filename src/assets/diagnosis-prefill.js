@@ -3,13 +3,20 @@
   const key = "hanjibung:diagnosis-prefill:v1";
   const lifetime = 30 * 60 * 1000;
   const homeTypes = Object.freeze({ studio: "원룸", "two-room": "투룸 +", house: "단독 주택", apartment: "아파트" });
+  function placeName(value) {
+    const name = typeof value === "string" ? value.normalize("NFKC").trim() : "";
+    if (!/\p{L}/u.test(name)) return "";
+    const contact = /[^\s@]+@[^\s@]+\.[^\s@]+|(?:0\d{1,2}|\+82[-.\s]?\d{1,2})[-.\s]?\d{3,4}[-.\s]?\d{4}(?!\d)/;
+    const address = /\d+\s*동\s*\d+\s*호|\d+(?:-\d+)?\s*번지|(?:대로|로|길|동|리)\s*\d+(?:-\d+)?(?=$|[,\s])(?!\s*번\s*출구)/;
+    return contact.test(name) || address.test(name) ? "" : name;
+  }
   function normalize(values) {
-    const area = typeof values?.area === "string" ? values.area.trim().slice(0, 100) : "";
+    const area = placeName(values?.area).slice(0, 100);
     const homeType = Object.hasOwn(homeTypes, values?.homeType) ? homeTypes[values.homeType] : (Object.values(homeTypes).includes(values?.homeType) ? values.homeType : "");
     let areaType = ["대학교", "지하철역"].includes(values?.areaType) ? values.areaType : "";
     if (!areaType && /역(?:\s*\d+번\s*출구)?$/.test(area)) areaType = "지하철역";
     if (!areaType && /(?:대학교|대학)(?:\s*\S*캠퍼스)?$/.test(area)) areaType = "대학교";
-    return { area, areaType, homeType };
+    return { area, areaType: area ? areaType : "", homeType };
   }
   function clear() {
     try { window.sessionStorage.removeItem(key); } catch { /* Storage can be disabled. */ }
@@ -26,5 +33,5 @@
       return normalize(draft);
     } catch { clear(); return null; }
   }
-  window.hanjibungDiagnosisPrefill = Object.freeze({ save, read, clear, homeTypes });
+  window.hanjibungDiagnosisPrefill = Object.freeze({ save, read, clear, homeTypes, placeName });
 })();

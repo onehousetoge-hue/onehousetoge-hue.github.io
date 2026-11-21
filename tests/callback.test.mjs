@@ -2,9 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
-import { callbackPayload, submitCallback } from '../src/assets/callback.js';
+import { callbackAttempt, callbackPayload, submitCallback } from '../src/assets/callback.js';
 import { inquiries } from '../src/config/inquiries.mjs';
-import { completeRoomTurn, correctionPatch, detailedLocation, extractRoom, privateText, visitAddressError } from '../src/assets/room-description.js';
+import { completeRoomTurn, correctionPatch, detailedLocation, extractRoom, offlineRoomTurn, privateText, roomChatPrivate, visitAddressError } from '../src/assets/room-description.js';
 
 const id = 'aa111111-2222-4333-8444-555555555555';
 const values = {name:'오프라인 시험',contact:'010-0000-0000',message:'사진 없이 먼저 빈방 활용 상담을 받고 싶습니다.',consent:true,website:''};
@@ -54,6 +54,32 @@ test('an incomplete model response can keep clear facts without reviving rejecte
   assert.deepEqual(completeRoomTurn('방 하나에 월세 50만 원이라면 비쌀까요?','rooms','',{}),{});
   assert.deepEqual(completeRoomTurn('집은 방 세 개 중 침실 둘을 내놓아요','rooms','',{rooms:'2개'}),{rooms:'2개'});
   assert.deepEqual(completeRoomTurn('다음 달은 입주가 안 돼요','availability','다음 달부터',{}),{availability:''});
+});
+
+test('offline interpretation distinguishes questions and rejected offers from confirmed room terms',()=>{
+  assert.deepEqual(offlineRoomTurn('방 두 개는 내어줄 수 없어요.','rooms'),{});
+  assert.deepEqual(correctionPatch('방 두 개는 내어줄 수 없어요.','rooms'),{});
+  assert.deepEqual(offlineRoomTurn('월세 80만 원이면 될까요?','location'),{});
+  assert.deepEqual(offlineRoomTurn('월세 45만 원 말고 38만 원','rent'),{rent:'38만 원'});
+  assert.deepEqual(offlineRoomTurn('보증금은 안 받을게요','deposit'),{deposit:'없음'});
+  assert.deepEqual(offlineRoomTurn('다음 달에는 입주가 안 돼요','availability','다음 달부터'),{availability:''});
+  assert.equal(roomChatPrivate('공릉동, 연락처 공일공 일이삼사 오육칠팔'),true);
+});
+
+test('Korean telephone autofill and same-content retries work in both public intake forms',()=>{
+  const seal=(contact,photo)=>callbackAttempt({...callbackPayload({...values,contact},undefined,inquiries.consentVersion),...(photo?{roomPhoto:photo}:{})});
+  const first=seal('+82 (0)10 0000 0000');
+  assert.equal(first.contact,'01000000000');
+  assert.equal(seal('０１０．１２３４．５６７８').contact,'01012345678');
+  assert.equal(seal('02) 000-0000').contact,'020000000');
+  assert.equal(seal('+44 20 1234 5678').contact,'+44 20 1234 5678');
+  const fresh=callbackPayload({...values,contact:'01000000000'},undefined,inquiries.consentVersion);
+  assert.equal(callbackAttempt(fresh,first).requestId,first.requestId);
+  assert.notEqual(callbackAttempt({...fresh,message:'다른 방을 소개할게요.'},first).requestId,first.requestId);
+  const withPhoto=callbackAttempt({...fresh,roomPhoto:'photo-a'},first);
+  assert.notEqual(withPhoto.requestId,first.requestId);
+  assert.equal(callbackAttempt({...fresh,roomPhoto:'photo-a'},withPhoto).requestId,withPhoto.requestId);
+  assert.notEqual(callbackAttempt(fresh,withPhoto).requestId,withPhoto.requestId);
 });
 
 test('a rejected or unrelated date is not offered as an available move-in date',()=>{
