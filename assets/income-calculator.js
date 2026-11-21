@@ -45,29 +45,14 @@
   });
   setOpen(open);
 
-  // Keep the first view clear, then reveal without changing the page layout.
-  const hero = document.querySelector(".host-hero");
-  let revealAt = 400;
-  let visibilityPending = false;
-  function updateVisibility() {
-    visibilityPending = false;
-    root.hidden = window.scrollY < revealAt && !root.contains(document.activeElement);
+  root.hidden = false;
+  const inlineEstimate = document.querySelector(".host-intro-estimate-button");
+  if (inlineEstimate && "IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(([entry]) => {
+      root.hidden = entry.isIntersecting && !root.contains(document.activeElement);
+    });
+    observer.observe(inlineEstimate);
   }
-  function queueVisibility() {
-    if (visibilityPending) return;
-    visibilityPending = true;
-    window.requestAnimationFrame(updateVisibility);
-  }
-  function updateThreshold() {
-    const heroBottom = hero ? hero.getBoundingClientRect().bottom + window.scrollY : 640;
-    revealAt = Math.max(320, Math.min(640, heroBottom - window.innerHeight * .3));
-    queueVisibility();
-  }
-  window.addEventListener("scroll", queueVisibility, { passive: true });
-  window.addEventListener("resize", updateThreshold);
-  window.addEventListener("pageshow", updateThreshold);
-  root.addEventListener("focusout", queueVisibility);
-  updateThreshold();
 
   function explainDiagnosis() {
     message.hidden = false;

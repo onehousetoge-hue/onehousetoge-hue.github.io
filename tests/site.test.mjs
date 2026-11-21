@@ -14,7 +14,7 @@ test("homepage links to the dedicated diagnosis page without the retired organiz
   assert.match(room, /class="room-check-page"/);
   assert.doesNotMatch(room, /<iframe|<dialog|data-open-inquiry/);
   const hero = room.match(/<section class="host-hero"[\s\S]*?<\/section>/)[0];
-  assert.match(hero, /href="\/reservation\/">우리 집 예상 월세 무료 진단 받기/);
+  assert.match(hero, /href="\/reservation\/">우리 집 빈 방 얼마나 받을 수 있을까/);
   assert.doesNotMatch(hero, /href="#rent-faq"/);
   assert.match(room, /id="goals"/);
   assert.doesNotMatch(room, /host-about-summary|한지붕 소개 보기/);
@@ -29,41 +29,51 @@ test("homepage links to the dedicated diagnosis page without the retired organiz
   assert.match(room, /href="\/reservation\/privacy\/"/);
 });
 
-test("rent FAQ answers and their structured data match in the final section before the footer", async () => {
+test("the home FAQ shows the reference categories and the same answers in structured data", async () => {
   const html = await readFile(routeFile("/"), "utf8");
   const section = html.match(/<section class="rent-faq"[^>]+>([\s\S]*?)<\/section>\s*<\/div>\s*<footer class="host-footer"/);
   assert.ok(section, "FAQ is server-rendered immediately before the footer");
-  assert.match(section[1], /id="rent-faq-query"/);
+  const body = section[1];
+  assert.match(body, /id="rent-faq-query"/);
   const schemas = [...html.matchAll(/<script type="application\/ld\+json">([^<]+)<\/script>/g)].map(match => JSON.parse(match[1]));
   const faqs = schemas.filter(schema => schema["@type"] === "FAQPage");
   assert.equal(faqs.length, 1);
-  const faq = faqs[0];
+  const [faq] = faqs;
   assert.equal(faq["@id"], "https://hanjibung.kr/#rent-faq");
-  const heading = section[1].match(/<h2 id="rent-faq-title">(.+?)<\/h2>/)[1].replace(/<[^>]+>/g, "");
-  assert.equal(heading, faq.name);
-  const nav = section[1].match(/<nav class="rent-faq-nav"[^>]*>([\s\S]*?)<\/nav>/)[1];
-  const jumps = [...nav.matchAll(/href="#([^"]+)"/g)].map(match => match[1]);
-  const groups = [...section[1].matchAll(/<h3 id="([^"]+)">/g)].map(match => match[1]);
-  assert.deepEqual(jumps, groups);
-  assert.deepEqual(groups, ["faq-costs", "faq-application", "faq-move-in", "faq-living", "faq-tax"]);
-  const items = [...section[1].matchAll(/<details class="rent-faq-item"( open)?>([\s\S]*?)<\/details>/g)];
-  const picks = section[1].match(/<nav class="rent-faq-picks"[^>]*>([\s\S]*?)<\/nav>/)[1];
-  const featured = [...picks.matchAll(/href="#([^"]+)"/g)].map(match => match[1]);
-  assert.deepEqual(featured, ["faq-student-matching", "faq-rental-tax", "faq-manager-support"]);
-  for (const id of featured) assert.ok(faq.mainEntity.some(question => question["@id"].endsWith("#" + id)));
-  assert.equal(items.filter(match => match[1]).length, 1);
+  assert.equal(faq.name, body.match(/<h2 id="rent-faq-title"[^>]*>([^<]+)<\/h2>/)[1]);
+  const filters = [...body.matchAll(/<button[^>]+id="faq-category-(\w+)"[^>]+aria-pressed="(true|false)"/g)];
+  assert.deepEqual(filters.map(match => match[1]), ["all", "service", "living", "contract", "tax"]);
+  assert.deepEqual(filters.filter(match => match[2] === "true").map(match => match[1]), ["all"]);
+  const items = [...body.matchAll(/<details class="rent-faq-item" name="host-questions" id="([^"]+)" data-category="(\w+)"( open)?>([\s\S]*?)<\/details>/g)];
+  assert.equal(items.length, 24);
   assert.equal(items.length, faq.mainEntity.length);
-  assert.equal(new Set(faq.mainEntity.map(q => q["@id"])).size, items.length);
-  for (const [index, [, , content]] of items.entries()) {
+  assert.equal(new Set(items.map(match => match[1])).size, items.length);
+  assert.equal(items.filter(match => match[3]).length, 1);
+  assert.deepEqual(filters.slice(1).map(chip => items.filter(item => item[2] === chip[1]).length), [6, 6, 5, 7]);
+  for (const [index, [, id, , , content]] of items.entries()) {
     const question = faq.mainEntity[index];
-    const id = content.match(/<div class="rent-faq-answer" id="([^"]+)">/)[1];
-    assert.equal(question["@id"], `https://hanjibung.kr/#${id}`);
+    assert.equal(question["@id"], "https://hanjibung.kr/#" + id);
     assert.equal(question["@type"], "Question");
     assert.equal(question.acceptedAnswer["@type"], "Answer");
-    assert.ok(content.includes(`<summary><h4>${escapeHtml(question.name)}</h4></summary>`));
-    const paragraphs = [...content.matchAll(/<p>([^<]+)<\/p>/g)].map(match => match[1]);
-    assert.equal(paragraphs.join("\n\n"), escapeHtml(question.acceptedAnswer.text));
+    assert.equal(content.match(/class="host-faq-question-text">([^<]+)<\/span>/)[1], escapeHtml(question.name));
+    const paragraphs = [...content.matchAll(/<p class="host-faq-answer-(?:summary|detail)">([^<]+)<\/p>/g)];
+    assert.equal(paragraphs.map(match => match[1]).join("\n\n"), escapeHtml(question.acceptedAnswer.text));
   }
+  const shortcuts = [...html.matchAll(/class="host-faq-category-link" href="#([^"]+)"/g)].map(match => match[1]);
+  assert.deepEqual(shortcuts, ["faq-student-matching", "faq-rental-tax", "faq-manager-support"]);
+  for (const id of shortcuts) assert.ok(items.some(match => match[1] === id));
+});
+
+test("the main host guide follows the reference sequence with HanJibung's own identity and enrollment routes", async () => {
+  const html = await readFile(routeFile("/"), "utf8");
+  const sections = [...html.matchAll(/<section class="([^"]+)"[^>]*>/g)].map(match => match[1]).filter(name => name !== "income-panel");
+  assert.deepEqual(sections, ["host-hero", "host-intro-empathy", "host-intro-benefits", "host-intro-income", "host-process-section", "host-community-section", "host-community-news", "host-story-section", "host-story-partners", "host-intro-estimate-band", "host-faq-top-section", "rent-faq"]);
+  assert.match(html, /href="https:\/\/www.youtube.com\/watch\?v=DdCxyz9kNs4"/);
+  assert.match(html, /2026년 9월 기준 <em>55가구<\/em>/);
+  assert.match(html, /노원구청 마을공동체 사업 선정/);
+  assert.doesNotMatch(html, /신한|슈퍼SOL|홈투게더|핀타|Home Together|\/shinhan\/|_next\/|data-nimg/i);
+  assert.match(html, /id="host-title-B">우리 집 빈 방 <strong>얼마 받을 수 있을까\?/);
+  assert.match(html, /id="host-title-C">혼자 계신 부모님께 <strong>드릴 수 있는 선물/);
 });
 
 test("the about page features the MBC video without the two secondary links", async () => {

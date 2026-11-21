@@ -1,95 +1,87 @@
 (() => {
   "use strict";
-  const faq = document.getElementById("rent-faq");
-  if (!faq) return;
-  const search = faq.querySelector(".rent-faq-search");
+  const root = document.getElementById("rent-faq");
+  if (!root) return;
+
+  const search = root.querySelector(".host-faq-search");
   const input = search.querySelector("input");
-  const clear = search.querySelector("button");
+  const clear = search.querySelector("[data-faq-clear]");
   const status = search.querySelector('[role="status"]');
-  const topics = faq.querySelector(".rent-faq-nav");
-  const picks = faq.querySelector(".rent-faq-picks");
-  const empty = faq.querySelector(".rent-faq-empty");
-
-  function words(text) {
-    return text.normalize("NFKC").toLowerCase().match(/[\p{L}\p{M}\p{N}]+/gu) || [];
-  }
-
-  const groups = Array.from(faq.querySelectorAll(".rent-faq-group"), group => ({
-    element: group,
-    questions: Array.from(group.querySelectorAll("details"), item => ({
-      item,
-      text: Array.from(item.querySelectorAll("h4, .rent-faq-answer p"), part => words(part.textContent).join("")).join(" "),
-    })),
+  const filters = root.querySelector(".host-faq-chips");
+  const chips = Array.from(filters.querySelectorAll("button"));
+  const results = root.querySelector("#rent-faq-results");
+  const empty = root.querySelector(".host-faq-empty");
+  const taxNotice = root.querySelector(".host-faq-tax-notice");
+  const normalize = text => text.normalize("NFKC").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "");
+  const items = Array.from(results.querySelectorAll("details"), element => ({
+    element,
+    category: element.dataset.category,
+    text: normalize(element.textContent),
   }));
-  let openedForSearch = null;
+  let category = "all";
 
-  function update() {
-    const query = input.value.trim();
-    const terms = words(query);
-    const matches = [];
-    for (const { element, questions } of groups) {
-      let anyVisible = false;
-      for (const { item, text } of questions) {
-        const visible = !query || (terms.length > 0 && terms.every(term => text.includes(term)));
-        item.hidden = !visible;
-        if (visible) {
-          anyVisible = true;
-          matches.push(item);
-        }
-      }
-      element.hidden = !anyVisible;
-    }
-
-    const single = query && matches.length === 1 ? matches[0] : null;
-    if (openedForSearch && openedForSearch !== single) {
-      openedForSearch.open = false;
-      openedForSearch = null;
-    }
-    if (single && !single.open) {
-      single.open = true;
-      openedForSearch = single;
-    }
-    topics.hidden = Boolean(query);
-    if (picks) picks.hidden = Boolean(query);
-    empty.hidden = matches.length !== 0;
-    clear.hidden = input.value.length === 0;
-    const message = (query ? "검색 결과 " : "전체 ") + matches.length + "개";
-    if (status.textContent !== message) status.textContent = message;
+  function applyFilters() {
+    const terms = input.value.trim().split(/\s+/).map(normalize).filter(Boolean);
+    let count = 0;
+    chips.forEach(chip => chip.setAttribute("aria-pressed", String(chip.dataset.category === category)));
+    items.forEach(({ element, category: group, text }) => {
+      const visible = (category === "all" || category === group) && terms.every(term => text.includes(term));
+      element.hidden = !visible;
+      if (visible) count++;
+    });
+    clear.hidden = !input.value;
+    empty.hidden = count !== 0;
+    results.hidden = count === 0;
+    taxNotice.hidden = count === 0 || (category !== "tax" && category !== "all") || terms.length > 0;
+    status.textContent = terms.length || category !== "all" ? `${count}개 질문` : "";
   }
 
-  function reset() {
+  function selectCategory(key) {
+    category = key;
+    applyFilters();
+  }
+
+  // Resolve links shared from the checklist, individual answers, and the previous homepage.
+  const formerGroups = { "faq-costs": "contract", "faq-application": "service", "faq-move-in": "living", "faq-living": "living", "faq-tax": "tax" };
+  const formerQuestions = {
+    "faq-rent-estimate": "faq-host-payout", "faq-utilities": "faq-host-payout", "faq-after-estimate": "faq-registration-steps",
+    "faq-room-furniture": "faq-room-preparation", "faq-air-conditioning": "faq-room-preparation", "faq-photos-address": "faq-registration-steps",
+    "faq-visit-area": "faq-registration-steps", "faq-consultation-options": "faq-registration-steps",
+  };
+  function followHash() {
+    const hash = location.hash.slice(1);
+    const chip = chips.find(item => item.id === hash || item.dataset.category === formerGroups[hash]);
+    const item = items.find(({ element }) => element.id === (formerQuestions[hash] || hash));
+    if (!chip && !item) {
+      if (!hash || hash === "rent-faq" || hash === "faq") selectCategory("all");
+      return;
+    }
     input.value = "";
-    update();
+    selectCategory(chip?.dataset.category || item.category);
+    if (item) item.element.open = true;
+    (item?.element || chip).scrollIntoView({ block: "start" });
+  }
+
+  filters.addEventListener("click", event => {
+    const chip = event.target.closest("button[data-category]");
+    if (!chip) return;
+    history.replaceState(history.state, "", "#" + chip.id);
+    selectCategory(chip.dataset.category);
+  });
+  input.addEventListener("input", applyFilters);
+  clear.addEventListener("click", () => { input.value = ""; applyFilters(); input.focus(); });
+  empty.querySelector("button").addEventListener("click", () => {
+    input.value = "";
+    history.replaceState(history.state, "", "#rent-faq");
+    selectCategory("all");
     input.focus();
-  }
-
-  function revealAnswer(hash) {
-    const answer = document.getElementById(hash.slice(1));
-    if (!answer?.classList.contains("rent-faq-answer")) return;
-    if (input.value) {
-      input.value = "";
-      update();
-    }
-    answer.closest("details").open = true;
-  }
-
-  picks?.addEventListener("click", event => {
-    const link = event.target.closest("a");
-    if (link) revealAnswer(link.hash);
   });
-  window.addEventListener("hashchange", () => revealAnswer(location.hash));
-
-  input.addEventListener("input", event => { if (!event.isComposing) update(); });
-  input.addEventListener("compositionend", update);
-  input.addEventListener("keydown", event => {
-    if (event.key === "Escape" && !event.isComposing && input.value) {
-      event.preventDefault();
-      reset();
-    }
+  window.addEventListener("hashchange", followHash);
+  document.querySelectorAll(".host-faq-category-link").forEach(link => {
+    link.addEventListener("click", () => { if (link.hash === location.hash) followHash(); });
   });
-  clear.addEventListener("click", reset);
-  empty.querySelector("button").addEventListener("click", reset);
-  update();
-  revealAnswer(location.hash);
   search.hidden = false;
+  filters.hidden = false;
+  applyFilters();
+  followHash();
 })();
