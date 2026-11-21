@@ -1,3 +1,5 @@
+const contactEmail = "contact@hanjibung.kr";
+
 export const site = Object.freeze({
   name: "한지붕",
   englishName: "HANJIBUNG",
@@ -11,8 +13,8 @@ export const site = Object.freeze({
   address: "서울특별시 노원구 동일로 195길",
   phone: "010-4587-9428",
   phoneHref: "tel:+821045879428",
-  email: "onehousetoge@gmail.com",
-  emailHref: "mailto:onehousetoge@gmail.com",
+  email: contactEmail,
+  emailHref: `mailto:${contactEmail}`,
   url: "https://hanjibung.kr",
   analyticsMeasurementId: "G-58PJ9VG8GC",
   nonprofitDescription:

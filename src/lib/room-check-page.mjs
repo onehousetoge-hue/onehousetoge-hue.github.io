@@ -30,6 +30,6 @@ export function roomCheckPage() {
       <section class="host-consultation" aria-labelledby="consultation-title"><div class="host-container"><p>한지붕에 방을 등록하면</p><h2 id="consultation-title"><span>1:1 전담 매니저가</span><br>노하우를 안내해 드립니다</h2><a class="consultation-link" href="/rooms/register/">+ 방 등록하기</a></div></section>
       ${rentFaqSection()}
     </div>
-    <footer class="host-footer"><div class="host-container"><div class="footer-contact"><div><a href="mailto:contact@hanjibung.kr">E-mail : contact@hanjibung.kr</a><a href="${site.phoneHref}">Tel : ${site.phone}</a></div><p>© 2026 hanjibung. All rights reserved.</p></div><p class="footer-legal">${site.legalType} · 고유번호 ${site.registrationNumber} · 대표 ${site.representative}</p><p class="footer-legal">${site.address} <a href="/reservation/privacy/">개인정보 처리방침</a></p></div></footer>
+    <footer class="host-footer"><div class="host-container"><div class="footer-contact"><div><a href="${site.emailHref}">E-mail : ${site.email}</a><a href="${site.phoneHref}">Tel : ${site.phone}</a></div><p>© 2026 hanjibung. All rights reserved.</p></div><p class="footer-legal">${site.legalType} · 고유번호 ${site.registrationNumber} · 대표 ${site.representative}</p><p class="footer-legal">${site.address} <a href="/reservation/privacy/">개인정보 처리방침</a></p></div></footer>
     ${incomeCalculator()}</div>`;
 }
