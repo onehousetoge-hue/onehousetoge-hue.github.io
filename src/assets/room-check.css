@@ -1659,16 +1659,6 @@
   width: 100%;
   height: auto;
 }
-.host-story-partners {
-  padding: 40px 0 80px;
-  background: white;
-}
-.host-story-partners h2 {
-  font-size: 38px;
-  line-height: 62px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
 @media (min-width: 768px) and (max-width: 1279px) {
   .host-story-grid {
     gap: 48px 32px;
@@ -1796,13 +1786,6 @@
   .host-story-achievement li {
     font-size: 16px;
     line-height: 26px;
-  }
-  .host-story-partners {
-    padding: 32px 0 48px;
-  }
-  .host-story-partners h2 {
-    font-size: 28px;
-    line-height: 40px;
   }
 }
 
@@ -2146,9 +2129,6 @@
 .host-intro-registration-button:hover { background: #1c6be3; }
 .host-community-thumbnail img, .host-story-photos > div img { width: 100%; height: 100%; object-fit: cover; }
 .host-story-activities-photo { aspect-ratio: 579 / 500; object-fit: cover; border-radius: 16px; }
-.host-local-places { display: flex; flex-wrap: wrap; gap: 24px 48px; margin-top: 32px; }
-.host-local-places li { font-weight: 700; font-size: clamp(18px, 2vw, 28px); color: #485361; }
-.host-local-places small { display: block; color: #626c7c; font-size: 14px; font-weight: 500; }
 .host-intro-connection { display: flex; align-items: center; justify-content: center; container-type: inline-size; aspect-ratio: 403 / 124; }
 .host-intro-connection span { display: grid; place-content: center; height: 90%; width: 31%; border-radius: 24%; background: linear-gradient(150deg, #c7dfff, #edf6ff); }
 .host-intro-person::before, .host-intro-person::after { content: ""; display: block; margin: 0 auto; background: #fff; }
@@ -2193,7 +2173,6 @@
 @media (max-width: 767px) {
   .host-faq-field { min-height: 46px; }
   .host-faq-search { margin-bottom: 20px; }
-  .host-local-places { gap: 18px 28px; }
   .host-footer { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
 }
 

@@ -70,7 +70,7 @@ test("the home FAQ shows the reference categories and the same answers in struct
 test("the main host guide follows the reference sequence with HanJibung's own identity and enrollment routes", async () => {
   const html = await readFile(routeFile("/"), "utf8");
   const sections = [...html.matchAll(/<section class="([^"]+)"[^>]*>/g)].map(match => match[1]).filter(name => name !== "income-panel");
-  assert.deepEqual(sections, ["host-hero", "host-intro-empathy", "host-intro-benefits", "host-intro-income", "host-process-section", "host-community-section", "host-community-news", "host-story-section", "host-story-partners", "host-intro-estimate-band", "host-faq-top-section", "rent-faq"]);
+  assert.deepEqual(sections, ["host-hero", "host-intro-empathy", "host-intro-benefits", "host-intro-income", "host-process-section", "host-community-section", "host-community-news", "host-story-section", "host-intro-estimate-band", "host-faq-top-section", "rent-faq"]);
   assert.match(html, /href="https:\/\/www.youtube.com\/watch\?v=DdCxyz9kNs4"/);
   assert.match(html, /2026년 9월 기준 <em>55가구<\/em>/);
   assert.match(html, /노원구청 마을공동체 사업 선정/);
