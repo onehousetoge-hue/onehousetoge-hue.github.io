@@ -132,28 +132,89 @@
 }
 .room-app .header-faq-link:hover { color: var(--host-blue); text-decoration: underline; }
 .room-app .rent-faq > .host-container { container-type: inline-size; }
-.room-app .rent-faq-layout,
-.room-app .rent-faq-groups { display: grid; gap: 44px; }
-.room-app .rent-faq-index h2 {
+.room-app .rent-faq-head {
+  display: grid;
+  gap: 24px;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--faq-line);
+}
+.room-app .rent-faq-layout { display: grid; gap: 30px; }
+.room-app .rent-faq-groups { display: grid; gap: 36px; min-width: 0; }
+.room-app .rent-faq-head h2 {
   color: #152941;
   font-size: clamp(32px, 5cqi, 44px);
   font-weight: 750;
   line-height: 1.2;
   letter-spacing: -.055em;
 }
-.room-app .rent-faq-index h2 span {
+.room-app .rent-faq-head h2 span {
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
   color: var(--faq-blue);
   font-size: 17px;
   font-weight: 650;
   letter-spacing: -.025em;
 }
+.room-app .rent-faq-search { min-width: 0; }
+.room-app .rent-faq-search-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+  color: #263c55;
+  font-size: 16px;
+  font-weight: 650;
+}
+.room-app .rent-faq-search-label [role="status"] { color: #52667b; font-size: 14px; font-weight: 500; }
+.room-app .rent-faq-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-inline-end: 4px;
+  border: 1px solid #7c90a6;
+  border-radius: 12px;
+  background: #f8fafd;
+}
+.room-app .rent-faq-field:focus-within { outline: 2px solid var(--faq-blue); outline-offset: 1px; background: #fff; }
+.room-app .rent-faq-field > .icon {
+  position: absolute;
+  inset-inline-start: 14px;
+  width: 20px;
+  height: 20px;
+  color: var(--faq-blue);
+  pointer-events: none;
+}
+.room-app .rent-faq-field input {
+  flex: 1;
+  min-width: 0;
+  min-height: 52px;
+  padding: 0 6px 0 44px;
+  border: 0;
+  appearance: none;
+  background: transparent;
+  color: var(--host-ink);
+  font-size: 17px;
+}
+.room-app .rent-faq-field input:focus-visible { outline: none; }
+.room-app .rent-faq-field input::placeholder { color: #53677d; }
+.room-app .rent-faq-field input::-webkit-search-cancel-button { display: none; }
+.room-app .rent-faq-field button {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 9px;
+  background: transparent;
+  color: #405971;
+}
+.room-app .rent-faq-field button .icon { width: 18px; height: 18px; }
 .room-app .rent-faq-nav {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
-  margin-top: 24px;
 }
 .room-app .rent-faq-nav a {
   display: flex;
@@ -164,7 +225,7 @@
   padding: 10px 14px;
   border: 1px solid var(--faq-line);
   border-radius: 10px;
-  background: #f5f8fc;
+  background: #f7f9fc;
   color: #274360;
   font-size: 16px;
   font-weight: 600;
@@ -202,12 +263,14 @@
 .room-app .rent-faq-symbol .icon { width: 21px; height: 21px; }
 .room-app .rent-faq-group h3:target .rent-faq-symbol { background: var(--faq-blue); color: white; }
 .room-app .rent-faq-list {
+  display: grid;
+  gap: 1px;
+  overflow: clip;
   border: 1px solid var(--faq-line);
   border-radius: 16px;
+  background: var(--faq-line);
 }
-.room-app .rent-faq-item + .rent-faq-item { border-top: 1px solid var(--faq-line); }
-.room-app .rent-faq-item:first-child { border-radius: 15px 15px 0 0; }
-.room-app .rent-faq-item:last-child { border-radius: 0 0 15px 15px; }
+.room-app .rent-faq-item { background: #fff; }
 .room-app .rent-faq-item summary {
   display: flex;
   align-items: center;
@@ -240,7 +303,7 @@
   word-break: keep-all;
   overflow-wrap: anywhere;
 }
-.room-app .rent-faq-item[open] { background: #f0f6ff; }
+.room-app .rent-faq-item[open] { background: #f5f9ff; }
 .room-app .rent-faq-item[open] h4 { color: #174e93; }
 .room-app .rent-faq-item[open] summary::after {
   margin-block: 5px 0;
@@ -248,7 +311,10 @@
   transform: rotate(225deg);
 }
 .room-app .rent-faq-answer {
-  padding: 0 clamp(16px, 2.7cqi, 26px) 20px;
+  max-width: 72ch;
+  margin: 0 clamp(16px, 2.7cqi, 26px) 20px;
+  padding-inline-start: 14px;
+  border-inline-start: 2px solid #abc9f0;
   scroll-margin-block-start: 116px;
   color: #3c5066;
   font-size: clamp(17px, 2.1cqi, 19px);
@@ -271,36 +337,66 @@
 }
 .room-app .rent-faq-contact { justify-self: start; }
 .room-app .rent-faq-contact .icon { width: 18px; height: 18px; }
-.room-app .rent-faq :is(a, summary):focus-visible { outline: 3px solid var(--faq-blue); outline-offset: 2px; }
+.room-app .rent-faq-empty {
+  padding: 28px 20px;
+  border: 1px dashed #b8c9db;
+  border-radius: 16px;
+  background: #f7f9fc;
+  text-align: center;
+}
+.room-app .rent-faq-empty p { color: #263c55; font-size: 18px; font-weight: 650; }
+.room-app .rent-faq-empty button {
+  min-height: 44px;
+  margin-top: 8px;
+  padding: 0 14px;
+  border: 1px solid #c3d2e1;
+  border-radius: 9px;
+  background: #fff;
+  color: var(--faq-blue);
+  font-weight: 650;
+}
+.room-app .rent-faq :is(a, button):focus-visible { outline: 2px solid var(--faq-blue); outline-offset: 2px; }
+.room-app .rent-faq-item summary:focus-visible { outline: 2px solid var(--faq-blue); outline-offset: -4px; }
 @media (hover: hover) {
+  .room-app .rent-faq-field button:hover, .room-app .rent-faq-empty button:hover { background: #e9f1fb; }
   .room-app .rent-faq-nav a:hover { color: #123f7a; background: #e0edff; }
   .room-app .rent-faq-item:not([open]) summary:hover { background: #f5f8fc; }
 }
 @container (min-width: 760px) {
+  .room-app .rent-faq-head {
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 42%);
+    align-items: end;
+    gap: 32px;
+    margin-bottom: 32px;
+    padding-bottom: 28px;
+  }
   .room-app .rent-faq-layout {
-    grid-template-columns: minmax(235px, .85fr) minmax(0, 2fr);
+    grid-template-columns: minmax(195px, .72fr) minmax(0, 2.28fr);
     align-items: start;
     gap: clamp(32px, 5cqi, 64px);
   }
-  .room-app .rent-faq-index {
+  .room-app .rent-faq-nav {
     position: sticky;
     top: 24px;
-    padding: clamp(22px, 2.7cqi, 32px);
-    border-radius: 20px;
-    background: #edf4ff;
+    grid-template-columns: 1fr;
+    gap: 0;
+    align-self: start;
+    padding: 4px 16px;
+    border: 1px solid var(--faq-line);
+    border-radius: 14px;
+    background: #f7f9fc;
   }
-  .room-app .rent-faq-index h2 { font-size: clamp(30px, 3.7cqi, 40px); }
-  .room-app .rent-faq-nav { grid-template-columns: 1fr; gap: 0; margin-top: 28px; }
+  .room-app .rent-faq-nav[hidden] + .rent-faq-groups { grid-column: 1 / -1; }
   .room-app .rent-faq-nav a {
     min-height: 54px;
     padding-inline: 4px;
     border: 0;
-    border-top: 1px solid #cfdeef;
     border-radius: 0;
     background: transparent;
-    font-size: 18px;
+    font-size: 17px;
   }
-  .room-app .rent-faq-groups { gap: 48px; }
+  .room-app .rent-faq-nav a + a { border-top: 1px solid var(--faq-line); }
+  .room-app .rent-faq-groups { gap: 40px; }
 }
 @media (max-width: 380px) {
   .room-app .rent-faq-nav a { padding-inline: 10px; }

@@ -158,14 +158,22 @@ export function rentFaqSection() {
     <div class="rent-faq-list">${topic.questions.map((q, index) => renderQuestion(q, groupIndex === 0 && index === 0)).join("")}</div>
   </div>`);
   return `<section class="rent-faq" id="rent-faq" aria-labelledby="rent-faq-title">
-    <div class="host-container" id="faq"><div class="rent-faq-layout">
-      <div class="rent-faq-index" id="faq-title">
+    <div class="host-container" id="faq">
+      <div class="rent-faq-head" id="faq-title">
         <h2 id="rent-faq-title"><span>${subject}</span> ${title}</h2>
+        <div class="rent-faq-search" role="search" aria-label="자주 묻는 질문" hidden>
+          <div class="rent-faq-search-label"><label for="rent-faq-query">질문과 답변 검색</label><span role="status" aria-atomic="true"></span></div>
+          <div class="rent-faq-field">${icon("search")}<input type="search" id="rent-faq-query" placeholder="관리비, 에어컨, 생활규칙 등" autocomplete="off" enterkeyhint="search" aria-controls="rent-faq-results"><button type="button" aria-label="검색어 지우기" hidden>${icon("close")}</button></div>
+        </div>
+      </div>
+      <div class="rent-faq-layout">
         <nav class="rent-faq-nav" aria-label="자주 묻는 질문 주제">${jumps}</nav>
+        <div class="rent-faq-groups" id="rent-faq-results">
+          <div class="rent-faq-empty" hidden><p>일치하는 질문이 없습니다.</p><button type="button">전체 질문 보기</button></div>
+          ${groups.join("")}
+          <a class="rent-faq-contact" href="${quickConsultation}">매니저에게 다른 질문하기 ${icon("arrow")}</a>
+        </div>
       </div>
-      <div class="rent-faq-groups">${groups.join("")}
-        <a class="rent-faq-contact" href="${quickConsultation}">매니저에게 다른 질문하기 ${icon("arrow")}</a>
-      </div>
-    </div></div>
+    </div>
   </section>`;
 }

@@ -16,6 +16,7 @@ export const scriptUrl = assetUrl("site.js");
 export const analyticsScriptUrl = assetUrl("analytics.js");
 export const callbackScriptUrl = assetUrl("callback.js");
 export const roomCheckStylesheetUrl = assetUrl("room-check.css");
+export const rentFaqSearchUrl = assetUrl("rent-faq-search.js");
 export const legacyEntryScript = `<script data-legacy-entry>${assetText("room-check.js").trim()}</script>`;
 export const incomeCalculatorStylesheetUrl = assetUrl("income-calculator.css");
 export const incomeCalculatorScriptUrl = assetUrl("income-calculator.js");

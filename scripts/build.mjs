@@ -13,7 +13,7 @@ import { roomCheckPage } from "../src/lib/room-check-page.mjs";
 import { rentFaqSchema } from "../src/lib/rent-faq.mjs";
 import { absolute, layout, organizationSchema } from "../src/lib/template.mjs";
 import {
-  assetText, roomCheckStylesheetUrl, legacyEntryScript, incomeCalculatorStylesheetUrl, incomeCalculatorScriptUrl,
+  assetText, roomCheckStylesheetUrl, rentFaqSearchUrl, legacyEntryScript, incomeCalculatorStylesheetUrl, incomeCalculatorScriptUrl,
   diagnosisPrefillScriptUrl, reservationStylesheetUrl, reservationScriptUrl, serviceStylesheetUrl, registrationStylesheetUrl, registrationSource, headlineExperiment,
 } from "../src/lib/static-assets.mjs";
 
@@ -52,7 +52,7 @@ await emit("/", layout({
     organizationSchema,
     rentFaqSchema,
   ],
-}).replace("</head>", `${legacyEntryScript}<link rel="stylesheet" href="${roomCheckStylesheetUrl}"><link rel="stylesheet" href="${incomeCalculatorStylesheetUrl}"><script src="${diagnosisPrefillScriptUrl}" defer></script><script src="${incomeCalculatorScriptUrl}" defer></script></head>`));
+}).replace("</head>", `${legacyEntryScript}<link rel="stylesheet" href="${roomCheckStylesheetUrl}"><link rel="stylesheet" href="${incomeCalculatorStylesheetUrl}"><script src="${diagnosisPrefillScriptUrl}" defer></script><script src="${incomeCalculatorScriptUrl}" defer></script><script src="${rentFaqSearchUrl}" defer></script></head>`));
 await emit("/reservation/", layout({ title: "예상 월세 무료 진단 신청", description: "우리 집 남는 방의 예상 월세와 준비사항을 무료로 안내받으세요. 집 위치와 방 정보를 남기면 한지붕 매니저가 확인 후 연락드립니다.", path: "/reservation/", body: reservationPage(), bodyClass: "reservation-page", showDiagnosisDock: false, showFooter: false, jsonLd: organizationSchema }).replace("</head>", `${legacyEntryScript}<link rel="stylesheet" href="${reservationStylesheetUrl}"><script src="${diagnosisPrefillScriptUrl}" defer></script><script src="${reservationScriptUrl}" defer></script></head>`));
 for (const [route, title, description, body] of [
   ["/about/", "한지붕 소개", "집주인과 대학생이 한집에서 지내도록 돕는 한지붕의 활동과 노원구 공릉동에서 시작한 빈방 활용 서비스를 소개합니다.", headlineExperiment + aboutPage()],
@@ -92,7 +92,7 @@ await writeFile(path.join(out, "CNAME"), "hanjibung.kr\n", "utf8");
 await writeFile(path.join(out, ".nojekyll"), "", "utf8");
 await mkdir(path.join(out, "assets"), { recursive: true });
 const assets = [
-  "site.css", "site.js", "analytics.js", "room-check.css", "room-check.js",
+  "site.css", "site.js", "analytics.js", "room-check.css", "room-check.js", "rent-faq-search.js",
   "reservation.css", "service-pages.css", "reservation.js", "diagnosis-prefill.js", "income-calculator.css",
   "income-calculator.js", "callback.js", "inquiry.js", "room-description.js", "room-registration.css", "figma", "fonts", "og-default.png",
   "hanjibung-logo.png", "hanjibung-logo-256.png", "hanjibung-icon-64.png", "hanjibung-icon-192.png",

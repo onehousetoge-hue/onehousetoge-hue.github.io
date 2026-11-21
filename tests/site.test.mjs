@@ -180,7 +180,7 @@ test("the parent and room diagnostic share GA without exposing inquiry details",
     assert.doesNotMatch(content, /googleadservices\.com/);
     const scripts = [...content.matchAll(/<script[^>]+src="([^"]+)"/g)].map((match) => match[1]);
     const expected = ["/assets/site.js", "/assets/analytics.js"];
-    if (page.route === "/") expected.push("/assets/diagnosis-prefill.js", "/assets/income-calculator.js");
+    if (page.route === "/") expected.push("/assets/diagnosis-prefill.js", "/assets/income-calculator.js", "/assets/rent-faq-search.js");
     if (page.route === "/reservation/") expected.push("/assets/diagnosis-prefill.js", "/assets/reservation.js");
     if (page.route === "/consultation/") expected.push("/assets/callback.js");
     if (page.route === "/rooms/register/") expected.push("/assets/room-registration.js");
@@ -212,7 +212,7 @@ test("all public pages have the four requested destinations in desktop and mobil
 
 test("CSS and JavaScript versions match the built bytes", async () => {
   const { createHash } = await import("node:crypto");
-  for (const [route, names] of [["/", ["site.css", "site.js", "room-check.css"]], ["/reservation/", ["site.css", "site.js", "reservation.css", "reservation.js"]], ["/rooms/register/", ["room-registration.js"]]]) {
+  for (const [route, names] of [["/", ["site.css", "site.js", "room-check.css", "rent-faq-search.js"]], ["/reservation/", ["site.css", "site.js", "reservation.css", "reservation.js"]], ["/rooms/register/", ["room-registration.js"]]]) {
     const html = await readFile(routeFile(route), "utf8");
     for (const name of names) {
       const bytes = await readFile(path.join(root, "assets", name));
