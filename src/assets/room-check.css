@@ -20,13 +20,13 @@
 .room-app .brand-wordmark{font-size:28px;font-weight:800;letter-spacing:-1.5px;color:var(--host-blue)}
 .room-app .host-hero{padding:78px 0 88px;background:#fff;overflow:clip}
 .room-app .hero-layout{display:grid;grid-template-columns:1.06fr 1fr;gap:24px;align-items:center}
-.room-app .host-hero-copy{min-height:390px;display:flex;flex-direction:column;align-items:flex-start;position:relative;z-index:1}
+.room-app .host-hero-copy{display:flex;flex-direction:column;align-items:flex-start;position:relative;z-index:1}
 .room-app .host-hero h1{max-width:100%;font-size:clamp(32px,3.3vw,44px);font-weight:300;line-height:1.4;letter-spacing:-1.14px}
 .room-app .host-hero h1 strong{display:block;font-weight:700}
 .room-app .hero-description{margin-top:24px;color:#788597;font-size:20px;line-height:1.5;font-weight:650;letter-spacing:-.48px}
 .room-app .host-primary{display:inline-flex;align-items:center;justify-content:center;gap:16px;min-height:54px;background:var(--host-blue);color:#fff;border-radius:12px;padding:14px 20px;font-size:17px;font-weight:700;letter-spacing:-.4px}
 .room-app .host-primary:hover{background:#1466df}
-.room-app .hero-diagnosis{width:min(425px,100%);margin-top:auto}
+.room-app .hero-diagnosis{width:min(425px,100%);margin-top:clamp(28px,3vw,40px)}
 .room-app .hero-floorplan{position:relative;aspect-ratio:591.165/515.388;min-width:0}
 .room-app .hero-floorplan>img{position:absolute;max-width:none;width:141.585%;height:auto;left:-17.903%;top:-11.397%}
 .room-app .host-kicker{color:var(--host-blue);font-size:19px;font-weight:700;line-height:1.45;letter-spacing:-.33px}
@@ -112,25 +112,6 @@
   padding-block: clamp(56px, 7vw, 104px);
   background: #fff;
 }
-.room-app .header-faq-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 50px;
-  color: #274360;
-  font-size: 16px;
-  font-weight: 600;
-}
-.room-app .header-faq-link::after {
-  content: "";
-  width: 7px;
-  height: 7px;
-  margin: 0 2px 4px 0;
-  border: solid currentColor;
-  border-width: 0 1.5px 1.5px 0;
-  transform: rotate(45deg);
-}
-.room-app .header-faq-link:hover { color: var(--host-blue); text-decoration: underline; }
 .room-app .rent-faq > .host-container { container-type: inline-size; }
 .room-app .rent-faq-head {
   display: grid;
@@ -421,7 +402,6 @@
 .room-app .host-container,.room-app .header-inner{width:calc(100% - 80px)}
 .room-app .host-hero{padding:72px 0 90px}
 .room-app .hero-layout{grid-template-columns:1fr 1fr;gap:10px}
-.room-app .host-hero-copy{min-height:340px}
 .room-app .host-hero h1{font-size:clamp(25px,3.45vw,34px)}
 .room-app .hero-description{font-size:18px}
 .room-app .host-primary{font-size:16px;min-height:56px;padding:14px 18px}
@@ -453,7 +433,6 @@
 .room-app .brand-wordmark{font-size:25px}
 .room-app .host-hero{padding:44px 0 60px}
 .room-app .hero-layout{grid-template-columns:1fr;gap:40px}
-.room-app .host-hero-copy{min-height:0}
 .room-app .host-hero h1{font-size:clamp(24px,7.05vw,38px);line-height:1.45;letter-spacing:-.85px}
 .room-app .hero-description{font-size:17px;line-height:1.65;margin-top:18px;letter-spacing:-.34px}
 .room-app .hero-diagnosis{margin-top:28px;width:100%;min-height:56px;border-radius:14px;font-size:16px}
@@ -520,9 +499,3 @@
 }
 
 @media(prefers-reduced-motion:reduce){.room-app *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
-
-.room-app .host-about-summary { display: flex; justify-content: space-between; align-items: center; gap: 16px 24px; padding: 20px 24px; border-radius: 14px; background: #eff5ff; color: #25415d; }
-.room-app .host-about-summary p { font-size: 17px; line-height: 1.55; word-break: keep-all; }
-.room-app .host-about-summary a { flex: none; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: #185bb1; font-weight: 650; text-decoration: underline; text-underline-offset: 4px; }
-.room-app .host-hero-copy .header-faq-link { margin-top: 8px; }
-@media (max-width: 720px) { .room-app .host-about-summary { flex-wrap: wrap; gap: 4px; } }

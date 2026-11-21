@@ -13,8 +13,11 @@ test("homepage links to the dedicated diagnosis page without the retired organiz
   const room = await readFile(routeFile("/"), "utf8");
   assert.match(room, /class="room-check-page"/);
   assert.doesNotMatch(room, /<iframe|<dialog|data-open-inquiry/);
-  assert.match(room, /예상 월세 무료 진단 받기/);
+  const hero = room.match(/<section class="host-hero"[\s\S]*?<\/section>/)[0];
+  assert.match(hero, /href="\/reservation\/">우리 집 예상 월세 무료 진단 받기/);
+  assert.doesNotMatch(hero, /href="#rent-faq"/);
   assert.match(room, /id="goals"/);
+  assert.doesNotMatch(room, /host-about-summary|한지붕 소개 보기/);
   assert.match(room, /data-income-calculator/);
   assert.match(room, /class="income-reservation" href="\/reservation\/"/);
   assert.doesNotMatch(room, /floating-diagnosis/);
@@ -30,7 +33,7 @@ test("rent FAQ answers and their structured data match in the final section befo
   const html = await readFile(routeFile("/"), "utf8");
   const section = html.match(/<section class="rent-faq"[^>]+>([\s\S]*?)<\/section>\s*<\/div>\s*<footer class="host-footer"/);
   assert.ok(section, "FAQ is server-rendered immediately before the footer");
-  assert.match(html, /<a class="header-faq-link" href="#rent-faq">자주 묻는 질문<\/a>/);
+  assert.match(section[1], /id="rent-faq-query"/);
   const schemas = [...html.matchAll(/<script type="application\/ld\+json">([^<]+)<\/script>/g)].map(match => JSON.parse(match[1]));
   const faqs = schemas.filter(schema => schema["@type"] === "FAQPage");
   assert.equal(faqs.length, 1);

@@ -49,16 +49,17 @@ for (const width of [320, 390, 1440]) {
 }
 for (const width of [640, 1104, 1920]) {
   browser("set", "viewport", String(width), "900");
-  openPage("/?headline_preview=B#goals");
-  const introductionIsClear = evaluate(`['#goals p', '#goals a'].every(selector => {
-    const element = document.querySelector(selector);
-    if (!element) return false;
-    const box = element.getBoundingClientRect();
+  openPage("/?headline_preview=B");
+  assert.equal(evaluate("document.querySelector('.host-hero').nextElementSibling.id"), "process");
+  const diagnosisButtonIsClear = evaluate(`(() => {
+    const button = document.querySelector('.host-hero .hero-diagnosis');
+    button.scrollIntoView({block: "center", behavior: "instant"});
+    const box = button.getBoundingClientRect();
     return [0.05, 0.5, 0.95].every(x => [0.1, 0.5, 0.9].every(y =>
-      element.contains(document.elementFromPoint(box.left + box.width * x, box.top + box.height * y))
+      button.contains(document.elementFromPoint(box.left + box.width * x, box.top + box.height * y))
     ));
-  })`);
-  assert.equal(introductionIsClear, true, `Homepage introduction text or link is covered at ${width}px`);
+  })()`);
+  assert.equal(diagnosisButtonIsClear, true, `Homepage diagnosis button is covered at ${width}px`);
 }
 browser("set", "viewport", "390", "844");
 openPage("/");
