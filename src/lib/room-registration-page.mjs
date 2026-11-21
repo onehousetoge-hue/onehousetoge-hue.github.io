@@ -23,7 +23,8 @@ export function roomRegistrationPage() {
       <fieldset disabled><legend class="sr-only">방 등록 신청</legend>
         <fieldset class="rr-panel rr-chat" data-panel="chat"><legend class="sr-only">방 이야기</legend>
           <div class="rr-heading"><div class="rr-guide"><span class="rr-avatar">${icon("home")}</span><h2 tabindex="-1">한지붕 도우미</h2></div><button type="button" class="rr-text" data-edit>직접 입력</button></div>
-          <div class="rr-thread"><div class="rr-log" role="log" aria-label="방 등록 대화" aria-live="polite" aria-relevant="additions" tabindex="0"><p class="rr-bot">반가워요! ${roomQuestions.location}</p></div>
+          <div class="rr-thread"><button type="button" class="rr-history" aria-controls="rr-history-log" aria-expanded="false" hidden>이전 대화 보기</button>
+            <div class="rr-log" id="rr-history-log" role="log" aria-label="방 등록 대화" aria-live="polite" aria-relevant="additions" tabindex="0"><p class="rr-bot">반가워요! ${roomQuestions.location}</p></div>
             <div class="rr-choices" aria-label="빠른 답변"></div>
             <button type="button" class="rr-primary" data-chat-next hidden>방 조건과 사진 확인하기 ${icon("arrow")}</button></div>
           <div class="rr-composer"><label class="sr-only" for="room-chat-line">도우미에게 답하기</label><textarea id="room-chat-line" rows="2" maxlength="500" placeholder="예: 노원구 공릉동"></textarea><button type="button" class="rr-send" data-send aria-label="답변 보내기">${icon("arrow")}</button></div>

@@ -41,6 +41,7 @@
 .rr-text:hover { text-decoration: underline; }
 .rr-heading > .rr-text { flex: none; font-size: 14px; }
 .rr-thread { border-radius: 16px; padding: 16px; background: #f1f6fc; }
+.rr-history { display: none; }
 .rr-log { display: flex; flex-direction: column; align-items: start; gap: 10px; min-height: 112px; max-height: min(38vh,310px); overflow-y: auto; padding: 2px 3px 8px; }
 .rr-log p { max-width: 94%; padding: 10px 14px; line-height: 1.6; }
 .rr-log[data-scrolled] { mask-image: linear-gradient(to bottom, transparent, #000 12px); }
@@ -123,5 +124,8 @@
   .rr-heading h2 { font-size: 21px; }
   .rr-thread { padding: 10px; }
   .rr-log { min-height: 86px; max-height: min(32dvh,250px); }
+  .rr-history:not([hidden]) { display: block; margin: -4px auto 2px; min-height: 44px; padding: 4px 14px; border: 0; background: transparent; color: #315c88; font-size: 14px; text-decoration: underline; text-underline-offset: 3px; }
+  .rr-log:not([data-expanded]) { max-height: none; mask-image: none; }
+  .rr-log:not([data-expanded]) > p:nth-last-child(n + 3) { display: none; }
   .rr-edit-grid, .rr-contact-grid { grid-template-columns: minmax(0,1fr); }
 }

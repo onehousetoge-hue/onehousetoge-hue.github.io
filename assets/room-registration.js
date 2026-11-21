@@ -43,11 +43,18 @@ function init(form) {
   const input = name => form.elements.namedItem(name);
   const entries = Object.entries(roomFields);
   const editor = find(".rr-editor"), composer = find("#room-chat-line"), log = find(".rr-log");
+  const historyButton = find(".rr-history");
   const panels = [...form.querySelectorAll("[data-panel]")], steps = [...form.querySelectorAll(".rr-steps li")];
   const status = find("[data-status]"), reviewButton = find("[data-review]"), chatNext = find("[data-chat-next]");
   const fileInput = find("#rr-photo"), photoPreview = find("[data-photo-preview]"), erase = find("[data-erase]");
   let stage = "chat", finishReply, lastQuestion, editedInDetails = false;
   log.addEventListener("scroll", () => log.toggleAttribute("data-scrolled", log.scrollTop > 3), { passive: true });
+  historyButton.onclick = () => {
+    const expanded = log.toggleAttribute("data-expanded");
+    historyButton.setAttribute("aria-expanded", String(expanded));
+    historyButton.textContent = expanded ? "이전 대화 접기" : "이전 대화 보기";
+    log.scrollTop = expanded ? 0 : log.scrollHeight;
+  };
   let photo = "", photoGeneration = 0, resizing = false, busy = false, complete = false, requestId, attribution;
   function fields() { return Object.fromEntries(entries.map(([key]) => [key, input(key).value.trim()])); }
   function invalidate() { requestId = undefined; attribution = undefined; }
@@ -57,6 +64,7 @@ function init(form) {
     finishReply?.();
     const item = document.createElement("p");
     item.className = human ? "rr-user" : "rr-bot";
+    historyButton.hidden = log.childElementCount < 2;
     if (human || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       item.textContent = text;
       log.append(item);
