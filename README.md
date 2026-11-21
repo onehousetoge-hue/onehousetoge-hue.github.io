@@ -34,6 +34,8 @@ npm run audit
 
 전체 검사는 `npm run check`로 실행합니다.
 
+공개 문구에 쓰는 글자는 `HanjibungSiteText.woff2`에서 먼저 불러오고 나머지는 원본 글꼴로 표시합니다. 문구를 대폭 수정한 뒤에는 FontTools와 Brotli가 있는 개발 환경에서 `python scripts/subset-font.py`를 실행해 경량 글꼴을 갱신할 수 있습니다.
+
 ## 배포
 
 ```powershell
@@ -54,7 +56,10 @@ git push origin main
 | 경로 | 편집할 소스 |
 | --- | --- |
 | `/` | `src/lib/room-check-page.mjs` |
-| `/reservation/` | `src/lib/reservation-page.mjs`, `src/lib/callback-form.mjs` |
+| `/about/` | `src/lib/about-page.mjs` |
+| `/consultation/` | `src/lib/callback-form.mjs` |
+| `/reservation/` | `src/lib/reservation-page.mjs` |
+| `/rooms/register/` | `src/lib/room-registration-page.mjs`, `src/assets/room-registration.js` |
 | `/reservation/privacy/` | `src/content/privacy.mjs` |
 
 ‘한지붕 알아보기’에 속했던 53개 주소는 2026년 11월 20일에 공개를 종료했다. 이전 게시본의 기준 커밋은 `8513c0ef4c830abdf37b17d506e851f5e1aeea2c`이다.
@@ -63,11 +68,11 @@ git push origin main
 
 ## 환경변수
 
-현재 필수 환경변수는 없습니다. 온라인 문의는 `src/config/inquiries.mjs`에 설정한 공개 제출용 Apps Script URL을 사용합니다. 이 URL은 인증 비밀값이 아니며, 문의 목록을 조회하는 API는 제공하지 않습니다. GA4는 `src/config/site.mjs`의 공개 측정 ID와 `src/assets/analytics.js`로 설정합니다. UTM 운영과 확인 범위는 `TRACKING.md`에 정리되어 있습니다. `.env.example`은 향후 기능 검토용입니다. 실제 키나 비밀값은 저장소에 커밋하지 않습니다.
+정적 사이트 빌드는 환경변수 없이 실행합니다. 월세 진단 API에 필요한 Vercel 운영 설정은 `room-api/README.md`에 있습니다. 상담과 방 등록은 `src/config/inquiries.mjs`에 설정한 공개 제출용 Apps Script URL을 사용합니다. GA4는 `src/config/site.mjs`의 공개 측정 ID와 `src/assets/analytics.js`로 설정합니다. UTM 운영과 확인 범위는 `TRACKING.md`에 정리되어 있습니다.
 
 ## 문의 처리방식
 
-방 진단은 `room-api/`에서, 예약 화면의 빠른 상담은 기존 Google Apps Script 연동에서 접수합니다. 서버 검증과 저장 후 접수번호 확인을 통과해야 완료로 표시하며, 확인 실패 시 입력 내용을 유지합니다. 실제 서버 코드는 `integrations/inquiries/Code.gs`입니다.
+월세 진단은 `room-api/`를 거쳐 `진단 신청` 시트에 저장합니다. 상담과 방 등록은 `integrations/inquiries/Code.gs`를 통해 `상담문의` 시트에 저장하며, 방 등록은 상담 주제 `방 등록`으로 구분합니다. 접수번호를 확인한 뒤 완료로 표시하며 확인에 실패하면 입력 내용을 유지합니다. 담당자는 `/admin/`에서 Google 계정으로 로그인해 접수 내역과 GA4 통계를 확인합니다.
 
 전화 `010-4587-9428`과 이메일 `onehousetoge@gmail.com` 문의도 유지합니다. 상담 종료 후 최대 1년 보관 원칙에 따라 운영담당자가 종료일·삭제 예정일을 관리해야 합니다. 자동 삭제나 자동 답변 알림 기능은 없습니다. 서버 공개 배포와 웹사이트 프론트엔드 배포는 별도 단계이므로, 코드 변경만으로 운영 사이트에 반영됐다고 판단하지 않습니다.
 

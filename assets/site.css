@@ -1,3 +1,6 @@
+@font-face { font-family: "Hanjibung Site Text"; font-style: normal; font-weight: 100 900; font-display: swap; src: url("/assets/fonts/HanjibungSiteText.woff2") format("woff2"); }
+@font-face { font-family: Pretendard; font-style: normal; font-weight: 100 900; font-display: swap; src: local("Pretendard Variable"), url("/assets/fonts/PretendardVariable.woff2") format("woff2"); }
+
 :root {
   --bg: #faf9f5;
   --surface: #ffffff;
@@ -1397,7 +1400,7 @@ body:has(> .rent-diagnosis-dock) { padding-bottom: 104px; }
 }
 
 /* Primary navigation for the public site. */
-.public-header { position: relative; z-index: 55; border-bottom: 1px solid #e3e9ef; background: #fff; color: #223348; font: 600 16px/1.45 Pretendard, "Malgun Gothic", sans-serif; }
+.public-header { position: relative; z-index: 55; border-bottom: 1px solid #e3e9ef; background: #fff; color: #223348; font: 600 16px/1.45 "Hanjibung Site Text",Pretendard, "Malgun Gothic", sans-serif; }
 .public-header-inner { width: min(1080px, calc(100% - 64px)); min-height: 72px; margin-inline: auto; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
 .public-header a { text-decoration: none; }
 .public-header .public-brand { display: inline-flex; align-items: center; min-height: 48px; color: #185fc2; font-size: 28px; font-weight: 800; letter-spacing: -.065em; }

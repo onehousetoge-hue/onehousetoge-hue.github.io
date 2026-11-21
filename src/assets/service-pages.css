@@ -1,4 +1,4 @@
-.service-about, .service-intake { color: #1c2e43; font-family: Pretendard, "Malgun Gothic", sans-serif; word-break: keep-all; overflow-wrap: anywhere; }
+.service-about, .service-intake { color: #1c2e43; font-family: "Hanjibung Site Text",Pretendard, "Malgun Gothic", sans-serif; word-break: keep-all; overflow-wrap: anywhere; }
 .service-about :is(h1,h2,h3,p) { margin: 0; }
 .about-intro, .about-benefits, .about-local, .intake-layout { width: min(1000px, calc(100% - 64px)); margin-inline: auto; }
 .about-intro { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 40px; padding-block: 64px; }

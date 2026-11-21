@@ -24,7 +24,7 @@ git push origin main
 
 ## 환경변수
 
-현재는 필수 환경변수가 없습니다. 온라인 문의 API 또는 분석도구를 추가하는 경우 저장소가 아닌 호스팅 보안설정에 값을 저장하고 `.env.example`과 개인정보 처리방침을 함께 갱신합니다.
+정적 사이트 빌드는 환경변수 없이 실행됩니다. 월세 진단 접수 서버에는 Vercel Production의 `GOOGLE_SCRIPT_URL`과 `GOOGLE_SCRIPT_SECRET`이 필요합니다. `room-api/README.md`의 서명 연결 검사로 운영 시트와의 연결을 확인합니다. 비밀값은 Vercel과 Apps Script의 비공개 설정에서 관리합니다.
 
 ## HTTPS와 도메인
 

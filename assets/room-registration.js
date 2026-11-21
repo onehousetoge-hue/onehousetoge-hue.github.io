@@ -1,4 +1,4 @@
-import { extractRoom, privateText, requiredFields, roomFields } from "./room-description.js";
+import { extractRoom, privateText, requiredFields, roomFields } from "./room-description.js?v=8118ffe605b3";
 import { callbackPayload, submitCallback } from "./callback.js";
 import { validateInquiryInput } from "./inquiry.js";
 
@@ -101,11 +101,11 @@ function init(form) {
       composer.value = ""; review(); return;
     }
     const missing = firstMissing();
-    const patch = extractRoom(text, missing);
+    const patch = extractRoom(text, missing, input("availability").value);
     bubble(text, true); composer.value = "";
     const applied = [];
     for (const [key, value] of Object.entries(patch)) {
-      if (badRoomField(key, value) || value.length > input(key).maxLength) continue;
+      if ((value && badRoomField(key, value)) || value.length > input(key).maxLength) continue;
       input(key).value = value; input(key).setCustomValidity(""); applied.push(roomFields[key]);
     }
     invalidate(); notify(""); refresh();

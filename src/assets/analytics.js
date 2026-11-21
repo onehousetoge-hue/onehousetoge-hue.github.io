@@ -6,14 +6,16 @@
   if (!/^G-[A-Z0-9]{6,20}$/.test(analyticsId || "")) return;
   const current = new URL(location.href || location.origin);
   if (/^[ABC]$/.test(current.searchParams.get("headline_preview") || "")) return;
-  if (current.pathname === "/reservation/" && current.searchParams.get("consultation") === "quick") return;
+  if (window.hanjibungRedirecting ||
+      (current.pathname === "/" && current.searchParams.get("diagnosis") === "1") ||
+      (current.pathname === "/reservation/" && current.searchParams.get("consultation") === "quick")) return;
 
   try {
     window.dataLayer ||= [];
     function gtag() { window.dataLayer.push(arguments); }
     window.gtag = gtag;
     let referrerOrigin = "";
-    try { referrerOrigin = new URL(document.referrer).origin; } catch { /* Direct visit. */ }
+    try { referrerOrigin = window.hanjibungReferrerOrigin ?? new URL(document.referrer).origin; } catch { /* Direct visit. */ }
     // Keep campaign attribution while excluding form fields, receipt IDs and
     // fragments from the URL sent to Analytics. Do not forward arbitrary queries.
     const pageUrl = new URL(location.origin + location.pathname);

@@ -105,7 +105,8 @@ test("the build and sitemap expose only the active pages and the error document"
 
 test("existing diagnosis bookmarks redirect to the new form without losing other query parameters", async () => {
   const { runInNewContext } = await import("node:vm");
-  const script = await readFile(path.join(root, "assets/room-check.js"), "utf8");
+  const html = await readFile(routeFile("/"), "utf8");
+  const script = html.match(/<script data-legacy-entry>([\s\S]*?)<\/script>/)[1];
   let destination;
   runInNewContext(script, {
     document: { querySelector: () => ({}) }, URL,
@@ -179,7 +180,7 @@ test("the parent and room diagnostic share GA without exposing inquiry details",
     assert.doesNotMatch(content, /googleadservices\.com/);
     const scripts = [...content.matchAll(/<script[^>]+src="([^"]+)"/g)].map((match) => match[1]);
     const expected = ["/assets/site.js", "/assets/analytics.js"];
-    if (page.route === "/") expected.push("/assets/room-check.js", "/assets/diagnosis-prefill.js", "/assets/income-calculator.js");
+    if (page.route === "/") expected.push("/assets/diagnosis-prefill.js", "/assets/income-calculator.js");
     if (page.route === "/reservation/") expected.push("/assets/diagnosis-prefill.js", "/assets/reservation.js");
     if (page.route === "/consultation/") expected.push("/assets/callback.js");
     if (page.route === "/rooms/register/") expected.push("/assets/room-registration.js");
@@ -211,7 +212,7 @@ test("all public pages have the four requested destinations in desktop and mobil
 
 test("CSS and JavaScript versions match the built bytes", async () => {
   const { createHash } = await import("node:crypto");
-  for (const [route, names] of [["/", ["site.css", "site.js", "room-check.css", "room-check.js"]], ["/reservation/", ["site.css", "site.js", "reservation.css", "reservation.js"]]]) {
+  for (const [route, names] of [["/", ["site.css", "site.js", "room-check.css"]], ["/reservation/", ["site.css", "site.js", "reservation.css", "reservation.js"]], ["/rooms/register/", ["room-registration.js"]]]) {
     const html = await readFile(routeFile(route), "utf8");
     for (const name of names) {
       const bytes = await readFile(path.join(root, "assets", name));
@@ -219,4 +220,18 @@ test("CSS and JavaScript versions match the built bytes", async () => {
       assert.ok(html.includes(`/assets/${name}?v=${version}`), `${route}: ${name}`);
     }
   }
+  const registration = await readFile(path.join(root, "assets", "room-registration.js"), "utf8");
+  const parser = await readFile(path.join(root, "assets", "room-description.js"));
+  assert.ok(registration.includes("room-description.js?v=" + createHash("sha256").update(parser).digest("hex").slice(0, 12)));
+});
+
+test("the common UI font ships with a full Korean fallback", async () => {
+  const css = await readFile(path.join(root, "assets/site.css"), "utf8");
+  const fonts = path.join(root, "assets/fonts");
+  const small = await readFile(path.join(fonts, "HanjibungSiteText.woff2"));
+  const full = await stat(path.join(fonts, "PretendardVariable.woff2"));
+  assert.equal(small.toString("ascii", 0, 4), "wOF2");
+  assert.ok(small.length < full.size / 5);
+  assert.ok(css.includes('/assets/fonts/HanjibungSiteText.woff2'));
+  assert.ok(css.includes('/assets/fonts/PretendardVariable.woff2'));
 });

@@ -26,6 +26,23 @@ test('a host can describe, correct and review a room using a real sentence or a 
   assert.equal(extractRoom('다가구주택이고 가구도 있어요').location,undefined);
 });
 
+test('a rejected or unrelated date is not offered as an available move-in date',()=>{
+  const answer = (text, previous = '') => extractRoom(text, 'availability', previous).availability;
+  assert.equal(answer('공릉동에 방 한 칸 있어요. 다음 달은 입주가 안 돼요. 입주일은 협의하고 싶어요.'), '일정 협의');
+  assert.equal(answer('다음 달에는 입주가 안 돼요'), undefined);
+  assert.equal(answer('다음 달에는 입주가 안 돼요', '다음 달부터'), '');
+  assert.equal(answer('다음 달에는 입주가 안 돼요', '12월 12일'), undefined);
+  assert.equal(answer('12월은 어렵고 1월부터 가능해요', '12월'), '1월부터');
+  assert.equal(answer('5월 1일 말고 5월 20일부터 입주 가능해요'), '5월 20일부터');
+  assert.equal(answer('입주는 협의하고 월세는 다음 달부터 받아요'), '일정 협의');
+  assert.equal(answer('월세는 12월부터 40만 원이에요'), undefined);
+  assert.equal(answer('10월에 수리하고 11월에 입주 가능해요'), '11월');
+  assert.equal(answer('2월 30일에 입주해요'), undefined);
+  assert.equal(answer('2027-02-29'), undefined);
+  assert.equal(answer('2028.02.29'), '2028.02.29');
+  assert.equal(answer('다음 달부터 가능하고 월세는 40만 원이에요'), '다음 달부터');
+});
+
 test('callback is compatible with the existing server and requires real consent and contact',async()=>{
   const code = await readFile(new URL('../integrations/inquiries/Code.gs',import.meta.url),'utf8');
   const context = vm.createContext({}); vm.runInContext(code,context);
@@ -89,9 +106,9 @@ test('the two intake forms have distinct fields and the existing diagnosis keeps
   assert.match(diagnosis,/class="inquiry-form"/);
   assert.match(diagnosis,/href="\/consultation\/"/);
   assert.match(diagnosis,/상담 완료 후 90일 이내/);
-  const redirect=diagnosis.match(/<script>(const legacyConsultation[\s\S]*?)<\/script>/)[1];
+  const redirect=diagnosis.match(/<script data-legacy-entry>([\s\S]*?)<\/script>/)[1];
   let destination;
-  vm.runInNewContext(redirect,{URL,location:{href:'https://hanjibung.kr/reservation/?consultation=quick&utm_source=naver#quick-consultation',replace:url=>{destination=url;}}});
+  vm.runInNewContext(redirect,{URL,window:{location:{href:'https://hanjibung.kr/reservation/?consultation=quick&utm_source=naver#quick-consultation',replace:url=>{destination=url;}}}});
   assert.equal(destination,'https://hanjibung.kr/consultation/?utm_source=naver#quick-consultation');
 });
 

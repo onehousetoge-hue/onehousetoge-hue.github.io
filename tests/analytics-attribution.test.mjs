@@ -77,6 +77,17 @@ test("social UTM values and encoded Korean text survive, including ampersands", 
   assert.equal(params.size, 4);
 });
 
+test("legacy links count only the final form as a page view", () => {
+  for (const [alias, destination] of [["/?diagnosis=1", "/reservation/"], ["/reservation/?consultation=quick", "/consultation/"]]) {
+    const origin = "https://hanjibung.kr";
+    const intermediate = visit(origin + alias);
+    assert.equal(intermediate.scripts.length, 0);
+    const commands = [...intermediate.commands, ...visit(origin + destination).commands];
+    const views = commands.filter(([command, event]) => command === "event" && event === "page_view");
+    assert.deepEqual(views.map(([, , params]) => params.page_location), [origin + destination]);
+  }
+});
+
 test("invalid measurement ID never initializes tracking", () => {
   assert.deepEqual(visit("https://hanjibung.kr/?utm_source=google", "invalid"), { commands: [], scripts: [] });
 });

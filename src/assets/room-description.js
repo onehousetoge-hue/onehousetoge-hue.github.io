@@ -43,16 +43,42 @@ function numberOfRooms(text, focused) {
   const n = Number(found) || roomNumbers[found];
   return n >= 1 && n <= 10 ? String(n) + "개" + (/개\s*이상/.test(text) ? " 이상" : "") : "";
 }
-function moveIn(text, focused) {
-  const dates = text.match(/(?:20\d\d년\s*)?(?:1[0-2]|0?[1-9])\s*월\s*(?:(?:3[01]|[12]?\d)\s*일|초순?|중순|말)?(?:부터|이후)?|20\d{2}[-./]\d{1,2}[-./]\d{1,2}/g);
-  if (dates && (dates.length === 1 || /말고|아니라|아니고/.test(text))) return dates[dates.length-1].trim();
-  const relative = text.match(/(?:다음\s*달|내달|이번\s*달|다음\s*주|내년|올해|한\s*달\s*(?:후|이내|뒤)|\d+\s*(?:주|개월)\s*(?:후|이내|뒤))(?:\s*(?:초순?|중순|말|부터|이후))?/);
-  if (relative) return relative[0].trim();
-  if (/(?:바로|즉시|당장|오늘부터|지금부터)(?:\s*(?:입주|들어|가능|돼|되|비어)|[.! ]*$)/.test(text) && !/않|못|안\s*(?:돼|되|들어)|불가/.test(text)) return "바로 가능";
-  const aboutTime = /입주|이사|날짜|시기|들어오|들어와/.test(text) || (focused === "availability" && !/월세|관리비|보증금|임대료|가격/.test(text));
-  if (aboutTime && /미정|일정\s*협의|입주.{0,6}협의|날짜.{0,5}협의|아직.{0,5}(?:몰라|모르|미정)/.test(text)) return "일정 협의";
-  if (aboutTime && !/[않못]|안\s*(?:돼|되|들어)/.test(text)) return moveInIntent(text);
-  return "";
+const moveInTime = /(?<!\d)(?:20\d{2}[-./]\d{1,2}[-./]\d{1,2}|(?:20\d{2}년\s*)?\d{1,2}\s*월(?:\s*(?:\d{1,2}\s*일|초순?|중순|말))?|(?:다다음|다음|이번)\s*(?:달|주)|내달|내년|올해|한\s*달\s*(?:후|이내|뒤)|\d+\s*(?:주|개월)\s*(?:후|이내|뒤))(?:\s*(?:초순?|중순|말))?(?:\s*(?:부터|이후))?/g;
+function validMoveInDate(value) {
+  const date = value.match(/^(?:(\d{4})년\s*)?(\d{1,2})\s*월(?:\s*(\d{1,2})\s*일)?/) ||
+    value.match(/^(\d{4})[-./](\d{1,2})[-./](\d{1,2})/);
+  if (!date) return true;
+  const month = Number(date[2]), day = Number(date[3] || 1);
+  return month >= 1 && month <= 12 && day >= 1 && day <= new Date(Date.UTC(Number(date[1] || 2000), month, 0)).getUTCDate();
+}
+function moveIn(text, focused, previous) {
+  // Keep the rejection with the old date when the speaker corrects it.
+  const clauses = text.split(/[,;!?\n]|(?<!\d)\.|\.(?!\d)|(?<=말고|아니라|아니고|어렵고|어렵지만|불가능하고|되고|되지만|협의하고|수리하고|공사하고|끝나고)\s*/);
+  const choices = new Set();
+  let withdrewPrevious = false;
+  const comparable = value => value.replace(/\s|부터|이후/g, "");
+  for (const clause of clauses) {
+    const otherSubject = /월세|관리비|보증금|임대료|가격|공사|수리/.test(clause);
+    const aboutMove = /입주|이사|들어오|들어와/.test(clause);
+    const aboutTime = aboutMove || (!otherSubject && (focused === "availability" || /날짜|시기|일정/.test(clause)));
+    const times = [...clause.matchAll(moveInTime)]
+      .filter(hit => !/(?:월세|관리비|보증금|임대료|공사|수리)(?:[은는이가를을])?\s*$/.test(clause.slice(0, hit.index)))
+      .map(hit => hit[0].trim());
+    if (otherSubject && !aboutMove && !/부터\s*(?:가능|들어)|(?:바로|즉시)\s*가능/.test(clause)) continue;
+    if (!times.length && /(?:바로|즉시|당장|오늘부터|지금부터)(?:\s*(?:입주|들어|가능|돼|되|비어|안|불가)|\s*$)/.test(clause)) times.push("바로 가능");
+    if (/말고|아니라|아니고|아닌|아니에요|않|못|불가|어렵|어려|힘들|안\s*(?:돼|되|된|될|됩|들어|맞)/.test(clause)) {
+      if (previous && times.some(value => comparable(previous).startsWith(comparable(value)))) withdrewPrevious = true;
+      continue;
+    }
+    if (times.length) {
+      for (const time of times) if (validMoveInDate(time)) choices.add(time);
+    } else if (aboutTime) {
+      const intent = /미정|(?:일정|입주|날짜).{0,8}협의|아직.{0,5}(?:몰라|모르)/.test(clause) ? "일정 협의" : moveInIntent(clause);
+      if (intent) choices.add(intent);
+    }
+  }
+  if (choices.size === 1) return [...choices][0];
+  return withdrewPrevious ? "" : undefined;
 }
 
 // Accept an explicit won unit or a clear no-cost/negotiable answer. A bare number is ambiguous.
@@ -70,7 +96,7 @@ function money(text, label) {
 export function privateText(text) {
   return /(?:01[016789][\s.-]?\d{3,4}[\s.-]?\d{4}|\b\d{6}[- ]?[1-8]\d{6}\b|[\w.+-]+@[\w.-]+\.[a-z]{2,})/i.test(text);
 }
-export function extractRoom(text, focused = "") {
+export function extractRoom(text, focused = "", previousAvailability = "") {
   const clean = String(text).normalize("NFKC").slice(0, 500).trim();
   if (!clean || privateText(clean)) return {};
   const patch = {};
@@ -78,8 +104,8 @@ export function extractRoom(text, focused = "") {
   if (places.length) patch.location = places[places.length - 1];
   const count = numberOfRooms(clean, focused);
   if (count) patch.rooms = count;
-  const availability = moveIn(clean, focused);
-  if (availability) patch.availability = availability;
+  const availability = moveIn(clean, focused, previousAvailability);
+  if (availability !== undefined) patch.availability = availability;
   for (const [field, label] of Object.entries(moneyLabels)) {
     const value = money(clean, label);
     if (value) patch[field] = value;

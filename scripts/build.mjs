@@ -13,8 +13,8 @@ import { roomCheckPage } from "../src/lib/room-check-page.mjs";
 import { rentFaqSchema } from "../src/lib/rent-faq.mjs";
 import { absolute, layout, organizationSchema } from "../src/lib/template.mjs";
 import {
-  roomCheckStylesheetUrl, roomCheckScriptUrl, incomeCalculatorStylesheetUrl, incomeCalculatorScriptUrl,
-  diagnosisPrefillScriptUrl, reservationStylesheetUrl, reservationScriptUrl, serviceStylesheetUrl, registrationStylesheetUrl, headlineExperiment,
+  assetText, roomCheckStylesheetUrl, legacyEntryScript, incomeCalculatorStylesheetUrl, incomeCalculatorScriptUrl,
+  diagnosisPrefillScriptUrl, reservationStylesheetUrl, reservationScriptUrl, serviceStylesheetUrl, registrationStylesheetUrl, registrationSource, headlineExperiment,
 } from "../src/lib/static-assets.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -52,8 +52,8 @@ await emit("/", layout({
     organizationSchema,
     rentFaqSchema,
   ],
-}).replace("</head>", `<link rel="stylesheet" href="${roomCheckStylesheetUrl}"><link rel="stylesheet" href="${incomeCalculatorStylesheetUrl}"><script src="${roomCheckScriptUrl}" defer></script><script src="${diagnosisPrefillScriptUrl}" defer></script><script src="${incomeCalculatorScriptUrl}" defer></script></head>`));
-await emit("/reservation/", layout({ title: "예상 월세 무료 진단 신청", description: "우리 집 남는 방의 예상 월세와 준비사항을 무료로 안내받으세요. 집 위치와 방 정보를 남기면 한지붕 매니저가 확인 후 연락드립니다.", path: "/reservation/", body: reservationPage(), bodyClass: "reservation-page", showDiagnosisDock: false, showFooter: false, jsonLd: organizationSchema }).replace('<meta charset="UTF-8">', '<meta charset="UTF-8"><script>const legacyConsultation = new URL(location.href); if (legacyConsultation.searchParams.get("consultation") === "quick") { legacyConsultation.pathname = "/consultation/"; legacyConsultation.searchParams.delete("consultation"); location.replace(legacyConsultation.href); }</script>').replace("</head>", `<link rel="stylesheet" href="${reservationStylesheetUrl}"><script src="${diagnosisPrefillScriptUrl}" defer></script><script src="${reservationScriptUrl}" defer></script></head>`));
+}).replace("</head>", `${legacyEntryScript}<link rel="stylesheet" href="${roomCheckStylesheetUrl}"><link rel="stylesheet" href="${incomeCalculatorStylesheetUrl}"><script src="${diagnosisPrefillScriptUrl}" defer></script><script src="${incomeCalculatorScriptUrl}" defer></script></head>`));
+await emit("/reservation/", layout({ title: "예상 월세 무료 진단 신청", description: "우리 집 남는 방의 예상 월세와 준비사항을 무료로 안내받으세요. 집 위치와 방 정보를 남기면 한지붕 매니저가 확인 후 연락드립니다.", path: "/reservation/", body: reservationPage(), bodyClass: "reservation-page", showDiagnosisDock: false, showFooter: false, jsonLd: organizationSchema }).replace("</head>", `${legacyEntryScript}<link rel="stylesheet" href="${reservationStylesheetUrl}"><script src="${diagnosisPrefillScriptUrl}" defer></script><script src="${reservationScriptUrl}" defer></script></head>`));
 for (const [route, title, description, body] of [
   ["/about/", "한지붕 소개", "집주인과 대학생이 한집에서 지내도록 돕는 한지붕의 활동과 노원구 공릉동에서 시작한 빈방 활용 서비스를 소개합니다.", headlineExperiment + aboutPage()],
   ["/consultation/", "상담 신청하기", "빈방 활용이나 대학생과의 공동생활에 대해 궁금한 점을 한지붕 매니저에게 남겨 주세요. 이름과 연락처, 질문을 보내면 매니저가 답변합니다.", intakePage()],
@@ -65,7 +65,7 @@ for (const [route, title, description, body] of [
 
 await emit("/reservation/privacy/", layout({
   title: "개인정보 처리방침",
-  description: "한지붕 방 진단과 빠른 상담 신청에 적용되는 개인정보 처리방침입니다.",
+  description: "한지붕 월세 진단, 상담 신청, 방 등록에서 받는 정보와 보관 기간, 삭제 요청 방법을 안내합니다.",
   path: "/reservation/privacy/",
   body: headlineExperiment + privacyBody,
   breadcrumbs: [{ label: "개인정보 처리방침", href: "/reservation/privacy/" }],
@@ -94,12 +94,15 @@ await mkdir(path.join(out, "assets"), { recursive: true });
 const assets = [
   "site.css", "site.js", "analytics.js", "room-check.css", "room-check.js",
   "reservation.css", "service-pages.css", "reservation.js", "diagnosis-prefill.js", "income-calculator.css",
-  "income-calculator.js", "callback.js", "inquiry.js", "room-registration.js", "room-description.js", "room-registration.css", "figma", "fonts", "og-default.png",
+  "income-calculator.js", "callback.js", "inquiry.js", "room-description.js", "room-registration.css", "figma", "fonts", "og-default.png",
   "hanjibung-logo.png", "hanjibung-logo-256.png", "hanjibung-icon-64.png", "hanjibung-icon-192.png",
 ];
 for (const asset of assets) {
-  await cp(path.join(root, "src", "assets", asset), path.join(out, "assets", asset), { recursive: true });
+  const destination = path.join(out, "assets", asset);
+  if (/\.(css|js)$/.test(asset)) await writeFile(destination, assetText(asset), "utf8");
+  else await cp(path.join(root, "src", "assets", asset), destination, { recursive: true });
 }
+await writeFile(path.join(out, "assets", "room-registration.js"), registrationSource, "utf8");
 
 await writeFile(path.join(out, "build-manifest.json"), JSON.stringify({ generatedAt: new Date().toISOString(), pages: generated.map(({ route, indexable, updatedAt }) => ({ route, indexable, updatedAt })) }, null, 2), "utf8");
 console.log(`Built ${generated.length} HTML files and ${sitemapEntries.length} indexable routes.`);

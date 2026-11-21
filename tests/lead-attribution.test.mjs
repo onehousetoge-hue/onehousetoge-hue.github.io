@@ -9,7 +9,7 @@ const sheets = source("../integrations/attribution/LeadAttribution.gs");
 const admin = source("../integrations/admin/Code.gs");
 function navigate(path, storage, referrer = "", type = "navigate") {
   const location = new URL(path, "https://hanjibung.kr");
-  const window = { sessionStorage: { getItem:key=>storage.get(key), setItem:(key,val)=>storage.set(key,val) },
+  const window = { sessionStorage: { getItem:key=>storage.get(key), setItem:(key,val)=>storage.set(key,val), removeItem:key=>storage.delete(key) },
     performance: { getEntriesByType:()=>[{type}] } };
   vm.runInNewContext(site,{window,location,URL,document:{referrer,querySelectorAll:()=>[]}});
   return window.hanjibungLeadVisit;
@@ -41,6 +41,28 @@ test("campaign formulae and contact strings stay out of saved attribution",()=>{
   const scope=vm.createContext({});vm.runInContext(sheets,scope);
   const cells=vm.runInContext("leadCells_({landing:'/',variant:'other',source:'=SUM(5)',campaign:'a@a.kr',term:'010-1234-5678',referrer:'https://bad.test/private'},'callback')",scope);
   assert.equal(cells.length,10);assert.ok(cells.slice(2).every(x=>x===""));
+});
+
+test("a bookmarked form records its real landing and external source through the redirect",()=>{
+  const redirect = source("../src/assets/room-check.js");
+  const origin = "https://hanjibung.kr";
+  for (const [alias, path] of [["/?diagnosis=1", "/reservation/"], ["/reservation/?consultation=quick", "/consultation/"], ["/?diagnosis=1&consultation=quick", "/consultation/"]]) {
+    const store = new Map();
+    const referrer = "https://search.naver.com/search?query=private";
+    let target;
+    const window = {location:{href:origin + alias, replace:url=>{target=url;}}, sessionStorage:{setItem:(key,val)=>store.set(key,val)}};
+    vm.runInNewContext(redirect,{window,URL,document:{referrer}});
+    assert.equal(target, origin + path);
+    assert.equal(window.hanjibungRedirecting, true);
+    assert.doesNotMatch([...store.values()].join(""), /query=|private/);
+    const visit = navigate(target, store, origin + alias).snapshot();
+    assert.deepEqual([visit.landing, visit.referrer, visit.source, visit.variant], [path, "search.naver.com", "search.naver.com", ""]);
+    assert.equal(store.has("hanjibung.redirect-referrer.v1"), false);
+  }
+  for (const [path, elapsed] of [["/about/", 0], ["/reservation/", 90000]]) {
+    const store = new Map([["hanjibung.redirect-referrer.v1", JSON.stringify({path,at:Date.now()-elapsed,origin:"https://search.naver.com"})]]);
+    assert.equal(navigate("/reservation/",store).snapshot().source, "(direct)");
+  }
 });
 test("all web and data entry points deny missing or different Google identities before reading data",()=>{
   for(const email of ["","another@example.org"]){

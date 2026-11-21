@@ -13,17 +13,27 @@
     const value = (current.searchParams.get(name) || "").trim();
     return value.length <= 100 && !/^[=+@-]|[\u0000-\u001f<>@]|01[016789][ -]?\d{3,4}[ -]?\d{4}|\d{6}[- ]?[1-8]\d{6}/.test(value) ? value : "";
   }
-  function referrerHost() {
+  function visitReferrer() {
+    let ref;
+    try { ref = new URL(document.referrer); } catch { /* Direct visit. */ }
+    const bridgeKey = "hanjibung.redirect-referrer.v1";
     try {
-      const ref = new URL(document.referrer);
-      if (["http:", "https:"].includes(ref.protocol) && ref.origin !== current.origin &&
-          !["hanjibung.kr", "www.hanjibung.kr"].includes(ref.hostname)) return ref.hostname.slice(0, 180);
-    } catch { /* Direct visits have no referrer. */ }
-    return "";
+      const saved = window.sessionStorage.getItem(bridgeKey);
+      if (saved) {
+        window.sessionStorage.removeItem(bridgeKey);
+        const handoff = JSON.parse(saved), age = Date.now() - handoff.at;
+        if ((!ref || ref.origin === current.origin) && handoff.path === route && age >= 0 && age < 60000) {
+          ref = new URL(handoff.origin);
+        }
+      }
+    } catch { /* Fall back to the navigation's referrer. */ }
+    return ref && ["https:", "http:"].includes(ref.protocol) ? ref : null;
   }
-  const legacyConsultation = route === "/reservation/" && current.searchParams.get("consultation") === "quick";
-  if (route && !preview && !legacyConsultation) {
-    const hostname = referrerHost();
+  if (route && !preview && !window.hanjibungRedirecting) {
+    const referrer = visitReferrer();
+    window.hanjibungReferrerOrigin = referrer?.origin || "";
+    const hostname = referrer && referrer.origin !== current.origin && !["hanjibung.kr", "www.hanjibung.kr"].includes(referrer.hostname)
+      ? referrer.hostname.slice(0, 180) : "";
     const campaign = Object.fromEntries(["source", "medium", "campaign", "id", "content", "term"]
       .map((name) => [name, campaignValue("utm_" + name)]));
     const tagged = Object.values(campaign).some(Boolean);
