@@ -19,6 +19,8 @@
 .host-main :where(a) { text-decoration: none; }
 .host-main :where(button) { background: transparent; border: 0; }
 .host-main {
+  --host-scale: .67;
+  zoom: var(--host-scale);
   --color-primary-50: #f2f8ff;
   --color-primary-100: #e2eeff;
   --color-primary-200: #c2dbff;
@@ -43,21 +45,22 @@
   margin-inline: auto;
 }
 .host-hero {
-  padding-block: 64px 120px;
+  padding-block: 54px 68px;
   background: var(--color-grayscale-0);
 }
 .host-intro-hero-content {
   display: grid;
-  grid-template-columns: minmax(0, 625fr) minmax(0, 591fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.13fr);
   align-items: center;
-  gap: 24px;
+  gap: 32px;
 }
 .host-intro-hero-copy {
   display: flex;
-  min-height: 514px;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: space-between;
+  justify-self: end;
+  width: min(100%, 435px);
+  gap: 22px;
 }
 .host-intro-hero-copy h1 {
   font-size: clamp(36px, 2.7083vw, 52px);
@@ -70,21 +73,29 @@
   font-weight: 700;
 }
 .host-intro-hero-description {
-  color: var(--color-grayscale-500);
+  color: var(--color-grayscale-700);
   font-size: 24px;
   font-weight: 700;
   line-height: 1.4;
   letter-spacing: -0.01em;
   word-break: keep-all;
 }
+.host-intro-hero-visual {
+  width: 100%;
+  min-width: 0;
+  aspect-ratio: 4 / 3;
+}
+.host-intro-hero-visual noscript { display: contents; }
 .host-intro-hero-art {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 22px;
 }
 .host-intro-registration {
   position: relative;
-  width: min(490px, 100%);
+  width: min(425px, 100%);
 }
 .host-intro-registration-button {
   width: 100%;
@@ -316,9 +327,6 @@
   background: rgb(255 255 255 / 12%);
 }
 @media (min-width: 768px) and (max-width: 1279px) {
-  .host-intro-hero-copy {
-    min-height: 430px;
-  }
   .host-intro-hero-copy h1 {
     font-size: 34px;
   }
@@ -367,26 +375,29 @@
   }
   .host-intro-hero-content {
     grid-template-columns: minmax(0, 1fr);
-    gap: 48px;
+    width: min(100%, 400px);
+    margin-inline: auto;
+    gap: 18px;
   }
-  .host-intro-hero-copy {
-    min-height: 0;
-    gap: 28px;
-  }
+  .host-intro-hero-copy { display: contents; }
+  .host-intro-hero-copy h1 { grid-row: 1; }
+  .host-intro-hero-visual { grid-row: 2; }
+  .host-intro-hero-description { grid-row: 3; }
+  .host-intro-registration { grid-row: 4; }
   .host-intro-hero-copy h1 {
-    font-size: clamp(28px, 7.6923vw, 32px);
+    font-size: 34px;
     line-height: 1.45;
   }
   .host-intro-hero-description {
-    font-size: 16px;
-    line-height: 26px;
+    font-size: 22px;
+    line-height: 1.5;
   }
   .host-intro-registration {
     width: 100%;
   }
   .host-intro-registration-button {
-    min-height: 48px;
-    font-size: 16px;
+    min-height: 66px;
+    font-size: 22px;
   }
   .host-intro-empathy,
   .host-intro-income {
@@ -2176,4 +2187,35 @@
   .host-faq-search { margin-bottom: 20px; }
   .host-local-places { gap: 18px 28px; }
   .host-footer { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
+}
+
+/* Keep the navigation aligned with the compact guide, and controls easy to tap. */
+.room-check-page > .diagnosis-top-banner { min-height: 40px; height: auto; font-size: 14px; }
+.room-check-page > .diagnosis-top-banner img { width: 24px; height: 24px; }
+.room-check-page .host-intro-registration-button { min-height: 66px; }
+.room-check-page .host-footer-inner { max-width: 804px; }
+@media (min-width: 768px) {
+  .room-check-page .public-header-inner { width: min(804px, calc(100% - 40px)); min-height: 52px; }
+  .room-check-page .public-header .public-brand { font-size: 23px; }
+  .room-check-page .public-menu-wide { gap: clamp(16px, 2vw, 28px); font-size: 14px; }
+  .room-check-page .public-menu-wide a { min-height: 42px; }
+  .room-check-page .room-app .income-calculator { width: 254px; }
+  .room-check-page .room-app .income-calculator.is-collapsed { width: auto; }
+  .room-check-page .room-app .income-panel { gap: 10px; padding: 14px; }
+}
+@media (max-width: 767px) {
+  .room-check-page > .diagnosis-top-banner { min-height: 44px; }
+  .room-check-page .public-header-inner { min-height: 52px; }
+  .host-main :is(.host-intro-benefit-card p, .host-intro-income-copy > p, .host-intro-support-note p,
+    .host-intro-support-note strong, .host-process-description, .host-community-description, .host-community-review-body p,
+    .host-community-news-copy > p, .host-story-timeline p, .host-story-achievement li,
+    .host-faq-top-card p, .host-faq-header p, .host-faq-answer, .host-faq-tax-notice p) {
+    font-size: 22px; line-height: 1.55;
+  }
+  .host-main :is(.host-faq-question, .host-faq-chip, .host-faq-contact, .host-faq-category-link, .host-community-news-button, .host-intro-estimate-button) {
+    min-height: 66px; font-size: 22px; line-height: 1.4;
+  }
+  .host-main .host-faq-field input { height: 66px; font-size: 24px; }
+  .host-main .host-faq-search label, .host-main .host-faq-status { font-size: 21px; }
+  .host-main .host-faq-field button { min-width: 66px; min-height: 66px; }
 }

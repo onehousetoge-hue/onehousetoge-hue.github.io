@@ -68,9 +68,16 @@
   }
   if (!variant && heading) return;
 
-  if (heading && variant !== "A") {
-    const template = document.getElementById(`host-title-${variant}`);
-    heading.replaceChildren(template.content.cloneNode(true));
+  if (heading) {
+    function showPart(element, templateId) {
+      element.replaceChildren(document.getElementById(templateId).content.cloneNode(true));
+    }
+    if (variant !== "A") {
+      showPart(heading, `host-title-${variant}`);
+      showPart(document.getElementById("host-description"), `host-description-${variant}`);
+    }
+    // An inert template fetches only the image for the assigned experience.
+    showPart(document.getElementById("host-visual"), `host-visual-${variant}`);
   }
   if (isPreview) {
     document.addEventListener("DOMContentLoaded", () => {

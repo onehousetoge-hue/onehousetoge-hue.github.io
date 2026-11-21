@@ -57,20 +57,27 @@
     } catch { /* A direct visit or blocked storage still redirects. */ }
   }
   window.location.replace(target.href);
-})();</script><link rel="stylesheet" href="/assets/room-check.css?v=ffab6af67a15"><link rel="stylesheet" href="/assets/income-calculator.css?v=8f7e2635a9df"><script src="/assets/diagnosis-prefill.js?v=f54c77dc0b30" defer></script><script src="/assets/income-calculator.js?v=465ce02a6577" defer></script><script src="/assets/rent-faq-search.js?v=728b1f85e4b5" defer></script></head><body id="page-top" class="room-check-page"><a class="skip-link" href="#main-content">본문으로 바로가기</a><header class="public-header"><div class="public-header-inner">
+})();</script><link rel="stylesheet" href="/assets/room-check.css?v=8cc2c28c79a0"><link rel="stylesheet" href="/assets/income-calculator.css?v=8f7e2635a9df"><script src="/assets/diagnosis-prefill.js?v=f54c77dc0b30" defer></script><script src="/assets/income-calculator.js?v=465ce02a6577" defer></script><script src="/assets/rent-faq-search.js?v=728b1f85e4b5" defer></script></head><body id="page-top" class="room-check-page"><a class="skip-link" href="#main-content">본문으로 바로가기</a><a class="diagnosis-top-banner" href="/rooms/register/"><img src="/assets/figma/benefit-income.svg" width="30" height="30" alt=""><span>우리 집 빈방 등록하기</span><span class="banner-arrow" aria-hidden="true">→</span></a><header class="public-header"><div class="public-header-inner">
     <a class="public-brand" href="/" aria-label="한지붕 홈">한지붕</a>
     <nav class="public-menu-wide" aria-label="주 메뉴"><a href="/about/">한지붕 소개</a><a href="/consultation/">상담 신청하기</a><a href="/reservation/">우리 집 빈 방 월세 진단</a><a href="/rooms/register/">방 등록하기</a></nav>
     <details class="public-menu-small"><summary><svg class="icon " aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg> 메뉴</summary><nav aria-label="주 메뉴"><a href="/about/">한지붕 소개</a><a href="/consultation/">상담 신청하기</a><a href="/reservation/">우리 집 빈 방 월세 진단</a><a href="/rooms/register/">방 등록하기</a></nav></details>
   </div></header><main id="main-content"><div class="room-app">
     <div class="host-main">
-      <section class="host-hero" id="host-hero" aria-labelledby="host-title">
-  <div class="host-intro-container">
+      <section class="host-hero" id="host-hero" aria-labelledby="host-title"><div class="host-intro-container">
     <div class="host-intro-hero-content">
       <div class="host-intro-hero-copy">
         <h1 id="host-title">관리비 걱정은 <strong>이제 그만!</strong></h1>
-        <template id="host-title-B">우리 집 빈 방 <strong>얼마 받을 수 있을까?</strong></template>
-        <template id="host-title-C">혼자 계신 부모님께 <strong>드릴 수 있는 선물</strong></template>
-        <script>(() => {
+        <p id="host-description" class="host-intro-hero-description">비어 있는 방을 대학생에게 내어주고,<br>매달 받는 월세로 관리비에 보태세요.</p>
+        <div class="host-intro-registration"><a class="host-intro-registration-button" href="/reservation/">우리 집 빈 방 얼마나 받을 수 있을까?<img alt="" width="8" height="12" src="/assets/host/chevron-right.svg"></a></div>
+      </div>
+      <div id="host-visual" class="host-intro-hero-visual"><noscript><img class="host-intro-hero-art" src="/assets/host/hero-household.webp" width="1000" height="750" alt="빈방 옆 식탁에서 관리비 고지서를 살펴보는 집주인" fetchpriority="high" decoding="async"></noscript></div>
+    </div>
+    <template id="host-visual-A"><img class="host-intro-hero-art" src="/assets/host/hero-household.webp" width="1000" height="750" alt="빈방 옆 식탁에서 관리비 고지서를 살펴보는 집주인" fetchpriority="high" decoding="async"></template>
+<template id="host-title-B">우리 집 빈 방 <strong>얼마 받을 수 있을까?</strong></template>
+      <template id="host-description-B">방 준비부터 청년 입주, 거주 중 관리까지<br>한지붕이 함께합니다.</template><template id="host-visual-B"><img class="host-intro-hero-art" src="/assets/host/hero.webp" width="837" height="730" alt="살던 집의 빈방을 월세 생활비로 활용하는 모습을 표현한 평면도 일러스트" fetchpriority="high" decoding="async"></template>
+<template id="host-title-C">혼자 계신 부모님께 <strong>드릴 수 있는 선물</strong></template>
+      <template id="host-description-C">부모님은 익숙한 집에서 지내며,<br>함께 사는 대학생과 일상의 안부를 나눠요.</template><template id="host-visual-C"><img class="host-intro-hero-art" src="/assets/host/hero-companion.webp" width="1000" height="750" alt="집 식탁에 마주 앉아 웃으며 대화하는 어르신과 대학생" fetchpriority="high" decoding="async"></template>
+    <script>(() => {
   "use strict";
   const heading = document.getElementById("host-title");
   const params = new URLSearchParams(location.search);
@@ -104,9 +111,16 @@
   }
   if (!variant && heading) return;
 
-  if (heading && variant !== "A") {
-    const template = document.getElementById(`host-title-${variant}`);
-    heading.replaceChildren(template.content.cloneNode(true));
+  if (heading) {
+    function showPart(element, templateId) {
+      element.replaceChildren(document.getElementById(templateId).content.cloneNode(true));
+    }
+    if (variant !== "A") {
+      showPart(heading, `host-title-${variant}`);
+      showPart(document.getElementById("host-description"), `host-description-${variant}`);
+    }
+    // An inert template fetches only the image for the assigned experience.
+    showPart(document.getElementById("host-visual"), `host-visual-${variant}`);
   }
   if (isPreview) {
     document.addEventListener("DOMContentLoaded", () => {
@@ -152,17 +166,8 @@
     };
   }
 })();</script>
-        <p class="host-intro-hero-description">방 준비부터 청년 입주, 거주 중 관리까지<br>한지붕이 함께합니다.</p>
-        <div class="host-intro-registration">
-          <a class="host-intro-registration-button" href="/reservation/">우리 집 빈 방 얼마나 받을 수 있을까?<img alt="" width="8" height="12" src="/assets/host/chevron-right.svg"></a>
-        </div>
-      </div>
-      <img alt="살던 집의 빈방을 월세 생활비로 활용하는 모습을 표현한 평면도 일러스트" width="837" height="730" decoding="async" class="host-intro-hero-art" src="/assets/host/hero.webp" fetchpriority="high">
-    </div>
-  </div>
-</section>
-
-<section class="host-intro-empathy" aria-label="집주인의 고민과 빈방 활용">
+  </div></section>
+      <section class="host-intro-empathy" aria-label="집주인의 고민과 빈방 활용">
   <div class="host-intro-container host-intro-empathy-card">
     <div class="host-intro-empathy-scene">
       <div class="host-intro-bubble host-intro-first-bubble">

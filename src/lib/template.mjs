@@ -69,8 +69,8 @@ export function pageHead({ title, documentTitle, description, path, type = "webs
     ${publicScripts && policies.analyticsEnabled ? `<script src="${analyticsScriptUrl}" data-analytics-id="${site.analyticsMeasurementId}" defer></script>` : ""}`;
 }
 
-export function diagnosisBanner() {
-  return `<a class="diagnosis-top-banner" href="/reservation/"><img src="/assets/figma/benefit-income.svg" width="30" height="30" alt=""><span>예상 월세 무료 진단 신청하기</span><span class="banner-arrow" aria-hidden="true">→</span></a>`;
+function roomRegistrationBanner() {
+  return `<a class="diagnosis-top-banner" href="/rooms/register/"><img src="/assets/figma/benefit-income.svg" width="30" height="30" alt=""><span>우리 집 빈방 등록하기</span><span class="banner-arrow" aria-hidden="true">→</span></a>`;
 }
 
 const menuItems = [
@@ -139,7 +139,8 @@ export function layout({ title, documentTitle, description, path, body, breadcru
     : null;
   const schemas = [...(Array.isArray(jsonLd) ? jsonLd : [jsonLd])].filter(Boolean);
   if (breadcrumbSchema) schemas.push(breadcrumbSchema);
-  return `<!doctype html><html lang="ko"><head>${pageHead({ title, documentTitle, description, path, type, robots, publishedAt, updatedAt, jsonLd: schemas })}</head><body id="page-top" class="${bodyClass}"><a class="skip-link" href="#main-content">본문으로 바로가기</a>${header(path)}${breadcrumb(breadcrumbs)}<main id="main-content">${body}</main>${showFooter ? footer() : ""}${showDiagnosisDock ? rentDiagnosisDock() : ""}</body></html>`;
+  const topBanner = path === "/" ? roomRegistrationBanner() : "";
+  return `<!doctype html><html lang="ko"><head>${pageHead({ title, documentTitle, description, path, type, robots, publishedAt, updatedAt, jsonLd: schemas })}</head><body id="page-top" class="${bodyClass}"><a class="skip-link" href="#main-content">본문으로 바로가기</a>${topBanner}${header(path)}${breadcrumb(breadcrumbs)}<main id="main-content">${body}</main>${showFooter ? footer() : ""}${showDiagnosisDock ? rentDiagnosisDock() : ""}</body></html>`;
 }
 
 export const organizationSchema = {

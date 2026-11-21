@@ -12,6 +12,9 @@ const routeFile = (route) => route === "/" ? path.join(root, "index.html") : pat
 test("homepage links to the dedicated diagnosis page without the retired organization menu", async () => {
   const room = await readFile(routeFile("/"), "utf8");
   assert.match(room, /class="room-check-page"/);
+  assert.ok(room.indexOf('class="diagnosis-top-banner"') > 0);
+  assert.ok(room.indexOf('class="diagnosis-top-banner"') < room.indexOf('class="public-header"'));
+  assert.match(room, /class="diagnosis-top-banner" href="\/rooms\/register\/"/);
   assert.doesNotMatch(room, /<iframe|<dialog|data-open-inquiry/);
   const hero = room.match(/<section class="host-hero"[\s\S]*?<\/section>/)[0];
   assert.match(hero, /href="\/reservation\/">우리 집 빈 방 얼마나 받을 수 있을까/);
@@ -74,6 +77,11 @@ test("the main host guide follows the reference sequence with HanJibung's own id
   assert.doesNotMatch(html, /신한|슈퍼SOL|홈투게더|핀타|Home Together|\/shinhan\/|_next\/|data-nimg/i);
   assert.match(html, /id="host-title-B">우리 집 빈 방 <strong>얼마 받을 수 있을까\?/);
   assert.match(html, /id="host-title-C">혼자 계신 부모님께 <strong>드릴 수 있는 선물/);
+  for (const [variant, file] of [["A", "hero-household.webp"], ["B", "hero.webp"], ["C", "hero-companion.webp"]]) {
+    const image = html.split(`<template id="host-visual-${variant}">`)[1].split("</template>")[0];
+    assert.ok(image.includes(`src="/assets/host/${file}"`));
+  }
+  assert.match(html, /<noscript><img [^>]*src="\/assets\/host\/hero-household\.webp"/);
 });
 
 test("the about page features the MBC video without the two secondary links", async () => {

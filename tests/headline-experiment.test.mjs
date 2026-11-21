@@ -22,6 +22,8 @@ function visit({ home = true, search = "", random = 0, local = storage(), sessio
     getBoundingClientRect() { return { top: this.top, bottom: this.top + 80 }; },
     replaceChildren(variant) { this.variant = variant; },
   };
+  const description = { variant: "A", replaceChildren(variant) { this.variant = variant; } };
+  const visual = { variant: null, replaceChildren(variant) { this.variant = variant; } };
   const link = new URL("https://hanjibung.kr/reservation/");
   const quickLink = new URL("https://hanjibung.kr/reservation/?consultation=quick#quick-consultation");
   const privacyLink = new URL("https://hanjibung.kr/reservation/privacy/");
@@ -29,7 +31,9 @@ function visit({ home = true, search = "", random = 0, local = storage(), sessio
     hidden,
     getElementById(id) {
       if (id === "host-title") return home ? heading : null;
-      assert.ok(["host-title-B", "host-title-C"].includes(id));
+      if (id === "host-description") return description;
+      if (id === "host-visual") return visual;
+      assert.match(id, /^host-(?:(?:title|description)-[BC]|visual-[ABC])$/);
       return { content: { cloneNode: () => id.at(-1) } };
     },
     querySelector: () => ({ dataset: { analyticsId: measurementId } }),
@@ -38,7 +42,7 @@ function visit({ home = true, search = "", random = 0, local = storage(), sessio
   vm.runInNewContext(source, { document, window, location: { search }, URL, URLSearchParams,
     Math: { floor: Math.floor, random: () => random } });
   document.dispatchEvent(new Event("DOMContentLoaded"));
-  return { window, document, events, heading, link, quickLink, privacyLink };
+  return { window, document, events, heading, visual, description, link, quickLink, privacyLink };
 }
 
 test("three equal ranges choose the headline once and keep it across visits and the form", () => {
@@ -61,6 +65,8 @@ test("previews preserve normal assignment and exclude the whole preview journey 
   for (const variant of ["A", "B", "C"]) {
     const page = visit({ local, search: "?headline_preview=" + variant });
     assert.equal(page.heading.variant, variant);
+    assert.equal(page.description.variant, variant);
+    assert.equal(page.visual.variant, variant);
     assert.deepEqual(page.events, []);
     assert.equal(page.link.search, "?headline_preview=" + variant);
     assert.equal(page.quickLink.href, "https://hanjibung.kr/reservation/?consultation=quick&headline_preview=" + variant + "#quick-consultation");
