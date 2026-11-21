@@ -66,11 +66,11 @@ test("rent FAQ answers and their structured data match in the final section befo
   }
 });
 
-test("the about page leads with the original MBC report and its official video", async () => {
+test("the about page features the MBC video without the two secondary links", async () => {
   const html = await readFile(routeFile("/about/"), "utf8");
   const cover = html.match(/<section class="about-cover"[\s\S]*?<\/section>/)[0];
   assert.match(cover, /<h1 id="about-title">MBC/);
-  assert.match(cover, /https:\/\/imnews\.imbc\.com\/replay\/2026\/nwdesk\/article\/6851406_37004\.html/);
+  assert.doesNotMatch(cover, /MBC 기사 읽기|한지붕이 하는 일|class="about-actions"/);
   assert.match(cover, /href="https:\/\/www\.youtube\.com\/watch\?v=DdCxyz9kNs4"/);
   assert.match(cover, /datetime="2026-09-12"/);
   assert.doesNotMatch(cover, /<iframe|<video/);

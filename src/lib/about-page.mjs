@@ -15,10 +15,6 @@ export function aboutPage() {
           <p class="about-kicker">한지붕 소개</p>
           <h1 id="about-title">MBC가 만난<br><em>어르신과 대학생</em></h1>
           <p class="about-lead">빈방을 내어준 어르신과 대학생은 한집에서 어떻게 지낼까요? MBC 뉴스데스크가 두 세대의 일상을 담았습니다. 김현수 대표도 방송에서 집주인과 학생이 서로의 신원을 확인하는 이유를 이야기합니다.</p>
-          <div class="about-actions">
-            <a class="about-inline" href="https://imnews.imbc.com/replay/2026/nwdesk/article/6851406_37004.html">MBC 기사 읽기 <span aria-hidden="true">↗</span></a>
-            <a class="about-inline" href="#about-record-title">한지붕이 하는 일 <span aria-hidden="true">↓</span></a>
-          </div>
         </div>
         <a class="about-broadcast" href="https://www.youtube.com/watch?v=DdCxyz9kNs4" aria-label="MBC 뉴스데스크 현장 36.5 보도 영상 보기 (유튜브)">
           <img src="https://i.ytimg.com/vi/DdCxyz9kNs4/maxresdefault.jpg" srcset="https://i.ytimg.com/vi/DdCxyz9kNs4/mqdefault.jpg 320w, https://i.ytimg.com/vi/DdCxyz9kNs4/maxresdefault.jpg 1280w" sizes="(max-width: 800px) min(660px, calc(100vw - 40px)), (max-width: 1144px) 49vw, 550px" width="1280" height="720" alt="" referrerpolicy="no-referrer" fetchpriority="high" decoding="async">
