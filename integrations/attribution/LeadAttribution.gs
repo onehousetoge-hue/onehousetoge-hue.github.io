@@ -3,7 +3,7 @@ const LEAD_COLUMNS = ['첫 방문 페이지', '전환 페이지', '상세페이�
   'UTM 캠페인', 'UTM ID', 'UTM 콘텐츠', 'UTM 키워드', '외부 유입 도메인'];
 
 function leadCells_(input, kind) {
-  if (!input || !['/', '/about/', '/consultation/', '/reservation/', '/rooms/register/', '/reservation/privacy/'].includes(input.landing)) return [];
+  if (!input || !['/', '/about/', '/how-it-works/', '/consultation/', '/reservation/', '/rooms/register/', '/reservation/privacy/'].includes(input.landing)) return [];
   function plain(value) {
     if (typeof value !== 'string' || value.length > 100) return '';
     const text = value.trim();

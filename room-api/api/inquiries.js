@@ -85,7 +85,7 @@ export default async function handler(req, res) {
       photos: data.photos.map((photo) => ({ name: photo.name, mime: "image/jpeg", base64: photo.base64 })),
     };
     const visit = data.attribution;
-    if (visit && ["/", "/about/", "/consultation/", "/reservation/", "/rooms/register/", "/reservation/privacy/"].includes(visit.landing)) {
+    if (visit && ["/", "/about/", "/how-it-works/", "/consultation/", "/reservation/", "/rooms/register/", "/reservation/privacy/"].includes(visit.landing)) {
       const fields = ["landing", "variant", "source", "medium", "campaign", "id", "content", "term", "referrer"];
       submission.attribution = Object.fromEntries(fields.filter((field) =>
         typeof visit[field] === "string" && visit[field].length <= (field === "referrer" ? 180 : 100))

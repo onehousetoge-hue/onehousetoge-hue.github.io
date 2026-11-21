@@ -111,9 +111,17 @@
   padding-block: 80px;
 }
 .host-intro-empathy-card {
+  display: block;
   overflow: hidden;
   border: 1px solid #e3ecfa;
   border-radius: 36px;
+}
+.host-intro-empathy-card:is(:hover, :focus-visible) {
+  border-color: #598cce;
+}
+.host-intro-empathy-card:is(:hover, :focus-visible) h2 {
+  text-decoration: underline;
+  text-underline-offset: .18em;
 }
 .host-intro-empathy-scene {
   display: grid;
@@ -168,7 +176,7 @@
   font-size: 28px;
   font-weight: 700;
   line-height: 40px;
-  color: var(--color-primary-500);
+  color: #205cb6;
   word-break: keep-all;
 }
 .host-intro-benefits {

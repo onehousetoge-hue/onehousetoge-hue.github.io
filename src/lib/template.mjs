@@ -75,6 +75,7 @@ function roomRegistrationBanner() {
 
 const menuItems = [
   ["/about/", "한지붕 소개"],
+  ["/how-it-works/", "한지붕 활용 방법"],
   ["/consultation/", "상담 신청하기"],
   ["/reservation/", "우리 집 빈 방 월세 진단"],
   ["/rooms/register/", "방 등록하기"],

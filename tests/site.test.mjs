@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import { escapeHtml } from "../src/lib/template.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "dist");
-const routes = ["/", "/about/", "/consultation/", "/reservation/", "/rooms/register/", "/reservation/privacy/"];
+const routes = ["/", "/about/", "/how-it-works/", "/consultation/", "/reservation/", "/rooms/register/", "/reservation/privacy/"];
 const routeFile = (route) => route === "/" ? path.join(root, "index.html") : path.join(root, route.replace(/^\//, ""), "index.html");
 
 test("homepage links to the dedicated diagnosis page without the retired organization menu", async () => {
@@ -223,9 +223,24 @@ test("the parent and room diagnostic share GA without exposing inquiry details",
   }
 });
 
-test("all public pages have the four requested destinations in desktop and mobile menus", async () => {
+test("the entire blue house card opens the host guide and both guide actions reach the corresponding forms", async () => {
+  const home = await readFile(routeFile("/"), "utf8");
+  const card = home.match(/<a class="host-intro-container host-intro-empathy-card" href="\/how-it-works\/"[^>]*>([\s\S]*?)<\/a>/);
+  assert.ok(card);
+  for (const part of ["host-intro-first-bubble", "/assets/host/house.webp", "host-intro-second-bubble", "host-intro-empathy-caption"]) assert.ok(card[1].includes(part), part);
+  assert.doesNotMatch(card[1], /<(?:a|button)\b/);
+
+  const guide = await readFile(routeFile("/how-it-works/"), "utf8");
+  const body = guide.match(/<div class="host-guide">([\s\S]*?)<footer /)[1];
+  assert.match(body, /href="\/reservation\/">우리 집 빈 방 예상 월세 알아보기/);
+  assert.match(body, /href="\/rooms\/register\/">방 등록하기/);
+  assert.deepEqual([...body.matchAll(/<li><h3>([^<]+)<\/h3>/g)].map(match => match[1]), ["방 등록하기", "학생 소개서 받아보기", "집주인이 최종 결정하기"]);
+  assert.match(guide, /rel="canonical" href="https:\/\/hanjibung\.kr\/how-it-works\/"/);
+});
+
+test("all public pages share the requested destinations in desktop and mobile menus", async () => {
   const menu = [
-    ["/about/", "한지붕 소개"], ["/consultation/", "상담 신청하기"],
+    ["/about/", "한지붕 소개"], ["/how-it-works/", "한지붕 활용 방법"], ["/consultation/", "상담 신청하기"],
     ["/reservation/", "우리 집 빈 방 월세 진단"], ["/rooms/register/", "방 등록하기"],
   ];
   for (const route of [...routes, "/404/"]) {
@@ -247,7 +262,7 @@ test("all public pages have the four requested destinations in desktop and mobil
 
 test("CSS and JavaScript versions match the built bytes", async () => {
   const { createHash } = await import("node:crypto");
-  for (const [route, names] of [["/", ["site.css", "site.js", "room-check.css", "rent-faq-search.js"]], ["/reservation/", ["site.css", "site.js", "reservation.css", "reservation.js"]], ["/rooms/register/", ["room-registration.js"]]]) {
+  for (const [route, names] of [["/", ["site.css", "site.js", "room-check.css", "rent-faq-search.js"]], ["/how-it-works/", ["site.css", "site.js", "host-guide.css"]], ["/reservation/", ["site.css", "site.js", "reservation.css", "reservation.js"]], ["/rooms/register/", ["room-registration.js"]]]) {
     const html = await readFile(routeFile(route), "utf8");
     for (const name of names) {
       const bytes = await readFile(path.join(root, "assets", name));

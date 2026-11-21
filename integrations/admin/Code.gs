@@ -108,7 +108,7 @@ function getTraffic(days) {
   const saved = cache.get(key);
   if (saved) return JSON.parse(saved);
   const host = {filter:{fieldName:'hostName', inListFilter:{values:['hanjibung.kr','www.hanjibung.kr']}}};
-  const paths = {filter:{fieldName:'pagePath',inListFilter:{values:['/','/about/','/consultation/','/reservation/','/rooms/register/','/reservation/privacy/']}}};
+  const paths = {filter:{fieldName:'pagePath',inListFilter:{values:['/','/about/','/how-it-works/','/consultation/','/reservation/','/rooms/register/','/reservation/privacy/']}}};
   const filter = {andGroup:{expressions:[host,paths]}};
   function report(dimensions, metrics, sort, limit) {
     return {dateRanges:dates, dimensionFilter:filter, dimensions:dimensions.map(name => ({name})),

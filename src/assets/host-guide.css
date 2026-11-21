@@ -1,0 +1,112 @@
+.host-guide {
+  --guide-width: min(1000px, calc(100% - 64px));
+  --guide-ink: #182f4b;
+  --guide-muted: #455b70;
+  --guide-blue: #1d59b3;
+  background: #fff;
+  color: var(--guide-ink);
+  font-family: "Hanjibung Site Text", Pretendard, "Malgun Gothic", sans-serif;
+  line-height: 1.6;
+}
+.host-guide :where(h1, h2, h3, p, ol, figure) { margin: 0; }
+.host-guide :is(h1, h2, h3) { color: inherit; line-height: 1.23; }
+.guide-wrap, .host-guide .reservation-footer { width: var(--guide-width); margin-inline: auto; }
+.guide-cover { background: linear-gradient(110deg, #f1f6fc, #e8f0fa); }
+.guide-cover-inner {
+  display: grid;
+  grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+  align-items: center;
+  gap: clamp(22px, 4vw, 60px);
+  padding-block: clamp(38px, 5vw, 70px);
+}
+.guide-kicker { color: var(--guide-blue); font-size: 15px; font-weight: 750; }
+.guide-intro h1 { margin-top: 12px; font-size: clamp(36px, 4.4vw, 56px); letter-spacing: -.055em; }
+.guide-lead { max-width: 25em; margin-top: 19px; color: var(--guide-muted); font-size: 18px; }
+.guide-lead strong { display: block; color: var(--guide-ink); font-weight: 650; }
+.guide-button, .guide-register {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 10px 19px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.45;
+  text-decoration: none;
+}
+.guide-button { margin-top: 23px; background: var(--guide-blue); color: #fff; }
+.guide-button:hover { background: #15478f; }
+.host-guide .icon { flex: none; width: 19px; height: 19px; }
+.host-guide a:focus-visible { outline: 3px solid #124b93; outline-offset: 4px; }
+.guide-room-photos { display: grid; grid-template-columns: .72fr 1.28fr; align-items: end; gap: 10px; }
+.guide-room-photos figure { position: relative; overflow: hidden; border-radius: 14px; background: #d7dfe4; }
+.guide-room-photos img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; }
+.guide-room-photos figure:last-child img { aspect-ratio: 1 / 1.05; }
+.guide-room-photos figcaption {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  padding: 4px 11px;
+  border-radius: 6px;
+  background: #fff;
+  color: #243b53;
+  font-size: 14px;
+  font-weight: 700;
+}
+.guide-process {
+  display: grid;
+  grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
+  grid-template-rows: auto 1fr;
+  align-items: start;
+  gap: 19px clamp(24px, 5vw, 70px);
+  padding-block: clamp(44px, 5.2vw, 74px);
+}
+.guide-process h2 { font-size: clamp(28px, 3vw, 39px); }
+.guide-steps { grid-column: 2; grid-row: 1 / span 2; padding: 0; list-style: none; counter-reset: steps; }
+.guide-steps li { position: relative; padding-left: 48px; counter-increment: steps; }
+.guide-steps li + li { margin-top: 25px; }
+.guide-steps li:not(:last-child)::after {
+  position: absolute;
+  inset: 40px auto -19px 16px;
+  width: 1px;
+  background: #d4dfed;
+  content: "";
+}
+.guide-steps li::before {
+  position: absolute;
+  inset: 0 auto auto 0;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #eaf1fc;
+  color: var(--guide-blue);
+  font-size: 15px;
+  font-weight: 750;
+  content: counter(steps);
+}
+.guide-steps h3 { padding-top: 4px; font-size: 22px; }
+.guide-steps p { margin-top: 6px; color: var(--guide-muted); font-size: 17px; }
+.guide-register { grid-column: 1; grid-row: 2; justify-self: start; border: 1px solid #97b4db; color: var(--guide-blue); }
+.guide-register:hover { background: #eff5fc; }
+.host-guide .reservation-footer { padding: 16px 0 24px; border-top: 1px solid #d5e0eb; color: var(--guide-muted); font-size: 14px; }
+.host-guide .reservation-footer div { display: flex; flex-wrap: wrap; gap: 0 20px; }
+.host-guide .reservation-footer a { display: inline-flex; align-items: center; min-height: 44px; }
+@media (max-width: 720px) {
+  .host-guide { --guide-width: min(540px, calc(100% - 40px)); }
+  .guide-cover-inner, .guide-process { grid-template-columns: minmax(0, 1fr); }
+  .guide-cover-inner { gap: 26px; padding-block: 32px; }
+  .guide-lead { margin-top: 14px; font-size: 17px; }
+  .guide-button { margin-top: 18px; }
+  .guide-room-photos { grid-template-columns: .8fr 1.2fr; }
+  .guide-room-photos img { aspect-ratio: 1.05; }
+  .guide-room-photos figure:last-child img { aspect-ratio: 1.45; }
+  .guide-process { gap: 24px; }
+  .guide-process h2 br { display: none; }
+  .guide-steps, .guide-register { grid-area: auto; }
+  .guide-steps p { font-size: 16px; }
+  .guide-register { justify-self: stretch; }
+}

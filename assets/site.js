@@ -5,7 +5,7 @@
   // campaign starts a new visit. Only public route labels leave the browser.
   const key = "hanjibung.lead-visit.v1";
   const idleLimit = 30 * 60 * 1000;
-  const publicPaths = ["/", "/about/", "/consultation/", "/reservation/", "/rooms/register/", "/reservation/privacy/"];
+  const publicPaths = ["/", "/about/", "/how-it-works/", "/consultation/", "/reservation/", "/rooms/register/", "/reservation/privacy/"];
   const current = new URL(location.href);
   const route = publicPaths.includes(current.pathname) ? current.pathname : "";
   const preview = /^[ABC]$/.test(current.searchParams.get("headline_preview") || "");

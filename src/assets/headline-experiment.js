@@ -47,7 +47,7 @@
     document.addEventListener("DOMContentLoaded", () => {
       for (const link of document.querySelectorAll('a[href^="/"]:not([href^="//"])')) {
         const destination = new URL(link.href);
-        if (!["/", "/about/", "/consultation/", "/reservation/", "/rooms/register/", "/reservation/privacy/"].includes(destination.pathname)) continue;
+        if (!["/", "/about/", "/how-it-works/", "/consultation/", "/reservation/", "/rooms/register/", "/reservation/privacy/"].includes(destination.pathname)) continue;
         destination.searchParams.set("headline_preview", variant);
         link.search = destination.search;
       }

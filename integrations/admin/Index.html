@@ -28,7 +28,7 @@ th{background:#f5f5f1;white-space:nowrap;font-weight:600}td{overflow-wrap:anywhe
 </main><script>
 const byId=id=>document.getElementById(id);
 const headlines={A:'관리비 걱정은 이제 그만!',B:'우리 집 빈 방 얼마 받을 수 있을까?',C:'혼자 계신 부모님께 드릴 수 있는 선물'};
-const routes={'/':'상세페이지','/about/':'한지붕 소개','/consultation/':'상담 신청','/rooms/register/':'방 등록','/reservation/':'월세 진단 신청','/reservation/privacy/':'개인정보 처리방침','/reservation/?consultation=quick':'10초 상담'};
+const routes={'/':'상세페이지','/about/':'한지붕 소개','/how-it-works/':'한지붕 활용 방법','/consultation/':'상담 신청','/rooms/register/':'방 등록','/reservation/':'월세 진단 신청','/reservation/privacy/':'개인정보 처리방침','/reservation/?consultation=quick':'10초 상담'};
 function el(tag,text){const item=document.createElement(tag);if(text!=null)item.textContent=text;return item}
 function row(tbody,cells){const tr=el('tr');for(const value of cells){const td=el('td');if(value instanceof Node)td.append(value);else td.textContent=value??'—';tr.append(td)}tbody.append(tr)}
 function empty(tbody,count,text){const tr=el('tr'),td=el('td',text);td.colSpan=count;tr.append(td);tbody.append(tr)}
@@ -44,7 +44,7 @@ function traffic(){
     byId('metric-status').textContent=data.start+' ~ '+data.end+' · 한국시간 '+data.asOf+' 조회'+(data.limited?' · Google 집계 제한 적용':'');
     for(const f of data.funnels){const label=el('span',f.group+' · '+headlines[f.group]);if(f.unavailable)row(byId('funnels'),[label,'조회 실패','조회 실패','—']);else row(byId('funnels'),[label,number(f.exposed),number(f.converted),f.exposed?(100*f.converted/f.exposed).toFixed(1)+'%':'—'])}
     const pageCounts=new Map(data.pages.map(p=>[p.pagePath,p]));
-    for(const path of ['/','/about/','/consultation/','/reservation/','/rooms/register/','/reservation/privacy/']){
+    for(const path of ['/','/about/','/how-it-works/','/consultation/','/reservation/','/rooms/register/','/reservation/privacy/']){
       const p=pageCounts.get(path),missing=data.limited?'집계 제한':'0';
       row(byId('pages'),[routes[path],p?number(p.screenPageViews):missing,p?number(p.totalUsers):missing]);
     }

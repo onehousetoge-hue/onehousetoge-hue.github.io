@@ -10,7 +10,7 @@
     <link rel="icon" href="/assets/hanjibung-icon-64.png" type="image/png" sizes="64x64">
     <link rel="apple-touch-icon" href="/assets/hanjibung-icon-192.png" sizes="192x192">
     <link rel="manifest" href="/site.webmanifest">
-    <link rel="stylesheet" href="/assets/site.css?v=b3927398f4be">
+    <link rel="stylesheet" href="/assets/site.css?v=fcbdfd3074b9">
     <meta property="og:locale" content="ko_KR">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="한지붕">
@@ -28,11 +28,11 @@
 
 
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"NGO","name":"한지붕","alternateName":"HANJIBUNG","url":"https://hanjibung.kr/","member":{"@type":"OrganizationRole","roleName":"대표자","member":{"@type":"Person","name":"김현수"}},"foundingDate":"2026-07-05","telephone":"010-4587-9428","email":"contact@hanjibung.kr","description":"한지붕은 어르신의 빈방 활용 무료상담, 방 준비·청년 입주·거주 관리와 세대교류 교육·봉사를 제공하는 비영리단체입니다. 국세기본법상 법인으로 보는 단체로 승인받았으며, 주거상생 실태조사는 현재 진행 중입니다.","address":{"@type":"PostalAddress","streetAddress":"동일로 195길","addressLocality":"노원구","addressRegion":"서울특별시","addressCountry":"KR"}}</script>
-    <script src="/assets/site.js?v=1fc5c2c8e48e" defer></script>
+    <script src="/assets/site.js?v=5e5086e1241d" defer></script>
     <script src="/assets/analytics.js?v=e161fd3bb9f2" data-analytics-id="G-58PJ9VG8GC" defer></script><link rel="stylesheet" href="/assets/about.css?v=b32822885a7d"></head><body id="page-top" class="reservation-page"><a class="skip-link" href="#main-content">본문으로 바로가기</a><header class="public-header"><div class="public-header-inner">
     <a class="public-brand" href="/" aria-label="한지붕 홈">한지붕</a>
-    <nav class="public-menu-wide" aria-label="주 메뉴"><a href="/about/" aria-current="page">한지붕 소개</a><a href="/consultation/">상담 신청하기</a><a href="/reservation/">우리 집 빈 방 월세 진단</a><a href="/rooms/register/">방 등록하기</a></nav>
-    <details class="public-menu-small"><summary><svg class="icon " aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg> 메뉴</summary><nav aria-label="주 메뉴"><a href="/about/" aria-current="page">한지붕 소개</a><a href="/consultation/">상담 신청하기</a><a href="/reservation/">우리 집 빈 방 월세 진단</a><a href="/rooms/register/">방 등록하기</a></nav></details>
+    <nav class="public-menu-wide" aria-label="주 메뉴"><a href="/about/" aria-current="page">한지붕 소개</a><a href="/how-it-works/">한지붕 활용 방법</a><a href="/consultation/">상담 신청하기</a><a href="/reservation/">우리 집 빈 방 월세 진단</a><a href="/rooms/register/">방 등록하기</a></nav>
+    <details class="public-menu-small"><summary><svg class="icon " aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg> 메뉴</summary><nav aria-label="주 메뉴"><a href="/about/" aria-current="page">한지붕 소개</a><a href="/how-it-works/">한지붕 활용 방법</a><a href="/consultation/">상담 신청하기</a><a href="/reservation/">우리 집 빈 방 월세 진단</a><a href="/rooms/register/">방 등록하기</a></nav></details>
   </div></header><main id="main-content"><script>(() => {
   "use strict";
   const heading = document.getElementById("host-title");
@@ -82,7 +82,7 @@
     document.addEventListener("DOMContentLoaded", () => {
       for (const link of document.querySelectorAll('a[href^="/"]:not([href^="//"])')) {
         const destination = new URL(link.href);
-        if (!["/", "/about/", "/consultation/", "/reservation/", "/rooms/register/", "/reservation/privacy/"].includes(destination.pathname)) continue;
+        if (!["/", "/about/", "/how-it-works/", "/consultation/", "/reservation/", "/rooms/register/", "/reservation/privacy/"].includes(destination.pathname)) continue;
         destination.searchParams.set("headline_preview", variant);
         link.search = destination.search;
       }

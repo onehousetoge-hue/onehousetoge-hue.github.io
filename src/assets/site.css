@@ -1410,7 +1410,7 @@ body:has(> .rent-diagnosis-dock) { padding-bottom: 104px; }
 .public-header .public-menu-wide a:last-child { min-height: 44px; padding: 0 20px; border-radius: 9px; background: #215fc0; color: #fff; }
 .public-header :is(a,summary):focus-visible { outline: 3px solid #185bb1; outline-offset: 2px; }
 .public-menu-small { display: none; }
-@media (max-width: 720px) {
+@media (max-width: 820px) {
   .public-header-inner { min-height: 64px; width: calc(100% - 40px); }
   .public-header .public-brand { font-size: 25px; }
   .public-menu-wide { display: none; }

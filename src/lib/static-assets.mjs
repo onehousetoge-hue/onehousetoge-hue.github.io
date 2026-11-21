@@ -26,6 +26,7 @@ export const reservationStylesheetUrl = assetUrl("reservation.css");
 export const reservationScriptUrl = assetUrl("reservation.js");
 
 export const aboutStylesheetUrl = assetUrl("about.css");
+export const hostGuideStylesheetUrl = assetUrl("host-guide.css");
 export const serviceStylesheetUrl = assetUrl("service-pages.css");
 export const registrationSource = assetText("room-registration.js")
   .replace('"./room-description.js"', JSON.stringify(assetUrl("room-description.js").replace("/assets/", "./")))

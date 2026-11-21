@@ -18,7 +18,9 @@ test("a confirmed lead carries the first campaign, real exposure and safe public
   const store = new Map();
   const home = navigate("/?utm_source=naver&utm_medium=cpc&utm_campaign=겨울&email=private@example.com",store,"https://search.naver.com/search?private=1");
   home.expose("B");
-  const form = navigate("/reservation/",store,"https://hanjibung.kr/");
+  const guide = navigate("/how-it-works/",store,"https://hanjibung.kr/");
+  assert.equal(guide.snapshot().variant, "B");
+  const form = navigate("/reservation/",store,"https://hanjibung.kr/how-it-works/");
   const data = JSON.parse(JSON.stringify(form.snapshot()));
   assert.equal(data.landing,"/"); assert.equal(data.variant,"B");assert.equal(data.referrer,"search.naver.com");
   assert.equal(data.source,"naver");assert.equal(data.medium,"cpc");assert.equal(data.campaign,"겨울");
@@ -74,7 +76,7 @@ test("all web and data entry points deny missing or different Google identities 
 });
 
 test("new entry pages retain the original campaign and distinguish each conversion destination",()=>{
-  for(const landing of ["/about/","/consultation/","/rooms/register/"]){
+  for(const landing of ["/about/","/how-it-works/","/consultation/","/rooms/register/"]){
     for(const [kind,conversion] of [["diagnosis","/reservation/"],["callback","/consultation/"],["registration","/rooms/register/"]]){
       const store=new Map();
       navigate(landing+"?utm_source=naver&utm_medium=referral",store);

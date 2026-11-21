@@ -1,0 +1,149 @@
+<!doctype html><html lang="ko"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="창고처럼 쓰던 빈방을 대학생에게 내어주면 얼마의 월세를 받을 수 있을까요? 예상 월세를 확인하고, 방 등록부터 학생 소개서를 받아본 뒤 입주를 직접 결정하는 과정까지 알아보세요.">
+    <meta name="robots" content="index,follow">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="theme-color" content="#8f2929">
+    <title>한지붕 활용 방법 | 한지붕</title>
+    <link rel="canonical" href="https://hanjibung.kr/how-it-works/">
+    <link rel="icon" href="/assets/hanjibung-icon-64.png" type="image/png" sizes="64x64">
+    <link rel="apple-touch-icon" href="/assets/hanjibung-icon-192.png" sizes="192x192">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="stylesheet" href="/assets/site.css?v=fcbdfd3074b9">
+    <meta property="og:locale" content="ko_KR">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="한지붕">
+    <meta property="og:title" content="한지붕 활용 방법 | 한지붕">
+    <meta property="og:description" content="창고처럼 쓰던 빈방을 대학생에게 내어주면 얼마의 월세를 받을 수 있을까요? 예상 월세를 확인하고, 방 등록부터 학생 소개서를 받아본 뒤 입주를 직접 결정하는 과정까지 알아보세요.">
+    <meta property="og:url" content="https://hanjibung.kr/how-it-works/">
+    <meta property="og:image" content="https://hanjibung.kr/assets/og-default.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="한지붕 - 남는 공간을 살피고 세대가 함께 살아갈 기준을 만듭니다">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="한지붕 활용 방법 | 한지붕">
+    <meta name="twitter:description" content="창고처럼 쓰던 빈방을 대학생에게 내어주면 얼마의 월세를 받을 수 있을까요? 예상 월세를 확인하고, 방 등록부터 학생 소개서를 받아본 뒤 입주를 직접 결정하는 과정까지 알아보세요.">
+    <meta name="twitter:image" content="https://hanjibung.kr/assets/og-default.png">
+
+
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"NGO","name":"한지붕","alternateName":"HANJIBUNG","url":"https://hanjibung.kr/","member":{"@type":"OrganizationRole","roleName":"대표자","member":{"@type":"Person","name":"김현수"}},"foundingDate":"2026-07-05","telephone":"010-4587-9428","email":"contact@hanjibung.kr","description":"한지붕은 어르신의 빈방 활용 무료상담, 방 준비·청년 입주·거주 관리와 세대교류 교육·봉사를 제공하는 비영리단체입니다. 국세기본법상 법인으로 보는 단체로 승인받았으며, 주거상생 실태조사는 현재 진행 중입니다.","address":{"@type":"PostalAddress","streetAddress":"동일로 195길","addressLocality":"노원구","addressRegion":"서울특별시","addressCountry":"KR"}}</script>
+    <script src="/assets/site.js?v=5e5086e1241d" defer></script>
+    <script src="/assets/analytics.js?v=e161fd3bb9f2" data-analytics-id="G-58PJ9VG8GC" defer></script><link rel="stylesheet" href="/assets/host-guide.css?v=23785133adef"></head><body id="page-top" class="reservation-page"><a class="skip-link" href="#main-content">본문으로 바로가기</a><header class="public-header"><div class="public-header-inner">
+    <a class="public-brand" href="/" aria-label="한지붕 홈">한지붕</a>
+    <nav class="public-menu-wide" aria-label="주 메뉴"><a href="/about/">한지붕 소개</a><a href="/how-it-works/" aria-current="page">한지붕 활용 방법</a><a href="/consultation/">상담 신청하기</a><a href="/reservation/">우리 집 빈 방 월세 진단</a><a href="/rooms/register/">방 등록하기</a></nav>
+    <details class="public-menu-small"><summary><svg class="icon " aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg> 메뉴</summary><nav aria-label="주 메뉴"><a href="/about/">한지붕 소개</a><a href="/how-it-works/" aria-current="page">한지붕 활용 방법</a><a href="/consultation/">상담 신청하기</a><a href="/reservation/">우리 집 빈 방 월세 진단</a><a href="/rooms/register/">방 등록하기</a></nav></details>
+  </div></header><main id="main-content"><script>(() => {
+  "use strict";
+  const heading = document.getElementById("host-title");
+  const params = new URLSearchParams(location.search);
+  if (heading && params.get("diagnosis") === "1") return;
+
+  const variants = ["A", "B", "C"];
+  const preview = params.get("headline_preview");
+  const isPreview = variants.includes(preview);
+  const storageKey = "hanjibung.host-headline.v1";
+  const storageTypes = ["localStorage", "sessionStorage"];
+  let variant = isPreview ? preview : null;
+  let assigned = false;
+
+  if (!isPreview) {
+    for (const type of storageTypes) {
+      try {
+        const saved = window[type].getItem(storageKey);
+        if (variants.includes(saved)) { variant = saved; assigned = true; break; }
+      } catch { /* Storage may be unavailable in a private browser. */ }
+    }
+    if (heading && !variant) {
+      variant = variants[Math.floor(Math.random() * variants.length)];
+      for (const type of storageTypes) {
+        try {
+          window[type].setItem(storageKey, variant);
+          assigned = true;
+          break;
+        } catch { /* Try tab storage if persistent storage is blocked. */ }
+      }
+    }
+  }
+  if (!variant && heading) return;
+
+  if (heading) {
+    function showPart(element, templateId) {
+      element.replaceChildren(document.getElementById(templateId).content.cloneNode(true));
+    }
+    if (variant !== "A") {
+      showPart(heading, `host-title-${variant}`);
+      showPart(document.getElementById("host-description"), `host-description-${variant}`);
+    }
+    // An inert template fetches only the image for the assigned experience.
+    showPart(document.getElementById("host-visual"), `host-visual-${variant}`);
+  }
+  if (isPreview) {
+    document.addEventListener("DOMContentLoaded", () => {
+      for (const link of document.querySelectorAll('a[href^="/"]:not([href^="//"])')) {
+        const destination = new URL(link.href);
+        if (!["/", "/about/", "/how-it-works/", "/consultation/", "/reservation/", "/rooms/register/", "/reservation/privacy/"].includes(destination.pathname)) continue;
+        destination.searchParams.set("headline_preview", variant);
+        link.search = destination.search;
+      }
+    }, { once: true });
+    return;
+  }
+  if (heading && !assigned) return;
+
+  function track(step, group) {
+    try {
+      const id = document.querySelector("script[data-analytics-id]")?.dataset.analyticsId;
+      if (/^G-[A-Z0-9]{6,20}$/.test(id || "") && typeof window.gtag === "function") {
+        window.gtag("event", `headline_${step}_${group.toLowerCase()}`, { send_to: id });
+      }
+    } catch { /* Analytics must not interrupt the page or a confirmed application. */ }
+  }
+  if (heading) {
+    document.addEventListener("DOMContentLoaded", () => {
+      const recordView = () => {
+        const { top, bottom } = heading.getBoundingClientRect();
+        if (document.hidden || bottom <= 0 || top >= window.innerHeight) return;
+        document.removeEventListener("visibilitychange", recordView);
+        window.removeEventListener("scroll", recordView);
+        window.removeEventListener("resize", recordView);
+        window.hanjibungLeadVisit?.expose(variant);
+        track("view", variant);
+      };
+      document.addEventListener("visibilitychange", recordView);
+      window.addEventListener("scroll", recordView, { passive: true });
+      window.addEventListener("resize", recordView);
+      recordView();
+    }, { once: true });
+  } else {
+    window.hanjibungTrackHeadlineCompletion = (record, kind = "diagnosis") => {
+      const step = { diagnosis: "complete", callback: "callback", registration: "registration" }[kind];
+      if (step && /^[ABC]$/.test(record?.variant || "")) track(step, record.variant);
+    };
+  }
+})();</script><div class="host-guide">
+    <section class="guide-cover" aria-labelledby="guide-title">
+      <div class="guide-wrap guide-cover-inner">
+        <div class="guide-intro">
+          <p class="guide-kicker">한지붕 활용 방법</p>
+          <h1 id="guide-title">우리 집에 <br>빈 방이 있나요?</h1>
+          <p class="guide-lead"><strong>창고처럼 쓰는 방이 있나요?</strong> 짐을 넣어 두던 방 한 칸을 대학생에게 내어주고, 매달 월세 수입을 만들어 보세요.</p>
+          <a class="guide-button" href="/reservation/">우리 집 빈 방 예상 월세 알아보기 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h14M14 7l5 5-5 5"/></svg></a>
+        </div>
+        <div class="guide-room-photos">
+          <figure><img src="/assets/host/process-before.webp" alt="장롱 옆에 짐과 상자를 쌓아 둔 방" width="768" height="1024" decoding="async"><figcaption>정리 전</figcaption></figure>
+          <figure><img src="/assets/host/process-after.webp" alt="창가에 침대와 책상을 놓아 학생을 맞을 준비가 된 방" width="1024" height="768" decoding="async"><figcaption>입주 준비 후</figcaption></figure>
+        </div>
+      </div>
+    </section>
+    <section class="guide-wrap guide-process" aria-labelledby="guide-process-title">
+      <h2 id="guide-process-title">방을 등록하면 <br>어떻게 진행되나요?</h2>
+      <ol class="guide-steps" role="list">
+        <li><h3>방 등록하기</h3><p>방이 있는 동네와 방 상태, 입주 가능한 시기를 알려주세요. 매니저와 함께 정리나 가구 준비가 필요한지도 살펴봐요.</p></li>
+        <li><h3>학생 소개서 받아보기</h3><p>우리 집 조건에 맞는 학생의 소개서를 받아보세요. 학생이 다니는 학교와 희망 거주 기간, 평소 귀가 시간 같은 생활습관을 미리 살펴볼 수 있어요.</p></li>
+        <li><h3>집주인이 최종 결정하기</h3><p>마음에 드는 학생과 직접 이야기하고, 함께 살지 결정하세요. 생활 방식이 맞지 않으면 매니저에게 다른 학생을 소개해 달라고 할 수 있어요.</p></li>
+      </ol>
+      <a class="guide-register" href="/rooms/register/">방 등록하기 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h14M14 7l5 5-5 5"/></svg></a>
+    </section>
+    <footer class="reservation-footer"><div><a href="/">한지붕</a><a href="/reservation/privacy/">개인정보 처리방침</a><a href="tel:+821045879428">문의 010-4587-9428</a></div><p>© 2026 hanjibung. All rights reserved.</p></footer>
+  </div></main></body></html>
