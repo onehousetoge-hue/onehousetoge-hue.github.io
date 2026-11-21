@@ -59,7 +59,7 @@ for (const [route, title, description, body, styles] of [
   ["/about/", "한지붕 소개", "MBC 뉴스데스크가 취재한 어르신과 대학생의 한집살이와 김현수 대표의 인터뷰를 보세요. 노원구 공릉동에서 시작한 한지붕이 방 준비부터 입주 후 생활까지 어떻게 돕는지 소개합니다.", headlineExperiment + aboutPage(), [aboutStylesheetUrl]],
   ["/how-it-works/", "한지붕 활용 방법", "창고처럼 쓰던 빈방을 대학생에게 내어주면 얼마의 월세를 받을 수 있을까요? 예상 월세를 확인하고, 방 등록부터 학생 소개서를 받아본 뒤 입주를 직접 결정하는 과정까지 알아보세요.", headlineExperiment + hostGuidePage(), [hostGuideStylesheetUrl]],
   ["/consultation/", "상담 신청하기", "빈방 활용이나 대학생과의 공동생활에 대해 궁금한 점을 한지붕 매니저에게 남겨 주세요. 이름과 연락처, 질문을 보내면 매니저가 답변합니다.", intakePage(), [reservationStylesheetUrl, serviceStylesheetUrl]],
-  ["/rooms/register/", "방 등록하기", "한지붕 도우미에게 동네, 방 개수, 입주 시기를 알려주세요. 방 조건과 사진을 확인하고 방문할 주소와 연락처를 남기면 매니저가 등록 내용을 확인합니다.", roomRegistrationPage(), [registrationStylesheetUrl]],
+  ["/rooms/register/", "방 등록하기", "동네와 빈방 개수, 입주 시기를 한 문장으로 알려주세요. 한지붕 AI가 정리한 방 조건을 확인하고 원하는 항목만 고친 뒤, 사진과 방문 연락처를 더해 방 등록을 신청할 수 있습니다.", roomRegistrationPage(), [registrationStylesheetUrl]],
 ]) {
   const stylesheetLinks = styles.map((href) => `<link rel="stylesheet" href="${href}">`).join("");
   await emit(route, layout({ title, description, path: route, body, bodyClass: "reservation-page", showDiagnosisDock: false, showFooter: false, jsonLd: organizationSchema })

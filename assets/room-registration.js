@@ -1,11 +1,15 @@
-import { detailedLocation, extractRoom, privateText, requiredFields, roomChatPrivate, roomFields, roomQuestions, visitAddressError } from "./room-description.js?v=984f468326d0";
+import { completeRoomTurn, correctionPatch, detailedLocation, extractRoom, privateText, requiredFields, roomChatPrivate, roomFields, roomQuestions, visitAddressError } from "./room-description.js?v=d3942e9e7642";
 import { callbackPayload, submitCallback } from "./callback.js?v=1c79e8eae2b2";
 import { validateInquiryInput } from "./inquiry.js";
 
 const draftKey = "hanjibung.room-draft.v1";
 const draftAge = 7 * 24 * 60 * 60 * 1000;
 const photoLimit = 44000;
-const hints = { location: "예: 노원구 공릉동", rooms: "예: 방 한 개", availability: "예: 다음 달부터" };
+const hints = {
+  location: "예: 노원구 공릉동", rooms: "예: 방 한 개", availability: "예: 다음 달부터",
+  rent: "예: 40만 원", deposit: "예: 100만 원", fee: "예: 관리비 포함",
+  homeType: "예: 아파트", area: "예: 6평", floor: "예: 2층",
+};
 const options = { rooms: ["1개", "2개", "3개 이상"], availability: ["바로 가능", "다음 달", "일정 협의"] };
 function badRoomField(name, value) {
   if (requiredFields.includes(name) && !value) return "필수 항목을 입력해 주세요.";
@@ -48,8 +52,10 @@ function init(form) {
   const status = find("[data-status]"), reviewButton = find("[data-review]"), chatNext = find("[data-chat-next]");
   const fileInput = find("#rr-photo"), photoPreview = find("[data-photo-preview]"), erase = find("[data-erase]");
   const send = find("[data-send]");
-  let pendingTurn;
-  let stage = "chat", finishReply, lastQuestion, editedInDetails = false;
+  const summary = find("[data-chat-summary]"), chips = find("[data-chat-facts]");
+  const undo = find("[data-chat-undo]"), cancel = find("[data-cancel-correction]"), progress = find("[data-room-progress]");
+  let pendingTurn, correction, previousTurn;
+  let stage = "chat", lastQuestion, editedInDetails = false;
   log.addEventListener("scroll", () => log.toggleAttribute("data-scrolled", log.scrollTop > 3), { passive: true });
   historyButton.onclick = () => {
     const expanded = log.toggleAttribute("data-expanded");
@@ -63,45 +69,15 @@ function init(form) {
   function firstMissing() { return requiredFields.find(key => badRoomField(key, input(key).value.trim())); }
   function notify(text) { status.textContent = text; }
   function bubble(text, human = false) {
-    finishReply?.();
     const item = document.createElement("p");
     item.className = human ? "rr-user" : "rr-bot";
     historyButton.hidden = log.childElementCount < 2;
-    if (human || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      item.textContent = text;
-      log.append(item);
-      log.scrollTop = log.scrollHeight;
-      return;
-    }
-    const spoken = document.createElement("span"), visual = document.createElement("span");
-    spoken.className = "sr-only"; spoken.textContent = text;
-    visual.setAttribute("aria-hidden", "true"); visual.className = "rr-typing";
-    item.append(spoken, visual);
+    item.textContent = text;
     log.append(item);
     log.scrollTop = log.scrollHeight;
-    const start = performance.now() + 170;
-    let frame;
-    function finish() {
-      cancelAnimationFrame(frame);
-      visual.className = ""; visual.textContent = text;
-      finishReply = undefined;
-    }
-    function type(now) {
-      const elapsed = now - start;
-      if (elapsed >= 0) {
-        const pinned = log.scrollHeight - log.scrollTop - log.clientHeight < 28;
-        const count = Math.min(text.length, 1 + Math.floor(elapsed / 13));
-        visual.className = ""; visual.textContent = text.slice(0, count);
-        if (pinned) log.scrollTop = log.scrollHeight;
-        if (count === text.length) { finish(); return; }
-      }
-      frame = requestAnimationFrame(type);
-    }
-    finishReply = finish;
-    frame = requestAnimationFrame(type);
   }
-  function renderFacts(target) {
-    const data = fields();
+  function renderFacts(target, data) {
+    if (!target) return;
     const rows = [];
     for (const [key, label] of entries) {
       const value = badRoomField(key, data[key]) ? "" : data[key];
@@ -113,26 +89,50 @@ function init(form) {
     }
     target.replaceChildren(...rows);
   }
+  function renderChips(data) {
+    if (!chips) return;
+    const buttons = [];
+    for (const [key, label] of entries) {
+      if (!data[key] || badRoomField(key, data[key])) continue;
+      const button = document.createElement("button"), title = document.createElement("span"), value = document.createElement("strong");
+      button.type = "button"; button.className = "rr-fact-chip";
+      button.dataset.field = key;
+      button.setAttribute("aria-label", label + " " + data[key] + " 수정");
+      button.setAttribute("aria-pressed", String(correction === key));
+      title.textContent = label; value.textContent = data[key]; button.append(title, value);
+      buttons.push(button);
+    }
+    chips.replaceChildren(...buttons);
+    if (summary) summary.hidden = !buttons.length && !previousTurn;
+  }
   function refresh() {
-    renderFacts(find("[data-facts]"));
-    const missing = firstMissing(), choices = find(".rr-choices");
-    composer.placeholder = hints[missing] || "예: 월세는 40만 원이에요";
-    chatNext.hidden = Boolean(missing);
-    find("[data-draft-tools]").hidden = stage === "contact" || (erase.hidden && !Object.values(fields()).some(Boolean));
+    const data = fields(), hasFields = Object.values(data).some(Boolean);
+    renderFacts(find("[data-facts]"), data);
+    renderFacts(find("[data-final-facts]"), data);
+    renderChips(data);
+    const missing = firstMissing(), focus = correction || missing, choices = find(".rr-choices");
+    composer.placeholder = !hasFields ? "예: 공릉동에 방 한 개가 있어요. 다음 달부터 입주할 수 있어요." : hints[focus] || "예: 월세는 40만 원이에요";
+    composer.setAttribute("aria-label", correction ? roomFields[correction] + " 수정할 내용" : "AI에게 방 설명 보내기");
+    chatNext.hidden = Boolean(missing || correction);
+    if (undo) undo.hidden = !previousTurn;
+    if (cancel) cancel.hidden = !correction;
+    if (progress) progress.textContent = "필수 조건 " + requiredFields.filter(key => !badRoomField(key, data[key])).length + "/" + requiredFields.length;
+    find("[data-draft-tools]").hidden = stage === "contact" || (erase.hidden && !hasFields);
     choices.replaceChildren();
-    for (const value of options[missing] || []) {
+    for (const value of options[focus] || []) {
       const button = document.createElement("button");
       button.type = "button"; button.textContent = value;
       button.addEventListener("click", () => {
         addText(value, true);
-        if (!form.contains(document.activeElement)) (choices.querySelector("button") || chatNext).focus();
+        if (!form.contains(document.activeElement)) (choices.querySelector("button") || (chatNext.hidden ? composer : chatNext)).focus();
       });
       choices.append(button);
     }
   }
   function ask(note = "") {
+    if (correction) { bubble(note + roomFields[correction] + "의 새 값을 알려주세요. " + hints[correction]); return; }
     lastQuestion = firstMissing();
-    bubble(note + (roomQuestions[lastQuestion] || "방 이야기가 모였어요. 이제 조건을 확인하고 원하면 사진 한 장도 더해 주세요."));
+    bubble(note + (roomQuestions[lastQuestion] || "기본 조건을 모두 적었어요. 방 조건을 확인하고 사진을 추가할 수 있어요."));
   }
   function markPending(controller) {
     pendingTurn = controller;
@@ -140,13 +140,22 @@ function init(form) {
     composer.readOnly = pending; send.disabled = pending; chatNext.disabled = pending;
     find("[data-save]").disabled = pending;
     for (const choice of find(".rr-choices").children) choice.disabled = pending;
+    if (chips) for (const chip of chips.children) chip.disabled = pending;
+    if (undo) undo.disabled = pending;
+    if (cancel) cancel.disabled = pending;
     log.setAttribute("aria-busy", String(pending));
+    if (pending) {
+      const reading = document.createElement("p");
+      reading.className = "rr-bot rr-reading"; reading.setAttribute("aria-hidden", "true");
+      reading.textContent = "방 설명에서 조건을 찾고 있어요…";
+      log.append(reading); log.scrollTop = log.scrollHeight;
+    } else log.querySelector(".rr-reading")?.remove();
   }
   function showStage(name) {
     if (pendingTurn) {
       pendingTurn.abort(); markPending(null);
     }
-    finishReply?.(); stage = name; notify("");
+    stage = name; notify("");
     for (const [index, panel] of panels.entries()) {
       const active = panel.dataset.panel === name;
       panel.hidden = !active; panel.disabled = !active;
@@ -180,8 +189,9 @@ function init(form) {
     if (/^(?:(?:응|네|좋아)[, ]*)?(?:(?:이|그|수정한)\s*내용(?:으로|대로)\s*)?(?:등록|신청)(?:할게요|해\s*(?:줘|주세요))?[.! ]*$/.test(text)) {
       composer.value = ""; openDetails(); return;
     }
-    const missing = firstMissing();
-    const local = () => extractRoom(text, missing, input("availability").value);
+    const missing = firstMissing(), focus = correction || missing || "";
+    const previousAvailability = input("availability").value;
+    const local = () => extractRoom(text, focus, previousAvailability);
     let patch, aiReply = "", notice = "";
     if (quickChoice) {
       patch = local();
@@ -194,7 +204,7 @@ function init(form) {
         const response = await fetch(form.dataset.assistant, {
           method: "POST", headers: { "Content-Type": "application/json" },
           credentials: "omit", referrerPolicy: "no-referrer", signal: controller.signal,
-          body: JSON.stringify({ message: text, focus: missing || "" }),
+          body: JSON.stringify({ message: text, focus }),
         });
         if (response.status === 422) {
           if (pendingTurn !== controller) return;
@@ -203,11 +213,11 @@ function init(form) {
         if (!response.ok) throw Error(response.status === 429 ? "LIMIT" : "UNAVAILABLE");
         const result = await response.json();
         if (result.source !== "llm" || !result.fields || typeof result.fields !== "object" || Array.isArray(result.fields)) throw Error("FORMAT");
-        patch = result.fields; aiReply = typeof result.reply === "string" ? result.reply : "";
-        if (input("availability").value && !Object.hasOwn(patch, "availability") && local().availability === "") patch.availability = "";
+        patch = correction ? result.fields : completeRoomTurn(text, focus, previousAvailability, result.fields);
+        aiReply = typeof result.reply === "string" ? result.reply : "";
       } catch (error) {
         patch = local();
-        notice = (error.message === "LIMIT" ? "AI 이용 한도에 도달했어요." : "지금은 AI에 연결할 수 없어요.") + " 기본 입력으로 이어가거나 ‘직접 입력’을 선택해 주세요.";
+        notice = (error.message === "LIMIT" ? "AI 이용 한도에 도달했어요." : "AI에 연결할 수 없어요.") + " 기기에서 방 조건을 정리하거나 ‘직접 입력’으로 계속할 수 있어요.";
       } finally {
         clearTimeout(timeout);
         cancelled = pendingTurn !== controller;
@@ -215,23 +225,28 @@ function init(form) {
       }
       if (cancelled) return;
     }
-    const answers = [];
+    if (correction) patch = correctionPatch(text, correction, patch, previousAvailability);
+    let recognized = false;
+    const before = {};
     for (const [key, value] of Object.entries(patch)) {
       if (!Object.hasOwn(roomFields, key) || typeof value !== "string") continue;
       if ((value && badRoomField(key, value)) || value.length > input(key).maxLength) continue;
+      if (input(key).value !== value) before[key] = input(key).value;
       input(key).value = value; input(key).setCustomValidity("");
-      answers.push((requiredFields.includes(key) && value ? "" : roomFields[key] + " ") + (value || "다시 정하기"));
+      recognized = true;
     }
-    if (!answers.length) {
+    if (!recognized) {
       notify(notice); composer.focus(); composer.select();
-      bubble(aiReply || (missing ? "조금만 더 알려주세요. " + roomQuestions[missing] + " (" + hints[missing] + ")" : "수정할 조건을 ‘월세 40만 원’처럼 알려주시거나 방 조건을 직접 수정해 주세요."));
+      if (correction) ask("이 값을 확인하기 어려워요. ");
+      else bubble(aiReply || (missing ? roomQuestions[missing] + " (" + hints[missing] + ")" : "바꿀 조건을 아래에서 누르거나 ‘월세 40만 원’처럼 알려주세요."));
       return;
     }
+    const wasCorrection = Boolean(correction);
+    correction = undefined;
+    if (Object.keys(before).length) previousTurn = before;
     composer.value = ""; invalidate(); notify(notice); refresh();
-    bubble(answers.join(" · "), true);
-    const next = firstMissing();
-    const reply = missing === "location" && next === "rooms" ? "좋아요. " : missing === "rooms" && next === "availability" ? "방 개수도 적었어요. " : "";
-    ask(reply);
+    bubble(text, true);
+    ask(wasCorrection ? "수정한 조건을 반영했어요. " : "");
   }
   function validateRoom(includeMissing) {
     for (const [key] of entries) {
@@ -301,6 +316,25 @@ function init(form) {
       } else localStorage.removeItem(draftKey);
     } else if (stored !== null) localStorage.removeItem(draftKey);
   } catch { /* The application works with storage disabled. */ }
+  if (chips) chips.onclick = event => {
+    const chip = event.target.closest("button[data-field]");
+    if (!chip || pendingTurn) return;
+    if (composer.value.trim()) { notify("지금 작성한 답변을 먼저 보내거나 지워주세요."); composer.focus(); return; }
+    correction = chip.dataset.field;
+    refresh(); notify(""); ask(); composer.focus();
+  };
+  if (cancel) cancel.onclick = () => {
+    composer.value = ""; correction = undefined; notify(""); refresh(); ask(); composer.focus();
+  };
+  if (undo) undo.onclick = () => {
+    if (!previousTurn || pendingTurn) return;
+    if (composer.value.trim()) { notify("지금 작성한 답변을 먼저 보내거나 지워주세요."); composer.focus(); return; }
+    for (const [key, value] of Object.entries(previousTurn)) {
+      input(key).value = value; input(key).setCustomValidity("");
+    }
+    previousTurn = undefined; correction = undefined;
+    invalidate(); refresh(); notify(""); ask("방금 반영한 내용을 되돌렸어요. "); composer.focus();
+  };
   find("[data-edit]").onclick = () => openDetails(true);
   chatNext.onclick = () => openDetails();
   find("[data-chat-back]").onclick = () => { if (validateRoom(false)) showStage("chat"); };
@@ -312,7 +346,10 @@ function init(form) {
     if (e.target === composer || e.target === fileInput || busy) return;
     invalidate();
     e.target.setCustomValidity("");
-    if (Object.hasOwn(roomFields, e.target.name)) { editedInDetails = true; refresh(); }
+    if (Object.hasOwn(roomFields, e.target.name)) {
+      previousTurn = undefined;
+      editedInDetails = true; refresh();
+    }
   });
   reviewButton.onclick = review;
   find("[data-back]").onclick = () => showStage("details");

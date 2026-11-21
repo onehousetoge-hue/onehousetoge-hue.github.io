@@ -67,6 +67,64 @@ test("model uncertainty, quota exhaustion and transport failures remain distinct
   env.ROOM_BUDGET.get = () => ({ fetch: async () => new Response(null, { status: 429 }) });
   assert.equal((await worker.fetch(post(msg), env)).status, 429);
 });
+
+async function interpret(message, updates, focus = "") {
+  const env = bindings(async () => ({ response: { updates } }));
+  const response = await worker.fetch(post(message, { focus }), env);
+  assert.equal(response.status, 200);
+  return (await response.json()).fields;
+}
+
+test("a quote about one charge cannot set a different charge, even when the question focused on it", async () => {
+  const message = "보증금 300만 원, 월세 30만 원, 관리비 3만 원이에요.";
+  const fields = await interpret(message, [
+    { field: "rent", value: "300만 원", quote: "보증금 300만 원" },
+    { field: "fee", value: "30만 원", quote: "월세 30만 원" },
+    { field: "deposit", value: "3만 원", quote: "관리비 3만 원" },
+  ], "deposit");
+  assert.deepEqual(fields, {});
+  const matched = await interpret(message, [
+    { field: "rent", value: "30만 원", quote: "월세 30만 원" },
+    { field: "deposit", value: "300만 원", quote: "보증금 300만 원" },
+    { field: "fee", value: "3만 원", quote: "관리비 3만 원" },
+  ]);
+  assert.deepEqual(matched, { rent: "30만 원", deposit: "300만 원", fee: "3만 원" });
+  const clippedLabel = await interpret("월세 45만 원이에요.", [
+    { field: "deposit", value: "45만 원", quote: "45만 원" },
+  ], "deposit");
+  assert.deepEqual(clippedLabel, {});
+});
+
+test("floor, area and housing type stay grounded in the host's words", async () => {
+  const message = "아파트 12층이고 방 면적은 18평이에요.";
+  const facts = [
+    { field: "floor", value: "12층", quote: "12층" },
+    { field: "area", value: "18평", quote: "18평" },
+    { field: "homeType", value: "아파트", quote: "아파트" },
+  ];
+  assert.deepEqual(await interpret(message, facts), { floor: "12층", area: "18평", homeType: "아파트" });
+  for (const clipped of [false, true]) {
+    const fields = await interpret(message, [
+      { field: "floor", value: "2층", quote: clipped ? "2층" : "12층" },
+      { field: "area", value: "8평", quote: clipped ? "8평" : "18평" },
+      { field: "homeType", value: "빌라", quote: "아파트" },
+    ]);
+    assert.ok(fields.floor === undefined || fields.floor === "12층");
+    assert.ok(fields.area === undefined || fields.area === "18평");
+    assert.ok(fields.homeType === undefined || fields.homeType === "아파트");
+  }
+});
+
+test("focused short answers and spoken Korean money keep their original amount and field", async () => {
+  const bare = await interpret("45만 원", [{ field: "rent", value: "450만 원", quote: "45만 원" }], "rent");
+  assert.equal(bare.rent.replace(/\s/g, ""), "45만원");
+  assert.deepEqual(Object.keys(bare), ["rent"]);
+  const spoken = await interpret("월세 삼십오만원 정도 생각해요.", [
+    { field: "rent", value: "350만 원", quote: "월세 삼십오만원" },
+  ]);
+  assert.match(spoken.rent.replace(/\s/g, ""), /^(?:삼십오만원|35만원|350000원)$/);
+});
+
 test("the daily limit is shared by all visits and starts again on the next UTC date", async () => {
   const values = new Map();
   const tx = { get: key => values.get(key), put: (key, value) => values.set(key, value) };

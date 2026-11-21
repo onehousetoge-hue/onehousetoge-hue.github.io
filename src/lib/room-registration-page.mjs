@@ -1,6 +1,6 @@
 import { inquiries } from "../config/inquiries.mjs";
 import { site } from "../config/site.mjs";
-import { roomFields, roomQuestions } from "../assets/room-description.js";
+import { requiredFields, roomFields } from "../assets/room-description.js";
 import { icon } from "./template.mjs";
 import { headlineExperiment, registrationScriptUrl } from "./static-assets.mjs";
 import { reservationFooter } from "./reservation-page.mjs";
@@ -11,35 +11,37 @@ const fields = [
   ["deposit", "예: 100만 원", 25], ["fee", "예: 3만 원", 25],
   ["homeType", "예: 아파트", 20], ["area", "예: 6평", 20], ["floor", "예: 2층", 12],
 ];
-function editor([name, placeholder, length], index) {
-  return `<label>${roomFields[name]}<input name="${name}" maxlength="${length}" placeholder="${placeholder}"${index < 3 ? " required" : ""}></label>`;
+function editor([name, placeholder, length]) {
+  return `<label>${roomFields[name]}<input name="${name}" maxlength="${length}" placeholder="${placeholder}"${requiredFields.includes(name) ? " required" : ""}></label>`;
 }
 export function roomRegistrationPage() {
   return `<div class="room-registration">${headlineExperiment}<div class="rr-wrap">
-    <header class="rr-intro"><div><h1>방 등록하기</h1><p>학생에게 내어줄 방을 소개해 주세요. 한지붕 매니저가 확인하고 연락드릴게요.</p></div>
-      <img src="/assets/about-home-640.webp" width="640" height="360" alt="" decoding="async"></header>
+    <header class="rr-intro"><div><h1>우리 집 빈방 <strong>등록하기</strong></h1><p>학생을 맞이할 방을 소개해 주세요.<br>한지붕 매니저가 확인한 뒤 연락드려요.</p></div>
+      <figure class="rr-room-photo"><img src="/assets/host/process-after.webp" width="1024" height="768" alt="창가에 책상과 침대를 놓은 방" decoding="async"><figcaption>입주를 준비한 방</figcaption></figure></header>
     <form class="rr-card" novalidate data-callback-form data-room-registration data-intake="registration" data-endpoint="${inquiries.endpoint}" data-assistant="${inquiries.roomAssistant}" data-consent-version="${inquiries.registrationVersion}">
       <ol class="rr-steps" aria-label="방 등록 진행 단계"><li aria-current="step"><span>1</span>방 이야기</li><li><span>2</span>조건·사진</li><li><span>3</span>주소·연락처</li></ol>
       <fieldset disabled><legend class="sr-only">방 등록 신청</legend>
         <fieldset class="rr-panel rr-chat" data-panel="chat"><legend class="sr-only">방 이야기</legend>
           <div class="rr-heading"><div class="rr-guide"><span class="rr-avatar">${icon("home")}</span><h2 tabindex="-1">한지붕 AI 도우미</h2></div><button type="button" class="rr-text" data-edit>직접 입력</button></div>
           <div class="rr-thread"><button type="button" class="rr-history" aria-controls="rr-history-log" aria-expanded="false" hidden>이전 대화 보기</button>
-            <div class="rr-log" id="rr-history-log" role="log" aria-label="방 등록 대화" aria-live="polite" aria-relevant="additions" tabindex="0"><p class="rr-bot">${roomQuestions.location} 방 개수와 입주 시기도 한 번에 말씀해 주셔도 돼요.</p></div>
-            <div class="rr-choices" aria-label="빠른 답변"></div>
-            <button type="button" class="rr-primary" data-chat-next hidden>방 조건과 사진 확인하기 ${icon("arrow")}</button></div>
-          <p class="rr-ai-note" id="rr-ai-note">보낸 문장은 Cloudflare에서 Google Gemma가 읽어요. 이름·상세주소·연락처는 마지막 단계에 입력해 주세요. <a href="/reservation/privacy/#room-ai">AI 이용 안내</a></p>
-          <div class="rr-composer"><label class="sr-only" for="room-chat-line">AI에게 방 설명 보내기</label><textarea id="room-chat-line" rows="2" maxlength="500" aria-describedby="rr-ai-note" placeholder="예: 노원구 공릉동"></textarea><button type="button" class="rr-send" data-send aria-label="AI로 보내기">보내기 ${icon("arrow")}</button></div>
+            <div class="rr-log" id="rr-history-log" role="log" aria-label="방 등록 대화" aria-live="polite" aria-relevant="additions" tabindex="0"><p class="rr-bot">방이 있는 동네, 남는 방 개수, 입주할 수 있는 시기를 알려주세요. 정해진 것부터 편하게 이야기해 주세요.</p></div>
+            <div class="rr-choices" aria-label="빠른 답변"></div></div>
+          <div class="rr-composer"><label class="sr-only" for="room-chat-line">AI에게 방 설명 보내기</label><textarea id="room-chat-line" rows="2" maxlength="500" aria-describedby="rr-ai-note" placeholder="예: 공릉동에 방 한 칸, 다음 달부터 가능해요."></textarea><div class="rr-compose-actions"><span class="rr-progress" data-room-progress>필수 조건 0/3</span><button type="button" class="rr-text" data-cancel-correction hidden>수정 취소</button><button type="button" class="rr-send" data-send aria-label="AI로 보내기">보내기 ${icon("arrow")}</button></div></div>
+          <p class="rr-ai-note" id="rr-ai-note">보내기를 누르면 Cloudflare의 Google Gemma가 방 설명을 정리해요. 이름·상세주소·연락처는 마지막 단계에 입력해 주세요. <a href="/reservation/privacy/#room-ai">AI 이용 안내</a></p>
+          <div class="rr-chat-summary" data-chat-summary hidden><div class="rr-summary-heading"><h3>지금까지 정리한 조건</h3><button type="button" class="rr-text" data-chat-undo hidden>방금 입력 되돌리기</button></div><div class="rr-chat-facts" data-chat-facts></div></div>
+          <button type="button" class="rr-primary" data-chat-next hidden>방 조건과 사진 확인하기 ${icon("arrow")}</button>
         </fieldset>
         <fieldset class="rr-panel" data-panel="details" hidden disabled><legend class="sr-only">방 조건과 사진</legend>
           <div class="rr-heading"><h2 tabindex="-1">방 조건을 확인해 주세요</h2><button type="button" class="rr-text" data-chat-back>대화로 돌아가기</button></div>
           <dl class="rr-facts" data-facts></dl>
-          <details class="rr-editor"><summary>방 조건 입력·수정</summary><div class="rr-edit-grid">${fields.map(editor).join("")}</div></details>
+          <details class="rr-editor"><summary>방 조건 입력·수정</summary><div class="rr-editor-fields"><h3>필수 방 정보</h3><div class="rr-edit-grid">${fields.filter(([name]) => requiredFields.includes(name)).map(editor).join("")}</div><h3>추가 조건 <small>선택</small></h3><div class="rr-edit-grid">${fields.filter(([name]) => !requiredFields.includes(name)).map(editor).join("")}</div></div></details>
           <div class="rr-photo"><label class="rr-photo-label" for="rr-photo">방 사진 한 장 <small>선택</small></label><p id="rr-photo-hint">방 안이 잘 보이는 사진을 골라주세요.</p><input id="rr-photo" type="file" accept="image/jpeg,image/png,image/webp" aria-describedby="rr-photo-hint"><div data-photo-preview hidden><img alt="첨부할 방 사진"><button type="button" class="rr-text" data-remove-photo>사진 빼기</button></div></div>
           <button type="button" class="rr-primary" data-review>주소·연락처 입력하기 ${icon("arrow")}</button>
         </fieldset>
         <fieldset class="rr-panel rr-contact" data-panel="contact" hidden disabled><legend class="sr-only">주소와 연락처</legend>
           <div class="rr-heading"><h2 tabindex="-1">방문 주소와 연락처</h2><button type="button" class="rr-text" data-back>조건 다시 보기</button></div>
           <p class="rr-explain">매니저가 등록 내용을 확인하고 방문 일정을 상의할 때 사용해요.</p>
+          <details class="rr-final-summary"><summary>등록할 방 정보</summary><dl class="rr-facts" data-final-facts></dl></details>
           <div class="rr-contact-grid">
             <label class="rr-address">방문할 상세주소<input name="address" autocomplete="street-address" maxlength="180" aria-describedby="rr-address-hint" required><small id="rr-address-hint">도로명과 건물번호 또는 지번을 적어주세요. 동·호수가 있으면 함께 적어주세요.</small></label>
             <label>이름<input name="name" autocomplete="name" maxlength="60" required></label><label>연락받을 전화번호<input name="contact" type="tel" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="010-0000-0000" required></label>

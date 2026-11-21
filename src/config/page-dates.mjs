@@ -5,7 +5,7 @@ export const pageDates = Object.freeze({
   "/about/": "2026-11-21",
   "/how-it-works/": "2026-11-22",
   "/consultation/": "2026-11-21",
-  "/rooms/register/": "2026-11-21",
+  "/rooms/register/": "2026-11-22",
   "/reservation/": "2026-11-21",
   "/reservation/privacy/": "2026-11-21",
 });

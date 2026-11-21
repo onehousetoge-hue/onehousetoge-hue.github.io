@@ -40,11 +40,12 @@ const notPlaces = new Set(["관리", "거리", "자리", "처리", "수리", "�
 const roomNumbers = { 한: 1, 하나: 1, 일: 1, 두: 2, 둘: 2, 이: 2, 세: 3, 셋: 3, 삼: 3, 네: 4, 넷: 4, 사: 4, 다섯: 5, 여섯: 6 };
 function numberOfRooms(text, focused) {
   const count = "(\\d{1,2}|하나|다섯|여섯|한|두|둘|세|셋|네|넷)";
-  const subset = text.match(new RegExp("(?:개|칸)\\s*중(?:에서)?\\s*" + count + "\\s*(?:개|칸)?만"));
+  const subset = text.match(new RegExp("(?:개|칸)(?:\\s*중(?:에서)?|인데[,\\s]*(?:그중)?|가?\\s*있지만)\\s*" + count + "\\s*(?:개|칸)?만"));
+  const corrected = text.match(new RegExp("(?:방\\s*(?:은|이)?\\s*|^\\s*)" + count + "\\s*(?:개|칸)\\s*(?:가?\\s*아니(?:라|고)|말고)\\s*" + count + "\\s*(?:개|칸)"));
   const before = text.match(new RegExp("(?:남는\\s*방|빈\\s*방|방)\\s*(?:은|는|이|을|이요)?\\s*" + count + "\\s*(?:개|칸|실|뿐|자리|(?=예요|이에요|입니다|[\\s,.!?]|$))"));
   const after = text.match(new RegExp(count + "\\s*(?:개|칸)(?:의|짜리)?\\s*(?:빈\\s*)?방"));
   const bare = focused === "rooms" && text.match(new RegExp("^\\s*" + count + "\\s*(?:개|칸|실)?(?:\\s*이상)?(?:예요|이에요|입니다|요)?[.!]?\\s*$"));
-  const found = (subset || before || after || bare)?.[1];
+  const found = corrected?.[2] || (subset || before || after || bare)?.[1];
   const n = Number(found) || roomNumbers[found];
   return n >= 1 && n <= 10 ? String(n) + "개" + (/개\s*이상/.test(text) ? " 이상" : "") : "";
 }
@@ -87,7 +88,7 @@ function moveIn(text, focused, previous) {
 }
 
 // Accept an explicit won unit or a clear no-cost/negotiable answer. A bare number is ambiguous.
-const amount = "(?:[\\d,]+(?:\\.\\d+)?\\s*억(?:\\s*[\\d,]+(?:\\.\\d+)?\\s*(?:천)?만)?\\s*(?:원)?|[\\d,]+(?:\\.\\d+)?\\s*(?:천만|백만|십만|만|천)\\s*(?:원)?|[\\d,]+\\s*원|없(?:음|는|어(?:요)?|습니다)|무료|협의|미정|포함)";
+const amount = "(?:[\\d,]+(?:\\.\\d+)?\\s*억(?:\\s*[\\d,]+(?:\\.\\d+)?\\s*(?:천)?만)?\\s*(?:원)?|[\\d,]+(?:\\.\\d+)?\\s*(?:천만|백만|십만|만|천)\\s*(?:원)?|[\\d,]+\\s*원|(?:별도\\s*)?없(?:음|는|고|어(?:요)?|습니다)|안\\s*받(?:아요|을게요|습니다)|무료|협의|미정|포함)";
 const moneyLabels = { rent: "희망\\s*월세|월세|(?:월\\s*)?임대료|매달", deposit: "보증금", fee: "관리비" };
 function money(text, label) {
   const matches = [...text.matchAll(new RegExp("(?:" + label + ")\\s*(?:[은는이가를을]|로)?\\s*[:：]?\\s*(" + amount + ")", "g"))];
@@ -95,8 +96,29 @@ function money(text, label) {
   if (!match) return "";
   const correction = text.slice(match.index + match[0].length).match(new RegExp("^\\s*(?:이?\\s*아니라|이?\\s*아니고|말고)\\s*(" + amount + ")"));
   const value = (correction?.[1] || match[1]).trim();
-  if (value.startsWith("없") || value === "무료") return "없음";
+  if (/없|안\s*받|무료/.test(value)) return "없음";
   return /\d/.test(value) && !value.endsWith("원") ? value + " 원" : value;
+}
+// With an explicitly selected chip, a short answer can name just the new value.
+// A bare number, a question, or a value labelled for a different field is not a price.
+export function correctionPatch(text, field, proposed = {}, previousAvailability = "") {
+  const clean = String(text).trim().normalize("NFKC");
+  if (!Object.hasOwn(roomFields, field) || !clean || roomChatPrivate(clean)) return {};
+  if (!requiredFields.includes(field) && /^(?:비우기|지우기|삭제|(?:지워|빼|삭제해)\s*(?:줘|주세요|요)?)[.!]?$/.test(clean)) return { [field]: "" };
+  if (/[?？]|(?:까요|나요|을까|일까)[.!]?$/.test(clean)) return {};
+  const replacement = clean.split(/말고|아니라|아니고/).at(-1).trim();
+  if (!replacement || (field !== "availability" && /아니에요|아닙니다|않아|불가능|어려워/.test(replacement))) return {};
+  const local = extractRoom(replacement, field, previousAvailability);
+  if (Object.hasOwn(moneyLabels, field)) {
+    const label = moneyLabels[field];
+    if (Object.entries(moneyLabels).some(([key, pattern]) => key !== field && new RegExp(pattern).test(clean)) && !new RegExp(label).test(clean)) return {};
+    const standalone = replacement.match(new RegExp("^(" + amount + ")(?:으로|로|이요|요|이에요|예요|입니다)?[.!]?$"));
+    if (standalone) return { [field]: money(roomFields[field] + " " + standalone[1], label) };
+    if (!/(?:원|천|만|억|무료|없|포함|협의|미정|안\s*받)/.test(replacement)) return {};
+  }
+  if (Object.hasOwn(local, field)) return { [field]: local[field] };
+  if (Object.keys(local).length || typeof proposed[field] !== "string" || !proposed[field]) return {};
+  return { [field]: proposed[field] };
 }
 export function privateText(text) {
   return /(?<!\d)(?:0(?:2|1[016789]|[3-6][1-5]|70)|\+82[-.\s]?(?:\(0\))?(?:2|1[016789]|[3-6][1-5]|70))[-.\s)]?\d{3,4}[-.\s]?\d{4}(?!\d)|\b\d{6}[- ]?[1-8]\d{6}\b|[\w.+-]+@[\w.-]+\.[a-z]{2,}/i.test(String(text).normalize("NFKC"));
@@ -141,4 +163,23 @@ export function extractRoom(text, focused = "", previousAvailability = "") {
   const homeType = clean.match(/아파트|단독\s*주택|다세대(?:\s*주택)?|다가구(?:\s*주택)?|빌라|오피스텔|원룸|투룸/);
   if (homeType) patch.homeType = homeType[0];
   return patch;
+}
+
+// Supplement an incomplete model answer only for a plain factual description.
+// Corrections, alternatives and questions stay with the model's interpretation.
+export function completeRoomTurn(text, focused, previousAvailability, confirmed) {
+  if (/[?？]|(?:까요|나요|일까|만약|이라면|라면|다면)/.test(text)) return confirmed;
+  const local = extractRoom(text, focused, previousAvailability);
+  if (local.availability === "" && !Object.hasOwn(confirmed, "availability")) return { ...confirmed, availability: "" };
+  if (/(?:인지|말고|아니|않|못|없|안\s+|안(?:받|되|돼|된|될|나|맞)|어렵|어려|힘들|불가|모르|미정|혹시|거나|또는|아직|고민|예를\s*들|예시|쯤일|생각\s*중)/.test(text)) return confirmed;
+  // An amount may describe a different field, and room size can describe the whole home.
+  // Deterministic supplements cover the three required facts and named charges only.
+  const supplement = {};
+  for (const key of [...requiredFields, ...Object.keys(moneyLabels)]) {
+    if (!local[key] || Object.hasOwn(confirmed, key)) continue;
+    if (key === "availability" && !/입주|이사|들어오|가능|부터/.test(text)) continue;
+    if (key === "location" && !/(?:[가-힣\d]+(?:동|읍|면|구|역)|서울|부산|인천|대전|대구|광주|울산|세종|제주)/.test(local.location)) continue;
+    supplement[key] = local[key];
+  }
+  return { ...supplement, ...confirmed };
 }

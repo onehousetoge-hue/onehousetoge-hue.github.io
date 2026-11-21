@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 import { callbackPayload, submitCallback } from '../src/assets/callback.js';
 import { inquiries } from '../src/config/inquiries.mjs';
-import { detailedLocation, extractRoom, privateText, visitAddressError } from '../src/assets/room-description.js';
+import { completeRoomTurn, correctionPatch, detailedLocation, extractRoom, privateText, visitAddressError } from '../src/assets/room-description.js';
 
 const id = 'aa111111-2222-4333-8444-555555555555';
 const values = {name:'오프라인 시험',contact:'010-0000-0000',message:'사진 없이 먼저 빈방 활용 상담을 받고 싶습니다.',consent:true,website:''};
@@ -18,12 +18,39 @@ test('a host can describe, correct and review a room using a real sentence or a 
   assert.deepEqual(extractRoom('월세는 45만 원 말고 38만 원으로 바꿔줘'),{rent:'38만 원'});
   assert.deepEqual(extractRoom('3개 이상','rooms'),{rooms:'3개 이상'});
   assert.equal(extractRoom('방 두 개 중 하나만 빌려요').rooms,'1개');
+  assert.equal(extractRoom('빈 방 두 개인데 하나만 내놓을게요').rooms,'1개');
+  assert.equal(extractRoom('방 두 개가 아니라 한 개예요').rooms,'1개');
+  assert.equal(extractRoom('월세 45만원, 보증금은 안 받을게요').deposit,'없음');
   assert.equal(extractRoom('일정은 서로 상의해서 정해요','availability').availability,'일정 협의');
   assert.equal(extractRoom('바로 가능하지 않아요','availability').availability,undefined);
   assert.equal(extractRoom('월세 50').rent,undefined);
   assert.deepEqual(extractRoom('공릉동 010-0000-0000'),{});
   assert.equal(extractRoom('월세는 아직 잘 모르겠어요','availability').availability,undefined);
   assert.equal(extractRoom('다가구주택이고 가구도 있어요').location,undefined);
+});
+
+test('selecting a room condition accepts short corrections and cannot overwrite unrelated fields',()=>{
+  assert.deepEqual(correctionPatch('38만 원이요','rent',{deposit:'38만 원',rooms:'2개'}),{rent:'38만 원'});
+  assert.deepEqual(correctionPatch('두 개','rooms',{rooms:'10개',floor:'2층'}),{rooms:'2개'});
+  assert.deepEqual(correctionPatch('공릉동 말고 중계동','location',{rooms:'3개'}),{location:'중계동'});
+  assert.deepEqual(correctionPatch('다음 달에는 입주가 안 돼요','availability',{},'다음 달부터'),{availability:''});
+  assert.deepEqual(correctionPatch('설날이 지난 뒤요','availability',{availability:'설날 이후',fee:'2만 원'}),{availability:'설날 이후'});
+  assert.deepEqual(correctionPatch('지워주세요','rent',{}),{rent:''});
+  assert.deepEqual(correctionPatch('38','rent',{rent:'38만 원'}),{});
+  assert.deepEqual(correctionPatch('보증금 100만 원','rent',{rent:'100만 원'}),{});
+  assert.deepEqual(correctionPatch('월세 50','rent',{rent:'50만 원'}),{});
+  assert.deepEqual(correctionPatch('월세 40만 원이면 될까요?','rent',{rent:'40만 원'}),{});
+  assert.deepEqual(correctionPatch('상세주소 시험길 17','location',{location:'시험길'}),{});
+});
+
+test('an incomplete model response can keep clear facts without reviving rejected or hypothetical offers',()=>{
+  assert.deepEqual(completeRoomTurn('공릉동에 방 한 개, 다음 달부터, 월세 40만 원','location','',{rooms:'1개'}),{
+    location:'공릉동',rooms:'1개',availability:'다음 달부터',rent:'40만 원',
+  });
+  assert.deepEqual(completeRoomTurn('공릉동은 아니고 중계동에 방 두 개예요','location','',{location:'중계동'}),{location:'중계동'});
+  assert.deepEqual(completeRoomTurn('방 하나에 월세 50만 원이라면 비쌀까요?','rooms','',{}),{});
+  assert.deepEqual(completeRoomTurn('집은 방 세 개 중 침실 둘을 내놓아요','rooms','',{rooms:'2개'}),{rooms:'2개'});
+  assert.deepEqual(completeRoomTurn('다음 달은 입주가 안 돼요','availability','다음 달부터',{}),{availability:''});
 });
 
 test('a rejected or unrelated date is not offered as an available move-in date',()=>{
